@@ -4,7 +4,7 @@ items:
   kind: plan
   title: Reconcile proxy_model decision record naming and semantics to the implemented
     code
-  status: candidate
+  status: completed
   path: .reviewcompass/backlog/plans/plan-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-24T00:00:00+09:00'
@@ -386,3 +386,31 @@ items:
   path: .reviewcompass/backlog/todos/todo-2026-06-24-commit-minimal-progress-output.yaml
   source_unit_id: main-completed
   created_at: '2026-06-23T21:43:18.064596+00:00'
+- id: todo-2026-06-24-proxy-decision-record-naming-reconciliation
+  kind: todo
+  title: Reconcile proxy decision record naming to implemented code
+  status: completed
+  path: .reviewcompass/backlog/todos/todo-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-24T06:51:53.673648+00:00'
+- id: issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch
+  kind: issue
+  title: approval 段の承認主体記述（guide §2.2/§2.3）が human-only 境界と矛盾の疑い
+  status: candidate
+  path: .reviewcompass/backlog/issues/issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch.yaml
+  source_unit_id: main-side-conversation
+  created_at: '2026-06-24T09:17:15.561867+00:00'
+- id: issue-2026-06-24-sandbox-guarded-commit-blocked
+  kind: issue
+  title: サンドボックス/非TTY 環境では guarded commit が完了できない
+  status: candidate
+  path: .reviewcompass/backlog/issues/issue-2026-06-24-sandbox-guarded-commit-blocked.yaml
+  source_unit_id: main-side-conversation
+  created_at: '2026-06-24T10:15:47.659078+00:00'
+- id: issue-2026-06-24-post-write-target-judgment-mismatch
+  kind: issue
+  title: post-write target 判定が next と write-manifest で不整合(specs/機械生成記録を誤対象化)
+  status: candidate
+  path: .reviewcompass/backlog/issues/issue-2026-06-24-post-write-target-judgment-mismatch.yaml
+  source_unit_id: main-side-conversation
+  created_at: '2026-06-24T10:17:22.811221+00:00'

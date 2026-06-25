@@ -1,0 +1,11 @@
+```yaml
+findings:
+  - severity: INFO
+    target_location: "全般"
+    description: "変更内容の精査において、(1)〜(4)の全ての観点で問題がないことを確認した"
+    rationale: |
+      (1) design.md の approved_by: proxy_model と proxy-approval.yaml の記述は、make-proxy-approval.py の実出力および review_triage.py の検査属性と厳密に一致している。
+      (2) proxy裁定レコードの項は approved_by を、人間判断レコード（承認ゲート record）の項は decided_by + decision_scope を使用するスキーマとして分離されており混同はない。
+      (3) proxy approval は decision_scope: proxy_allowed に限るという記述は、decision_scope == "human_only" でブロックする実装と完全に整合し、承認との混同を防いでいる。
+      (4) SESSION_WORKFLOW_GUIDE.md, design.md, tasks.md の全文から approval-proxy, proxy-decision-bundle などの旧名は全て削除されており、曖昧さは残っていない。
+```

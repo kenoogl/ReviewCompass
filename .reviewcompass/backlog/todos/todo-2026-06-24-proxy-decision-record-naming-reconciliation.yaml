@@ -1,0 +1,74 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-24-proxy-decision-record-naming-reconciliation
+kind: todo
+title: Reconcile proxy decision record naming to implemented code
+status: completed
+source_unit_id: main-completed
+created_at: '2026-06-24T06:51:53.673648+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
+  reason: 決定済み方向（実装が正本）の機械的反映。design/tasks/guidance/test の命名・属性・文言を proxy-approval.yaml/approved_by
+    へ統一し line-91 を解消する。
+decisions:
+- decision: completed
+  decision_ref: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
+  reason: PRR-0〜4 完了。design/tasks/guidance/test を proxy-approval.yaml/approved_by
+    へ整合、line-91 解消、post-write 所見0で封印。
+  decided_at: '2026-06-24T07:03:54.929267+00:00'
+summary: '決定済みの方向（正本＝実装コード proxy-approval.yaml / approved_by + decision_scope）に沿って、
+  design.md / tasks.md / SESSION_WORKFLOW_GUIDE.md / test の命名・属性・文言を正本へ統一し、 test_session_record_contract.py
+  line-91 を解消する。コードと decision_scope 機構、人間判断 record の decided_by は無変更。詳細は plan-2026-06-24-proxy-decision-record-naming-reconciliation。
+
+  '
+source_plan_id: plan-2026-06-24-proxy-decision-record-naming-reconciliation
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
+implementation_plan:
+  phases:
+  - id: PRR
+    title: Reconcile proxy decision record naming to implemented code
+    tasks:
+    - id: PRR-0
+      title: Classify design.md/tasks.md change as local consistency fix vs reopen
+        via next
+      status: done
+    - id: PRR-1
+      title: Correct design.md naming/attribute/phrasing to proxy-approval.yaml and
+        approved_by
+      status: done
+    - id: PRR-2
+      title: Unify naming in tasks.md and SESSION_WORKFLOW_GUIDE.md to proxy-approval.yaml
+      status: done
+    - id: PRR-3
+      title: Fix test_session_record_contract.py line-91 assertion to proxy-approval.yaml
+      status: done
+    - id: PRR-4
+      title: Confirm historical review-run artifacts are excluded from rename
+      status: done
+acceptance_criteria:
+- design.md / tasks.md / SESSION_WORKFLOW_GUIDE.md / test が proxy-approval.yaml と
+  approved_by に統一されている
+- test_session_record_contract.py が全 green
+- decision_scope 機構と人間判断 record の decided_by は無変更
+- next --json が旧名（approval-proxy / proxy-decision-bundle）を返さない
+non_goals:
+- コード変更（実装は正本・無変更）
+- 履歴 review-run 成果物（approval-proxy-2026-06-04.yaml 等）の改名
+- proxy 運用そのものの設計変更
+red_tests:
+- id: PRR-RT-1
+  title: Proxy decision record naming is consistent across design, tasks, guidance,
+    test, and code
+  expected: 'design.md / tasks.md / SESSION_WORKFLOW_GUIDE.md / test_session_record_contract.py
+    が 実装コードの proxy-approval.yaml と approved_by を参照し、test が全 green。
+
+    '
+  status: done
+execution_history:
+- checklist_id: checklist-todo-2026-06-24-proxy-decision-record-naming-reconciliation
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
+  completion_summary: design.md:249/252・tasks.md:128・SESSION_WORKFLOW_GUIDE.md:206/235
+    を proxy-approval.yaml/approved_by/scoped 承認文言へ整合、test:91 を更新し line-91 解消（全 green）。post-write
+    検証 gemini-3.1-pro-preview 所見0件で封印。コード・decision_scope・人間判断 record は無変更。
+  completed_at: '2026-06-24T07:03:21.114511+00:00'

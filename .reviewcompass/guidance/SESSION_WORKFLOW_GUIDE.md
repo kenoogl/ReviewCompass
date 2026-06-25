@@ -203,7 +203,7 @@ variant が未確定、または role 割当が曖昧な場合は review-run を
 1. メインセッション LLM は raw レビューを集約し、三段階トリアージの下書きを作る。parsed YAML だけでなく raw response も読み、同根所見をまとめ、`must-fix` ／ `should-fix` ／ `leave-as-is` の候補を作る
 2. メインセッション LLM は重要件ごとに、平易な問題説明、候補案、各案の利点と弱点、後段影響、推薦案を作る
 3. proxy_model は重要件の採用案・判断理由・最終ラベルを決定する。実装は担当しない
-4. メインセッション LLM は proxy_model の raw response を保存し、`proxy-decisions/<finding-id>.decision.yaml` と `approval-proxy-<日付>.yaml` に構造化する
+4. メインセッション LLM は proxy_model の raw response を保存し、`decisions/<suffix>.yaml`（重要件ごとの裁定 file。`<suffix>` は `<model>-<role>-<連番>`）と `proxy-approval.yaml` に構造化する
 5. 機械ガードは proxy decision の充足を検査する。未判断、raw 欠落、候補案欠落、採用案欠落、判断理由欠落、triage 最終ラベルとの不一致があれば実装へ進まない
 6. メインセッション LLM は機械ガード通過後、採用された修正だけを TDD で実装する
 7. コミット・プッシュ・spec.json 更新・フェーズ移行は人間の明示承認を要求する。proxy_model はこれらの不可逆操作を代行しない
@@ -219,9 +219,9 @@ variant が未確定、または role 割当が曖昧な場合は review-run を
 **proxy_model への入力証跡**：
 
 - proxy_model へ渡す判断材料には、メインセッション LLM の要約だけでなく、元 review raw への参照または抜粋を必ず含める
-- `proxy-decisions/<finding-id>.prompt.md` を作成する前に、[[llm-as-judge-prompting]] の手順（材料揃え → 問い設計 → 選択肢なし分析）でプロンプトを設計する
-- `proxy-decisions/<finding-id>.prompt.md` に、元 review raw 参照、問題説明、候補案セット、推薦案、判断してほしい最終ラベルを保存する
-- `proxy-decisions/<finding-id>.decision.yaml` には、`candidate_options`、`source_raw_paths`、`decision_prompt_path`、採用案、棄却案理由、判断理由、最終ラベルを保存する
+- proxy_model への判断プロンプト（review-run 直下に保存）を作成する前に、[[llm-as-judge-prompting]] の手順（材料揃え → 問い設計 → 選択肢なし分析）でプロンプトを設計する
+- 判断プロンプト（review-run 直下。既定名 `proxy-adjudication-prompt.md`、実行時に指定可）に、元 review raw 参照、問題説明、候補案セット、推薦案、判断してほしい最終ラベルを保存する
+- `decisions/<suffix>.yaml`（重要件ごとの裁定 file。`<suffix>` は `<model>-<role>-<連番>`）には、`candidate_options`、`source_raw_paths`、`decision_prompt_path`、採用案、棄却案理由、判断理由、最終ラベルを保存する
 - proxy_model が元 review raw を読めない形の判断材料しか受け取っていない場合、その decision は実装着手の承認証跡として扱わない
 - 現行の軽量ガードは、proxy_model_id の文字列一致、decision file の finding_id 一致、final_label 一致、prompt/raw/候補案証跡の存在を検査する。API 署名や暗号学的な生成元証明は将来課題とする
 
@@ -229,10 +229,10 @@ variant が未確定、または role 割当が曖昧な場合は review-run を
 
 - `raw/`：各モデルの生応答
 - `triage.yaml`：メインセッション LLM による三段階トリアージ
-- `proxy-decisions/<finding-id>.prompt.md`：proxy_model に渡した判断材料
-- `proxy-decisions/<finding-id>.raw.txt`：proxy_model の生応答
-- `proxy-decisions/<finding-id>.decision.yaml`：採用案、判断理由、最終ラベル、棄却案理由
-- `approval-proxy-<日付>.yaml`：実装着手を許可する proxy approval record
+- `proxy-adjudication-prompt.md`（既定名。review-run 直下、実行時に指定可）：proxy_model に渡した判断材料
+- `proxy-adjudication-response.txt`（既定名。review-run 直下、実行時に指定可）：proxy_model の生応答
+- `decisions/<suffix>.yaml`：重要件ごとの採用案、判断理由、最終ラベル、棄却案理由
+- `proxy-approval.yaml`：実装着手を許可する proxy approval record
 
 **並列化可能な単位**：
 

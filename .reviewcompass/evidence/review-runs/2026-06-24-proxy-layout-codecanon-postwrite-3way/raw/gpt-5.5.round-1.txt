@@ -1,0 +1,5 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md §2.2 / §2.3"
+    description: "approval 段を「actor=human または proxy_model」「利用者または別モデル承認」としており、同文書 §3.3(a-2) および design.md / tasks.md の human-only 境界と矛盾している。"
+    rationale: "proxy_model は review-run 後の重要件トリアージ・修正方針判断だけを代行でき、commit、push、spec.json 更新、フェーズ移行、approval 段承認を代行しない契約である。ここに proxy_model を approval 段の承認主体として残すと、`proxy-approval.yaml` を phase / gate approval と誤読して不可逆操作へ進める余地があり、内部論理と整合相手の設計に反する。"

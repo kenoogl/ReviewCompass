@@ -1,0 +1,8 @@
+run_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way
+target_files:
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: 3093efbacba208bb26c05a5f2caf7e2a404f0fddca58500a76f2282610867721
+- path: .reviewcompass/specs/workflow-management/tasks.md
+  sha256: 7e5ba6f3e76bb762c1fd0245cecdbc5abcff671eec12ee74e91d9ee16c28705a
+- path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  sha256: 38728ca3a304f4e7c81f08f541247ef5e7027a57ea675c6341b1313855f982e5

@@ -1,0 +1,133 @@
+run_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way
+triage_status: draft
+generated_at: '2026-06-24T07:44:01.144804+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/design.md §段集合の静的列挙モデル
+    §2 証跡構造
+  plain_language_summary: 'design.md の証跡構造は `proxy-approval.yaml` を記載しており、`make-proxy-approval.py`
+    の出力先（`approval_path = run_dir / ''proxy-approval.yaml''`）と完全一致する。`proxy-decisions/<finding-id>.decision.yaml`
+    の必須属性 `approved_by: proxy_model` も、`make-proxy-approval.py` が生成する decision dict
+    の `approved_by: ''proxy_model''` と一致する。`review_triage.py` の `_proxy_decision_errors`
+    が検査する属性（`approved_by`, `finding_id`, `proxy_model_id`, `decision_prompt_path`,
+    `selected_option`, `final_label`, `rationale`, `raw_response_path`, `candidate_options`,
+    `source_raw_paths`, `rejected_options`）は design.md の必須フィールド記述と一致している。照合根拠：design.md
+    証跡構造節、make-proxy-approval.py L112-123、review_triage.py L220-290。不一致なし。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: (1) への回答。コード・design 間の命名・属性は厳密一致している。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/design.md §段集合の静的列挙モデル
+    §2 + tasks.md T-004 完了条件 7
+  plain_language_summary: '2 系統の使い分け確認。`proxy-decisions/<finding-id>.decision.yaml`
+    は `approved_by: proxy_model`（裁定 file 系）を使い、`decided_by` は持たない。人間判断 record（Req
+    14 §1）は `decided_by: user | proxy_model` と `decision_scope` を使い、`approved_by`
+    は持たない。design.md §Requirement 14 §1 の approval gate record schema と §段集合 §2 の decision.yaml
+    必須フィールドを照合した結果、両系統の属性集合に重複はなく、混同を引き起こす記述も見当たらない。tasks.md T-004 完了条件 7 は `proxy-approval.yaml`
+    と `proxy-decisions/<finding-id>.decision.yaml` を検査対象として正確に列挙しており、系統の混用はない。照合根拠：design.md
+    Req14§1、decision.yaml フィールド定義、tasks.md T-004 条件 7。不一致なし。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: (2) への回答。2 系統に混同・矛盾なし。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/design.md §段集合の静的列挙モデル
+    §2
+  plain_language_summary: 'proxy approval は `decision_scope: proxy_allowed` の範囲（所見トリアージ・修正方針判断）に限った承認であり、human-only
+    approval、commit、push、`spec.json` 更新、phase / gate completion、reopen finalize は許可しない、と明記されている。`review_triage.py`
+    の `_proxy_decision_errors` は decision 内の `approved_by` が `proxy_model` であることを要求するが、`_approval_errors`
+    は `approval_required=true` の操作に対して同関数を呼ぶ構造になっており、commit/push 等の human-only gate
+    は直接 `approved_by: user` を要求する。decision-and-outcome.md §2 の説明「decision_scope が既に防いでいる」と
+    design.md の記述は整合する。照合根拠：design.md §proxy_model 判断代行モデル、review_triage.py L260-265、decision-and-outcome.md
+    §2。不一致なし。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: (3) への回答。proxy_allowed 範囲承認と human_only ブロックの記述は整合している。承認との混同を生む矛盾なし。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: .reviewcompass/specs/workflow-management/design.md, tasks.md, SESSION_WORKFLOW_GUIDE.md
+  plain_language_summary: 旧名 `approval-proxy-<日付>.yaml` は change-diff.md で `proxy-approval.yaml`
+    へ改名されており、3 target file 全体を検索した結果、旧名の残留は確認されなかった。`proxy-decision-bundle-<日付>.yaml`
+    も同様に `proxy-approval.yaml` へ置換済みで残留なし。SESSION_WORKFLOW_GUIDE.md §3.3-(a-2) 証跡配置セクションに
+    `proxy-approval.yaml` が正確に記載されており、旧名との混在はない。tasks.md T-004 完了条件 7 も `proxy-approval.yaml`
+    のみ参照。照合根拠：grep `approval-proxy`, `proxy-decision-bundle` against all three target
+    files → 0 hits。不一致なし。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: (4) への回答。旧名の取り残しおよび変更による曖昧さなし。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: 全般
+  plain_language_summary: 変更内容の精査において、(1)〜(4)の全ての観点で問題がないことを確認した
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '(1) design.md の approved_by: proxy_model と proxy-approval.yaml
+    の記述は、make-proxy-approval.py の実出力および review_triage.py の検査属性と厳密に一致している。
+
+    (2) proxy裁定レコードの項は approved_by を、人間判断レコード（承認ゲート record）の項は decided_by + decision_scope
+    を使用するスキーマとして分離されており混同はない。
+
+    (3) proxy approval は decision_scope: proxy_allowed に限るという記述は、decision_scope ==
+    "human_only" でブロックする実装と完全に整合し、承認との混同を防いでいる。
+
+    (4) SESSION_WORKFLOW_GUIDE.md, design.md, tasks.md の全文から approval-proxy, proxy-decision-bundle
+    などの旧名は全て削除されており、曖昧さは残っていない。'
+  applied_files: []
+  superseded_by: null

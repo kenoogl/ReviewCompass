@@ -1,0 +1,32 @@
+run_id: 2026-06-24-proxy-naming-reconciliation-postwrite
+phase: post_write_verification
+criteria_id: proxy-decision-record-naming-reconciliation
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-24-proxy-naming-reconciliation-postwrite/review-target.md
+criteria_file_sha256: 2caddd0d7124544e89b2e518d02a9071221ebbc07f966e507994fc136eb90ade
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-naming-reconciliation-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: dbe8f84eff5d0af8d195dc7780a2eb9e31f6aebf0f41b45e73f829a5c78f8e61
+target_files:
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: 3093efbacba208bb26c05a5f2caf7e2a404f0fddca58500a76f2282610867721
+  content_mode: full_text
+  content_sha256: 3093efbacba208bb26c05a5f2caf7e2a404f0fddca58500a76f2282610867721
+- path: .reviewcompass/specs/workflow-management/tasks.md
+  sha256: 7e5ba6f3e76bb762c1fd0245cecdbc5abcff671eec12ee74e91d9ee16c28705a
+  content_mode: full_text
+  content_sha256: 7e5ba6f3e76bb762c1fd0245cecdbc5abcff671eec12ee74e91d9ee16c28705a
+- path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  sha256: 38728ca3a304f4e7c81f08f541247ef5e7027a57ea675c6341b1313855f982e5
+  content_mode: full_text
+  content_sha256: 38728ca3a304f4e7c81f08f541247ef5e7027a57ea675c6341b1313855f982e5
+source_materials:
+- path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/decision-and-outcome.md
+  sha256: 7da939b7981f3f8dc158c0c4f971857214a3ef61838820081f540d1281a900c7
+  content_mode: full_text
+  content_sha256: 7da939b7981f3f8dc158c0c4f971857214a3ef61838820081f540d1281a900c7
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-24T07:01:36.719438+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-24-proxy-naming-reconciliation-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-naming-reconciliation-postwrite/prompt-manifest.yaml

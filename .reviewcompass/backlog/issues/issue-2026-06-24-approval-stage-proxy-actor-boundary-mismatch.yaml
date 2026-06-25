@@ -1,0 +1,19 @@
+schema_version: reviewcompass-backlog-item-v1
+id: issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch
+kind: issue
+title: approval 段の承認主体記述（guide §2.2/§2.3）が human-only 境界と矛盾の疑い
+status: candidate
+source_unit_id: main-side-conversation
+created_at: '2026-06-24T09:17:15.561867+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-24-proxy-layout-codecanon-postwrite-3way/raw/gpt-5.5.round-1.txt
+  reason: post-write 3者検証(proxy-layout-codecanon)で gpt-5.5(反証役)が ERROR 指摘。SESSION_WORKFLOW_GUIDE.md
+    76行『approval:actor=human または proxy_model』と104行『approval で利用者または別モデル承認を得てから次フェーズに進む』が、同209行・design.md・tasks.md
+    の『コミット/プッシュ/spec更新/フェーズ移行は人間の明示承認、proxy_model は代行しない』と矛盾の疑い。approval 段=フェーズ移行承認であり
+    proxy_model 承認可と読めると不可逆操作を proxy が通す抜け穴になりうる。精査方向:design.md の decision_scope 機構(approval
+    ゲートごとに human_only/proxy_allowed を区別)と照合し、(a)76/104 が decision_scope を単純化しすぎた誤誘導なら
+    guide を整合、(b)整合済みなら誤報として却下。今回の proxy 裁定レコード レイアウト整合(guide 206/222-235)とは別機構の既存記述で今回スコープ外(利用者承認・案A
+    で別タスク切り出し)。前回 decision-and-outcome.md で外部モデルが decision_scope を知らず過大評価した先例も考慮。
+decisions: []

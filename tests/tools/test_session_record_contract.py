@@ -88,7 +88,7 @@ def test_proxy_review_decision_workflow_is_canonicalized():
 
   assert "review-run 後の proxy_model 判断代行" in requirements
   assert "proxy decision" in design
-  assert "approval-proxy-<日付>.yaml" in design
+  assert "proxy-approval.yaml" in design
   assert "candidate_options" in design
   assert "source_raw_paths" in design
   assert "proxy_model 判断代行ゲート" in tasks
@@ -159,3 +159,29 @@ def test_workflow_management_tasks_track_implementation_derived_contracts():
   assert "target_sha256" in tasks
   assert "自律 plan" in tasks
   assert "履歴 ledger" in tasks
+
+
+def test_proxy_decision_record_layout_matches_implementation():
+  """proxy 裁定レコードのレイアウト記述が実コード配置と一致する。
+
+  2026-06-24: design.md の図に残った旧表記（proxy-decision-prompts/ や
+  proxy-decisions/<batch>.raw.yaml 等。現行コードは生成しない 2026-06-12 頃の名残）を
+  現行コード配置へ整合する。make-proxy-approval.py が固定名で必ず生成するのは
+  decisions/<suffix>.yaml と proxy-approval.yaml。proxy_model へのプロンプトと
+  生応答は review-run 直下に保存する（ファイル名は実行時に指定でき断定しない）。
+  """
+  guide = SESSION_GUIDE.read_text(encoding="utf-8")
+  design = WORKFLOW_DESIGN.read_text(encoding="utf-8")
+  tasks = WORKFLOW_TASKS.read_text(encoding="utf-8")
+
+  # 現行コードが固定名で生成する確実な配置を 3 文書が記述する
+  for text in (guide, design, tasks):
+    assert "decisions/<suffix>.yaml" in text
+    assert "proxy-approval.yaml" in text
+
+  # 現行コードが生成しない旧表記が 3 文書に残っていない
+  for text in (guide, design, tasks):
+    assert "proxy-decisions/<finding-id>" not in text
+    assert "proxy-decision-prompts" not in text
+    assert "<batch>.raw.yaml" not in text
+    assert "decisions-input" not in text

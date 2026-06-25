@@ -1,0 +1,8 @@
+```yaml
+findings: []
+verification_evidence:
+  - "合意反映: 役割分担と証跡配置に `decisions/<suffix>.yaml` および `proxy-approval.yaml` の生成、プロンプト/応答の review-run 直下配置が明記されていることを確認した。"
+  - "参照正確性: 文書内を検索し、旧表記（`proxy-decisions/` ディレクトリ、`<finding-id>.raw.txt`、`<batch>.raw.yaml` 等）の取り残しが一切ないことを確認した。"
+  - "既存記述整合: 同梱された `design.md` の証跡ツリー、および `tasks.md` (T-004) のゲート検査対象ファイル名と完全に一致していることを確認した。"
+  - "内部論理: 「役割分担」「入力証跡」「証跡配置」の各セクション間で、指定されたファイルパス・名称に矛盾や齟齬がないことを確認した。"
+```

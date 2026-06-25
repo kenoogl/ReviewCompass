@@ -1,0 +1,4 @@
+run_id: 2026-06-24-proxy-layout-codecanon-postwrite-3way
+target_files:
+- path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  sha256: 3acbdc750c50a40e8f85a1833b9618057e6eaedeea5e93f1713487560c28f7c1

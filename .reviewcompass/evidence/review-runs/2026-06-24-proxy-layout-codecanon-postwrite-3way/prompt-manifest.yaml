@@ -1,0 +1,101 @@
+schema_version: effective-prompt-manifest-v1
+decision_point:
+  kind: post_write_verification
+  required_action: run_post_write_verification
+source_artifacts:
+- path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  sha256: sha256:3acbdc750c50a40e8f85a1833b9618057e6eaedeea5e93f1713487560c28f7c1
+- path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-layout-codecanon-postwrite-3way/change-diff.md
+  sha256: sha256:cce0911019c53de5f2536355cd63d7cafd1894369e993bd3424f472d11a1d37a
+- path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-layout-codecanon-postwrite-3way/decision-brief.md
+  sha256: sha256:ff0d09cc5f771482d53fde0bc22b1433787e0d64a430de670289bbb7830aa5c4
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: sha256:c69a005403e14bbcdcb6125720f3dca5ad36f8073db9c393f8b528d5c10da00f
+- path: .reviewcompass/specs/workflow-management/tasks.md
+  sha256: sha256:be9d790500ef7b33051dd45882d1053bcb1fcfff98423cca66a804bea3234d88
+- path: tools/make-proxy-approval.py
+  sha256: sha256:19e76c4af5f89dd298c11c9254021da47e00e1cfc5546fa3fde9ec13cdb06207
+- path: tools/api_providers/review_triage.py
+  sha256: sha256:e7487550e5a1604128341f0f8d6d1f00671fd35d6be0a0a2b2376ae069a5ecc0
+required_disciplines:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+- .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+operation_contract:
+  operation_id: prepare_post_write_review
+  sha256: sha256:04fded16e73600937187eb1103f391106bc1d44ecb9bd33cd17340cdf33ed942
+expected_output_schema:
+  schema_ref: null
+  required_sections:
+  - findings
+prompt_length:
+  min_chars: 1
+  max_chars: 200000
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-24-proxy-layout-codecanon-postwrite-3way/review-target.md
+  failure_verdict: DEVIATION
+preconditions_checked:
+- id: post-write-review-target-generated
+  source: prepare_post_write_review
+  machine_checked: true
+  evidence_ref: .reviewcompass/evidence/review-runs/2026-06-24-proxy-layout-codecanon-postwrite-3way/review-target.md
+language_task:
+  document_kind: post_write_verification
+  input:
+    required_files:
+    - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+    state_refs: []
+    source_refs:
+    - .reviewcompass/evidence/review-runs/2026-06-24-proxy-layout-codecanon-postwrite-3way/change-diff.md
+    - .reviewcompass/evidence/review-runs/2026-06-24-proxy-layout-codecanon-postwrite-3way/decision-brief.md
+    - .reviewcompass/specs/workflow-management/design.md
+    - .reviewcompass/specs/workflow-management/tasks.md
+    - tools/make-proxy-approval.py
+    - tools/api_providers/review_triage.py
+  output_format:
+    kind: yaml_findings
+    required_sections:
+    - findings
+    schema_ref: null
+  constraints:
+  - Review language-level consistency only.
+  - Do not mutate workflow state.
+  - Do not create review-run artifacts.
+  - Do not commit or push.
+review_prompt_materials:
+  target_files:
+  - path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+    content_mode: full_text
+    content_sha256: sha256:3acbdc750c50a40e8f85a1833b9618057e6eaedeea5e93f1713487560c28f7c1
+  source_materials:
+  - path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-layout-codecanon-postwrite-3way/change-diff.md
+    content_mode: full_text
+    content_sha256: sha256:cce0911019c53de5f2536355cd63d7cafd1894369e993bd3424f472d11a1d37a
+  - path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-layout-codecanon-postwrite-3way/decision-brief.md
+    content_mode: full_text
+    content_sha256: sha256:ff0d09cc5f771482d53fde0bc22b1433787e0d64a430de670289bbb7830aa5c4
+  - path: .reviewcompass/specs/workflow-management/design.md
+    content_mode: full_text
+    content_sha256: sha256:c69a005403e14bbcdcb6125720f3dca5ad36f8073db9c393f8b528d5c10da00f
+  - path: .reviewcompass/specs/workflow-management/tasks.md
+    content_mode: full_text
+    content_sha256: sha256:be9d790500ef7b33051dd45882d1053bcb1fcfff98423cca66a804bea3234d88
+  - path: tools/make-proxy-approval.py
+    content_mode: full_text
+    content_sha256: sha256:19e76c4af5f89dd298c11c9254021da47e00e1cfc5546fa3fde9ec13cdb06207
+  - path: tools/api_providers/review_triage.py
+    content_mode: full_text
+    content_sha256: sha256:e7487550e5a1604128341f0f8d6d1f00671fd35d6be0a0a2b2376ae069a5ecc0
+postconditions:
+- id: post-write-review-target-manifest-matches
+  check_kind: review_target_manifest_matches
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-24-proxy-layout-codecanon-postwrite-3way/review-target.md
+on_completion:
+  next_required_action: run_post_write_verification
+  allowed_followups:
+  - prompt-audit
+  - run-post-write-review
+  forbidden_actions:
+  - commit
+  - push
+  - spec-set
+generated_at: '2026-06-24T09:07:41.407473+00:00'
+criteria_id: proxy-decision-record-layout-codecanon-3way

@@ -1,0 +1,44 @@
+run_id: 2026-06-24-proxy-naming-reconciliation-postwrite-3way
+phase: post_write_verification
+criteria_id: proxy-decision-record-naming-reconciliation-3way
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-24-proxy-naming-reconciliation-postwrite-3way/review-target.md
+criteria_file_sha256: 7143c34fb98eeaff539c273643eb67e49e5c8d7710812be6f46a896921ca1fab
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-naming-reconciliation-postwrite-3way/prompt-manifest.yaml
+prompt_manifest_sha256: 966ba1aa172001da805245c657c5bdffb9fcf454df39bed44da0dd8b4625d55a
+target_files:
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: 3093efbacba208bb26c05a5f2caf7e2a404f0fddca58500a76f2282610867721
+  content_mode: full_text
+  content_sha256: 3093efbacba208bb26c05a5f2caf7e2a404f0fddca58500a76f2282610867721
+- path: .reviewcompass/specs/workflow-management/tasks.md
+  sha256: 7e5ba6f3e76bb762c1fd0245cecdbc5abcff671eec12ee74e91d9ee16c28705a
+  content_mode: full_text
+  content_sha256: 7e5ba6f3e76bb762c1fd0245cecdbc5abcff671eec12ee74e91d9ee16c28705a
+- path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  sha256: 38728ca3a304f4e7c81f08f541247ef5e7027a57ea675c6341b1313855f982e5
+  content_mode: full_text
+  content_sha256: 38728ca3a304f4e7c81f08f541247ef5e7027a57ea675c6341b1313855f982e5
+source_materials:
+- path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-naming-reconciliation-postwrite-3way/change-diff.md
+  sha256: db8a435408bc122f5b9d557d2a06679ca4a3c22bbb582a5dc680c9cf00dd01f5
+  content_mode: full_text
+  content_sha256: db8a435408bc122f5b9d557d2a06679ca4a3c22bbb582a5dc680c9cf00dd01f5
+- path: tools/make-proxy-approval.py
+  sha256: 19e76c4af5f89dd298c11c9254021da47e00e1cfc5546fa3fde9ec13cdb06207
+  content_mode: full_text
+  content_sha256: 19e76c4af5f89dd298c11c9254021da47e00e1cfc5546fa3fde9ec13cdb06207
+- path: tools/api_providers/review_triage.py
+  sha256: e7487550e5a1604128341f0f8d6d1f00671fd35d6be0a0a2b2376ae069a5ecc0
+  content_mode: full_text
+  content_sha256: e7487550e5a1604128341f0f8d6d1f00671fd35d6be0a0a2b2376ae069a5ecc0
+- path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/decision-and-outcome.md
+  sha256: 7da939b7981f3f8dc158c0c4f971857214a3ef61838820081f540d1281a900c7
+  content_mode: full_text
+  content_sha256: 7da939b7981f3f8dc158c0c4f971857214a3ef61838820081f540d1281a900c7
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-24T07:41:29.393065+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-24-proxy-naming-reconciliation-postwrite-3way/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-24-proxy-naming-reconciliation-postwrite-3way/prompt-manifest.yaml

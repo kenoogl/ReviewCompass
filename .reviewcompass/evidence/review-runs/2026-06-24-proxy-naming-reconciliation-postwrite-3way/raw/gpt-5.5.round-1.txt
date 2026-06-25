@@ -1,0 +1,9 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/design.md §段集合の静的列挙モデル / review-run 後の proxy_model 判断代行モデル; .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md §3.3(a-2); .reviewcompass/specs/workflow-management/tasks.md T-004 完了条件 7"
+    description: "proxy decision file の配置・命名が実装コードの正本形と一致していない。対象文書は `proxy-decisions/<finding-id>.decision.yaml` を正本のように記述しているが、`make-proxy-approval.py` は `decisions/<suffix>.yaml` を生成し、`proxy-approval.yaml` の `proxy_decisions` には `decisions/{suffix}.yaml` を参照として書く。"
+    rationale: "実装コードは `decision_ref = \"decisions/{suffix}.yaml\"` として `run_dir/decisions/<suffix>.yaml` を出力し、`review_triage.py` は `proxy_decisions` の参照先を読む形で検査する。文書どおり `proxy-decisions/<finding-id>.decision.yaml` を作る運用は生成ツールの実出力とズレるため、API review 後の裁定証跡作成手順が実装正本と厳密一致しない。"
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/design.md §段集合の静的列挙モデル / review-run 後の proxy_model 判断代行モデル"
+    description: "`proxy-approval.yaml` に `decision_scope: proxy_allowed` があるかのように読める記述が、提供された実装コードの検査属性と一致していない。"
+    rationale: "`make-proxy-approval.py` が生成する `proxy-approval.yaml` は `approved_action`、`approved_by`、`review_run_id`、提示済みフラグ、`approved_finding_ids`、`approved_final_labels`、`proxy_model_id`、`proxy_decisions` を持つが、`decision_scope` は出力しない。`review_triage.py` の `_approval_errors` / `_proxy_decision_errors` も `decision_scope` を検査していない。一方、同じ design.md の Req 14 では human judgment record が `decided_by` + `decision_scope` を持つ体系として定義されており、proxy 裁定 record 系（`approved_by`）とのフィールド体系が混同される。

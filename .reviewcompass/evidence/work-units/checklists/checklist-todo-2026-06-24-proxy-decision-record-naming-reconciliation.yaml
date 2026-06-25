@@ -1,0 +1,57 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-24-proxy-decision-record-naming-reconciliation
+unit_id: main-completed
+title: Reconcile proxy decision record naming to implemented code
+status: completed
+created_at: '2026-06-24T06:52:14.514884+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: PRR-0
+  title: Classify design.md/tasks.md change as local consistency fix vs reopen via
+    next
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PRR-1
+  title: Correct design.md naming/attribute/phrasing to proxy-approval.yaml and approved_by
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PRR-2
+  title: Unify naming in tasks.md and SESSION_WORKFLOW_GUIDE.md to proxy-approval.yaml
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PRR-3
+  title: Fix test_session_record_contract.py line-91 assertion to proxy-approval.yaml
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PRR-4
+  title: Confirm historical review-run artifacts are excluded from rename
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PRR-RT-1
+  title: Proxy decision record naming is consistent across design, tasks, guidance,
+    test, and code
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-24-proxy-decision-record-naming-reconciliation
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
+progress:
+  total: 6
+  done: 6
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-24T07:03:21.114511+00:00'
+completion_summary: design.md:249/252・tasks.md:128・SESSION_WORKFLOW_GUIDE.md:206/235
+  を proxy-approval.yaml/approved_by/scoped 承認文言へ整合、test:91 を更新し line-91 解消（全 green）。post-write
+  検証 gemini-3.1-pro-preview 所見0件で封印。コード・decision_scope・人間判断 record は無変更。

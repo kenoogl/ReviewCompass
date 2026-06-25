@@ -1,0 +1,74 @@
+process_id: maintenance
+started_at: '2026-06-24T00:00:00+09:00'
+completed_at: '2026-06-24T00:00:00+09:00'
+trigger: >
+  plan-2026-06-24-proxy-decision-record-naming-reconciliation の実装。決定済み方向
+  （正本＝実装コード proxy-approval.yaml / approved_by + decision_scope）に沿って、
+  design.md / tasks.md / SESSION_WORKFLOW_GUIDE.md / test の命名・属性・文言を正本へ
+  統一し、test_session_record_contract.py line-91 を解消する。利用者指示
+  「todo, checklist を作成して、チェックリストに従い maintenance モードで実装」。
+mainline_blocked_by: >
+  本線ワークフローは completed。決定済み方向の機械的反映であり、side track として実施する。
+allowed_scope:
+  - design.md の proxy 裁定レコードの命名・属性・文言の正確化
+  - tasks.md:128・SESSION_WORKFLOW_GUIDE.md:206/235 の命名統一
+  - test_session_record_contract.py:91 の assert 更新
+  - todo/checklist 作成・項目完了・close evidence、plan の completed 化、post-write 封印
+allowed_files:
+  - .reviewcompass/specs/workflow-management/design.md
+  - .reviewcompass/specs/workflow-management/tasks.md
+  - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  - tests/tools/test_session_record_contract.py
+  - .reviewcompass/runtime/work-units/checklists/
+  - .reviewcompass/evidence/work-units/checklists/
+  - .reviewcompass/evidence/review-runs/2026-06-24-proxy-naming-reconciliation-postwrite/
+  - .reviewcompass/post-write-verification/post-write-2026-06-24-005.yaml
+  - .reviewcompass/backlog/todos/todo-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-24-proxy-decision-record-naming-reconciliation.yaml
+  - .reviewcompass/backlog/index.yaml
+  - stages/in-progress/maintenance-2026-06-24-proxy-naming-reconciliation.yaml
+  - stages/completed/maintenance-2026-06-24-proxy-naming-reconciliation.yaml
+change_classification: 局所
+classification_reason: >
+  コードは無変更（正本）。design.md/tasks.md/guidance を既に実装済みの形へ合わせる命名・属性・文言の
+  整合修正であり、decision_scope 機構・人間判断 record の decided_by・proxy 運用の仕様境界は変えない。
+  実装は既に訂正後仕様へ適合済みのため下流の再導出（reopen）は不要。影響は proxy 裁定レコード命名に閉じる。
+procedure: 文書整合（design/tasks/guidance）＋ test 更新。完了前に post-write verification を実施。
+completion_conditions:
+  - PRR-0：局所整合（reopen 不要）と分類・記録
+  - PRR-1：design.md:249/252 を proxy-approval.yaml / approved_by / scoped 承認文言へ
+  - PRR-2：tasks.md:128・SESSION_WORKFLOW_GUIDE.md:206/235 を proxy-approval.yaml へ
+  - PRR-3：test:91 を proxy-approval.yaml へ更新し全 green
+  - PRR-4：履歴成果物は改名対象外と確認
+  - post-write verification 実施・封印
+  - checklist close・todo/plan completed 化
+  - in-progress を completed へ移動
+completed_steps:
+  - 'PRR-0: 局所整合（reopen 不要）と分類。根拠＝コード無変更＋実装が既に訂正後仕様に適合'
+  - 'PRR-1: design.md:249 と :252 を proxy-approval.yaml / approved_by / 「decision_scope: proxy_allowed 範囲の承認」へ正確化'
+  - 'PRR-2: tasks.md:128・SESSION_WORKFLOW_GUIDE.md:206/235 を proxy-approval.yaml へ統一'
+  - 'PRR-3: test_session_record_contract.py:91 を proxy-approval.yaml へ更新。11件 green（line-91 解消）、関連14件 green'
+  - 'PRR-4: 履歴 review-run（approval-proxy-2026-06-04.yaml 等）は改名対象外と確認'
+  - 'PRR-RT-1: design/tasks/guidance/test の旧名残存ゼロを確認'
+  - 'post-write: gemini-3.1-pro-preview で3文書を検証、所見0件、post-write-2026-06-24-005.yaml で封印'
+  - 'checklist を close（evidence 生成）、todo/plan を completed 化'
+  - 'in-progress を completed へ移動'
+notes:
+  - コード・decision_scope 機構・人間判断 record(record_human_decision) の decided_by は無変更。
+  - design.md:252 の decided_by→approved_by は属性レベルの承認区別を外すが、安全は decision_scope が担う（決定どおり）。
+addendum_2026_06_24_layout_codecanon:
+  trigger: >
+    上記 post-write 封印（単一 Gemini・旧 005）が不十分と判明。機械的3者で再検証したところ
+    design.md の図が実コード（make-proxy-approval.py）と食い違い（proxy-decision-prompts/・
+    proxy-decisions/<batch>.raw.yaml 等は現行コードが生成しない 2026-06-12 頃の名残）が判明した。
+  actions:
+    - 'design.md 図/本文・SESSION_WORKFLOW_GUIDE.md(206/222-235)・tasks.md(128) を decisions/<suffix>.yaml + proxy-approval.yaml（プロンプト/応答は review-run 直下・実行時指定）へ整合'
+    - 'test_session_record_contract.py に test_proxy_decision_record_layout_matches_implementation を TDD 追加（12件 green）'
+    - '機械的3者（claude-sonnet-4-6/gpt-5.5/gemini-3.1-pro-preview）で post-write 再検証（review-run 2026-06-24-proxy-layout-codecanon-postwrite-3way）。gemini 4観点で整合確認・claude 所見0・gpt-5.5 は別機構(approval 段 guide 76/104)指摘で leave-as-is（別 issue 化）'
+    - 'post-write-2026-06-24-005.yaml を3者版で再封印（target=guide sha=3acbdc75 / 3 verifiers / unresolved 0）'
+  封印根拠是正: completed_steps の「gemini-3.1-pro-preview で封印」は単一系統で不十分だった。本 addendum の3者再検証が正しい封印根拠。
+  横展開記録:
+    - issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch（approval 段の承認主体記述が human-only 境界と矛盾の疑い）
+    - issue-2026-06-24-post-write-target-judgment-mismatch（review_triage と check-workflow-action の post-write 対象判定の不整合バグ）
+  経緯詳細: docs/notes/ の本セッション経緯ノート
+current_status: completed

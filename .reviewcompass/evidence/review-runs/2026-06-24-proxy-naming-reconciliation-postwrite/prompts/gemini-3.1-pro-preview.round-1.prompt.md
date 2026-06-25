@@ -1,0 +1,7937 @@
+prompt_id: gemini_review
+provider: gemini-api
+model_id: gemini-3.1-pro-preview
+
+# Task
+Review the target document for the requested phase and criteria.
+
+# Phase
+post_write_verification
+
+# Criteria
+# Post-write Review Target
+
+criteria_id: proxy-decision-record-naming-reconciliation
+phase: post_write_verification
+generated_at: 2026-06-24T07:01:36.719438+00:00
+
+## Change Summary
+
+proxy_model 裁定レコードの命名・属性・文言を実装コードの正本形へ整合。design.md/tasks.md/guidance の approval-proxy-<日付>.yaml / proxy-decision-bundle-<日付>.yaml を proxy-approval.yaml へ、design.md の裁定 file 属性 decided_by→approved_by、「proxy decision bundle は承認 record ではない」→「decision_scope: proxy_allowed 範囲の承認であり human_only は不可」へ正確化。コード・decision_scope 機構・人間判断 record(record_human_decision) の decided_by は無変更。三者レビュー＋利用者決定で実装が正本と確定済み。
+
+## Review Question
+
+この命名・属性・文言の整合修正について検査してほしい。(1) 実装コード（proxy-approval.yaml / approved_by + decision_scope）と一致しているか。(2) 人間判断レコード（record_human_decision の decided_by + decision_scope）の別機構と矛盾・混同を生んでいないか。(3) 安全境界（proxy は proxy_allowed 範囲のみ承認、human_only は不可）の表現が正確か。残った旧名や、変更により生じた不整合・曖昧さがあれば指摘してほしい。
+
+## Target Files
+
+- .reviewcompass/specs/workflow-management/design.md sha256=3093efbacba208bb26c05a5f2caf7e2a404f0fddca58500a76f2282610867721
+- .reviewcompass/specs/workflow-management/tasks.md sha256=7e5ba6f3e76bb762c1fd0245cecdbc5abcff671eec12ee74e91d9ee16c28705a
+- .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md sha256=38728ca3a304f4e7c81f08f541247ef5e7027a57ea675c6341b1313855f982e5
+
+## Source Materials
+
+### .reviewcompass/evidence/review-runs/2026-06-24-proxy-decision-record-naming-consistency/decision-and-outcome.md
+
+content_mode: full_text
+content_sha256: 7da939b7981f3f8dc158c0c4f971857214a3ef61838820081f540d1281a900c7
+
+```text
+# 三者レビューの結論と最終決定：proxy_model 判断レコードの命名・意味づけ
+
+run_id: 2026-06-24-proxy-decision-record-naming-consistency
+変種: implementation_review_independent_3way（Claude Sonnet 4.6 / GPT-5.5 / Gemini 3.1 Pro）
+
+## 1. 三者レビューの所見（要約）
+
+- Gemini（判定役・CRITICAL 1件）：AIの判断を approval として扱うのは人間承認との混同リスク。
+  設計書(B)の decision パラダイム（decided_by・承認ではない）を正本とし、実装(A)・規律(C)を直すべき。
+- Claude（主分析・CRITICAL 1 / ERROR 2 / WARN 2）：承認/判断の二重定義は安全上の矛盾でゲートの
+  抜け穴になりうる。資料が方向を推奨しておらず actionable でない、テスト失敗が CI を通過しているか
+  未確認、改名の git 経緯未確認、等のメタ指摘。
+- GPT（反証役）：0件（反証なし）。
+
+## 2. レビュー後に判明した決定的文脈（レビュアー未提供）
+
+利用者の指摘により、proxy 承認の設計動機と安全機構を検証した。
+
+- requirements.md:79：proxy_model は所見トリアージを代行できるが、コミット・プッシュ・spec.json
+  更新・フェーズ移行は代行しない。proxy 承認は「軽いゲートを人手なしで通す＝自律実行」のために
+  存在する。
+- design.md / コード：安全境界は `decision_scope`（human_only / proxy_allowed / advisory_only）で
+  機械的に強制。`tools/check_workflow_action/proxy_triage_decisions.py:137` が
+  `decision_scope == "human_only"` の承認ゲートで proxy 適用をブロックする（実装済み）。
+
+つまり「proxy が approval を名乗ると人間承認と混同する」という安全懸念は、名前ではなく
+decision_scope が既に防いでいる。三者レビューはこの動機と decision_scope を材料に含めていな
+かったため、結論を過大評価した（これは review prompt を作った担当 LLM の材料不足が原因）。
+
+## 3. 最終決定（方向）
+
+- **正本＝実装コード**（`proxy-approval.yaml` / `approved_by` + decision_scope）。
+- 三者レビューの「decision に寄せてコードを直せ」は**不採用**（自律動機と decision_scope を欠いた
+  過大評価のため）。ただし副次指摘「design.md の言い回しが誤解を生む」は**採用**。
+- design.md の「proxy decision bundle は承認 record ではない」は誤誘導なので、
+  「`proxy_allowed` 範囲（所見トリアージ）は承認、`human_only`（コミット等）は不可」と正確化する。
+- 命名は `proxy-approval.yaml` に統一する。
+
+## 4. 整合作業（follow-up へ）
+
+design.md・tasks.md は workflow-management の正本仕様であり、これらの変更は reopen 分類を要する
+正式な仕様整合になる。本決定の実装（命名統一・design.md 文言修正・test line-91・規律整合）は
+`.reviewcompass/backlog/plans/plan-2026-06-24-proxy-decision-record-naming-reconciliation.yaml`
+に scoped follow-up として記録する。
+
+## 5. メタ教訓
+
+review prompt の材料に「設計動機」と「既存の安全機構（decision_scope）」を欠いたため、外部
+モデルが過大評価した。behavior-path / safety claim を問う場合は、変更対象だけでなく動機・既存
+ガード・実行経路を材料に含める（llm-as-judge 指針の main preanalysis 強化点）。
+```
+
+
+## Target File Contents
+
+### .reviewcompass/specs/workflow-management/design.md
+
+content_mode: full_text
+content_sha256: 3093efbacba208bb26c05a5f2caf7e2a404f0fddca58500a76f2282610867721
+
+```text
+# Design Document：workflow-management
+
+最終更新：2026-06-19（Req 13〜16 統合設計メモ反映、reopen R-0 design drafting）
+
+## 概要（Overview）
+
+`workflow-management` は ReviewCompass における所定手続きの定義と機械強制を担う機能の **設計層** である。
+
+要件文書（requirements.md）は 16 件の Requirement で、段集合の静的列挙、軽量版検査スクリプト、起草者と判定者の分離、不可逆操作の直前ゲート、reopen 機械強制、session 跨ぎ状態管理、多層防御の第 1 層位置付け、機能依存マップの一元化、既存システムへの後追い intent 追加時の下流再展開、review-wave 横断確認の要約、重要決定の出典検査、operation registry / preflight、operation contract 語彙、承認ゲート・側道スタック・状態スナップショット、構造化有効プロンプト、段階的実装計画を求めている。本設計は計画書 §5.4〜§5.8（軽量化方針、所定手続きの階層構造、reopen 機械強制、session 跨ぎ状態管理、多層防御）を実装可能な形に落とし込み、先行プロジェクト `dual-reviewer-implementation-governance` の素材設計（466 行、節ハッシュ・独立再導出パーサ・supersedes リンク・通過マーカーの後続確認等を含む大規模機構）から **思想は継承、実装は 1／10** を目標として再設計する。
+
+本設計の所有物は **手続きの段集合定義・検査スクリプト・直前ゲート・reopen 機械強制・session 跨ぎ状態管理・後追い intent 下流再展開・review-wave 要約・重要決定の出典検査・operation registry / preflight・operation contract・承認ゲート／側道スタック／状態スナップショット・構造化有効プロンプト・段階的実装計画** の 13 モデルである。レビューロジック（3 役・観点・所見分類）は `foundation` と `evaluation` が所有し、本機能は所定手続きの「どの段がいつ完了するか」「どの不可逆操作の前にどの検査を走らせるか」「既存システムに後から intent を入れたときにどの下流段を reopen するか」「操作開始前に何を確認して止めるか」「選択層の action を実行層の contract にどう接続するか」を担う。
+
+## 目標（Goals）
+
+- 所定手続きの段集合を機械可読な YAML（構造化テキスト形式）として静的に列挙し、Markdown 節からの動的解析を行わない
+- 検査スクリプトの完了判定を「証跡ファイル存在＋必須節充足」のみに絞り、中身の妥当性判定を含めない（第 1 層の限界として明示）
+- 起草者と判定者の分離をレビュー記録の冒頭メタデータ（front-matter、文書頭の構造化メタ情報）で機械検査可能にする
+- 不可逆操作（spec.json 承認書き込み、コミット、プッシュ、フェーズ移行）の直前のみに機械ゲートを置き、それ以外には機械検査を強制しない（最小集合方針）
+- 結論不能（証跡ファイルが解析不能、YAML が壊れている等）の場合に合格判定を出さず、必ず遮断する（fail-closed、検査結果が出せないときは止める方針）
+- reopen 手続きの連鎖再実施を手戻り種別から機械的に決定し、`actor=human` の段（intent.yaml#approval 等）に到達した時点で必ず作業を停止する
+- 機能間の処理順と依存関係を 1 ファイル（`stages/feature-dependency.yaml`）に一元化し、追加・削除を 1 箇所修正で完結させる
+- 既存システムへ intent を後から追加した場合、既存 feature が受け皿になるか、新規 feature が必要かを記録し、該当 feature の requirements／design／tasks／implementation を上流から順に再展開する
+- operation registry / preflight により、review-run、post-write verification、triage、reopen、commit approval、session-record、deployment / export などの操作を、記憶や前例ではなく正本 operation contract から開始できるようにする
+- `next --json` の reopen 状態を一意に読み取れるようにし、reopen scope と impact review scope、flag policy、pending gate の混同を作業開始前に検出する
+- `required_action` 19語彙を operation contract に対応させ、`effect_kind`、承認要否、phase boundary、sequence、preconditions / postconditions を機械可読にする
+- 承認ゲートを判断記録と対象 operation の承認から分離し、side track を stack frame として管理し、`next --json` 由来の状態スナップショットを監査補助として出力できるようにする
+- 有効プロンプトを言語タスク仕様として構造化し、機械タスクは operation contract / preflight / runner / guard に寄せる
+- Phase 0〜6 の実装順序を固定し、選択層、registry、preflight、構造化 prompt、機械ブロック、LLM judge 監査を混在させず TDD で進める
+
+## 範囲外（Non-Goals）
+
+- 各機能の業務ロジック修正（`runtime`／`evaluation`／`self-improvement`／`analysis`／`conformance-evaluation` の挙動変更は本機能の責務外）
+- レビュー所見の妥当性判定（中身の質的評価は本機能の検査範囲外、利用者監査の第 3 層に委ねる）
+- 節ハッシュ・supersedes リンク・grandfathering・format-migration・独立再導出パーサ（§5.4 で削除確定、素材から継承しない）
+- 通過マーカーの後続確認（§5.4 で削除確定、二次防御は多層防御の第 2 層以降の宿題）
+- 外部 CI・GitHub Actions・PR 運用ルール
+- 人間レビュアーの組織割り当て方針
+- 規律ファイル自体の起案・改廃方針（`self-improvement` の責務、本機能は所定手続きの入力として規律変更提案を受け取るのみ）
+- 機械ゲートを git フックとして外部強制する仕組み（第 2 層、フェーズ 4 以降の宿題）
+
+## 設計の前提（Design Drivers）
+
+- 100% の規律遵守は原理的に不可能であり、複数層を重ねて実効遵守率を引き上げる方針（計画書 §5.8）
+- LLM は文脈圧力下で規律ファイルの優先度を下げる失敗モードを起こす（§5.8 第 1 層の限界、補助層 C で事前検査を別途設計）
+- 検査を呼ばない・結果を読まない・独断で進める経路は第 1 層の上にあるため、第 1 層単独では解決しない（多層防御の前提）
+- 起草と判定を同一の actor が兼ねると自己承認の空洞化が起きる（§5.4 規律）
+- 機能の追加・削除を 1 箇所修正で完結させないと、整合漏れが累積する（§5.5 選択肢 X の根拠）
+- session 跨ぎの最大の盲点は「複数段にまたがる手続きの途中状態」であり、状態ベース検査だけでは捉えられない（§5.7 由来）
+
+## 全体構造（Architecture）
+
+本機能は repo 内に **段集合 YAML 9 ファイル ＋ 検査スクリプト 1 本 ＋ 進行中状態ファイル群** を持つ。実体は次の 3 層構造を取る。
+
+```
+リポジトリ内配置（実体）
+├── stages/                              # 段集合 YAML の保管先（Req 1）
+│   ├── intent.yaml                      # intent 層（drafting／review／approval の 3 段）
+│   ├── feature-partitioning.yaml        # 機能分離（candidate-proposal／approval の 2 段）
+│   ├── feature-dependency.yaml          # 機能依存マップ（Req 8、所有者は本機能）
+│   ├── requirements.yaml                # 要件フェーズ（5 段、feature-dependency 参照）
+│   ├── design.yaml                      # 設計フェーズ（5 段、同上）
+│   ├── tasks.yaml                       # タスクフェーズ（5 段、同上）
+│   ├── implementation.yaml              # 実装フェーズ（5 段、同上）
+│   ├── reopen-procedure.yaml            # reopen 手続き（4 過程構成、trigger_map 含む）
+│   ├── cross-spec-alignment.yaml        # 機能横断整合（段集合は別途確定）
+│   ├── in-progress.schema.json          # 進行中状態ファイルのスキーマ（T-008、命名を in-progress/ に統一、F-018 対処 2026-05-28）
+│   ├── in-progress/                     # 進行中状態ファイル（Req 6、session 跨ぎ用）
+│   └── completed/                       # 完了済み手続きの記録
+├── tools/check-workflow-action.py       # 検査スクリプト本体（Req 2、補助層 C 段階 2）
+├── .reviewcompass/schema/               # ワークフロー管理スキーマ定義（Req 2 受入 10・11）
+│   ├── required_action.schema.json      # required_action 19語彙スキーマ（Req 2 受入 10）
+│   ├── next_action_response.schema.json # next --json 応答スキーマ（Req 2 受入 11）
+│   ├── effect_kind.schema.json          # operation contract 副作用語彙（Req 13）
+│   ├── phase_boundary.schema.json       # phase boundary 語彙（Req 13）
+│   ├── operation_contract.schema.json   # operation contract 共通構造（Req 13）
+│   ├── workflow_state_snapshot.schema.json # 状態スナップショット（Req 14）
+│   └── language_task_io.schema.json     # 構造化有効プロンプトの言語タスク入出力（Req 15）
+├── stages/operation-registry.yaml        # operation registry / preflight binding（Req 12・13）
+├── stages/operation-contracts.yaml       # operation contract 正本（Req 13）
+├── .reviewcompass/runtime/logs/workflow-precheck.log  # 検査結果のログ書き出し先（Req 2 受入 5 補強。旧 docs/logs/ からの変更は 2026-06-12 配置規約 PLC-DEC-004〜005・009〜011 反映。凍結・読み取り互換は §実行時生成物の凍結期（P3 まで）の扱いを正本とする）
+├── .reviewcompass/runtime/workflow-state-snapshot.yaml # next --json 由来の可視化補助（Req 14）
+├── docs/reviews/reopen-classification-<日付>.md  # reopen 種別判定の根拠（Req 5 受入 5）
+├── docs/operations/WORKFLOW_MANAGEMENT.md        # アプリ側規約（T-001 で配置、F-019 対処 2026-05-28）
+├── docs/operations/WORKFLOW_PRECHECK.md          # ワークフロー事前検査の運用契約
+└── docs/operations/WORKFLOW_PRECHECK_DETAILS.md  # ワークフロー事前検査の詳細仕様
+```
+
+実行時のデータの流れ：
+
+```mermaid
+graph TD
+    Trigger["利用者または LLM が<br>不可逆操作を要求"] --> Precheck["補助層 C 段階 1<br>事前検査呼び出し"]
+    Precheck --> Script["tools/check-workflow-action.py<br>（Req 2）"]
+    Script --> Stages["stages/*.yaml<br>段集合と完了判定（Req 1）"]
+    Script --> InProgress["stages/in-progress/<br>進行中状態（Req 6）"]
+    Script --> SpecJson["spec.json<br>機能単位 workflow_state"]
+    Script --> CarryForward["carry-forward register<br>未消化所見"]
+    Script --> Verdict{"verdict 判定"}
+    Verdict -->|OK| Pass["不可逆操作の実行を許可"]
+    Verdict -->|WARN| Warn["警告して継続"]
+    Verdict -->|DEVIATION| Block["fail-closed で遮断<br>（Req 4 受入 3）"]
+    Pass --> Log[".reviewcompass/runtime/logs/workflow-precheck.log<br>に検査結果を追記"]
+    Block --> Log
+```
+
+検査スクリプトは段集合 YAML、進行中状態ファイル、spec.json、持ち越し所見レジスタの 4 つを入力として読み、verdict（判定結果）を返す。verdict には OK／WARN／DEVIATION の 3 値を使う（actor=human の段で承認待ちのときは DEVIATION で止め、警告のみで継続できる軽微な未整合は WARN とする）。`docs/operations/WORKFLOW_PRECHECK.md`、`docs/operations/WORKFLOW_PRECHECK_DETAILS.md`、`tools/check-workflow-action.py` は軽量版 precheck の実行入口・表示形式・実装上の引数契約を担う。`required_action` 語彙、operation contract field、effect / approval / phase / output contract semantics の正本ではない。これらの正本は `.reviewcompass/schema/required_action.schema.json`、`.reviewcompass/schema/operation_contract.schema.json`、`stages/operation-contracts.yaml`、および Requirement 13 の contract 境界に従う。
+
+### 実行時生成物の凍結期（P3 まで）の扱い（2026-06-12 配置規約 P1）
+
+本機能の実行時生成物 3 パス（検査ログ `.reviewcompass/runtime/logs/workflow-precheck.log`〔旧 `docs/logs/workflow-precheck.log`〕、effective prompt `.reviewcompass/runtime/effective-prompts/`〔旧 `.reviewcompass/effective-prompts/`〕、commit 承認記録 `.reviewcompass/runtime/approvals/commit-approval.json`〔旧 `.reviewcompass/approvals/commit-approval.json`〕）の凍結期共通契約を本節の正本とする：
+
+- **書き込みは常に新配置**。旧配置への新規書き込みは行わない（凍結契約）
+- **既存分は旧置き場で凍結**する（移動・上書き・追記をしない）。凍結の効力発生は P1 実装反映コミット（書き込み先切替）と同時であり、それ以前の旧配置への書き込みは現行実装の正規動作として凍結対象に含まれる
+- **旧パス読み取り互換は 3 パスとも P3 まで維持**する（新 → 旧の順）。既存証跡（rounds.yaml 等）が記録する旧 `effective_prompt_path` の参照は凍結された旧配置で解決できる
+- **互換の終了は P3 の専用 reopen における本設計の改訂として扱う**（暗黙の終了はない）
+
+### 責務境界の明確化（Boundary Clarification）
+
+本機能が所有するのは **手続きの完了規則と検査スクリプト** であり、各機能の業務 artifact の所有権は持たない。
+
+| 所有関係 | 所有者 | 本機能との関係 |
+|---|---|---|
+| 段集合 YAML（`stages/*.yaml`） | **workflow-management** | 本機能が単独所有・改廃 |
+| 検査スクリプト（`tools/check-workflow-action.py`） | **workflow-management** | 本機能が単独所有・改廃 |
+| 機能依存マップ（`stages/feature-dependency.yaml`） | **workflow-management**（Req 8 受入 5） | 他機能は再定義せず参照のみ |
+| reopen 種別判定の根拠ファイル | **workflow-management**（Req 5 受入 5） | 他機能は参照のみ |
+| 各機能の spec.json（`.reviewcompass/specs/<機能>/spec.json`） | 各機能 | 本機能は読むのみ、書き込みは検査通過後に各機能の起草者が行う |
+| レビュー記録（`.reviewcompass/specs/<機能>/reviews/*.md`） | 各機能 | 本機能は front-matter の構造のみ検査（Req 3 受入 4） |
+| レビュー所見の妥当性 | `evaluation`／利用者監査の第 3 層 | 本機能の検査範囲外（Req 2 受入 3、Req 7 受入 1） |
+| 語彙正本（本機能が参照するのは `review_mode` のみ。所見系・状態軸系は責務外で不参照） | `foundation` | 本機能は再定義せず参照のみ（要件 Boundary Context 隣接期待。A-003 対処 2026-05-28） |
+| 規律ファイル本体（`docs/disciplines/discipline_*.md`、12 件配置済み） | **workflow-management**（実体書き換え、A-007 案 2） | `self-improvement` から変更提案を受け取り、所定手続き経由で実体変更。本機能の検査スクリプトと段階 3 フックの対象に含まれる |
+| 規律ファイルの提案権 | `self-improvement` | 本機能は提案を所定手続きの入力として受け取る |
+| 規律ファイルの memory 側索引（`~/.claude/projects/.../memory/feedback_*.md`、12 件） | Claude Code auto memory 機構（製品機能） | 本機能の管理対象外。短い参照索引のみ保持し、本体は `docs/disciplines/` を Read で参照する設計（A-007 対処、2026-05-25 セッション 26 移管） |
+
+**規律ファイルの所有先確定の経緯（A-007 対処、2026-05-25 セッション 26 利用者明示承認）**：本機能の所定手続きが規律変更を扱うには、規律ファイル本体がリポジトリ内（git 追跡対象）に存在する必要がある。素材設計時点では本体が memory（リポジトリ外、Claude Code auto memory 機構の領域）に置かれていたため、本機能の機械検査が効かない構造的問題があった。本セッション 26 で **軽量手続き** により次を実施し本問題を解消：
+
+- active 必読 11 件（feedback_must_fix_discussion_obligation／intent_conformance_is_the_acceptance_gate／standing_directives_are_hard_constraints／workflow_precheck_invocation／approval_operation／facts_vs_interpretation／pre_action_precheck／workflow_state_truth_source／concise_complete_report／reopen_procedure_for_settled_topics／plain_japanese）と参照層 5 件（feedback_dominant_dominated_options／feedback_choice_presentation／feedback_no_redundant_workflow_questions／feedback_plain_explanation_each_step／feedback_implementation_autonomy）の合計 **16 件** の本体を `docs/disciplines/discipline_*.md` にフラット配置で移管（コミット b830785 で active 必読 12 件＋参照層 5 件＝17 件として移管後、セッション 26 で利用者明示承認に基づき `no-unilateral-action` 規律 1 件を撤去、合計 16 件に減）。さらに memory 側の `feedback_*.md` 16 件はシンボリックリンクで repo 本体を指す構成に変更（2026-05-25 セッション 26、利用者明示承認「試してみる」）。当初は auto memory 機構がセッション起動時にリンクをたどって規律本体を完全に auto load する想定だったが、**2026-05-25 セッション 27 の検証で否定された**：auto memory の起動時 load 対象は `MEMORY.md` の索引（1 文要約）までで、シンボリックリンク経由でも本体はたどられない。**fallback 案イを採用**（利用者明示承認「推奨案」、2026-05-25 セッション 27）：シンボリックリンク 16 件は単一正本（repo）維持の補助機構として残置、TODO §1 起動手順に「規律本体 11 件を Read で読む」ステップを追加、active 必読 11 件は毎セッション開始時に Read で明示的に読み込む運用に切り替え。
+- memory 側は短い参照索引（移管先パスと改廃ルールへのリンクのみ）に置換、`MEMORY.md` 索引ファイルにも移管反映
+- archive 14 件（`memory/archive/2026-05-25-consolidation/`）のみ memory 側に残存（過去履歴の保全）
+- 移管後の整理として、front-matter の memory 機構固有メタ（`node_type: memory`／`originSessionId`）を全 17 件から削除、`plain_japanese` ／参照層 5 件の旧形式を統一形式に正規化、旧名リンク（`[[feedback-implementation-autonomy]]` 等）を新名に修正、`docs/disciplines/README.md` を新設して内部リンク `[[link-name]]` の解決規則と全 17 件のインデックスを明記
+- 計画書 §5.21（規律ファイルの ReviewCompass 方針への取り入れ手順）を前倒し実施した位置付け
+
+`self-improvement` との権限分散（A-007 案 2、2026-05-23 利用者承認）：規律ファイルの **提案権** は `self-improvement` が持ち、**実体変更権** は本機能が所定手続き（drafting → review → approval）経由で実施する。本機能は規律変更を Req 4 受入 1 の不可逆操作の対象として扱い、`self-improvement` が直接ファイル書き換えを行うことはない。
+
+## 段集合の静的列挙モデル（Stage Set Static Enumeration Model）— Req 1
+
+### 1. 9 ファイル体制（計画書 §5.5）
+
+段集合は次の 9 ファイルに静的列挙する。Markdown 節からの動的解析は行わない（Req 1 受入 1）。
+
+| ファイル | 段集合 | actor 構成 |
+|---|---|---|
+| `stages/intent.yaml` | drafting／review／approval の 3 段 | human／llm／human |
+| `stages/feature-partitioning.yaml` | candidate-proposal／approval の 2 段 | llm／human |
+| `stages/feature-dependency.yaml` | 段集合なし（機能依存マップ本体、Req 8） | — |
+| `stages/requirements.yaml` | drafting／triad-review／review-wave／alignment／approval の 5 段 | llm／llm／llm／llm／human |
+| `stages/design.yaml` | 同上 | 同上 |
+| `stages/tasks.yaml` | 同上 | 同上 |
+| `stages/implementation.yaml` | 同上 | 同上 |
+| `stages/reopen-procedure.yaml` | 4 過程構成（§reopen 機械強制モデル §5）、第3過程で trigger_map 参照 | llm／human 混合 |
+| `stages/cross-spec-alignment.yaml` | 段集合は別途確定（フェーズ 2 以降） | — |
+
+各 YAML 段は最低限、段名／`actor`／期待する証跡ファイルのパスパターン／必須節名のリスト／完了判定方式を含む（Req 1 受入 3）。
+
+### 2. 段定義の構造例
+
+`stages/requirements.yaml` の段定義例：
+
+```yaml
+process_id: requirements
+description: 要件フェーズの所定手続き（drafting → triad-review → review-wave → alignment → approval の 5 段）
+feature_order: feature-dependency.yaml#feature_order   # Req 8 受入 3、Req 1 受入 4
+
+stages:
+  - name: drafting
+    actor: llm                                      # 起草、主に LLM
+    artifact_paths:
+      - .reviewcompass/specs/{feature}/requirements.md
+    required_sections:
+      - Introduction
+      - Boundary Context
+      - Requirements
+      - Change Intent
+    completion_predicate: artifact_exists_and_sections_present
+    description: 起草者と判定者の分離規律により、起草段は判定段と別 actor で実施する
+
+  - name: triad-review
+    actor: llm
+    artifact_paths:
+      - .reviewcompass/specs/{feature}/reviews/*-requirements-triad-review.md
+    required_sections:
+      - 主役レビュー
+      - 敵対役レビュー
+      - 判定役レビュー
+      - 統合
+    completion_predicate: artifact_exists_and_sections_present_and_author_reviewer_distinct
+    front_matter_required:
+      - author.identity
+      - reviewer.identity
+      - reviewer.separation_from_author
+    description: 3 役レビュー、起草者と判定者の異名を front-matter で必須化
+
+  - name: review-wave
+    actor: llm
+    feature_order_required: true                    # 全機能の drafting＋triad-review 完了後に開始
+    artifact_paths:
+      - docs/reviews/{phase}-review-wave-{日付}.md
+    completion_predicate: all_features_drafting_and_triad_review_completed
+    description: 機能横断の波及所見の集約消化
+
+  - name: alignment
+    actor: llm                                      # LLM 自動判定
+    completion_predicate: cross_spec_alignment_passed
+    description: フェーズ終端の機能横断整合確認（LLM 自動判定）
+
+  - name: approval
+    actor: human                                    # phase / gate completion は human-only
+    actor_allowed:
+      - human
+    completion_predicate: explicit_human_approval_recorded
+    description: 不可逆操作（フェーズ移行）の直前ゲート。proxy_model は承認主体を代行しない
+```
+
+### review-run 後の proxy_model 判断代行モデル
+
+review-run 後の重要件判断は、approval 段の承認ではなく、triad-review 段内の修正方針決定に限って proxy_model が代行できる。対象は API 経由 review-run の `must-fix`、`should-fix`、`ERROR`、`CRITICAL`、または同根所見クラスタである。
+
+責務分担：
+
+- メインセッション LLM：raw response を読み、モデル別要約、同根所見集約、三段階トリアージ下書き、候補案、推薦案、proxy_model への判断材料を作る
+- proxy_model：重要件ごと、または同根所見クラスタごとに、採用案、判断理由、棄却案理由、最終ラベルを決定する
+- 機械ガード：proxy decision の存在、raw response の存在、候補案の存在、採用案と最終ラベルの整合、未判断件数 0 を確認する
+- メインセッション LLM：機械ガード通過後、採用された修正だけを TDD で実装する
+- 利用者：コミット、プッシュ、spec.json 更新、フェーズ移行、規律変更、大方針変更を承認する
+
+証跡構造：
+
+```text
+.reviewcompass/specs/<feature>/reviews/<review-run-id>/
+  raw/
+  parsed/
+  triage.yaml
+  model-result-summary.yaml
+  review_summary.md
+  proxy-decisions/
+    <finding-id>.prompt.md
+    <finding-id>.raw.txt
+    <finding-id>.decision.yaml
+  proxy-approval.yaml
+```
+
+`proxy-decisions/<finding-id>.decision.yaml` は最低限、`finding_id`、`approved_by: proxy_model`、`proxy_model_id`、`selected_option`、`final_label`、`rationale`、`rejected_options`、`raw_response_path` を持つ。`proxy-approval.yaml` は対象 review-run、対象 finding、参照した decision、summary/triage 提示済みフラグを束ねる。proxy approval は `decision_scope: proxy_allowed` の範囲（所見トリアージ・修正方針判断）に限った承認であり、human-only approval、commit、push、`spec.json` 更新、phase / gate completion、reopen finalize は許可しない。
+
+proxy decision の監査性を保つため、decision は `decision_prompt_path`、`source_raw_paths`、`candidate_options` も持つ。`decision_prompt_path` は proxy_model に渡した prompt 証跡、`source_raw_paths` は元 review raw、`candidate_options` は proxy_model に提示された候補案セットである。機械ガードは、これらの参照先が存在し、`candidate_options` が空でないことを確認する。現行の軽量ガードは、`proxy_model_id` の文字列一致、decision file の `finding_id` 一致、`final_label` 一致、prompt/raw/候補案証跡の存在を検査する。API 署名や暗号学的な生成元証明は将来課題とする。
+
+parallelizable_units：
+
+- proxy_model 判断依頼：同根所見クラスタ単位で並列化可能。同根とは、複数モデルの所見が同じ対象ファイル、同じ出力契約、同じ機械ガード、同じ証跡、または同じ原因に触れているものをいう
+- 実装：互いに同じファイルを更新しない実装単位、または入出力契約が独立したタスク単位で並列化可能
+- 直列必須：共通スキーマ、共通ビルダー、同一ファイル、同一 manifest、同一 traceability 出力、生成物、共有 helper、推移的契約を触る修正
+- 統合時：メインセッション LLM が triage、proxy decision、テスト結果、ファイル差分を再照合する
+
+実装サブ担当 LLM は、原則として別スレッドかつ分離 worktree で扱う。同じ repo での並列実装は原則禁止し、読み取り調査または差分を残さない確認に限定する。メインセッション LLM は、対象 finding、proxy decision、許可ファイル、期待テスト、禁止事項、停止条件を渡し、統合時に差分とテスト結果を検査する。未承認の便乗リファクタ、隣接挙動変更、対象外 cleanup は実施せず、新規判断問題として停止する。
+
+subimplementation_outputs：
+
+- implementation_diff：本線へ取り込み可能なソース、テスト、スキーマ、fixture、必要最小限の docs 差分
+- verification_summary：サブ担当が実行したテスト、赤確認、緑確認、未実行理由
+- decision_basis：実装不能、停止、新規判断問題、採否判断に影響する失敗ログ
+- work_noise：一時メモ、途中ログ、失敗パッチ案、ローカル調査メモ。原則として本線 repo に取り込まない
+
+本線へ戻す標準単位は、パッチ、テスト結果サマリ、未解決事項の 3 点である。メインセッション LLM は `work_noise` を直接取り込まず、必要な場合のみ session record または docs/notes に要約する。判断に影響した失敗試行、失敗パッチ、途中ログは `decision_basis` へ昇格し、メインセッション LLM が要約または該当箇所を保存する。
+
+### テンプレート変数の展開規則（F-006 対処、2026-05-25 セッション 26 利用者明示承認）
+
+段集合 YAML の `artifact_paths` フィールドに登場する 3 種のテンプレート変数（プレースホルダ）の展開元と解決規則を次のとおり確定する：
+
+- **`{feature}`**：機能横断段（`feature_order` を持つ段）では `feature-dependency.yaml#feature_order` から機能名を順に展開する。機能単位段（`feature_order` を持たない段）では当該機能名で固定する
+- **`{phase}`**：当該 YAML の `process_id` フィールドから取得する（例：`requirements.yaml` の `process_id: requirements` なら `{phase}` は `requirements` に展開）。`process_id` と YAML ファイル名は段集合 YAML 配置時に同期させる前提とし、両者がずれた場合は `process_id` を正本として優先する
+- **`{日付}`**：ファイル名のワイルドカード（`*`）として許容する。検査スクリプトは `glob` で `artifact_paths` パターンに一致する全ファイルを取得し、ファイル名に含まれる日付部分（`YYYY-MM-DD` 形式と仮定）の **辞書順最大** を最新と判定する
+
+ワイルドカード解決時の優先順位を「辞書順最大」（mtime 基準ではなく）にする理由：ファイル名の日付は人手で命名されるため意図が明示される一方、ファイルの更新時刻（mtime）は `git clone` ／ `git checkout` で書き換わるため再現性に劣る。`YYYY-MM-DD` 以外の日付形式が混入した場合、検査スクリプトは結論不能（fail-closed）として DEVIATION を返す。
+
+複数ファイルが存在しても重複定義の禁止ではなく、reopen による複数回生成（同じ段の証跡が日付違いで複数並存）を自然に扱うための設計。
+
+### 3. 機能横断段と機能単位段の区別
+
+- **機能横断段**：`feature_order` を持つ段（review-wave、alignment、approval の 3 段）。`feature_order: feature-dependency.yaml#feature_order` で機能依存マップを参照し、対象機能集合を一元化する（Req 1 受入 4、Req 8 受入 3）
+- **機能単位段**：`feature_order` を持たない段（drafting、triad-review の 2 段）。各機能の `spec.json` の `workflow_state.<フェーズ>.<段>` で個別に管理する
+
+機能横断段の機能横断側状態は `stages/<フェーズ>.yaml` の進行記録または別途配置する集約ファイルで保持し、機能単位の状態は各機能の `spec.json` で保持する（計画書 §5.24.8 由来）。
+
+**機能横断段 review-wave の作業内容（2026-05-27 セッション 34 追記、2026-05-28 セッション 35 で 2 回方式に訂正、軽量手続き、Req 1 受入 6 と整合）**：
+
+7 モデル比較実験は **2 回方式** で実施する（2026-05-28 セッション 35 確定、初版の「機能横断段で一括実施、機能ごとに実施しない」記述を訂正）：
+
+- **1 回目（機能ごとの triad-review 段）**：当該機能の機能内 must-fix／should-fix を 7 モデル評価し、機能内対処を triad-review 段で完了させる。前機能の機能内対処未完了に次機能の triad-review が依存しない構造を保つ
+- **2 回目（本機能横断段 review-wave）**：全機能の triad-review 完了後、機能横断波及所見と同根所見を 7 モデル評価
+
+機能横断段 review-wave は、機能横断波及所見の集約・対処に加え、次の作業を含む（計画書 §5.5 ／ §5.9.6 と整合）：
+
+- 全機能の triad-review が完了した時点で本段を開始する
+- 機能横断波及所見と同根所見を対象に 7 モデル評価（2 回目）を実施
+- 7 モデル評価データを全機能横並びで分析し、**同根所見**（異なる機能で同じ性格の所見が独立に発見された組）を grep ／ 集約で識別
+- 同根所見ごとに一貫した対処方針を立案、全該当機能の仕様文書（requirements.md ／ design.md ／ tasks.md）に同じ対処を反映
+- 個別機能の triad-review で「機能横断段に持ち越し」と判定された所見も本段で一括対処
+
+本作業内容は、セッション 33 利用者発言「あるフィーチャーだけをみてもダメで、全フィーチャーの triad-review を行い、それを 7 つのモデルで評価させたところで、同根の問題をまとめて考える」を受けた構造的対処、およびセッション 35 利用者指摘「機能内対処は triad-review 段で実施しないと、他のフィーチャーの処理に影響する可能性がある」を受けた 2 回方式への訂正。利用者明示承認の出典：「(ニ)」「提案通り」「計画書や仕様・設計にも反映」（2026-05-27 セッション 34）／「2 回に分けて 7 モデルの must-fix+should-fix の対応が必要」「案 イ」「案 ア」（2 回方式への訂正、2026-05-28 セッション 35）。本記述は計画書 §5.23.13 軽量手続き許容の範囲内で追加。
+
+### 4. 段集合の変更運用
+
+段集合の変更は YAML ファイル 1 箇所の修正で完結する（Req 1 受入 5）。Markdown 文書（運営ガイド、計画書）側との整合は人手で取る前提とし、自動同期は行わない（§5.4 受け入れリスク）。段集合の変更そのものを不可逆操作の対象とするかは本フェーズで決めず、第 5 層（処理表面積の抑制）導入時に検討する（先送り論点参照）。
+
+## 軽量版検査スクリプトモデル（Lightweight Check Script Model）— Req 2
+
+### 1. 検査の対象と原則
+
+検査スクリプト `tools/check-workflow-action.py` は Python 実装で（Req 2 受入 1）、次の 4 入力のみを読む：
+
+- 段集合 YAML（`stages/*.yaml`）
+- 進行中状態ファイル（`stages/in-progress/*.yaml`）
+- 機能単位 spec.json（`.reviewcompass/specs/<機能>/spec.json`）
+- 未消化所見（`learning/workflow/carry-forward-register/reviewcompass-import.yaml`）
+
+判定原則：
+
+- **段ごとの完了判定**：YAML に列挙された証跡ファイルがすべて存在し、必須節名がすべて含まれること、それ以外は判定対象としない（Req 2 受入 2）
+- **中身の妥当性判定は行わない**：所見の質、表現の適切性、論理的整合性は判定範囲外（Req 2 受入 3、第 1 層の限界として明示）
+- **fail-closed の既定**：結論不能（YAML が壊れている、証跡ファイルが解析不能、必須フィールド欠落）の場合は合格判定を出さず、必ず fail を返す（Req 2 受入 4）
+- **進行中手続きの警告**：`stages/in-progress/` に何かファイルがあれば「未完了の手続きあり」の警告を出す（Req 2 受入 5）
+
+### 2. サブコマンド構成（`docs/operations/WORKFLOW_PRECHECK.md` と `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` 参照）
+
+| サブコマンド | 入力（必須引数） | 用途 |
+|---|---|---|
+| `spec-set <feature> <phase> <stage> <new_value>` | 機能名・フェーズ・段・新しい真偽値、`--rationale "<理由>"`（任意、ログ記録用） | `spec.json` の `workflow_state` 変更前の依存検査 |
+| `commit` | `--rationale "<理由>"`（**必須**） | `git commit` 直前の検査（spec.json 整合、規律遵守、未消化所見の有無） |
+| `push` | `--rationale "<理由>"`（**必須**） | `git push` 直前の検査（コミット履歴整合、リモート状態） |
+| `next` | なし、`--json`（任意） | 標準のワークフロー遷移入口。`workflow_state`、`stages/in-progress/`、reopen pending、post-write-verification pending を読み、次作業を返す |
+
+引数仕様の正本は `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` と検査スクリプト本体 `tools/check-workflow-action.py` の argparse 定義。ただし、ここでいう引数仕様は軽量 precheck CLI の呼び出し形式に限る。`required_action` 語彙、operation contract field、preconditions / postconditions、出力・副作用 contract は `.reviewcompass/schema/`、`stages/operation-contracts.yaml`、および Requirement 12〜13 の registry / contract 境界を正本とする。`commit` と `push` の `--rationale` 必須化の理由：両者は不可逆操作で、人による承認の出典をログに残す必要があるため。next サブコマンドは、LLM が次作業を独断で選ばず、同じワークフロー遷移入口から状態を再確認するための読み取り専用入口である。
+
+next サブコマンドは、`workflow_state` が全完了を示す場合でも、上流成果物が下流成果物より新しければ `upstream_recheck` を返す。代表的な伝播は、intent → feature-partitioning、feature-partitioning → requirements、requirements → design、design → tasks、tasks → implementation である。これにより、intent 更新後に requirements へ飛ぶ、requirements 更新後に tasks や implementation へ飛ぶ、tasks 更新後に implementation 再確認を省く、といった手順逸脱を機械的に避ける。
+
+next サブコマンドは、feature 一覧が解決できない場合（`feature-dependency.yaml` 不在または `feature_order` 未定義、対象アプリの初期状態を想定）は `feature_definition_required`（verdict OK）を返して intent／feature-partitioning の実施を案内し、`feature_order` と `depends_on` の整合違反（依存先行違反・循環）は `kind: unknown`／DEVIATION で遮断する（§機能依存マップモデル 7、2026-06-12 反映）。
+
+`docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml` は、判定点ごとに読み込む規律文書と入力資料の機械可読マップである。`default`、`by_kind`、`by_stage` は `next_action.required_disciplines` の元資料を定義し、`required_inputs` は対象 feature 文書、reopen 状態、review-run bundle、carry-forward register などの入力資料を定義する。`next` はこのマップを読み、現在の判定点に対応する `required_disciplines` と `required_inputs` を JSON に含める。判定点ごとの `effective prompt` は、このマップが示す元資料を 1 本へ束ねる生成物であり、マップ自体は複数元資料の正本である。`next` は生成した prompt を `.reviewcompass/runtime/effective-prompts/` に保存し（旧 `.reviewcompass/effective-prompts/` からの変更は 2026-06-12 配置規約 PLC-DEC-004・009〜011 反映。実行時生成物の runtime 区画集約。旧パス読み取り互換は P3 まで維持し、凍結・互換の正本は §実行時生成物の凍結期（P3 まで）の扱い）、`next_action.effective_prompt` に `effective_prompt_path`、`effective_prompt_sha256`、`effective_prompt_loaded` を含める。元資料が読めない場合は `effective_prompt_loaded: false` として `DEVIATION` を返し、通常作業へ進ませない。API review-run では `run_role.py`／`run_review.py` が `rounds.yaml` に `effective_prompt_path` と `effective_prompt_sha256` を記録し、後続の raw response・triage・proxy decision と同じ review-run 証跡として追跡できるようにする。マップにない判定点は、規律読み込み規約が未定義の判定点として扱い、追加時は本マップへ登録する。
+
+### 2. next --json unique action selector
+
+`next --json` は状態要約ではなく、現在実行してよい唯一 action を選ぶ selector である。`required_action` は 1 つだけを返し、`pending_gates` や scope list は予定または補助情報として扱う。
+
+共通フィールドは `kind`、`required_action`、`active_gate`、`feature`、`phase`、`stage`、`blocked_by`、`action_parameters`、`state_refs` とする。active workflow unit があるのは、通常 workflow の `<feature, phase, stage>` または reopen 第3過程の drafting / review gate だけである。この場合だけ `active_gate`、`feature`、`phase`、`stage` を非 null にする。post-write verification、human decision、maintenance、reopen 第1・第2過程、commit stop point、workflow state repair は active workflow unit を持たない action であり、`feature`、`phase`、`stage`、`active_gate` は null にする。対象 feature、対象 phase、対象ファイル、実行コマンドは `action_parameters` または `state_refs` から読む。
+
+selector の優先順位は、workflow state / reopen plan の破損、post-write verification pending、human decision、maintenance / side track top frame、reopen commit stop point、reopen 第1・第2過程、reopen 第3過程 drafting、reopen 第3過程 gate、reopen 第4過程、通常 workflow、completed の順に固定する。maintenance は `required_action=run_maintenance` を返し、maintenance YAML 内の個別名は `maintenance_action` と `action_parameters.maintenance_action` に分離する。reopen では `current_blocker` がある場合に pending gate を active にせず `wait_for_human_decision` を返す。`commit_stop_point: true` がある場合も pending gate を active にせず、`blocked_by.type=commit_stop_point`、`active_gate=null`、`phase=null`、`stage=null` とする。第3過程の pending gate は、blocker と stop point がない場合だけ active gate にできる。
+
+post-write target detection と manifest verification は、`next` と `commit` の双方が参照する実装契約である。post-write-verification 対象の未コミット変更がある場合、`next` は通常 workflow ではなく post-write-verification pending を返す。completed manifest は `target_files` と現在内容の `target_sha256` が一致し、`required_verifiers` の各 verifier が `verifications[]` の単一エントリで全対象ファイルと同じ sha を覆い、`unresolved_substantive_findings` が 0 である場合だけ完了とみなす。
+
+各サブコマンドの戻り値（exit code）：
+
+- `0`：OK（不可逆操作を許可）
+- `1`：WARN（警告を出すが継続可、利用者判断で進める）
+- `2`：DEVIATION（fail-closed で遮断、不可逆操作を許可しない）
+
+出力形式は人間可読の既定形式と、`--json` 指定時の JSON 形式の 2 種類。出力構造とログ形式は `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` を正本参照する。ただし、この正本性は precheck CLI の表示・ログ出力形式に限り、operation contract の output / side-effect semantics を定義しない。人間可読既定の書式は `[VERDICT] OK ／ WARN ／ DEVIATION（exit N）` のように **大括弧付きラベル形式** で、`[VERDICT]`／`[ACTION]`／`[REASON]`／`[CURRENT STATE]` の 4 ブロックを順に出力する。判定結果はログ（`.reviewcompass/runtime/logs/workflow-precheck.log`、上書き可能＝ログファイル自体の再生成可否を指す。旧配置を対象とする凍結契約〔§実行時生成物の凍結期（P3 まで）の扱い〕とはスコープが異なる）に追記する。
+
+### 3. 完了判定の述語集合（completion_predicate 値域）
+
+段集合 YAML の `completion_predicate` フィールドが取る値の集合：
+
+| 述語名 | 判定内容 |
+|---|---|
+| `artifact_exists` | 期待する証跡ファイルが存在する |
+| `artifact_exists_and_sections_present` | ファイル存在＋必須節名がすべて含まれる |
+| `artifact_exists_and_sections_present_and_author_reviewer_distinct` | 上記＋front-matter の `author.identity` と `reviewer.identity` が異名 |
+| `all_features_drafting_and_triad_review_completed` | `feature_order` の全機能で drafting＋triad-review が true |
+| `cross_spec_alignment_passed` | 機能横断整合の判定が pass、未消化所見が 0 件 |
+| `explicit_human_approval_recorded` | 利用者の明示承認が human-only approval record として記録されている。proxy_model decision はこの述語を満たさない |
+| `depends_on_resolves_correctly` | `feature-dependency.yaml` の各機能の `depends_on` が単純リスト構造または連想配列構造として解析可能、連想配列構造の場合は値が `hard` または `review` のいずれかであること（A-004 対処、2026-05-25 セッション 26 利用者明示承認） |
+
+述語集合の追加・削除は本機能の責務。新しい述語を導入する場合は、本節と検査スクリプト実装の両方を同時に更新する。
+
+### 4. 第 1 層の限界の明示
+
+検査スクリプトが解決しない失敗モード（計画書 §5.8 由来、Req 7 受入 1）：
+
+- 中身の空疎（必須節は存在するが内容が「特に問題なし」のみ）
+- 検査スクリプト自体が呼ばれない経路
+- `stages/in-progress/` ファイルの自己申告性（嘘・古い・欠落の余地）
+- 文脈圧力下での規律ファイル優先度低下
+
+これらは hook 連携や人の確認で補完する。本機能はワークフロー事前検査の限界を運用文書（`docs/operations/WORKFLOW_PRECHECK.md`）に明示し、人の期待値を整える（Req 7 受入 4）。
+
+### 5. スキーマ定義（Phase 1 最小スキーマ、Req 2 受入 10・11）
+
+本節は `next --json` の語彙と応答形式を機械検証可能な JSON Schema として定義する。2 ファイルを `.reviewcompass/schema/` 配下に置く。スキーマ形式はいずれも JSON Schema Draft 2020-12 を使う。実装コードはこの 2 ファイルを語彙と応答構造の正本として参照し、コード内に語彙を直書きしない。
+
+#### 5.1 required_action.schema.json（Req 2 受入 10）
+
+`required_action` の取り得る値を列挙する語彙ファイル。
+
+- **`$schema`**：`https://json-schema.org/draft/2020-12/schema`
+- **`$id`**：`urn:reviewcompass:schema:required_action`
+- **`type`**：`string`
+- **`enum`**：D-003 §6 の優先順位順に 19 値を列挙する（この順が正本）
+
+| 優先順位 | 値 |
+|---:|---|
+| 1 | `repair_workflow_state` |
+| 2 | `run_post_write_verification` |
+| 3 | `wait_for_human_decision` |
+| 4 | `record_human_decision` |
+| 5 | `run_maintenance` |
+| 6 | `advance_reopen_after_commit_stop_point` |
+| 7 | `commit_stop_point` |
+| 8 | `draft_reopen_plan_candidates` |
+| 9 | `apply_approved_reopen_plan` |
+| 10 | `advance_reopen_after_approval_stop_point` |
+| 11 | `repair_canonical_documents` |
+| 12 | `run_reopen_drafting` |
+| 13 | `run_reopen_pending_gate` |
+| 14 | `collect_required_decisions` |
+| 15 | `finalize_reopen` |
+| 16 | `draft_reopen_classification` |
+| 17 | `run_reopen_start` |
+| 18 | `run_workflow_stage` |
+| 19 | `completed` |
+
+語彙の追加・変更はこのファイルの `enum` 修正で完結する。
+
+#### 5.2 next_action_response.schema.json（Req 2 受入 11）
+
+`next --json` の目標応答スキーマ。
+
+**最上位構造の設計確定事項**
+
+- **`$schema`**：`https://json-schema.org/draft/2020-12/schema`
+- **`$id`**：`urn:reviewcompass:schema:next_action_response`
+- **`type`**：`object`
+- **必須フィールド（5つ）**：`verdict`（文字列）・`exit_code`（整数）・`next_action`（オブジェクト）・`reasons`（配列）・`current_state`（オブジェクト）
+- **`additionalProperties`**：最上位は指定しない（**前向き拡張用**：将来の実装で新フィールドを追加してもスキーマ改訂なしに対応できるよう、段階的拡張を妨げない。スキーマファイルの `$comment` に意図を記録する）
+
+**`next_action` オブジェクトの設計確定事項**
+
+- **`type`**：`object`
+- **必須フィールド（10つ）**：`kind`・`required_action`・`active_gate`・`feature`・`phase`・`stage`・`required_feature_scope`・`blocked_by`・`future_gates`・`state_refs`
+- **`additionalProperties`**：指定しない（**後ろ向き互換用**：旧バージョンのツールが出力する `pending_gates`・`next_pending_gate` 等を許容するため。最上位の「前向き拡張」とは目的が異なる。スキーマファイルの `$comment` に意図を記録する）
+- **`properties: { "verdict": false }`**：`verdict` フィールドを `next_action` 内で明示禁止する（受入 11：`verdict` は最上位にのみ存在し `next_action` 内には含めない。`additionalProperties` を開放したまま特定フィールドのみを禁止できる最も局所的な方法）
+
+**`next_action` フィールド型定義**
+
+| フィールド | 型 |
+|---|---|
+| `kind` | string enum（14値インライン定義、下記参照） |
+| `required_action` | `$ref: "urn:reviewcompass:schema:required_action"`（19語彙に限定。絶対 URN 参照により基底 URI 解決不要） |
+| `active_gate` | string または null（作業単位がない場合は null） |
+| `feature` | string または null（単一機能名・`"all_features"`・null の 3 種） |
+| `phase` | string または null |
+| `stage` | string または null |
+| `required_feature_scope` | array of string |
+| `blocked_by` | object または null |
+| `future_gates` | array |
+| `state_refs` | object |
+
+**`kind` フィールドの値域**
+
+`kind` は `next_action_response.schema.json` 内にインライン `enum` として定義する（`required_action` とは異なり別ファイル化しない。`kind` は `next_action_response` 内でのみ参照されるため）。
+
+| 優先順位 | 値 |
+|---:|---|
+| 1 | `resume_in_progress` |
+| 2 | `reopen_in_progress` |
+| 3 | `maintenance_in_progress` |
+| 4 | `reopen_classification_required` |
+| 5 | `post_write_verification` |
+| 6 | `lightweight_self_check` |
+| 7 | `post_write_policy_violation` |
+| 8 | `post_write_human_decision_required` |
+| 9 | `stage` |
+| 10 | `cross_feature_stage` |
+| 11 | `upstream_recheck` |
+| 12 | `feature_definition_required` |
+| 13 | `completed` |
+| 14 | `unknown` |
+
+値の追加・変更はこの表と `next_action_response.schema.json` の `enum` 修正で完結する。
+
+**条件付き必須フィールド（`if/then` 構文で `next_action` 内に定義）**
+
+- `repair_reasons`（非空配列、`type: array, minItems: 1`）：`required_action = "repair_workflow_state"` のとき必須
+- `action_parameters`（オブジェクト）：`required_action = "run_maintenance"` のとき必須。サブフィールド必須 6 つ（`maintenance_action`・`allowed_scope`・`allowed_files`・`completion_conditions`・`active_stack_frame_id`・`parent_frame_id`）
+
+**後方互換フィールドの整合規則**
+
+`pending_gates` が存在する場合は `future_gates` と一致させること（実装側の不変条件）。JSON Schema の標準機能では 2 フィールドの内容が等しいことを機械検証できないため、この等価性はスキーマの責務対象外とし、実装コードで保証する。スキーマは `pending_gates` の型（配列）のみ定義する。
+
+## 起草者と判定者の分離モデル（Author-Reviewer Separation Model）— Req 3
+
+### 1. front-matter の必須フィールド（計画書 §5.4 由来）
+
+レビュー記録（`.reviewcompass/specs/<機能>/reviews/<日付>-<種別>.md`）の冒頭メタデータに次を必須化する：
+
+```yaml
+---
+type: <レビュー種別>                     # 例：design_triad_review
+target: <対象文書のパス>
+target_commit: <commit hash>
+target_content_hash: <sha256>
+date: 2026-05-25
+mode: subagent_mediated                  # レビューモード。値は foundation 正本を参照（再定義しない）
+author:
+  identity: claude_code_main_session     # 起草者の識別子
+  model: claude-opus-4-7
+  role: drafter
+reviewer:
+  identity: claude_code_subagent         # 最終判定者の識別子（必ず異名）
+  model: claude-opus-4-7
+  role: final_judgment
+  separation_from_author: true           # 明示的に異名であることを宣言
+---
+```
+
+機械検査は次の 3 点を判定する（Req 3 受入 4）：
+
+1. `author.identity` と `reviewer.identity` フィールドの存在
+2. `author.identity` ≠ `reviewer.identity`（文字列比較で同一を許容しない、Req 3 受入 2）
+3. `reviewer.separation_from_author` が `true`
+
+別モデル・別 session の機械判定は第 1 層検査対象外。これは利用者監査の第 3 層に委ねる（Req 3 受入 4 由来）。理由：CLI／API 経路の実行環境を機械判定で確実に区別する手段がフェーズ 1 では整わないため。
+
+### 2. サブエージェント方式（subagent_mediated）の特例（Req 3 受入 3）
+
+メインセッション LLM が主役（primary_reviewer）を兼ねる場合、判定役（judgment_reviewer）は **必ず別エンティティ**（別モデルかつ別 session）で実施する。これは計画書 §5.23.12 サブエージェント方式の限界（§5.23.12.7）を踏まえた特例である。
+
+サブエージェント方式採用時の front-matter 例：
+
+```yaml
+author:
+  identity: claude_code_main_session     # メインセッションが主役と起草を兼ねる
+  model: claude-opus-4-7
+  role: drafter_and_primary_reviewer     # 暫定許容の宣言
+reviewer:
+  identity: claude_code_subagent_judgment   # 判定役は別サブエージェント
+  model: claude-opus-4-7                    # 同モデル許容（§5.9.1 改訂後）
+  role: final_judgment
+  separation_from_author: true
+  subagent_invocation_method: agent_tool_with_general_purpose
+```
+
+`subagent_mediated` の場合、`role` フィールドに `drafter_and_primary_reviewer` 等の複合役を許容する（暫定許容の明示）。完全分離（メイン LLM が 3 役のいずれにもならない）はフェーズ 4 の runtime_mediated 経路で実装する。
+
+### 3. 異名判定の機械検査範囲
+
+機械検査の対象範囲（第 1 層で判定可能）：
+
+- フィールドの存在判定
+- 文字列の同一性判定
+- 値域チェック（`actor` フィールドが `human`／`llm`／`proxy_model` のいずれか等）
+
+機械検査の対象外（第 3 層 利用者監査または定期事後監査に委ねる）：
+
+- 別モデルであることの実体確認（環境変数や API 呼び出し履歴の照合）
+- 別 session であることの実体確認（session ID の独立性検証）
+- レビュー記録の中身が独立性を満たすかの質的判定
+
+## 不可逆操作の直前ゲートモデル（Pre-Operation Gate Model）— Req 4
+
+### 1. 不可逆操作の最小集合（Req 4 受入 1）
+
+機械ゲートの対象は次の 4 種類に絞る：
+
+| 不可逆操作 | 検査対象 | 検査結果が fail の場合 |
+|---|---|---|
+| `spec.json` の `approval` 段書き込み | 当該機能の前段（alignment）が true、未消化所見が 0 件 | spec.json 書き込みを許可しない |
+| `git commit` | 検査スクリプトが pass、`stages/in-progress/` が空 | commit を許可しない |
+| `git push` | 直前のコミットが上記検査を通過済み、リモート状態と整合 | push を許可しない |
+| フェーズ移行（次フェーズの drafting 段 true 化） | 当該フェーズの approval 段が `feature-dependency.yaml#feature_order` の全機能で true（本設計時点 7 機能、§機能依存マップモデル §2 の A-001 注記参照） | フェーズ移行を許可しない |
+
+それ以外（spec.json の drafting／triad-review 段の書き込み、中間段の遷移など）には機械ゲートを置かない（最小集合方針、Req 4 受入 4）。これは検査スクリプトを呼ぶ頻度を下げ、検査自体の存在感を高めるため。
+
+### 2. ゲート発火条件と独立走行（Req 4 受入 2）
+
+ゲートは次の 2 条件で発火する：
+
+1. Requirement 2 の検査スクリプトが pass を返す
+2. `stages/in-progress/` に未完了手続きが存在しない
+
+直前ゲートは **毎回独立して走行する**。session 開始時の検査結果（Req 6 受入 3）をキャッシュせず、session 開始後の状態変化（途中での `stages/in-progress/` ファイル追加、所見の追加等）を直前で再検出する。これは「session 開始時には pass だったが、その後の作業で状態が変わって本来 fail になるはずの遷移を見落とす」失敗モードを防ぐため。
+
+`git commit` の直前ゲートでは commit 承認レコードを別入力として読み、`approved_action=commit`、`approved_by=user`、未消費状態、staged ファイル被覆、staged 内容と一致する `target_sha256` を検査する。承認レコードの `target_sha256` は各 staged ファイルの現在 staged blob から計算した sha と比較し、欠落・形式不正・不一致のいずれも DEVIATION とする。これにより、承認後に対象ファイルが差し替わった commit を fail-closed で遮断する。
+
+### 2.1 commit 承認 nonce challenge（Req 4 受入 6〜7）
+
+commit 承認は、承認レコード単体ではなく nonce challenge と対で扱う。challenge の保存先は `.reviewcompass/runtime/approvals/commit-approval-challenge.json`、承認レコードの保存先は既存どおり `.reviewcompass/runtime/approvals/commit-approval.json` とする。challenge は `approved_action=commit` に限り、staged ファイル一覧、ファイル別 `target_sha256`、全体 target digest、nonce、有効期限、消費状態を保持する。
+
+`tools/check-workflow-action.py commit-approval prepare --json` は、staged ファイルが存在する場合だけ challenge を作成する。staged ファイルが 0 件、staged 内容の sha 計算不能、または保存不能の場合は fail-closed とし、commit 承認手続きに進ませない。`prepare` は新しい challenge を作る前に、古い runtime の staged 内容承認 record と実行代行 delegation record を invalidated 状態へ寄せる。これは、消費済み・期限切れ・壊れた旧 record が第三者向け commit UX の邪魔をしないようにするためである。手動の `commit-approval invalidate --json` は低レベル復旧手段として残すが、通常の準備操作で古い runtime record の掃除を利用者に求めない。全体 target digest は、正規化した staged ファイルパスと各 staged blob hash から安定順で計算し、ファイル順や環境差に依存させない。challenge は `created_at` と `expires_at` を UTC ISO-8601 文字列で保持し、TTL は 10 分とする。テスト時は checker の `now_utc` を注入できる実装境界を持つ。
+
+全体 target digest の canonical format は `commit-approval-v1` とする。digest 入力は UTF-8 bytes で、先頭行を `commit-approval-v1\n` とし、以後 staged entry を repo-relative POSIX path の UTF-8 byte 昇順で 1 行ずつ並べる。各 entry 行は、`{"mode":"<git-index-mode>","object_id":"<staged-object-id-or-DELETED>","path":"<repo-relative-posix-path>","target_sha256":"<sha256-or-DELETED>"}` を JSON object として、キー順 `mode`、`object_id`、`path`、`target_sha256`、区切り文字は `,` と `:` のみ、余分な空白なしで直列化し、末尾に `\n` を付ける。`mode` は git index の file mode、`object_id` は staged object id、削除 staged は `object_id=DELETED` かつ `target_sha256=DELETED` とする。全体 target digest はこの bytes 列の SHA-256 hex とする。canonical format のバージョンを変える場合は `commit-approval-v2` のように新しい header を使い、旧 challenge と混在させない。
+
+challenge と承認レコードは、部分的に読める場合でも補完や推測をしない。JSON として読めない、object ではない、必須フィールドが欠落している、フィールド型が違う、ファイルパスが重複している、repo-relative POSIX path として不正、repo 外を指す、空文字を含む、`target_sha256` の形式が不正、未知の path が混入している、challenge と承認レコードの file set が一致しない、のいずれも形式不正として fail-closed にする。この検査は承認レコード作成時と commit 直前ゲートの両方で行う。
+
+challenge と承認レコードの schema は、操縦 LLM、provider、model 名を持たない。`llm`、`provider`、`model`、`model_id`、`proxy_model_id` のように操縦主体を表すフィールドが混入した場合は、情報用フィールドとしても受け入れず形式不正として fail-closed にする。承認レコードは `attestation_type=staged_content_nonce_binding` と `guarantee_scope=staged_content_binding_not_ui_utterance_proof` を持ち、保証範囲を機械可読にする。
+
+`tools/check-workflow-action.py commit-approval record --nonce <nonce> --source-text-stdin --json` は、challenge が存在し、未期限切れ、未消費で、nonce が一致し、現在の staged ファイル集合・staged 内容が challenge と一致する場合だけ承認レコードを作成する。承認文は CLI 引数で受け取らず、標準入力から読む。これは、redaction 前の承認文が shell history、process listing、OS audit log 等へ露出することを避けるためである。承認文を保存しない運用では `--no-source-text` を指定し、本文の代わりに `source_omission_reason=source_not_provided` を記録する。`--source-text <user text>` のように本文を argv へ載せる入力経路は提供しない。
+
+承認文は UTF-8 text として扱い、UTF-8 として解析不能、または解析後の UTF-8 bytes が 4096 bytes を超える場合は fail-closed とする。承認レコードは `approved_action=commit`、`approved_by=user`、challenge と同じ target digest、ファイル別 `target_sha256`、作成時刻、消費状態を持つ。`source_text_redacted` を保存する場合は `tools.session_record_extractor.redact.redact_text` と `tools.session_record_extractor.redact.find_residual_secrets` の builtin rules を通し、API キー、token、secret、password、credential に相当する値を生のまま残さない。通常文まで一律に秘密扱いするのではなく、秘密性のある文字列だけを redaction 対象とする。ただし、秘匿情報除去に失敗した、または安全に保存できる形へ変換できない場合は、出典本文を保存せず、`source_omission_reason` を記録する。`source_omission_reason` は `source_not_provided`、`unsafe_source_omitted`、`redaction_failed`、`residual_secret_detected` のいずれかに限る。
+
+commit 直前ゲートは、commit 実行パス内で、実際に commit される index に対して承認レコードと challenge の両方を読み、nonce 一致、未期限切れ、未消費、target digest 一致、staged ファイル集合一致、staged 内容一致を検査する。欠落、形式不正、期限切れ、不一致、消費済みのいずれも DEVIATION とし、commit を遮断する。この validation 失敗は security failure として扱い、challenge と承認レコードを invalidated 状態にして、同じ承認の再利用を許可しない。
+
+validation 通過後に `git commit` 実行自体が失敗した場合は、通常の git execution failure として扱う。署名失敗や hook infrastructure 失敗など、commit が作成されず index が validation 時と同一で、challenge が期限内・未消費・未 invalidated のままなら再試行を許す。index が変わった、期限切れ、消費済み、invalidated、または validation 条件を再度満たせない場合は新しい承認を要求する。commit 成功後は challenge と承認レコードを消費済みに更新する。commit 成功後に consume 記録の永続化へ失敗した場合、その approval/challenge は次回以降の gate で拒否し、新しい承認なしに再利用させない。
+
+時刻判定は UTC の現在時刻 `now_utc` と challenge の `created_at`／`expires_at` で行う。`now_utc < created_at` はシステム時計の巻き戻りまたは challenge 破損の可能性として fail-closed にし、`now_utc > expires_at` は期限切れとして fail-closed にする。`created_at`／`expires_at` の欠落、UTC ISO-8601 として解析不能、`expires_at <= created_at`、TTL が 10 分以外に見える値も形式不正として fail-closed にする。
+
+本判定は、操縦する LLM、provider、model 名に依存しない。判定入力は staged ファイル集合、staged blob hash、全体 target digest、nonce、expiry、consumed 状態に限定する。LLM ごとの差異は、利用者へ nonce を提示する説明文やプロンプト表現だけに閉じる。本方式は、利用者が UI 上で nonce を発話したことを暗号的に証明するものではない。保証範囲は、古い承認、別対象の承認、承認後に staged 内容が差し替えられた commit を防ぐことに限る。UI 署名や runtime event 署名による発話証明は将来拡張とし、本 reopen では実装対象外とする。
+
+### 2.2 commit 実行代行承認（Req 4 受入 8）
+
+LLM が `git commit` の実行を代行する場合、staged 内容承認とは別に、LLM への commit 実行代行承認を記録する。staged 内容承認は「この staged 内容を commit してよい」という承認であり、実行代行承認は「LLM が commit 実行を代行してよい」という承認である。両者を混ぜないため、`commit-approval record` は `execution_delegation` を既定で書かない。
+
+低レベル正式 CLI は `tools/check-workflow-action.py commit-approval delegate-execution --nonce <nonce> --source-text-stdin --json` とする。承認文は標準入力からのみ読む。`--source-text <user text>` のように argv へ載せる入力経路は提供しない。これは、redaction 前の承認文が shell history、process listing、OS audit log 等へ露出することを避けるためである。
+
+第三者へ見せる通常 UX では、`record` と `delegate-execution` を別操作として露出させない。`tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin ...` は stdin から承認文を 1 行だけ読み、EOF を待たずに staged 内容承認 record と実行代行 delegation record を順序どおり作成し、そのまま commit 直前ゲートと `git commit` へ進む。これにより利用者に見える手順は「1 回目の『コミット』で staged 対象・digest・nonce・期限を提示」「2 回目の『承認』で commit 完了」に閉じ、nonce / digest / delegation の多層防御を操作体験へ露出させない。
+
+`delegate-execution` は、同じ nonce の challenge と staged 内容承認 record が存在し、どちらも未期限切れ・未消費・未 invalidated で、現在の staged ファイル集合・staged 内容・全体 target digest が challenge / staged 内容承認 record と一致する場合だけ成功する。challenge 不在、staged 内容承認 record 不在、staged 内容承認より前の実行、期限切れ、消費済み、invalidated、target digest 不一致、staged 内容差し替え、形式不正 JSON、JSON object 以外、unknown field、nonce 衝突、または未期限切れの delegation record が既に存在する場合は fail-closed とする。ただし、既存 delegation record が同じ nonce、同じ staged exact index、同じ staged 内容承認 record digest、同じ正規化済み承認文に対する有効 record である場合、これは重複作成ではなく active transaction の再利用として扱う。壊れた旧 delegation が残っている場合は、次の `prepare` が旧 runtime record を invalidated へ寄せ、新しい challenge からやり直せるようにする。
+
+delegation record は `.reviewcompass/runtime/approvals/commit-approval.json` へ追記せず、`.reviewcompass/runtime/approvals/commit-execution-delegation.json` に独立して保存する。`commit-approval.json` は staged 内容承認のみを表す単一責務の record とし、commit gate は challenge、staged 内容承認 record、実行代行承認 record の 3 つを照合する。分離した record であっても別対象へ流用できないよう、delegation record は staged 内容へ明示的に束縛される。
+
+delegation record は strict schema とし、最低限、次を持つ。未定義 field は拒否する：
+
+```yaml
+approved_action: commit_execution_delegation
+delegated_action: commit
+delegated_to: llm
+approved_by: user
+nonce: <challenge nonce>
+target_digest: <commit-approval-v1 digest>
+staged_file_set_digest: <sha256 of canonical staged file paths and modes>
+staged_content_approval_digest: <sha256 of canonical commit-approval.json content>
+challenge_path: .reviewcompass/runtime/approvals/commit-approval-challenge.json
+approval_record_path: .reviewcompass/runtime/approvals/commit-approval.json
+created_at: <UTC ISO-8601>
+expires_at: <challenge expires_at>
+explicit_instruction: <normalized explicit commit instruction>
+instruction_sha256: <sha256 of normalized instruction>
+attestation_type: commit_execution_delegation_nonce_binding
+guarantee_scope: stdin_text_instruction_bound_to_commit_approval_not_ui_utterance_proof
+consumed: false
+invalidated: false
+```
+
+`created_at` は UTC ISO-8601 文字列とし、`expires_at` は challenge と同じ値にする。delegation record の有効期限は challenge を超えない。`nonce`、`target_digest`、`staged_file_set_digest`、`staged_content_approval_digest`、`expires_at` が challenge / staged 内容承認 record / 現在の index と一致しない場合は形式不正として fail-closed にする。schema には `llm`、`provider`、`model`、`model_id`、`proxy_model_id` のように操縦主体を表すフィールドを受け入れない。判定は LLM / provider / model 名に依存しない。`attestation_type` は `commit_execution_delegation_nonce_binding`、`guarantee_scope` は `stdin_text_instruction_bound_to_commit_approval_not_ui_utterance_proof` の完全一致だけを許可する。この `guarantee_scope` は、stdin で受けた明示文言が nonce と staged 内容承認へ束縛されていることだけを表し、UI 発話証明、provider 証明、model 証明ではない。
+
+承認文の stdin payload は UTF-8 text として扱う。UTF-8 として解析不能、NUL を含む、空、空白のみ、または UTF-8 bytes が 256 bytes を超える場合は fail-closed とする。標準的な pipe 入力に合わせ、末尾の POSIX LF `\n` は 1 個だけ除去してよい。ただし、`CR`、`CRLF`、内部改行、2 個以上の末尾 LF は拒否する。入力は、前後の ASCII 空白と全角空白を除去し、ASCII 英字だけを小文字化し、末尾の日本語句点 `。` を 1 つだけ除去して正規化する。内部空白は畳み込まず、複数行は許可しない。全角 Latin 文字は ASCII へ正規化せず、許可文言に完全一致しないため拒否する。
+
+正規化後の許可文言は次の完全一致に限定する：
+
+- `コミット`
+- `コミットして`
+- `コミットを実行`
+- `承認`
+- `commit`
+- `commitして`
+
+正規化後の文言が上記以外の場合は fail-closed とする。特に、`次のコミットまで`、`コミット点まで`、`コミット準備`、`コミット可能なところまで`、`自律実行`、`進めて`、`続けて`、`OK` は commit 実行代行承認として扱わない。`承認` は、直前に nonce / target digest / staged 対象 / 期限が提示済みである commit approval challenge に対する 2 回目入力に限って、staged 内容承認と LLM commit 実行代行承認を兼ねる許可文言として扱う。
+
+承認文を保存する場合は、`tools.session_record_extractor.redact.redact_text` と `find_residual_secrets` の builtin rules を通す。API キー、token、secret、password、credential に相当する値を生のまま残さない。redaction に失敗した、または redaction 後に残留 secret が検出された場合は、本文を省略した delegation record を作るのではなく、delegation record 自体を作成せず fail-closed にする。通常文まで一律に秘密扱いするのではなく、秘密性のある文字列だけを redaction 対象とする。
+
+delegation record の書き込みは、保存直前に challenge / staged 内容承認 record / 現在 index / expiry を再検証してから行う。再検証後に temp file へ書き、fsync 可能な環境では file と parent directory を fsync し、同一 filesystem 内の atomic rename で確定する。部分書き込み、外部変更、書き込み中の race、保存直前の期限切れを検出した場合は delegation record を作らず fail-closed とする。
+
+commit 直前ゲートで `--execution-actor llm` が指定された場合、staged 内容承認 record / challenge の検査に加え、`.reviewcompass/runtime/approvals/commit-execution-delegation.json` を必須とする。gate は commit 実行直前に challenge、staged 内容承認 record、delegation record、現在の index を再読込し、strict schema、`approved_action=commit_execution_delegation`、`delegated_action=commit`、`delegated_to=llm`、`approved_by=user`、nonce / target digest / staged file set digest / staged 内容承認 digest / expiry 一致、未期限切れ、未消費、未 invalidated、禁止 LLM/provider/model 系 field 不在、`explicit_instruction` の許可文言一致、`attestation_type`、`guarantee_scope` を検査する。欠落・形式不正・unknown field・不一致・期限切れ・消費済み・invalidated・不許可文言はいずれも DEVIATION として commit を遮断する。人間が自分で commit を実行する `--execution-actor human` では execution delegation は不要である。
+
+commit 成功後は、staged 内容承認 record / challenge と同じ commit approval 消費処理で delegation も再利用不能にする。consume 永続化失敗後は、次回以降の gate で同じ approval / challenge / delegation を拒否し、新しい承認なしに再利用させない。
+
+`guarded-git-commit.py --approval-nonce --approval-source-text-line-stdin` は、同じ nonce に対する有効な staged 内容承認 record と delegation record が既にある場合、approval record を再書き込みしない。これは、`git commit` 本体が sandbox、lock、hook、署名などの git execution failure で commit を作成できず終了した後、同一 staged exact index で wrapper を再実行したときに、既存 delegation の `staged_content_approval_digest` を壊さないためである。precheck が OK で `git commit` 本体だけが失敗した場合、wrapper は approval / challenge / delegation を consumed にせず、validation failure として invalidated にもしない。再実行時に staged exact index、nonce、expiry、approval、delegation がすべて同一なら同じ active transaction を使って commit を再試行できる。
+
+`guarded-git-commit.py` は commit precheck 通過後、`git commit` を呼ぶ直前に `git rev-parse --git-path index.lock` で解決した `index.lock` の排他作成を preflight する。`index.lock` が既に存在する場合は既存 lock の調査を促して停止し、作成が permission / sandbox 系の理由で失敗した場合は `sandbox_git_write_denied` として分類し、`required_action=rerun_commit_with_escalation` を表示して停止する。この停止では `git commit` を呼ばず、approval / challenge / delegation を consumed または invalidated にしない。`git commit` 実行後に `.git/index.lock` / permission 系エラーが返った場合も同じ分類と required action を表示し、承認は保持されたこと、staged 内容が変わらなければ再承認不要であること、sandbox 外で guarded commit を再実行する必要があることだけを利用者へ示す。sandbox 外再実行の直前 gate は既存の staged exact index / nonce / expiry / approval / delegation 再照合を再度行うため、staged 内容が変化した場合は既存 approval を使わず新しい challenge / approval からやり直す。
+
+### 3. fail-closed の既定（Req 4 受入 3）
+
+検査が結論不能な場合：
+
+- 検査スクリプトの実行に失敗した（exit code が 0 でも 1 でも 2 でもない、または stderr に致命的エラー）
+- 段集合 YAML が壊れている（YAML パースエラー）
+- 必須フィールドが欠落している
+- `feature_order` が参照する `feature-dependency.yaml` が存在しない
+
+これらの場合、ゲートを通さず必ず遮断する。判定不能を pass と解さない（fail-closed の既定）。これは「曖昧なときは止める」方針で、誤って不可逆操作を許可することによる被害を防ぐ。
+
+### 4. ゲートと補助層 C 段階 3 の関係
+
+本ゲートは検査スクリプト（補助層 C 段階 2）を内部で呼び出す。利用者または LLM が不可逆操作を要求した時点で、補助層 C の 3 段階が次の順に走る：
+
+1. **段階 1**：LLM 規律として、これから何をするかを応答内で明示し、段階 2 を呼ぶ
+2. **段階 2**：本ゲートの検査スクリプト（`check-workflow-action.py`）が走る
+3. **段階 3**：Claude Code フック機構（フェーズ 2 以降の宿題）が段階 2 を自動で呼び、逸脱なら遮断
+
+段階 3 が実装されるまでは段階 1 の規律で代用する。段階 1 と段階 3 は段階 2 を呼ぶ経路が異なるだけで、判定本体は段階 2 が単一の責務として持つ。
+
+## reopen 機械強制モデル（Reopen Mechanical Enforcement Model）— Req 5
+
+### 1. 手戻り種別の二次元表記（Req 5 受入 1、計画書 §5.6）
+
+手戻り種別は **起点フェーズ記号 ＋ 深さ** の二次元で表す：
+
+| 記号 | フェーズ | 深さの値域 |
+|---|---|---|
+| N | intent | 0 のみ（intent より上流なし） |
+| R | requirements | 0〜1 |
+| D | design | 0〜2 |
+| A | tasks | 0〜3 |
+| I | implementation | 0〜4 |
+
+深さは「起点フェーズの何段上に戻るか」を表す。例：
+
+- I-0 は実装段の整合ゲート再実施のみ
+- I-4 は実装段で発見された問題が intent まで遡る場合の全フェーズ連鎖再実施
+- D-1 は設計段で発見された問題が要件段の修正を要する場合（要件・設計の 2 フェーズ連鎖）
+
+旧表記 A／B／C／D は I-0／I-2／I-3／I-4 に対応し、旧表記で欠落していた I-1 を含めた完全二次元表記となる。
+
+### 2. trigger_map による連鎖再実施対象の決定（Req 5 受入 2）
+
+`stages/reopen-procedure.yaml` に `trigger_map` を持たせ、第3過程（連鎖再実施）で参照する。種別から再実施対象を機械的に決定する：
+
+```yaml
+- name: 該当ゲートの再実施
+  actor: llm                            # 第3過程の実行主体は LLM（trigger_map を解決して順次進行する）
+  actor_resolution: per_target_stage    # 各 trigger_map エントリの参照先段の `actor` を段定義から動的解決
+  trigger_map:
+    D-1:
+      - stages/requirements.yaml#alignment    # 参照先段の actor は当該段定義から取得（actor=llm 等）
+      - stages/requirements.yaml#approval     # 同上（actor=human）
+      - stages/design.yaml#alignment
+      - stages/design.yaml#approval
+    # 他種別（N-0／R-0〜1／D-0／D-2／A-0〜3／I-0〜4）の trigger_map は計画書 §5.6 行 457〜565 を正本参照
+```
+
+**第3過程の actor 解決規則（A-002 対処、2026-05-25 セッション 26 利用者明示承認）**：第3過程の進行ロジックは LLM が担うが、各 trigger_map エントリの参照先段（`<YAML ファイル>#<段名>` 形式）の実 actor は **当該段定義（`stages/<YAML>.yaml` の `stages` 配列のうち該当段の `actor` フィールド）から動的に解決** する。段定義の `actor` フィールドが単一正本で、trigger_map 側には actor を二重記述しない（Req 1 受入 5 の「YAML 1 箇所修正で完結」の趣旨と整合）。動的解決の挙動：
+
+- 参照先段の actor が `llm`：第3過程の進行ロジックが当該段の完了判定を実施
+- 参照先段の actor が `human`：作業を停止し、`stages/in-progress/` ファイルに「人間承認待ち」を記録して待機（Req 5 受入 3〜4）
+これにより Req 5 受入 3〜4 の機械強制が段定義 `actor` フィールドという単一正本に基づき動作する。
+
+連鎖再実施対象は「根本原因フェーズの整合ゲート」から「起点フェーズの整合ゲート」まで、上流から下流へ順に並べる。起点フェーズまで再実施することで、上流変更が下流に正しく伝播したかを機械判定できる（計画書 §5.6 連鎖再実施の対象範囲）。
+
+### 3. actor=human 段での自動停止（Req 5 受入 3〜4）
+
+LLM が trigger_map に沿って連鎖を進めるとき、`actor=human` の段（`intent.yaml#approval`、`feature-partitioning.yaml#approval`、`requirements.yaml#approval` 等）に到達した時点で **作業を停止し、`stages/in-progress/` ファイルに「人間承認待ち」を記録して待機する**。
+
+人間承認なしに次の段への進行を許さない（fail-closed、Req 5 受入 4）。これは「LLM が intent を勝手に書き換えて承認なしで進む」リスクを構造的に止めるため。
+
+待機中の `stages/in-progress/reopen-procedure-<日付>.yaml` の例：
+
+```yaml
+process_id: reopen-procedure
+started_at: 2026-05-25T14:00:00+09:00
+trigger: D-1（設計段で要件段の不整合発見）
+classification_basis: docs/reviews/reopen-classification-2026-05-25.md
+completed_steps: [第1過程：判定とフラグ差し戻し, 第2過程：正本修正]
+next_step: 第3過程：連鎖再実施
+pending_gates:
+  - stages/requirements.yaml#alignment   # actor=llm、機械判定で進行
+  - stages/requirements.yaml#approval    # actor=human、ここで停止
+  - stages/design.yaml#alignment
+  - stages/design.yaml#approval
+current_blocker: stages/requirements.yaml#approval（人間承認待ち）
+```
+
+### 4. 種別判定の根拠保存（Req 5 受入 5）
+
+reopen の第1過程で、種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md` として保存する。第3過程はこの判定ファイルを読み込んで `trigger_map` から連鎖再実施対象を決定する。
+
+種別判定根拠ファイルの最低限の構造：
+
+```markdown
+---
+date: 2026-05-25
+classifier: claude_code_main_session
+classification: D-1
+trigger_source: design/triad-review で発見した要件段の不整合
+---
+
+## 分類根拠
+- 発見段：design.triad-review
+- 影響範囲：要件段の Requirement X の語彙が design.md と矛盾
+- 上流戻り：requirements 段への修正が必須
+- 連鎖：requirements の修正後、design の再整合を要する → D-1
+```
+
+判定が後で誤りと分かった場合、reopen 自体をやり直す（`stages/in-progress/` ファイルを新しいものに置き換え、旧ファイルは削除せず証跡として保全）。
+
+### 5. 再オープン手続きの 4 過程構成
+
+本機能が管理する再オープン手続きの全体構成を、現在の 5 段ワークフロー（drafting → triad-review → review-wave → alignment → approval）に合わせて 4 つの過程で定義する。運用時の入口は `docs/operations/REOPEN_PROCEDURE.md` とし、本節は workflow-management 側の状態管理・機械判定契約を定める。各過程は「停止せず連続実行できる作業の単位」とし、人の承認点または commit 停止点で締める。
+
+| 過程 | 作業 | 停止点 |
+|---|---|---|
+| 1：判定とフラグ差し戻し | 種別判定 → trigger_map で再実施対象決定 → 根拠記録 → 進行中ファイル発行 → spec.json のフラグ差し戻し（reopened／recheck、上流・下流の対象段を false に） | フラグ差し戻しを人が承認（コミットなし） |
+| 2：正本修正 | 上流フェーズの正本を修正 | コミット（第1過程＋第2過程をまとめて） |
+| 3：連鎖再実施 | 依存順に上流→下流で再実施対象 gate を処理する。正本本文を実質修正した phase は triad-review → review-wave → alignment → approval の順に再実施し、正本本文を修正していない phase は trigger_map の pending gate に従って再確認する。各 gate の完了判定は `downstream_impact_decisions` に記録する | actor=human の approval、または人間判断が必要な blocker。全完了後にコミット |
+| 4：完了 | 整合性の最終確認 → recheck クリア → 進行中ファイルを completed へ | コミット |
+
+spec.json の `reopened`／`recheck` の更新は、`docs/operations/REOPEN_PROCEDURE.md` と commit 前検査の reopen 契約に従う。`reopened` は 6 フェーズ（intent／feature-partitioning／requirements／design／tasks／implementation）を対象とする。
+
+第3過程の進行中状態では、`pending_gates` は「これから処理する残 gate」として扱う。完了した gate は `pending_gates` から外し、`completed_gates` と `downstream_impact_decisions` に記録する。監査用に全体集合を固定したい場合は `required_gates` を併記できる。reopen 完了時の機械検査は `pending_gates`、`completed_gates`、`required_gates` の和集合を対象に、各 gate が `downstream_impact_decisions` で覆われていることを確認する。
+
+**`reopen-procedure.yaml` への反映**：本 4 過程構成を `stages/reopen-procedure.yaml` の段集合として静的列挙する（tasks 段 T-003／T-007 の実装対象）。trigger_map（§2）は本構成の第3過程（連鎖再実施）で参照される。
+
+本節により、tasks.md T-003／T-007 が参照する再オープン手続きの段集合を design.md に明示する。
+
+### 6. 後追い intent の下流再展開モデル（Req 9）
+
+既存システムに requirements／design／tasks／implementation が存在する状態で intent が後から追加または修正された場合、本機能は通常の新規開発とは別に、既存成果物へ意図を取り込むための reopen 手続きを管理する。
+
+最初に feature の受け皿を判定する。判定では intent 文面の所属表現よりも、実装上の所有、既存 requirements／design／tasks の責務、該当コードの配置、`conformance-evaluation` が出す証拠付き候補を重視する。
+
+| 判定 | 意味 | 次の処理 |
+|---|---|---|
+| `reopen_existing_feature` | 既存 feature が受け皿になる | 該当 feature を reopen し、requirements 以降の下流段を再展開する |
+| `new_feature_required` | 既存 feature では受け止められない | feature-partitioning の候補提案に戻り、新規 feature 作成を判断する |
+| `human_decision_required` | 機械的に決められない | `current_blocker` に人間判断待ちを記録して停止する |
+
+既存 requirements に似た記述があることは、処理終了の根拠にしない。受け皿がある場合は、その feature の requirements／design／tasks／implementation を上流から順に確認し、各段で「既存十分」「仕様追記が必要」「設計衝突候補」「下流影響候補」「実装変更候補」を記録する。受け皿がない場合は、既存文書を無理に解釈せず、新規 feature 分割に戻す。
+
+第3過程では、`pending_gates` は review／review-wave／alignment／approval などの正式 gate を表す。`pending_gates` の先頭が `stages/<phase>.yaml#triad-review` であっても、当該 phase の正本本文をまだ起草していない場合、`next` は triad-review ではなく `run_reopen_drafting` を返す。起草完了は `drafting_completed_gates` または `completed_gates` の `stages/<phase>.yaml#drafting` で判定する。これにより、レビューを先に実施してから本文を直す逸脱を防ぐ。
+
+第2過程の正本修正後に `commit_stop_point: true` が立っている場合、`pending_gates` は将来予定として残っていても active gate ではない。`next` は `required_action=commit_stop_point` を返し、`next_pending_gate`、`phase`、`stage`、`active_gate` を null にする。commit stop point を処理して構造化 ledger と step transition が完了した後だけ、第3過程の drafting / gate selector が動作する。
+
+`conformance-evaluation` から受け取る候補は、少なくとも次の項目を持つ評価記録として扱う。
+
+| フィールド | 内容 |
+|---|---|
+| `feature` | 候補が関係する feature |
+| `phase` | 候補が関係する phase（requirements／design／tasks／implementation） |
+| `classification` | `existing_sufficient`／`spec_update_candidate`／`design_conflict_candidate`／`downstream_impact_candidate`／`implementation_change_candidate` |
+| `code_refs` | 判断根拠となるコード参照 |
+| `existing_spec_refs` | 既存仕様側の参照 |
+| `reasoning_summary` | 候補抽出理由の短い説明 |
+| `needs_human_decision` | 人間判断が必要か |
+
+本機能はこれらの候補を生成しない。候補の生成とコード由来の証拠抽出は `conformance-evaluation` が担い、本機能は候補を reopen 手続きの入力として検証・記録・順序化する。
+
+下流判断は `downstream_impact_decisions` に記録する。各判断は `gate`、`feature_scope`、`decision`、`rationale`、`evidence`、`decision_actor`、`decision_source` を持つ。`decision` には既存語彙である `affected_update_required`、`existing_sufficient`、`no_impact`、`approved`、`proxy_approved` を使い、未定義語彙をその場で増やさない。衝突候補や人間判断候補がある場合は `current_blocker` を設定し、利用者承認または判断材料提示で停止する。
+
+dogfooding 中に workflow 手続き自体の欠陥が見つかった場合は、通常の reopen 候補として処理しない。`process_id: maintenance` の side track 進行中ファイルを作り、`mainline_blocked_by`、`allowed_scope`、`allowed_files`、`completion_conditions` を明示してから修復する。side track の開始と終了は利用者に明示し、終了後に本線の reopen 状態へ戻る。
+
+## session 跨ぎ状態管理モデル（Session-Spanning State Model）— Req 6
+
+### 1. 進行中状態ファイルの構造（Req 6 受入 1〜2）
+
+現在進行中の手続きは `stages/in-progress/<process_id>-<日付>.yaml` で表す。ファイル名は「手続き ID」と「開始日付」で一意化する。
+
+最低限のフィールド（Req 6 受入 2）：
+
+| フィールド | 内容 |
+|---|---|
+| `process_id` | 手続きの識別子（`reopen-procedure`／`requirements-review-wave` 等） |
+| `started_at` | 開始時刻（ISO 8601） |
+| `trigger` | 開始の契機（人間可読の短い説明） |
+| `completed_steps` | 完了済みステップの番号リスト |
+| `next_step` | 次に実施すべきステップの番号 |
+| `pending_gates` | 残ゲートのリスト（`stages/<ファイル>#<段名>` 形式） |
+| `completed_gates` | 完了済みの正式 gate |
+| `drafting_completed_gates` | 本文起草が完了した drafting 段。review gate より前の起草漏れ防止に使う |
+| `active_reopen_scope` | 現在 reopen 中の正本変更対象。feature、phase 範囲、開始 gate、終了条件を持つ |
+| `active_impact_review_scope` | 正本変更対象ではないが影響確認が必要な feature / phase 範囲。flag を false に戻さない確認対象 |
+| `downstream_impact_decisions` | 下流影響判断の記録。gate、feature_scope、decision、rationale、evidence、decision_actor、decision_source を持つ |
+| `current_blocker` | 人間判断や承認待ちで停止している位置 |
+
+任意の追加フィールド：`classification_basis`（reopen の場合、種別判定根拠ファイルへのリンク）、`escalation_status`（通知済みか否か）など。
+
+`active_reopen_scope` と `active_impact_review_scope` は active scope の正本である。`spec.json.reopened` は過去に reopen した履歴フラグであり、active scope の正本ではない。`next --json` は reopen 中に `stages/in-progress/reopen-procedure-*.yaml` を読み、これら 2 フィールドから `next_action.reopen_scope` と `next_action.impact_review_scope` を生成する。両フィールドが欠落している、`pending_gates` / `completed_gates` / `downstream_impact_decisions` と矛盾する、または `spec.json` の false 化対象と整合しない場合、`next --json` は通常進行を返さず `repair_workflow_state` または `DEVIATION` を返す。
+
+reopen 開始時は、種別判定と trigger_map 解決後に `active_reopen_scope` と `active_impact_review_scope` を初期化する。連鎖再実施中は gate 完了ごとに `pending_gates`、`completed_gates`、`downstream_impact_decisions` を更新するが、scope 自体は利用者判断または repair workflow なしに拡張・縮小しない。reopen 完了時は、`pending_gates` が空で、`required_gates` がある場合は全件が `completed_gates` または `downstream_impact_decisions` で覆われ、active scope 全体の downstream impact が記録済みであることを確認してから、in-progress record を completed へ移す。この移動により active scope は閉じる。
+
+通常の `next_action` と異なる side track、または `next` 判定自体の欠陥修復に着手する場合は、`process_id: maintenance` の進行中ファイルを先に作成する。maintenance 進行中ファイルは、少なくとも `trigger`、`mainline_blocked_by`、`allowed_scope`、`allowed_files`、`completion_conditions` を持ち、本筋が何によって一時停止しているか、どの範囲だけを修復してよいか、どの条件で本筋へ戻れるかを明示する。
+
+### 2. session 開始時の標準フロー（Req 6 受入 3）
+
+session 開始時、次を順に行う：
+
+1. `TODO_NEXT_SESSION.md` を読み、全体の到達点を把握
+2. 直近の `docs/sessions/session-*.md` を読み、TODO に圧縮された経緯の詳細を確認
+3. `git log --oneline -10` ／ `git status` で直近の到達点と未コミット変更を確認
+4. 検査スクリプトを `stages/*.yaml` 全件に走らせる（フェーズ 1 段階では人手で `check-workflow-action.py` を呼ぶ）
+5. `stages/in-progress/` の有無を確認
+6. 進行中手続きがあれば、それを優先的に完了させる（無視して新規作業を始めない）
+7. 完了済み・未着手の状態に基づき、次の作業を決定
+
+本フローは運営ガイド `docs/operations/SESSION_WORKFLOW_GUIDE.md` §1 必読フローと一体運用する。
+
+### 3. セッション記録の保存（Req 6 受入 6）
+
+原則として毎 session、特に重要な判断・承認・レビュー結果・修正経緯が発生した session は、セッション終了時または重要判断後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md` へ要約記録を残す。記録は会話全文の逐語ログではなく、後で判断経緯を再構成できる運用記録とする。`<N>` は `docs/sessions/` に存在する既存の最大セッション番号に 1 を加えた番号とし、同じ番号を再利用しない。1 session につき 1 ファイルとし、同一 session 内の重要判断は同じファイルへ追記する。並行 session や未コミット作業により採番が衝突した場合、メインセッション LLM は既存記録・git 状態・未コミット差分を確認し、利用者が採番を確定するまで正式な新規セッション記録を作成しない。採番確定前に記録が必要な場合は、`docs/sessions/drafts/session-<YYYY-MM-DD>-<short-topic>.md` に一時草案を置き、正式番号確定後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md` へ移動する。移動後は draft ファイルを残さず、正式ファイルに草案内容が統合済みであることを確認する。
+
+メインセッション LLM はセッション記録の草案作成責任を持つ。利用者判断の引用・承認範囲・未確定事項に曖昧さがある場合は、記録前に利用者へ確認する。コンテキスト切れや中断により当該 LLM が記録できない場合、次 session が草案を引き継ぐ。草案がない場合は、TODO、review-run、approval record、git diff から経緯を再構成して記録する。
+
+`TODO_NEXT_SESSION.md` は次セッション開始時の入口メモであり、詳細経緯の正本ではない。詳細経緯は `docs/sessions/`、API レビューの raw/parsed/triage は各 review-run ディレクトリ、承認記録は approval record に分けて保持する。
+
+### 4. 完了時の移動（Req 6 受入 4）
+
+手続きが完了したら、`stages/in-progress/<process_id>-<日付>.yaml` を `stages/completed/` に移動するか削除する。移動を採用する利点は「過去の手続きの記録が残り、事後監査に使える」こと、削除を採用する利点は「ディレクトリが肥大化しない」こと。本フェーズでは移動を既定とし、定期的に古いものを `docs/archive/in-progress/` 配下に退避する運用とする。
+
+### 5. 進行中状態と不可逆操作の関係（Req 6 受入 5）
+
+`stages/in-progress/` に何かファイルがある状態での不可逆操作実行を遮断する（fail-closed、Req 4 と整合）。これは「進行中の手続きを放置して別の不可逆操作を始める」失敗モードを防ぐため。
+
+例外：進行中状態ファイル自体の更新（次ステップ進行、人間承認の記録）は遮断対象外。これらは進行中の手続きを進めるための更新であり、別の不可逆操作とは区別する。
+
+## 多層防御の位置付けモデル（Multi-Layered Defense Positioning Model）— Req 7
+
+### 1. 第 1 層の限界の明文化（Req 7 受入 1）
+
+本機能（軽量版 YAML 検査機構）は多層防御の **第 1 層** に位置付ける。第 1 層が解決しない失敗モードを次のように明文化する：
+
+| 失敗モード | 発生原因 | 補完する層 |
+|---|---|---|
+| 中身の空疎 | 必須節は存在するが内容が「特に問題なし」のみ | 第 3 層（フェーズ境目の利用者監査）、第 4 層（定期事後監査） |
+| 検査スクリプト呼び出し依存 | LLM が検査を呼ばない、結果を読まない | 第 2 層（git フック）、補助層 C 段階 3（Claude Code フック） |
+| in-progress ファイルの自己申告性 | 「進行中」「次ステップ」を書くのは LLM 自身、嘘・古い・欠落の余地 | 第 3 層、第 4 層 |
+| 文脈圧力下での規律低下 | 規律ファイルを増やすほど LLM が優先度を下げる | 第 5 層（処理表面積の抑制方針）、補助層 C |
+
+これらは多層防御の他層で補完し、第 1 層単独で 100% の遵守を達成しようとしない。
+
+### 2. 第 2〜5 層への参照（Req 7 受入 2、計画書 §5.8）
+
+第 2〜5 層はフェーズ 4 以降の宿題として参照する：
+
+- **第 2 層：git フックによる外部強制**：検査スクリプトを `pre-commit`／`pre-push` フックに組み込み、LLM が「呼ばない」選択を構造的に不可能にする
+- **第 3 層：フェーズ境目の利用者監査**：フェーズの境目で利用者が検査結果を必ず確認する手続きを必須化
+- **第 4 層：定期事後監査**：一定 session 数または期間ごとに独立 LLM で過去証跡全件を監査
+- **第 5 層：処理表面積の抑制方針**：「新規規律を追加するときは既存規律 1 つ以上を統廃合する」等の縮減義務
+
+本機能は第 2〜5 層の具体実装を持たないが、設計時に **将来導入する余地を残す** ことを明示する。例：段集合 YAML の `completion_predicate` 述語集合は第 2 層の git フックから直接呼び出せる構造とする（CLI からもフックからも同じスクリプトを呼ぶ）。
+
+### 3. 補助層 A／B／C の位置付け（計画書 §5.8、§5.12、§5.13）
+
+第 1 層と第 2 層の中間に補助層を 3 つ置く：
+
+- **補助層 A：人間代役機構（§5.12）**：軽い判断を外部モデルが代行、本人関与の頻度を下げる
+- **補助層 B：人間への通知機構（§5.13）**：本人判断が必要な場面で外部チャネル（メール・LINE 等）に即時通知
+- **補助層 C：処理開始時のワークフロー事前検査（§5.8 補助層 C、3 段階共存モデル）**：本機能の検査スクリプトがその実体
+
+補助層 C は本機能の検査スクリプトを段階 2 として持ち、段階 1（LLM 規律）と段階 3（Claude Code フック）から呼ばれる。本機能は段階 2 の実装を所有し、段階 1 の規律化と段階 3 のフック実装は別経路で進める。
+
+### 4. 第 5 層運用ルールの反映（Req 7 受入 3）
+
+第 5 層（処理表面積の抑制方針）の運用ルール「新規規律を追加するときは既存規律 1 つ以上を統廃合する」を本機能の運用ルールに反映する。フェーズ 4 までは利用者の意識に依拠（機械強制は第 5 層導入時に検討、Req 7 受入 3）。
+
+本機能の段集合 YAML を変更する場合：
+
+- 段の追加：既存段の統廃合または明確な根拠を運用文書に記録
+- 段の改廃：影響を受ける機能（依存先・依存元）の確認と整合
+- 述語の追加：既存述語との重複確認、検査スクリプトの拡張
+
+これらは現時点では運用上の規律としてのみ存在し、機械検査の対象ではない。
+
+自律・並列実行を使う場合は、第 1 層の補助的な安全契約として自律 plan と履歴 ledger を持つ。自律 plan は run ID、依存順、recheck 対象、許可パス、期待テスト、停止条件を宣言し、履歴 ledger は各作業単位の実行結果、統合判断、検証コマンド、未解決 blocker を追跡する。新しい依存、未記録依存、上流 recheck の下流反映が必要になった場合は、当該作業単位を進めず統合判断へ戻す。
+
+### 5. 第 1 層の限界の運用文書への明示（Req 7 受入 4）
+
+ワークフロー事前検査の限界を運用文書（`docs/operations/WORKFLOW_PRECHECK.md`）に明示し、人の期待値を整える。「本検査スクリプトは中身の妥当性を判定しない」「結論不能なら必ず遮断する」「必要に応じて hook 連携や人の確認で補完する」の 3 点を最低限明示する。
+
+## 機能依存マップモデル（Feature Dependency Map Model）— Req 8
+
+### 1. 一元保管先（Req 8 受入 1、計画書 §5.5 選択肢 X）
+
+機能間の処理順と依存関係を `feature-dependency.yaml` に一元化する。各フェーズの YAML はこのファイルを参照し、重複させない。開発リポジトリでは `stages/feature-dependency.yaml` に置き、対象アプリでは feature-partitioning の承認結果を `.reviewcompass/feature-dependency.yaml` として実体化する（テンプレートは `templates/specs/feature-dependency.yaml.template` として配布。設計記録 2026-06-10 §3.5 由来、2026-06-12 反映）。
+
+### 2. ファイル構造（Req 8 受入 2）
+
+最低限のフィールド：
+
+```yaml
+features:
+  foundation:
+    depends_on: []
+  runtime:
+    depends_on: [foundation]
+  evaluation:
+    depends_on: [foundation, runtime]
+  analysis:
+    depends_on: [foundation, evaluation]
+  workflow-management:
+    depends_on: [foundation, runtime, evaluation, analysis]
+  self-improvement:
+    depends_on: [foundation, workflow-management]
+  conformance-evaluation:
+    depends_on:
+      foundation: hard                  # 連想配列構造、依存種別あり
+      runtime: review
+      evaluation: review
+      workflow-management: review
+
+feature_order:
+  - foundation
+  - runtime
+  - evaluation
+  - analysis
+  - workflow-management
+  - self-improvement
+  - conformance-evaluation
+```
+
+機能順のキー名は `feature_order` とする（旧称 `phase_order`。語彙調停 案 A、MLE-DEC-001、2026-06-12 利用者決定。過去記録・計画書・分割提案書の `phase_order` 表記は書き換えず、requirements.md Requirement 8 受入 2 の由来注記で読み解く）。
+
+**機能順 7 機能採用の根拠（A-001 対処、2026-05-25 セッション 26 利用者明示承認）**：計画書 §5.5 の `phase_order` 構造例（行 376〜383）には self-improvement が記載漏れで 6 機能のみ列挙されている。本設計は次の確定事項に基づき機能順に self-improvement を含めて **7 機能** を採用する：
+
+- 計画書 §3.1（self-improvement の workflow 層改善を第 1 期に含める確定）
+- 計画書 §5.16（self-improvement の全面書き直し方針）
+- A-007 案 2（2026-05-23 利用者承認による本機能と self-improvement の権限分散調停、規律ファイルの提案権と実体変更権の分離）
+- 全 7 機能の requirements 段 approval 完了（2026-05-24 セッション 23 末）
+
+計画書 §5.5 の構造例の補正は計画書全体管理の責務範囲で、本機能の責務範囲外。本セッション末尾の TODO_NEXT_SESSION.md に「計画書 §5.5 phase_order の self-improvement 追記」を補正課題として記録する。
+
+`depends_on` は次の 2 形式を許容する（Req 8 受入 2 後段）：
+
+- **単純リスト構造**：`[foundation, runtime]` のように依存先を列挙するだけ
+- **連想配列構造**：`foundation: hard, runtime: review` のように依存種別（`hard`／`review`）を併記。`conformance-evaluation` のように依存性の強度を区別する機能で使う
+
+依存種別の語彙：
+
+- `hard`：その機能の仕様が変わると本機能の仕様も影響を受ける（必須整合）
+- `review`：その機能の出力を本機能がレビュー対象とする（参照関係）
+
+### 3. 各フェーズ YAML からの参照（Req 8 受入 3）
+
+各フェーズの YAML（`requirements.yaml`／`design.yaml`／`tasks.yaml`／`implementation.yaml`）の草案段とレビュー波段は `feature_order: feature-dependency.yaml#feature_order` の参照を持つ。検査スクリプトはこの参照を解決して機能名を順に展開する。
+
+### 4. 変更の一元化（Req 8 受入 4）
+
+機能の追加・削除や依存関係の変更は本ファイル 1 箇所の修正で完結する。各フェーズの YAML を個別に修正する必要はない。これにより、新機能追加時の整合漏れを構造的に防ぐ。
+
+### 5. 所有者の明示（Req 8 受入 5）
+
+機能間依存マップの所有者は本機能（`workflow-management`）であり、`runtime`／`evaluation` 等の他機能は再定義せず参照のみとする。他機能の design.md／tasks.md で「依存関係を独自に定義する」記述があれば、本機能の `feature-dependency.yaml` を正本として参照する形に統一する。
+
+### 6. パース仕様と依存種別の機械処理上の意味（A-004 対処、2026-05-25 セッション 26 利用者明示承認）
+
+検査スクリプトが `feature-dependency.yaml` を解析する際の規則と、依存種別（`hard` ／ `review`）の機械処理上の意味を次のとおり確定する。
+
+**パース仕様**：
+
+- `depends_on` の値が YAML パーサで配列（`list`）として解釈できる場合は **単純リスト構造**（例：`[foundation, runtime]`）と判定する
+- `depends_on` の値が YAML パーサで辞書（`dict` ／ `mapping`）として解釈できる場合は **連想配列構造**（例：`foundation: hard, runtime: review`）と判定する
+- 上記以外の型（文字列、整数、null、ネスト構造等）は結論不能とし、検査スクリプトは DEVIATION（exit 2）を返す（fail-closed、Req 2 受入 4 と整合）
+
+**連想配列構造の値域**：
+
+- 値は `hard` または `review` の 2 値のみ許容する
+- それ以外の値（例：`weak`、`strong`、空文字、null）は結論不能とし、DEVIATION を返す
+- 将来の依存種別追加（例：`weak`）は、本設計の本節と検査スクリプト実装の両方を同時に更新する
+
+**依存種別の機械処理上の意味**：
+
+- **`hard`（強依存）**：当該依存先の仕様が変更された場合、本機能の `spec.json` の `recheck.upstream_change_pending` を `true` に設定し、`recheck.impacted_downstream_phases` に本機能の下流フェーズ（design／tasks／implementation）を追記する。これにより本機能の下流フェーズの再検査が要求される（reopen 手続きの軽量版として動作）
+- **`review`（レビュー対象）**：当該依存先は本機能のレビュー対象として参照されるのみで、依存先の変更は本機能の `recheck` を自動発火しない。レビュー記録の作成時に依存先の最新状態を読むが、依存先の変更が本機能の再検査を必須化しない
+
+**判定述語との関係**：`depends_on_resolves_correctly` 述語は値域チェックのみを担い、依存先の変更検知と `recheck` の更新発火は別の機構（tasks 段で実装、本設計時点ではフェーズ 2 以降の宿題）が担う。本設計では「述語が値域を判定できる」「機械処理上の意味が確定している」までを設計範囲とし、変更検知ロジックの実装は先送り論点として §先送り論点に追加する。
+
+### 7. feature 一覧の解決と立ち上げ案内（Req 8 受入 6〜8、2026-06-12 反映）
+
+検査スクリプトの `next` サブコマンドは、feature 一覧と機能順をソース直書き定数ではなく
+`feature-dependency.yaml` の `feature_order` キーから解決する（`resolve_feature_order`）。
+ソース直書きの既定機能順は後方互換の既定値であり、`next` では解決結果で上書きされる。
+
+- **探索順**：ツール実行時のカレントディレクトリを基準に、相対パス
+  `.reviewcompass/feature-dependency.yaml` → `stages/feature-dependency.yaml` →
+  `feature-dependency.yaml` の順で確認し、最初に存在したファイル 1 つだけを読む
+  （`FEATURE_DEPENDENCY_SEARCH_PATHS`、`tools/check-workflow-action.py` 内の定数）。親ディレクトリへの遡上探索は行わない。
+  第一探索先の `.reviewcompass/` 配置は「ReviewCompass の物は `.reviewcompass/` に閉じる」原則と
+  整合させるための対象アプリ向け規約で、開発リポジトリは既存の `stages/` 配置のまま互換とする。
+  直下の `feature-dependency.yaml` は標準 2 配置に該当しない配置への後方互換の受け皿であり、
+  標準配置としては使わない（requirements Requirement 8 受入 6 と整合。2026-06-12 requirements
+  triad-review クラスタ A・F1 の精密化を design へ追従）。遡上探索を行わない根拠：親ディレクトリに
+  別の `feature-dependency.yaml` が存在すると、対象アプリ内の入れ子作業ディレクトリや一時ディレクトリ
+  からの実行で意図しないファイルを拾う恐れがあり、解決元の予測可能性（カレントディレクトリ基準の
+  3 パスだけを見れば解決元が確定する）を優先する。
+- **立ち上げ案内**：ファイル不在または `feature_order` 未定義の場合、エラーではなく `next_action.kind: feature_definition_required`（verdict OK／exit 0）を返し、
+  intent／feature-partitioning の実施と、承認された分割結果（依存の根拠と順序の導出を含む）の
+  記録先を案内する。`current_state.feature_dependency_source` に解決元（不在時 null）を含める。
+  **判断 3（fail-closed 全面採用）との両立**：判断 3 は「不可逆操作を誤って許可することによる被害」を
+  防ぐ原則であり、本案内は spec.json 更新・commit・push 等のいかなる操作も許可せず、通常 workflow の
+  次タスク判定も返さない。つまり「作業を進ませない」という安全側の性質は保たれており、fail-closed が
+  守る対象（不可逆操作の誤許可）に抵触しない。立ち上げ案内を DEVIATION にしないのは、対象アプリの
+  初期状態（feature 一覧が未定義であることが正常）で利用者を次の正規手順（intent／feature-partitioning）
+  へ誘導するためである。パース不能（ファイル破損）は未定義（初期状態）と区別して遮断するため
+  （次項「パース不能の遮断」）、破損が案内で覆い隠される弱点は解消済みである（MLE-DEC-005）。
+- **パース不能の遮断**：探索で選ばれた（最初に存在した）1 ファイルが、YAML として読めない、
+  空（内容なし）、または最上位が連想配列でない場合、未定義と区別して `next_action.kind: unknown`
+  （既存の判定種別。整合検査と同じ kind）を返し、破損ファイルのパスと内容確認を促す理由
+  （空の場合は `feature_order` の記録を促す理由）を `reasons` 配列に列挙して DEVIATION
+  （exit code 2、fail-closed）とする。これはファイルそのものの破損・構造異常の検査であり、
+  読み込み後の値の整合検査（次項）より先に判定する。破損を立ち上げ案内で覆い隠さない
+  （MLE-DEC-005、2026-06-12 利用者決定。当初 FUP-2026-06-12-001 として追跡したが同日の
+  利用者決定で遮断分離を実施。Req 8 受入 9 と整合）。
+- **整合検査**：`feature_order` と `depends_on` の整合（依存される機能［依存先］を依存する機能
+  ［依存元］より先に置くこと、循環依存なし）を `validate_feature_order_consistency` が検査し、
+  違反時は `next_action.kind: unknown` を返して違反内容を出力の `reasons` 配列に列挙し、
+  verdict DEVIATION（exit code 2、fail-closed）とする。失敗の種類で挙動を分ける：
+  不在・未定義 → 案内（OK）、パース不能・整合違反 → 遮断（DEVIATION）。
+- **判定点の登録**：`feature_definition_required` は `WORKFLOW_DISCIPLINE_MAP.yaml` の
+  `next_action_kind` 判定点として登録し、effective prompt の生成対象とする
+  （登録は 2026-06-12 の本変更セットで実施済み。書き込み後検証 3 系統を通過、
+  manifest post-write-2026-06-12-004）。
+
+実装：`tools/check-workflow-action.py`（コミット cde1f5c、maintenance side track
+`stages/completed/maintenance-2026-06-11-feature-order-generalization.yaml`、TDD テスト
+`tests/tools/test_check_workflow_action.py`）。本節は実装先行で確立した契約の設計追認である。
+
+## review-wave 要約コマンドモデル（Review-Wave Summary Command Model）— Req 10
+
+reopen R-0（2026-06-14、D-001）で新設。review-wave（機能横断段）の横断確認で使う指標を、手動集計ではなく機械生成する。Req 1 の「段集合 YAML の静的列挙」と Req 2 の検査スクリプトを土台にした、機能内の静的検査である（実装は仕様確定後に TDD で行う正順）。
+
+### 1. 配置と原則（Req 10 受入 1・5）
+
+- サブコマンド `review-wave-summary` を `tools/check-workflow-action.py` に追加する（`next`／`spec-set`／`commit` と同じ CLI 体系。Req 2 の検査スクリプトのサブコマンド）。
+- 読み取りに徹し、`spec.json`・フェーズ状態・トリアージを書き換えない（Req 3 受入 5・Req 4 受入 1 と整合）。書き込みは自身の要約出力に限る。
+
+### 2. 読み取り元と指標の算出定義（Req 10 受入 1・2）
+
+| 指標 | 読み取り元 | 算出定義 |
+| --- | --- | --- |
+| feature coverage | 各 feature の spec.json `workflow_state` | feature ごとに、全 phase × 全 stage のうち true の比率、および「全 phase approval 済みか」。`FEATURE_ORDER` の全 feature を対象。 |
+| phase／stage 状態 | 同上 | feature × phase × stage の真偽をそのまま展開。 |
+| triage 未解決／draft／human_required 件数 | review-run の `triage.yaml` 群（`.reviewcompass/evidence/review-runs/*/triage.yaml`、互換で旧 `.reviewcompass/specs/_cross_feature/reviews/*/triage.yaml`） | unresolved／human_required は `items[]` の `decision_status` で集計、draft は run 単位（補足の判定規則を正とする）。 |
+| recheck 状態 | 各 feature の spec.json `recheck` | `upstream_change_pending` と `impacted_downstream_phases` をそのまま。 |
+| 依存状況 | `feature-dependency.yaml` の `feature_order` と各 feature の依存記述 | `feature_order` を提示し、上流が未 approval の依存（未充足依存）を列挙。解決は Req 8 受入 6 の探索順を再利用。 |
+| carry-forward 未消化件数 | carry-forward register（`learning/workflow/carry-forward-register/*.yaml`） | `items[]` のうち `status` が `resolved` 以外の件数。 |
+
+補足（集計規則）：
+
+- **triage の重複排除**：重複排除は `triage.yaml` ファイル（＝`run_id`）単位で行う。同一 `run_id` の `triage.yaml` が新旧両パスに見つかった場合は、新パス（`evidence/review-runs/`）を優先して 1 ファイルだけ採用する（旧パスは互換読みのみ）。各 finding item は単一の run に属するため、item レベルでの状態競合（同一 item が複数 run で異なる状態）は生じない。
+- **triage 件数の判定規則**（定義はここを正とする）：
+  - `unresolved`（item 単位）＝全 run の `items[]` のうち `decision_status` が `decided` 以外の item 数（`review_triage` の既存定義に一致）。
+  - `human_required`（item 単位）＝全 run の `items[]` のうち `decision_status: human_required` の item 数。
+  - `draft`（**run 単位**）＝`triage.yaml` の `triage_status: draft` である run の数。item 個別の draft は数えない。
+  - unresolved は human_required を内包しうる（重なりを許す内訳。合計は取らない）。draft は run 単位のため item 単位の 2 つとは集計軸が異なる点を Markdown でも明示する。
+- **carry-forward 未消化**：register の各 item の `status` が `resolved` 以外（`in_progress`・`deferred`・未設定などを含む）を未消化として数える。
+
+各指標の集計には既存関数（`load_all_feature_specs`、`feature_order` 解決、`collect_recheck_items`、`review_triage` の集計）を再利用し、二重定義を避ける。
+
+### 3. 出力形式とスキーマ（Req 10 受入 3）
+
+- `--json` で JSON、既定は Markdown。両者は同一情報源から生成し**情報同等**とする。
+- JSON の安定スキーマ（キー名・型を固定。追加は後方互換＝既存キーを変えない）：
+
+```
+{
+  "schema_version": int,                  # 本設計の初版は 1
+  "generated_at": str|null,               # ISO8601。実行時刻は呼び出し側が渡す。省略時 null
+  "status": "ok" | "insufficient",
+  "features": [                           # FEATURE_ORDER 順
+    {
+      "name": str,
+      "coverage": {"completed": int, "total": int, "all_approved": bool},
+      "phases": {                         # phase 名をキーとするオブジェクト
+        "<phase>": {"<stage>": bool, ...}  # 各 phase の stage→真偽
+      },
+      "recheck": {"upstream_change_pending": bool, "impacted_downstream_phases": [str]}
+    }
+  ],
+  "triage": {"unresolved": int, "draft": int, "human_required": int},
+  "dependencies": {"feature_order": [str], "unmet": [{"feature": str, "depends_on": str}]},
+  "carry_forward": {"unresolved": int},
+  "errors": [str]                         # insufficient 時に対象と理由を列挙
+}
+```
+
+- `features[].phases` は **phase 名をキーとするオブジェクト**（配列ではない）で、各値は stage 名→真偽（bool）のオブジェクト。stage キーの集合はその phase が spec.json `workflow_state` に持つ stage 群をそのまま用いる（requirements／design／tasks／implementation は drafting・triad-review・review-wave・alignment・approval、intent は drafting・review・approval、feature-partitioning は candidate-proposal・approval）。bool は当該 stage の完了真偽。spec.json に存在しない stage はキーに含めない。
+- **`status` の判定基準**（必須記録と任意記録を区別）：
+  - **必須記録**＝全 feature の spec.json と feature-dependency.yaml。これらの欠落・解析不能は `insufficient`。
+  - **任意記録**＝triage.yaml 群と carry-forward register。これらの**非在**（glob ゼロ件・ディレクトリ/ファイル欠落＝レビュー未実施の初期状態）は当該件数を 0 として正常に扱い `ok` を妨げない（非在を欠落と同一視しない）。ただし**存在するが解析不能**な任意記録があれば `insufficient`。
+  - 必須記録がすべて読め、存在する任意記録もすべて解析できたとき `ok`。
+- Markdown は同じ項目を見出し＋表で表し、JSON と情報同等とする。
+
+### 4. fail-closed（Req 10 受入 4）
+
+- **不能とする入力範囲（design で一意化）**：(a) **必須記録**（spec.json・feature-dependency.yaml）の欠落、(b) 読み取った記録（必須・任意いずれも）が YAML として解析不能（パース不能）、(c) 最上位が連想配列でない等の構造異常。**任意記録**（triage.yaml 群・carry-forward register）の非在は不能に含めず 0 件として扱う（§3 の status 判定と一致）。これは Req 8 受入 9（パース不能の遮断）と同型で、Req 2 受入 4（結論不能は fail）に従う。
+- これらの場合、`status: insufficient` とし、`errors[]` に対象パスと理由を列挙、**非ゼロ終了コード**を返す。**終了コード規約**は既存サブコマンド（`next`／`spec-set`／`commit`）と整合させ、`0`＝ok、`2`＝insufficient（fail-closed、DEVIATION 相当）とする。`1` は本コマンドの集計判定では使わず、想定外の実行時例外（呼び出し誤り等）にのみ割り当てる。
+- Markdown では見出しに不完全である旨を明示し、完了と誤読させない。
+- 部分的に読めた集計値があっても `status: ok` にしない（部分集計を完了扱いしない）。第 1 層の限界（Req 7・中身の妥当性は判定しない）と整合。
+
+### 5. 保存（Req 10 受入 5）
+
+- 既定は標準出力（保存しない）。オプションで自身の要約出力のみ書き出す：
+  - `--out <path>`：指定パスへ書き出す（パスは呼び出し側が決める）。
+  - `--save`：既定の保存先 `.reviewcompass/specs/_cross_feature/reviews/` に既定命名で書き出す。命名は `<generated_at の日付>-review-wave-summary.<md|json>`（`generated_at` 省略時は連番や日付の付与方法を implementation で確定）。
+- 保存先 `.reviewcompass/specs/_cross_feature/reviews/` は承認済み requirements 受入 5 で定めた現行の横断レビュー記録置き場であり、旧配置ではない（review-run 生成物の `evidence/review-runs/` とは別系統の、人が読む横断記録の置き場）。
+- いずれも spec.json・triage・phase 状態を書き換えない。自身の要約出力の書き出しは状態変更に当たらない（Req 3 受入 5・Req 4 受入 1 と整合）。
+
+### 6. implementation へ委譲する未確定事項
+
+§3 の JSON スキーマ（キー名・型・構造）は**本 design で固定する契約**であり、implementation は変更しない（将来の追加は後方互換でのみ）。implementation 段で確定するのは契約に属さない次の細部に限る：
+
+- `--save` 既定命名の連番・タイムスタンプ付与方法（`generated_at` 省略時の扱い）と、保存先ファイル名が衝突した場合の振る舞い（上書きするか・エラーにするか）。呼び出し側が保存先の一意性を保証する前提とする。
+- 既存関数の具体的な呼び出し・統合方法（`load_all_feature_specs` 等の再利用）。
+- Markdown の具体的な表レイアウト（情報同等を満たす範囲で）。
+
+## Requirement 11 設計モデル：重要決定の出典検査（Req 11）
+
+Requirement 11 は requirements フェーズで「design で確定」と明示した 6 つの事項（記録スキーマ・ロケータ表現・正規化規則・保留管理・内容なし語リスト・接続点）を本節で確定する。
+
+### 1. 重要決定の記録スキーマ（Req 11 受入 1）
+
+**配置先**：`.reviewcompass/decisions/{decision_id}.yaml`（1 決定 = 1 ファイル）。
+
+**フィールド定義**：
+
+```yaml
+decision_id: string          # プロジェクト内一意。命名則: DEC-{機能略称}-{連番3桁}  例: DEC-WM-001
+category: string             # 重要種別: irreversible_operation | discipline_change | spec_plan_change
+statement: string            # 決定文言（1 文〜数文）
+source:
+  excerpt: string            # 出典の逐語引用（会話転写から抜粋した原文）
+  session_id: string         # 転写ファイルのベース名（拡張子なし）例: 2026-06-15-claude-4e02c8a6
+                             # ※ファイル特定の正本は locator のパス部分。session_id はインデックス・メタデータ用補助
+  locator: string            # 形式: {転写ファイルパス}:{ターン番号}
+                             # 例: .reviewcompass/evidence/sessions/2026-06-15-claude-4e02c8a6.md:42
+                             # ターン番号: 転写内の ## セクションを先頭から 1 から数えた順序番号（人向け位置情報）
+                             # ※逐語照合はロケータを使わず転写全文を照合対象とする（§3 参照）
+  multiplicity: string       # single（当該決定専用）| bundled（他の決定と出典共有）
+verification_status: string  # verified | pending | unverifiable
+verified_at: string          # ISO 8601 タイムスタンプ（verified 時のみ。pending/unverifiable は省略）
+bundle_exception_id: string  # optional。multiplicity: bundled かつ例外承認済みの場合のみ
+                             # 命名則: BEX-{機能略称}-{連番3桁}  例: BEX-WM-001
+```
+
+**型制約**：
+- `category`：3 値 enum のみ。種別判定基準（§1 末尾参照）。
+- `multiplicity: bundled`：束ね検出が fail-closed する（Req 11 受入 2）。例外承認がある場合は `bundle_exception_id` フィールドを追加し、束ね例外承認手順（§2）を経て各決定の `multiplicity` を `single` に更新することを確定の必要条件とする。
+- `verification_status`：
+  - `verified`：逐語照合合格済み。`verified_at` が必須。
+  - `pending`：確定済み重要決定として扱わない。後続の確定・承認の根拠に用いない。
+  - `unverifiable`：逐語照合対象の転写ファイルが取得不能・解析不能、または必須フィールドが欠落しており機械が照合を完了できない状態。lint が内部エラー検出時に判定結果として扱う（commit を DEVIATION で遮断）。記録者が初期値として設定するのは出典が原則取得不能（口頭合意等でセッションログが存在しない）なケースに限る。
+
+**`category` 種別判定基準**（Req 11 受入 1 からの design 委任事項）：
+
+| 種別 | 対象例 | 除外例 |
+| --- | --- | --- |
+| `irreversible_operation` | コミット・プッシュ・フェーズ移行・reopen 開始 | ファイル読み取り・検査スクリプト実行 |
+| `discipline_change` | docs/disciplines/ の規律ファイル変更・内容なし語リスト拡張 | 規律の参照・説明 |
+| `spec_plan_change` | requirements.md / design.md / tasks.md の内容追加・変更、spec.json の確定的変更 | stages/in-progress/ への作業ログ追記、spec.json の段フラグ（true/false）更新のみ、進行中ファイルの next_step 記録 |
+
+**going-forward 適用**：本スキーマは新規重要決定にのみ適用し、過去の散文決定台帳は遡及移行しない（Req 11 受入 1 確定済み）。
+
+### 2. 束ね例外の扱いと記録（Req 11 受入 2）
+
+機械は `multiplicity: bundled` を検出して fail-closed（非ゼロ終了）する。例外が承認された場合のみ進行を許可する。例外の承認手順：
+
+1. 人の明示承認記録 `.reviewcompass/decisions/bundle-exceptions/{bundle_exception_id}.yaml` を別途保存する。
+   承認レコードの最低限スキーマ：
+   ```yaml
+   bundle_exception_id: string   # 例: BEX-WM-001
+   approved_by: string           # 承認者の識別子（人間のみ。proxy_model は束ね例外を承認できない）
+   approved_at: string           # ISO 8601 タイムスタンプ
+   covered_decision_ids:         # この例外が適用される decision_id のリスト
+     - string
+   rationale: string             # 束ねが避けられない理由の説明
+   ```
+2. 各決定に個別の `source.excerpt`・`source.locator`・`bundle_exception_id` フィールドを付与し、`multiplicity` を `single` に更新する（Req 11 受入 2「個別出典なしには確定させない」の機械強制）。
+3. lint は（a）承認レコードが存在し、（b）当該 `decision_id` が `covered_decision_ids` に含まれ、（c）`multiplicity: single` であること、の 3 条件をすべて満たす場合のみ通過とする。
+
+「個別出典なしには確定させない」という必要条件は design で緩めない。
+
+### 3. 逐語照合・正規化規則・保留状態管理（Req 11 受入 3）
+
+**正規化規則**（照合の前処理として両辺に適用）：
+1. Unicode NFC 正規化。
+2. 連続する空白・改行・タブを単一の半角スペースに置換。
+3. 先頭・末尾の空白を除去。
+
+**照合の対象範囲**：`source.locator` のパス部分に対応する層 1 転写ファイル（`.reviewcompass/evidence/sessions/`）の全文字列を検索する。`source.locator` のターン番号での絞り込みは行わず、全文を照合対象とする（ターン番号は人向けの位置情報であり、lint は使用しない）。
+
+**保留状態の管理と後追い確定の順序制御**：
+
+| ステップ | 主体 | 内容 |
+| --- | --- | --- |
+| 1 | 記録者 | `verification_status: pending` として記録する |
+| 2 | 作業継続 | 作業（コミット等）はブロックしない。確定済みとして扱わない |
+| 3 | SessionStart フック | セッション転写を `.reviewcompass/evidence/sessions/` に取り込む |
+| 4 | 保守担当 | `check-workflow-action.py decision-source-lint --verify-pending` を実行 |
+| 5 | lint | 逐語照合合格 → `verification_status: verified` へ更新・`verified_at` に現在日時を記録（Req 11 受入 5 の読み取り専用例外として design で明示。書き換えられるフィールドは `verification_status`・`verified_at` の 2 フィールドのみ） |
+| 5b | lint | 逐語照合**不合格** → `verification_status` を変更しない（`pending` のまま）。差分表示と非ゼロ終了のみを行う |
+| 6 | — | タイムアウト昇格なし。照合合格のみが確定の唯一の経路 |
+
+### 4. 内容なし語リスト（Req 11 受入 4）
+
+**設定ファイル配置**：`stages/decision-source-lint-config.yaml`
+
+**初期リスト**：
+
+```yaml
+empty_content_words:
+  - "OK"
+  - "ok"
+  - "承認"
+  - "了解"
+  - "はい"
+  - "Yes"
+  - "yes"
+  - "LGTM"
+  - "✓"
+  - "◯"
+  - "○"
+```
+
+**判定ロジック**：正規化後の `source.excerpt` に対して、以下の手順で判定する。
+1. 句読点・記号（。、！？）を除去する。
+2. スペース区切りでトークン化する。
+3. 全トークンが `empty_content_words` リストに含まれる場合、内容なし（fail-closed、非ゼロ終了）。
+（例：「承認！」→ 記号除去 →「承認」→ リスト一致 → fail-closed。「承認します」→「承認します」→ リスト不一致 → 通過）
+
+**リスト拡張**：規律変更扱い（Req 11 受入 4 の規定どおり人の明示承認を要する）。設定ファイル自体の変更も同じ扱いとする。
+
+### 5. サブコマンドと接続点（Req 11 受入 5・7）
+
+**サブコマンド名**：`decision-source-lint`（Req 2 サブコマンドとして提供する必須基線）。
+
+**呼び出し形式**：
+
+```
+check-workflow-action.py decision-source-lint [--all | <decision_file>]
+check-workflow-action.py decision-source-lint --verify-pending
+```
+
+- 引数なし or `--all`：`.reviewcompass/decisions/` 直下の YAML ファイルのみを検査（`bundle-exceptions/` サブディレクトリは除外する。承認レコードは decision スキーマと異なるためパース失敗→ unverifiable → commit 遮断の誤動作を防ぐ）。
+- `<decision_file>`：指定ファイルのみ検査。
+- `--verify-pending`：`verification_status: pending` の決定を再照合し、合格すれば `verified` へ更新する。ファイルを書き換える唯一の合法的な経路。Req 11 受入 5 の読み取り専用例外として design で明示的に確定する（書き換えるフィールドは `verification_status`・`verified_at` の 2 フィールドに限定）。
+
+**commit 直前ゲートへの組み込み**（Req 11 受入 7 の「設計拡張」として本 design で確定）：
+
+- **組み込む**。`commit` サブコマンドは `decision-source-lint --all` を呼び出す。
+- `verification_status: pending` の決定：WARN（commit の進行を遮断しない。AC3 のデッドロック回避）。
+- `verification_status: unverifiable`（記録が解析不能・必須フィールド欠落）：DEVIATION（fail-closed、commit を遮断）。
+- `multiplicity: bundled` かつ承認レコードなし：DEVIATION（fail-closed）。
+
+### 6. implementation へ委譲する未確定事項
+
+本節の §1〜5 のスキーマ・規則・サブコマンド構成は **本 design で固定する契約** であり、implementation は変更しない。implementation 段で確定するのは次の細部に限る：
+
+- `--verify-pending` でファイルを更新する際の安全性保証（並行書き込みの防止・失敗時の不完全書き込み防止）。
+- `bundle_exception_id` の採番規則の実装細部（予約済みの命名則 `BEX-{機能略称}-{連番3桁}` を実装で確認）。
+- 逐語不一致時の差分表示形式（どこが一致しなかったかの人向け出力。情報を含む範囲で形式を選ぶ）。
+- `decision-source-lint` の既存関数との統合方法（`load_all_feature_specs` 等の再利用可否）。
+
+## Requirement 12 設計モデル：operation registry / preflight（Req 12）
+
+Requirement 12 は、作業開始前に「正本コマンド・入力・成果物・順序・衝突・停止条件」を同じ形式で確認するための operation registry / preflight 層である。本節は registry と read-only preflight を先に確定し、operation contract の物理正本と runner による実行代行は後段へ分離する。
+
+### 1. operation registry / preflight binding schema（Req 12 受入 1）
+
+**配置先**：`stages/operation-registry.yaml`。workflow-management が所有し、他 feature は参照のみ行う。`stages/operation-registry.yaml` は registry 固有メタデータと preflight binding の正本であり、operation contract field または contract semantics の正本ではない。operation contract の物理正本は Requirement 13 の `stages/operation-contracts.yaml` とする。
+
+各 operation は最低限、次のフィールドを持つ。
+
+```yaml
+operation_id: string
+kind: irreversible | review_artifact | workflow_state | evidence_capture | deployment_export
+operation_family: review_artifact | workflow_cli | commit_approval_chain | session_record_capture | deployment_export | nested_issue_control
+canonical_invocation:
+  entrypoint: string
+  subcommand: string
+  options: [string]
+  positional_args: [string]
+  execution_context: repo_root | target_app_root | external_output
+workflow_binding:
+  phase: intent | feature-partitioning | requirements | design | tasks | implementation | null
+  stage: drafting | triad-review | review-wave | alignment | approval | null
+  gate: string | null
+  next_action_kind: string | null
+required_inputs: [string]
+target_identity: [string]
+planned_outputs: [string]  # contract 由来の参照・投影・binding hint。出力 contract 正本ではない。
+sequence_mode: parallel_ok | serial_only
+worktree_policy: string
+pending_conflict_policy: string
+artifact_policy: string
+family_required_checks: [string]
+vocabulary_refs: [string]
+```
+
+`workflow_binding` は workflow 段に属する operation のみ必須とする。該当しない operation では `null` を許すが、`kind` と `artifact_policy` で適用範囲を説明する。
+
+registry schema は operation contract field を構造的に受け付けない。`stages/operation-registry.yaml` の各 operation entry では、`effect_kind`、`approval_required`、`phase_boundary`、`preconditions`、`postconditions`、`side_effects`、`approval_aggregation`、`branching`、`max_effect_kind`、出力・副作用 contract field を禁止キーとする。これらの値は `operation_contract_ref`、`contract_digest`、`contract_schema_version` から `stages/operation-contracts.yaml` の contract 正本を解決して読む。禁止キーが registry entry に存在する場合は schema validation error とし、preflight の runtime integrity check 以前に `DEVIATION` として扱う。
+
+registry schema が許す contract 接続フィールドは、最低限 `operation_contract_ref`、`contract_digest`、`contract_schema_version` に限定する。`planned_outputs`、`sequence_mode`、`required_inputs`、`target_identity` は preflight binding hint として保持してよいが、contract 正本と矛盾した場合は registry 側を優先せず、contract digest / schema_version drift または binding projection drift として fail-closed にする。
+
+`operation_family` は operation ごとの policy 文字列だけに依存しないための型である。たとえば `review_artifact` は target / manifest / bundle / criteria / document-type / approval record の対応検査、`commit_approval_chain` は nonce / digest / expiry / consume / invalidated / target 検査、`deployment_export` は planned outputs / overwrite policy / external root 検査を `family_required_checks` として必ず持つ。`planned_outputs` は registry が operation contract から導出・参照・投影する binding hint であり、出力 contract の二重正本にしてはならない。未知の `kind`、未知の `operation_family`、未登録の `sequence_mode`、存在しない entrypoint、parser / parser adapter と一致しない option、family に必須の check 欠落は registry 定義エラーである。
+
+### 2. preflight response schema（Req 12 受入 2〜3）
+
+preflight は read-only であり、正本 artifact を作成・更新しない。出力は JSON を正本とし、Markdown は人向け表示に限る。
+
+```yaml
+schema_version: string
+operation_id: string
+verdict: OK | WARN | DEVIATION
+allowed_verdicts: [OK, WARN, DEVIATION]
+sequence_mode: parallel_ok | serial_only
+allowed_sequence_modes: [parallel_ok, serial_only]
+state_refs:
+  next_action:
+    kind: string
+    current_mainline: string
+    required_action: string
+    phase: string
+    stage: string
+    reopen_scope: [string]
+    impact_review_scope: [string]
+    direct_features: [string]
+    indirect_features: [string]
+    flag_policy: object
+    next_pending_gate: string | null
+    next_drafting_gate: string | null
+    pending_gates: [string]
+    completed_gates: [string]
+    superseded_gates: [string]
+    state_files: [string]
+    inconsistencies: [object]
+  current_session_id: string | null
+  target_session_id: string | null
+  session_record_mode: formal | diagnostic | none | null
+  nested_issue_state:
+    parent_task_id: string | null
+    discovered_issue_id: string | null
+    relation: blocker | follow-up | side-track | dependent_issue | null
+    allowed_files: [string]
+    return_condition: string | null
+    nesting_depth: integer
+  workflow_state_files: [string]
+  git_index: object | null
+required_inputs: [string]
+missing_inputs: [string]
+template_available: boolean
+target_identity: [string]
+worktree_state: object
+pending_conflicts: [object]
+integrity_conflicts: [object]
+checks: [object]
+planned_outputs: [string]
+canonical_commands: [string]
+next_step: string
+```
+
+workflow state に依存する operation は、`state_refs.next_action` に `next --json` から読んだ active state dimensions を含める。少なくとも current mainline、`required_action`、phase、stage、`reopen_scope`、`impact_review_scope`、direct / indirect features、flag policy、`next_pending_gate`、`next_drafting_gate`、`pending_gates`、`completed_gates`、superseded gate の有無、参照 state files を含める。
+
+`planned_outputs` は preflight が registry と operation contract を照合した結果として返す参照・投影・binding hint であり、preflight response が出力 contract を定義してはならない。
+
+`allowed_verdicts` は、その operation contract が許す verdict 集合である。省略時や通常 operation では `[OK, WARN, DEVIATION]` を使う。subset を許す場合は operation contract に理由を明示し、`verdict` は必ず `allowed_verdicts` の要素でなければならない。`DEVIATION` は hard-stop であり、operation policy や人向け表示の都合で `WARN` に下げてはならない。
+
+preflight は `review-run directory`、manifest、approval record、session record、commit、deployment / export output を作らない。作成が必要な場合は、Phase 2 runner operation として別 operation にする。
+
+### 3. verdict と fail-closed（Req 12 受入 3、7〜9）
+
+`DEVIATION` は対象 operation の開始を拒否する。次の場合は少なくとも `DEVIATION` とする。
+
+- 必須入力欠落
+- 正本 command / option / entrypoint が parser または parser adapter と不一致
+- 上書き禁止 policy 違反
+- serial_only operation の順序外・並列実行
+- approval chain の nonce / target digest / staged file set digest 不一致、期限切れ、消費済み、invalidated、対象外 record
+- current-session formal record の作成要求
+- side-track / follow-up / blocker 記録なしの scope drift
+- `next` active state dimensions と operation contract の workflow binding が矛盾
+- `feature_impact_decisions`、`spec.json`、`pending_gates`、`drafting_completed_gates`、`downstream_impact_decisions`、`reopen_scope`、`impact_review_scope` の間に矛盾がある
+- `allowed_verdicts` が不正、または `DEVIATION` 対象条件を `WARN` として返そうとしている
+- registry の contract 参照欠落、contract digest / schema_version drift、contract authority field の複製、未接続 `required_action` mapping
+
+`WARN` は advisory / read-only 条件で、かつ operation contract が「開始は妨げないが注意表示が必要」と明示した場合に限る。上記の hard-stop 条件は `WARN` にできない。安全性または適用可否を確認できない場合、read-only diagnostic 表示では `WARN` 以上を返してよいが、operation が安全に束縛済みまたは実行可能であるとは報告しない。runner-enabled operation では同じ状態を `DEVIATION` とする。
+
+### 4. command validation（Req 12 受入 4）
+
+command validation の正本は help 文字列ではなく、実 parser または parser adapter とする。adapter は、argparse 等からサブコマンド、option、required option、位置引数を取り出し、operation registry の `canonical_invocation` と照合する。
+
+`reopen-status`、`next --file`、誤った script path、短縮名、未登録 alias のような推測実行は、成果物作成前に `DEVIATION` または確認不能 `WARN` として返す。
+
+### 5. worktree / pending / integrity conflict（Req 12 受入 5）
+
+preflight は worktree conflict と integrity conflict を分けて返す。
+
+- worktree conflict：post-write pending、reopen in-progress、maintenance in-progress、staged / unstaged 混在、対象外差分同居、commit approval 後の staged 変更。
+- integrity conflict：worktree が clean でも発生する承認 record、delegation record、manifest、bundle、target digest の欠落、stale、不一致、消費済み、対象外。
+
+`pending_conflict_policy` と `artifact_policy` が明示されていない衝突は `OK` にしてはならない。
+
+### 6. review artifact preflight（Req 12 受入 6）
+
+初期・拡張可能な対象 operation id は次とする。
+
+- `post_write_review`
+- `review_run_create`
+- `triage_decide`
+- `document_type_preflight`
+- `review_criteria_preflight`
+- `post_write_manifest_coverage_preflight`
+- `approval_record_preflight`
+- `bundle_preflight`
+
+検査対象は review target、manifest、bundle、criteria、document-type、approval record、既存 review-run artifact の対象集合一致である。phase / artifact 種別に必要な一次情報が review target に含まれること、差分 bundle が空でないこと、staged / unstaged のどちらを対象にすべきか、既存 artifact の上書き・stale・drift がないことを作成前に確認する。
+
+### 7. commit approval chain と serial_only（Req 12 受入 7）
+
+`prepare -> record -> delegate-execution -> guarded commit` は内部 chain として `serial_only` として扱う。配布可能 UX では `guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` が `record -> delegate-execution -> guarded commit` を単一操作として順序実行する。preflight は各段階の成果物存在、nonce、target digest、staged file set digest、staged content approval digest、expiry、consume 状態を返す。
+
+この設計は Requirement 4 の commit approval / execution delegation 契約を置き換えない。Requirement 12 は操作開始前にそれらを参照して、順序外実行や古い承認を早期に止める。
+
+### 8. current-session formal record guard（Req 12 受入 8）
+
+evidence capture 系 operation では、formal 2 層 session record 出力が現セッションを対象にしていないことを作成前に確認する。preflight response は `session_record_mode`、`current_session_id`、`target_session_id` を返す。`session_record_mode=formal` の場合、`current_session_id` と `target_session_id` がどちらも既知であり、かつ一致しないことを必須条件にする。current session id を確認できない、target session id を確認できない、または両者が一致する場合は正式出力を fail-closed にする。
+
+commit guard による混入防止は最後の保険として維持し、preflight は生成前防止を担う。
+
+### 9. nested issue handling（Req 12 受入 9）
+
+preflight は、parent task、発見 issue、親作業との関係、分類（blocker / follow-up / side-track / dependent issue）、allowed files、return condition、nesting depth を確認する。
+
+この情報は `state_refs.nested_issue_state` に返す。`relation`、`allowed_files`、`return_condition` が欠けている状態で、元作業の対象、検証範囲、allowed files、review target、manifest target、return condition が広がる場合は `DEVIATION` とする。意味的にどの分類が妥当かは人または review / proxy が判断する。
+
+### 10. deployment / export preflight（Req 12 受入 10）
+
+deployment smoke、deploy package build、runtime bundle export など repo 外または出力ディレクトリへ成果物を書く operation は、作成予定ファイル一覧、出力先の既存成果物、上書き禁止 policy、外部 app root への書き込み、既存 bundle / smoke-run / app file との衝突を作成前に返す。
+
+deployment / export は read-only preflight の対象であり、実際の出力作成は Phase 2 runner operation として分離する。
+
+### 11. reopen scope / impact review scope と next state uniqueness（Req 12 受入 11・13）
+
+`next --json` は Requirement 2 が所有する。Requirement 12 は、その出力を operation preflight が一意に参照できるよう拡張する。
+
+`reopen_in_progress` の `next_action` は次を含める。
+
+- current mainline
+- `required_action`
+- `active_gate`
+- `blocked_by`
+- phase / stage
+- `reopen_scope`
+- `impact_review_scope`
+- direct / indirect features
+- flag policy
+- `next_pending_gate`
+- `next_drafting_gate`
+- `pending_gates`
+- `completed_gates`
+- superseded gate の有無
+- 参照した state files
+
+`reopen_scope` は正本を再オープンして flag を false に戻す feature、`impact_review_scope` は正本変更要否だけを確認し flag を維持する feature である。active scope の正本は `stages/in-progress/reopen-procedure-*.yaml` の `active_reopen_scope` と `active_impact_review_scope` であり、`next --json` はこれらを `next_action.reopen_scope` と `next_action.impact_review_scope` へ写す。これらは `feature_impact_decisions`、`spec.json`、`pending_gates`、`drafting_completed_gates`、`downstream_impact_decisions` と整合しなければならない。整合しない場合、`next` は通常進行を許す `OK` として扱わず、`WARN` または `DEVIATION` と理由を返す。
+
+Requirement 12 は `next --json` の別正本を持たない。operation preflight は `state_refs.next_action` に Requirement 2 の selector 結果を写し、operation 開始前の照合に使う。preflight 側が pending gate や maintenance action を独自に選んではならない。
+
+### 12. LLM / provider / model 非依存（Req 12 受入 12）
+
+preflight の合否判定は repository 状態、git index、workflow state、registry 定義、parser / parser adapter、既存成果物、明示入力に限定する。LLM、provider、model 名は合否条件に含めない。LLM ごとの差異は説明文や prompt 表現に限定する。
+
+### 13. Phase 1 / Phase 2 の境界
+
+- Phase 1：read-only registry / preflight。成果物を作らず、operation 可否と衝突を返す。
+- Phase 2：runner-enabled operation。Phase 1 の preflight が `OK` または明示許可された `WARN` の場合のみ、実際の artifact 作成・更新を行う。
+
+実装フェーズでは Phase 1 を先に TDD 対象にする。Phase 2 は runner 契約と安全確認を別タスクに分ける。
+
+## Requirement 13 設計モデル：operation contract 語彙と required_action 対応（Req 13）
+
+Requirement 13 は、`next --json` の選択層が返す唯一 action を、実行層の operation contract へ接続する。Requirement 12 の operation registry / preflight は「操作開始前の read-only 確認」を担い、本節の operation contract は「操作の副作用・承認要否・順序・前提・事後条件」を定義する。
+
+### 1. 共通語彙 schema（Req 13 受入 1〜2）
+
+Phase 1 で追加する schema は次の 5 ファイルである。いずれも JSON Schema Draft 2020-12 を使い、既存実行挙動を変更しない。
+
+| ファイル | 責務 |
+|---|---|
+| `.reviewcompass/schema/effect_kind.schema.json` | `read`、`write`、`state_mutation`、`external_call` の 4 値を定義する |
+| `.reviewcompass/schema/phase_boundary.schema.json` | `none`、`within_phase`、`phase_transition`、`reopen_boundary`、`commit_boundary`、`push_boundary`、`external_boundary` を定義する |
+| `.reviewcompass/schema/operation_contract.schema.json` | operation contract の共通構造を定義する |
+| `.reviewcompass/schema/workflow_state_snapshot.schema.json` | Requirement 14 の snapshot 構造を定義する |
+| `.reviewcompass/schema/language_task_io.schema.json` | Requirement 15 の `language_task` 入出力構造を定義する |
+
+`effect_kind` は副作用の種類だけを表す。承認要否は `approval_required` として独立させ、`read` でも承認が必要な操作、`state_mutation` でも承認不要な判断記録操作を表現できるようにする。
+
+### 2. operation contract schema（Req 13 受入 3〜4、10）
+
+`operation_contract.schema.json` の論理構造は次を最低限とする。
+
+```yaml
+schema_version: string
+operation_id: string
+required_action: string
+effect_kind: read | write | state_mutation | external_call
+approval_required: boolean
+approval_contract_refs: [string]
+phase_boundary: none | within_phase | phase_transition | reopen_boundary | commit_boundary | push_boundary | external_boundary
+sequence:
+  mode: parallel_ok | serial_only
+  internal_steps: [object]
+actor:
+  kind: human | llm | proxy_model | tool | mixed
+  source: string
+branching:
+  has_branches: boolean
+  branches: [object]
+max_effect_kind: read | write | state_mutation | external_call
+preconditions: [object]
+postconditions: [object]
+state_refs: [string]
+registry_refs: [string]
+```
+
+`approval_required` は boolean のみを許容する。外部送信承認、human-only gate、または対象 operation 固有の承認 contract への接続は `approval_contract_refs` または branch / internal step の `approval_contract_ref` に分離し、`approval_required` 欄に方針文を入れてはならない。`preconditions` と `postconditions` は `id`、`description`、`check_kind`、`machine_checkable`、`source_ref`、`failure_verdict` を持つ。`machine_checkable=false` の条件を `OK` の根拠にしてはならない。read-only advisory 段階では確認不能を `WARN` 以上、runner-enabled operation では `DEVIATION` として扱う。
+
+### 3. required_action 19語彙の対応表（Req 13 受入 3〜5、7〜8）
+
+19語彙の正本は `.reviewcompass/schema/required_action.schema.json` である。operation contract の物理正本は `stages/operation-contracts.yaml` とし、`stages/operation-registry.yaml` は operation registry / preflight binding の正本として各 `required_action` から `operation_contract` ID と contract digest / schema_version を参照する。
+
+`stages/operation-contracts.yaml` は、最低限 `required_action`、`effect_kind`、`approval_required`、`approval_contract_refs`、`phase_boundary`、`sequence`、実行主体、分岐条件、preconditions / postconditions、side effects、承認要否の集約規則、branch / internal step semantics、max effect、出力・副作用 contract field を持つ。`stages/operation-registry.yaml` は operation id、canonical invocation、workflow binding、required inputs、target identity、sequence mode、worktree / pending / artifact policy、planned outputs の参照・投影・binding hint、contract ID、contract digest、schema_version を持ち、contract field を再定義しない。registry / preflight は contract と state evidence を読み取って確認するだけで、contract 更新、operation 実行、approval consume、workflow state 作成、review-run artifact 作成、artifact mutation、action 独自選択を行わない。
+
+registry / contract の整合検査は次を fail-closed にする。
+
+- registry が参照する contract ID が存在しない
+- registry が保持する contract digest または schema_version が contract 正本と一致しない
+- registry が `effect_kind`、`approval_required`、`approval_contract_refs`、`phase_boundary`、preconditions / postconditions、side effects、承認要否の集約規則、branch / internal step semantics、max effect、出力・副作用 contract field を複製して二重正本化している
+- contract が required_action schema に存在しない語彙を参照している
+- required_action schema の語彙が contract に接続されていない
+
+19語彙の operation contract 基線は次とする。各 contract はこの表を最小境界とし、詳細 preconditions / postconditions は `stages/operation-contracts.yaml` でこの基線から弱めずに具体化する。
+
+| required_action | effect_kind | approval_required | phase_boundary | sequence.mode | actor.kind | 分岐 |
+|---|---|---:|---|---|---|---|
+| `repair_workflow_state` | `state_mutation` | true | `within_phase` | `serial_only` | `tool` | なし |
+| `run_post_write_verification` | `external_call` | false | `within_phase` | `serial_only` | `mixed` | なし |
+| `wait_for_human_decision` | `read` | false | `none` | `serial_only` | `human` | なし |
+| `record_human_decision` | `state_mutation` | false | `within_phase` | `serial_only` | `tool` | なし |
+| `run_maintenance` | `state_mutation` | true | `within_phase` | `serial_only` | `mixed` | あり |
+| `advance_reopen_after_commit_stop_point` | `state_mutation` | true | `reopen_boundary` | `serial_only` | `tool` | なし |
+| `commit_stop_point` | `state_mutation` | true | `commit_boundary` | `serial_only` | `human` | なし |
+| `draft_reopen_plan_candidates` | `write` | false | `within_phase` | `serial_only` | `llm` | なし |
+| `apply_approved_reopen_plan` | `state_mutation` | true | `reopen_boundary` | `serial_only` | `tool` | なし |
+| `advance_reopen_after_approval_stop_point` | `state_mutation` | true | `reopen_boundary` | `serial_only` | `tool` | なし |
+| `repair_canonical_documents` | `write` | false | `within_phase` | `serial_only` | `mixed` | なし |
+| `run_reopen_drafting` | `write` | false | `within_phase` | `serial_only` | `llm` | なし |
+| `run_reopen_pending_gate` | `external_call` | false | `within_phase` | `serial_only` | `mixed` | あり |
+| `collect_required_decisions` | `read` | false | `none` | `serial_only` | `tool` | なし |
+| `finalize_reopen` | `state_mutation` | true | `reopen_boundary` | `serial_only` | `tool` | なし |
+| `draft_reopen_classification` | `write` | false | `within_phase` | `serial_only` | `llm` | なし |
+| `run_reopen_start` | `state_mutation` | true | `reopen_boundary` | `serial_only` | `tool` | なし |
+| `run_workflow_stage` | `state_mutation` | true | `phase_transition` | `serial_only` | `mixed` | あり |
+| `completed` | `read` | false | `none` | `parallel_ok` | `tool` | なし |
+
+各 `required_action` の preconditions / postconditions 基線は次とする。`stages/operation-contracts.yaml` はこの基線を弱めず、各 `id` を machine-checkable な check と `source_ref` に展開する。
+
+| required_action | precondition baseline IDs | postcondition baseline IDs |
+|---|---|---|
+| `repair_workflow_state` | `state_evidence_present`, `repair_plan_bound`, `human_only_repair_authorized` | `state_consistency_restored`, `repair_evidence_saved` |
+| `run_post_write_verification` | `changed_targets_detected`, `verification_manifest_bound` | `verification_artifact_saved`, `unresolved_findings_recorded` |
+| `wait_for_human_decision` | `pending_human_gate_present`, `target_operation_bound` | `no_state_mutation`, `blocked_state_reported` |
+| `record_human_decision` | `pending_gate_present`, `decision_scope_derived`, `binding_digest_matches` | `decision_record_saved`, `target_operation_not_auto_approved` |
+| `run_maintenance` | `side_track_frame_present`, `allowed_scope_bound`, `branch_condition_resolved` | `maintenance_evidence_saved`, `return_condition_preserved` |
+| `advance_reopen_after_commit_stop_point` | `commit_stop_point_committed`, `worktree_clean`, `reopen_state_bound` | `commit_stop_point_cleared`, `reopen_gate_selector_reenabled` |
+| `commit_stop_point` | `staged_content_bound`, `commit_approval_valid`, `post_write_verification_clear` | `commit_created`, `approval_consumed`, `reopen_state_preserved` |
+| `draft_reopen_plan_candidates` | `classification_basis_present`, `reopen_scope_bound` | `candidate_plan_saved`, `human_decision_required` |
+| `apply_approved_reopen_plan` | `approved_plan_record_present`, `plan_digest_matches`, `human_only_approval_valid` | `reopen_in_progress_record_created`, `active_scope_initialized` |
+| `advance_reopen_after_approval_stop_point` | `human_approval_record_valid`, `pending_gate_bound` | `approval_stop_point_cleared`, `next_reopen_step_selected` |
+| `repair_canonical_documents` | `target_documents_bound`, `allowed_scope_bound`, `repair_basis_present` | `canonical_documents_updated`, `post_write_verification_required` |
+| `run_reopen_drafting` | `active_reopen_scope_present`, `drafting_gate_selected` | `draft_artifact_updated`, `drafting_completed_gate_recorded` |
+| `run_reopen_pending_gate` | `active_gate_resolved`, `gate_contract_bound`, `required_evidence_present` | `gate_evidence_saved`, `downstream_impact_recorded_if_needed` |
+| `collect_required_decisions` | `open_decision_sources_present`, `decision_records_discoverable` | `required_decision_list_reported`, `no_state_mutation` |
+| `finalize_reopen` | `pending_gates_empty`, `active_scope_covered`, `human_only_finalize_approval_valid` | `reopen_record_completed`, `active_scope_closed` |
+| `draft_reopen_classification` | `upstream_change_evidence_present`, `affected_feature_scope_known` | `classification_basis_saved`, `reopen_start_decision_required` |
+| `run_reopen_start` | `classification_approved`, `target_scope_bound`, `human_only_start_approval_valid` | `reopen_in_progress_record_created`, `spec_flags_updated` |
+| `run_workflow_stage` | `stage_contract_bound`, `branch_condition_resolved`, `required_artifacts_available` | `stage_evidence_saved`, `completion_predicate_rechecked` |
+| `completed` | `no_pending_required_action`, `workflow_state_consistent` | `completed_report_returned`, `no_state_mutation` |
+
+`run_maintenance`、`run_reopen_pending_gate`、`run_workflow_stage` は branchy operation であり、代表値だけで実行可否を判断してはならない。これらの contract は `effect_kind` に最大副作用、`max_effect_kind` に同じ値またはより強い値を持ち、`branching.branches[]` で各 branch の条件、内部 step、step ごとの `effect_kind`、承認要否、phase boundary を列挙する。
+
+`branching.branches[]` の最低構造は、`branch_id`、`condition`、`internal_steps[]`、`max_effect_kind`、`approval_aggregation`、`human_only_override_applies`、`precondition_ids[]`、`postcondition_ids[]` を持つ。`internal_steps[]` の各要素は、最低限 `step_id`、`effect_kind`、`approval_required`、`approval_contract_ref`、`phase_boundary`、`source_ref` を持つ。`approval_contract_ref` は `none` または `stages/operation-contracts.yaml` 内の承認 contract ID とする。branch 表の「internal steps」は人向け略記であり、operation contract ではこの step 構造へ展開する。
+
+`run_maintenance` の初期 branch は次とする。
+
+| branch condition | internal steps | branch max_effect_kind | approval aggregation | approval contract refs | 補足 |
+|---|---|---|---|---|---|
+| `maintenance_kind=read_only_diagnostic` | 対象資料読取、diagnostic artifact 生成なし、結果表示 | `read` | `all_false` | `none` | 正本 artifact を作らない |
+| `maintenance_kind=working_note_or_decision_basis` | working note / decision basis 作成、対象 digest 記録 | `write` | `any(child.approval_required)` | `none` | 正本変更ではなく判断根拠保存 |
+| `maintenance_kind=canonical_document_repair` | 対象正本文書読取、利用者または proxy 判断の照合、正本文書更新、post-write verification | `write` | `any(child.approval_required)` | `none` | source-of-truth 文書修正は対象 contract を別途参照する |
+| `maintenance_kind=workflow_state_repair` | state evidence 読取、repair plan 照合、workflow state 更新、整合検査 | `state_mutation` | `true` | `repair_workflow_state` | `repair_workflow_state` contract を参照する |
+| `maintenance_kind=external_review_or_audit` | prompt 生成、外部 provider 実行、raw / parsed / metadata 保存 | `external_call` | `any(child.approval_required)` | `external_send_approval` | provider/model は合否条件ではなく実行証跡 |
+
+`run_maintenance` の approval aggregation は `any(child.approval_required)` とする。ただし、子 step が `human_only` decision scope、commit / push / `spec.json` update、phase / gate completion、reopen finalize、approval_required irreversible operation execution を含む場合、proxy_model は承認主体になれない。
+
+`run_maintenance` の branch 内 step 基線は次とする。
+
+| branch condition | step_id | effect_kind | approval_required | approval_contract_ref | phase_boundary | source_ref |
+|---|---|---|---:|---|---|---|
+| `maintenance_kind=read_only_diagnostic` | `read_target_materials` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-read_target_materials` |
+| `maintenance_kind=read_only_diagnostic` | `present_diagnostic_result` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-present_diagnostic_result` |
+| `maintenance_kind=working_note_or_decision_basis` | `read_decision_basis_sources` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-read_decision_basis_sources` |
+| `maintenance_kind=working_note_or_decision_basis` | `write_working_note` | `write` | false | `none` | `within_phase` | `design.md#req13-run-maintenance-step-write_working_note` |
+| `maintenance_kind=canonical_document_repair` | `read_canonical_targets` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-read_canonical_targets` |
+| `maintenance_kind=canonical_document_repair` | `apply_canonical_repair` | `write` | false | `none` | `within_phase` | `design.md#req13-run-maintenance-step-apply_canonical_repair` |
+| `maintenance_kind=canonical_document_repair` | `require_post_write_verification` | `external_call` | false | `none` | `within_phase` | `design.md#req13-run-maintenance-step-require_post_write_verification` |
+| `maintenance_kind=workflow_state_repair` | `read_state_evidence` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-read_state_evidence` |
+| `maintenance_kind=workflow_state_repair` | `apply_state_repair` | `state_mutation` | true | `repair_workflow_state` | `within_phase` | `design.md#req13-run-maintenance-step-apply_state_repair` |
+| `maintenance_kind=workflow_state_repair` | `validate_state_consistency` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-validate_state_consistency` |
+| `maintenance_kind=external_review_or_audit` | `build_external_prompt` | `write` | false | `none` | `within_phase` | `design.md#req13-run-maintenance-step-build_external_prompt` |
+| `maintenance_kind=external_review_or_audit` | `execute_external_review` | `external_call` | true | `external_send_approval` | `external_boundary` | `design.md#req13-run-maintenance-step-execute_external_review` |
+| `maintenance_kind=external_review_or_audit` | `save_review_artifacts` | `write` | false | `none` | `within_phase` | `design.md#req13-run-maintenance-step-save_review_artifacts` |
+
+`run_workflow_stage` の初期 branch は次とする。
+
+| branch condition | internal steps | branch max_effect_kind | approval aggregation | approval contract refs | 補足 |
+|---|---|---|---|---|---|
+| `phase=drafting` | source materials 読取、draft artifact 更新、target digest 記録 | `write` | `all_false` | `none` | phase 内の草案更新 |
+| `stage=triad-review` | review prompt / target / manifest 作成、API/CLI review 実行、raw / parsed / triage artifact 保存 | `external_call` | `any(child.approval_required)` | `external_send_approval` | レビュー実行であり gate 完了ではない |
+| `stage=review-wave` | cross-feature source 読取、wave summary / impact decision artifact 保存 | `external_call` | `any(child.approval_required)` | `external_send_approval` | reopen scope と impact scope を混同しない |
+| `stage=alignment` | alignment prompt 実行、alignment artifact 保存 | `external_call` | `any(child.approval_required)` | `external_send_approval` | approval ではない |
+| `stage=approval` | approval request 表示、人間判断待機、承認記録保存、phase / gate 遷移前検査 | `state_mutation` | `true` | `human_only_phase_gate_approval` | phase / gate completion は human-only |
+| `phase_transition=true` | completed gate / next phase state 更新、snapshot 更新、post-transition validation | `state_mutation` | `true` | `human_only_phase_gate_approval` | `phase_boundary=phase_transition` |
+
+`run_workflow_stage` の approval aggregation は、branch 内に human-only decision scope または approval_required operation が含まれる場合 true とし、外部 API review の実行承認と phase / gate 完了承認を別 contract として分離する。
+
+`run_workflow_stage` の branch 内 step 基線は次とする。
+
+| branch condition | step_id | effect_kind | approval_required | approval_contract_ref | phase_boundary | source_ref |
+|---|---|---|---:|---|---|---|
+| `phase=drafting` | `read_source_materials` | `read` | false | `none` | `none` | `design.md#req13-run-workflow-stage-step-read_source_materials` |
+| `phase=drafting` | `write_draft_artifact` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-write_draft_artifact` |
+| `phase=drafting` | `record_target_digest` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-record_target_digest` |
+| `stage=triad-review` | `build_review_prompt_manifest` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-build_review_prompt_manifest` |
+| `stage=triad-review` | `execute_review_run` | `external_call` | true | `external_send_approval` | `external_boundary` | `design.md#req13-run-workflow-stage-step-execute_review_run` |
+| `stage=triad-review` | `save_raw_parsed_triage` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-save_raw_parsed_triage` |
+| `stage=review-wave` | `read_cross_feature_sources` | `read` | false | `none` | `none` | `design.md#req13-run-workflow-stage-step-read_cross_feature_sources` |
+| `stage=review-wave` | `execute_or_collect_wave_review` | `external_call` | true | `external_send_approval` | `external_boundary` | `design.md#req13-run-workflow-stage-step-execute_or_collect_wave_review` |
+| `stage=review-wave` | `save_impact_decisions` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-save_impact_decisions` |
+| `stage=alignment` | `execute_alignment_check` | `external_call` | true | `external_send_approval` | `external_boundary` | `design.md#req13-run-workflow-stage-step-execute_alignment_check` |
+| `stage=alignment` | `save_alignment_artifact` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-save_alignment_artifact` |
+| `stage=approval` | `present_approval_request` | `read` | false | `none` | `none` | `design.md#req13-run-workflow-stage-step-present_approval_request` |
+| `stage=approval` | `record_human_approval_decision` | `state_mutation` | true | `human_only_phase_gate_approval` | `within_phase` | `design.md#req13-run-workflow-stage-step-record_human_approval_decision` |
+| `stage=approval` | `validate_phase_gate_transition` | `read` | false | `none` | `none` | `design.md#req13-run-workflow-stage-step-validate_phase_gate_transition` |
+| `phase_transition=true` | `update_completed_gate_state` | `state_mutation` | true | `human_only_phase_gate_approval` | `phase_transition` | `design.md#req13-run-workflow-stage-step-update_completed_gate_state` |
+| `phase_transition=true` | `save_snapshot` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-save_snapshot` |
+| `phase_transition=true` | `validate_post_transition_state` | `read` | false | `none` | `none` | `design.md#req13-run-workflow-stage-step-validate_post_transition_state` |
+
+単純操作で承認を必須とする action は次を基線とする。
+
+- `commit_stop_point`
+- `apply_approved_reopen_plan`
+- `run_reopen_start`
+- `advance_reopen_after_commit_stop_point`
+- `advance_reopen_after_approval_stop_point`
+- `finalize_reopen`
+- `repair_workflow_state`
+
+`run_reopen_pending_gate` は active gate で分岐する。
+
+| active gate | effect_kind | approval_required | 補足 |
+|---|---|---|---|
+| `triad-review` | `external_call` | false | review-run と proxy decision の承認境界は別 contract で扱う |
+| `review-wave` | `external_call` | false | 横断 impact check の証跡生成を含む |
+| `alignment` | `write` | false | LLM が整合確認 artifact を生成する |
+| `approval` | `state_mutation` | true | 承認要求を構造化し、人間判断待ちへ渡す。proxy_model は human-only approval を代行しない |
+
+`run_reopen_drafting` は drafting 正本の更新であり、`run_reopen_pending_gate` とは分離する。`run_maintenance` と `run_workflow_stage` は複合操作として扱い、内部 operation または stage 種別により `effect_kind` と `approval_required` が変わる。代表値だけで確定せず、`branching.branches[]` に分岐条件、内部 step、各 step の `effect_kind`、最大副作用、承認要否の集約規則を持たせる。
+
+### 4. 複合操作の schema 表現（Req 13 受入 8〜9）
+
+複合 operation は `effect_kind` を単一 enum のまま保持し、`max_effect_kind` に最大副作用を置く。複数副作用の詳細は `sequence.internal_steps[]` と `branching.branches[]` に展開する。これにより、既存の単一値 schema を保ちながら、`run_maintenance` や `run_workflow_stage` の内部差異を LLM の推測に戻さない。
+
+`record_human_decision` は承認対象 operation ではなく、判断記録 operation とする。`effect_kind=state_mutation`、`approval_required=false`、`phase_boundary=within_phase` とし、記録対象は `target_operation_id`、`target_required_action`、`target_artifact_digest` または `staged_file_set_digest` で束縛する。`record_human_decision` の完了だけでは、対象 operation の `approval_required=true` を満たさない。承認として対象 operation を進められるかどうかは、Requirement 14 §1 の approval gate record にある `decision_scope`、`binding_kind`、digest 束縛、および対象 operation contract から導出した human-only / proxy-allowed 判定で決まる。
+
+### 5. registry / preflight の read-only 境界（Req 13 受入 11〜12）
+
+operation preflight は `stages/operation-registry.yaml` を入口にし、参照先 `stages/operation-contracts.yaml` の preconditions / postconditions / side effects / approval_required を読み取る。preflight の責務は「開始前に確認すること」であり、contract 正本、workflow state、approval record、side track stack、snapshot、review-run artifact を作成・更新しない。
+
+read-only diagnostic 表示では、contract 参照欠落、digest drift、schema_version mismatch、確認不能 precondition、正本 field 重複、未接続 `required_action` mapping を `WARN` 以上にしてよい。ただし、その状態を operation が安全に束縛済みまたは実行可能である根拠にしてはならない。runner-enabled operation では同じ状態を `DEVIATION` とし、operation 実行を開始しない。
+
+## Requirement 14 設計モデル：承認ゲート、側道スタック、状態スナップショット（Req 14）
+
+Requirement 14 は、判断記録、側道作業、現在状態の可視化を、会話文脈ではなく機械可読状態として扱う。
+
+### 1. 承認ゲート record（Req 14 受入 1〜3）
+
+承認ゲートは `wait_for_human_decision` と `record_human_decision` のペアとして扱う。判断 record の最低構造は次とする。
+
+```yaml
+schema_version: string
+decision_id: string
+decision: approved | rejected | deferred | changes_requested
+decision_scope: human_only | proxy_allowed | advisory_only
+target_operation_id: string
+target_required_action: string
+target_artifact: string | null
+target_artifact_digest: string | null  # binding_kind=artifact_digest / both では必須
+staged_file_set_digest: string | null  # binding_kind=staged_file_set_digest / both では必須
+binding_kind: artifact_digest | staged_file_set_digest | both | none
+decided_by: user | proxy_model
+decided_at: string
+source_ref: string
+source_digest: string
+rationale: string
+next_action_expectation: proceed | stay_blocked | redraft | repair
+consumed: boolean
+```
+
+`approved` 以外の判断は対象不可逆操作へ進めない。`rejected` は停止維持、`deferred` は待機、`changes_requested` は再起草または repair へ分岐する。分岐を選ぶ責務は `next --json` に置き、LLM が会話上の雰囲気で選ばない。
+
+human-only decision と proxy-allowed decision は approval gate record の `decision_scope` で区別する。`decision_scope` は最低限 `human_only`、`proxy_allowed`、`advisory_only` の 3 値とする。`decision_scope` は record 作成者が任意に選ぶ値ではなく、`target_required_action` から解決した operation contract の `approval_required`、`phase_boundary`、`effect_kind`、`actor.kind`、および human-only override set から機械的に導出する。record 内の `decision_scope` が contract から導出した値と一致しない場合は形式不正として fail-closed にする。
+
+`binding_kind` も operation contract から導出する。正本文書・review artifact・approval artifact・proxy decision artifact を対象にする operation は `target_artifact_digest` を必須にする。commit / staged content / apply-fixes / state mutation のうち git index に束縛される operation は `staged_file_set_digest` を必須にする。両方を参照する operation は `binding_kind=both` とし、両 digest を必須にする。`binding_kind=none` は `wait_for_human_decision`、`collect_required_decisions`、`completed` のような read-only / wait-only operation に限る。`approval_required=true`、human-only override set、phase / gate completion、commit、push、`spec.json` 更新、reopen finalize の対象 record では `binding_kind=none` を禁止する。必要な digest が欠落、null、または現在の対象 digest と不一致の場合、`record_human_decision` は成功せず、`next --json` は対象 operation へ進めない。
+
+binding 条件は次のとおりとする。record schema はこの表を条件付き必須として実装し、両 digest を独立 optional として扱ってはならない。
+
+| binding_kind | 必須 digest | null を許す digest | 対象 operation |
+|---|---|---|---|
+| `artifact_digest` | `target_artifact_digest` | `staged_file_set_digest` | 正本文書、review artifact、approval artifact、proxy decision artifact を対象にする判断 |
+| `staged_file_set_digest` | `staged_file_set_digest` | `target_artifact_digest` | commit / push / staged content / git index に束縛される判断 |
+| `both` | `target_artifact_digest` と `staged_file_set_digest` | なし | artifact と staged 内容の両方を対象にする判断 |
+| `none` | なし | `target_artifact_digest`、`staged_file_set_digest` | read-only / wait-only operation のみ。承認済み不可逆操作には使えない |
+
+`decided_by`、`decided_at`、`source_ref`、`source_digest` は常に必須である。`source_digest` は判断根拠として提示・保存した source text または source artifact の SHA-256 hex とし、source が保存不能な場合でも omission reason を持つ source evidence artifact の digest を記録する。actor、timestamp、source、target operation、required_action、binding digest のいずれかが欠落する record は、承認 record ではなく形式不正として扱う。
+
+`decided_by=proxy_model` かつ `decision_scope=human_only` の record は承認として扱わず、`next --json` は対象不可逆操作へ進めない。`decided_by=proxy_model` かつ `decision_scope=proxy_allowed` の record は、finding triage や修正方針判断の証跡としてのみ使える。`decision_scope=advisory_only` は補助的判断であり、対象 operation の `approval_required=true` を満たさない。
+
+human-only decision の初期集合は次とする。
+
+- commit
+- push
+- `spec.json` 更新
+- phase approval
+- reopen finalize
+- `approval_required=true` の不可逆 operation 実行許可
+
+human-only override set は operation contract より強い。ある operation が `approval_required=false` と書かれていても、commit、push、`spec.json` 更新、phase / gate completion、reopen finalize、または approval-required irreversible operation execution に該当する branch では `decision_scope=human_only` とする。
+
+proxy_model は finding triage、同根 cluster の採否案、補助的な整合判断を代行できる。ただし proxy_model decision は human-only decision の承認主体を置換しない。
+
+### 2. side track stack（Req 14 受入 4〜7）
+
+side track は stack frame として `stages/in-progress/side-track-stack.yaml` または後継 runtime state に保持する。初期実装では既存の `process_id: maintenance` 進行中ファイルを互換入力として扱い、Phase 3 以降で stack schema へ寄せる。
+
+frame の最低構造は次とする。
+
+```yaml
+frame_id: string
+kind: maintenance | follow_up | blocker_repair | dependent_issue
+parent_frame_id: string | null
+pushed_by: user | llm | tool
+title: string
+spawned_from:
+  required_action: string
+  active_gate: string | null
+  state_file: string | null
+allowed_scope: string
+allowed_files: [string]
+completion_conditions: [string]
+return_to:
+  required_action: string
+  active_gate: string | null
+  state_refs: [string]
+staged_file_set: [string]
+staged_file_digest: string
+pushed_at: string
+max_depth: integer
+```
+
+push 時、pop 直前、commit / push 直前に `staged_file_set` と `staged_file_digest` を採取して照合する。top frame 以外の pop、`allowed_files` 外の staged 変更、親子 frame の未許可 overlap、push 時点からの予期しない digest 変化、pop 時の digest / set 不一致は、Phase 3 では `WARN` 以上、Phase 5 では `DEVIATION` または `repair_workflow_state` とする。`max_depth` は既定 2 で、Phase 3 は警告、Phase 5 はブロックする。
+
+side track stack の read-only 操作は `current` / `inspect` とし、stack state を書き換えない。mutating 操作は `push` / `pop` / `repair` とし、operation contract の preconditions / postconditions を通す。`push` は新 frame を top に追加し、`pop` は top frame だけを閉じる。pop 後に `return_to` が解決できない、または staged file set が本線復帰条件を満たさない場合、`next --json` は通常作業に戻さず `repair_workflow_state` または同等の停止状態を返す。
+
+### 3. workflow-state snapshot（Req 14 受入 8〜10）
+
+`.reviewcompass/runtime/workflow-state-snapshot.yaml` は `next --json` の副産物であり、正本ではない。正本は常に `next --json` と state refs である。snapshot が古い、手動更新された、または直近 `next --json` と照合できない場合は信頼しない。
+
+snapshot の最低構造は次とする。
+
+```yaml
+schema_version: string
+generated_by: tools/check-workflow-action.py
+generated_at: string
+source_next_action_sha256: string
+current_work:
+  required_action: string
+  title: string
+  outer_node: string | null
+  inner_node: string | null
+  active_gate: string | null
+active_side_tracks: [object]
+git_tree_summary:
+  clean: boolean
+  staged_files: [string]
+  unstaged_files: [string]
+post_write_manifest_summary: object
+workflow_state_summary: object
+```
+
+`current_work.outer_node` は reopen / maintenance / workflow / post-write などの外側の状態、`inner_node` は phase / stage / gate などの内側の単位を表す。UI や人向け報告は snapshot を読んでよいが、操作可否は `next --json` と operation preflight で再確認する。
+
+### 4. read-only / mutating 操作の保存先（Req 14 受入 11〜12）
+
+approval gate record、side track stack、workflow-state snapshot は次の保存先を基線とする。
+
+| 対象 | 保存先 | 正本性 | read-only 操作 | mutating 操作 |
+|---|---|---|---|---|
+| approval gate record | `.reviewcompass/runtime/approvals/` 配下または後継 approval state | 承認判断の正本 | inspect | record / consume / invalidate |
+| side track stack | `stages/in-progress/side-track-stack.yaml` または後継 runtime state | side track 状態の正本 | current / inspect | push / pop / repair |
+| workflow-state snapshot | `.reviewcompass/runtime/workflow-state-snapshot.yaml` | 可視化・監査補助、正本ではない | snapshot / inspect | save snapshot のみ。操作許可は変更しない |
+
+read-only 操作と mutating 操作を同じ operation として扱ってはならない。mutating 操作は Requirement 13 の operation contract に接続し、approval_required、preconditions、postconditions、side effects を明示する。
+
+## Requirement 15 設計モデル：構造化有効プロンプトと監査（Req 15）
+
+Requirement 15 は、有効プロンプトを「LLM が行う言語タスクの仕様」として構造化する。機械タスクは operation contract、preflight、runner、guard が担う。
+
+### 1. structured effective prompt schema（Req 15 受入 1〜4）
+
+既存の `.reviewcompass/runtime/effective-prompts/*.prompt.md` は互換出力として維持する。Phase 4 では、同じ判定点から構造化 YAML または JSON を生成し、Markdown prompt はその人向けレンダリングとして扱う。
+
+```yaml
+schema_version: string
+decision_point:
+  kind: string
+  required_action: string
+  phase: string | null
+  stage: string | null
+  active_gate: string | null
+prompt_length:
+  min_chars: integer
+  max_chars: integer
+  source_ref: string
+  failure_verdict: WARN | DEVIATION
+preconditions_checked:
+  - id: string
+    source: next_json | operation_preflight | schema_validation | manifest_validation
+    machine_checked: true
+    evidence_ref: string
+language_task:
+  document_kind: design | requirements | tasks | review | alignment | approval | report
+  input:
+    required_files: [string]
+    state_refs: [string]
+    source_refs: [string]
+  output_format:
+    kind: markdown | yaml | json
+    required_sections: [string]
+    schema_ref: string | null
+  constraints: [string]
+postconditions:
+  - id: string
+    check_kind: section_exists | schema_valid | target_set_matches | next_action_compatible | manual_review_required
+    source_ref: string
+on_completion:
+  next_required_action: string | null
+  allowed_followups: [string]
+  forbidden_actions: [string]
+```
+
+`preconditions_checked` は機械が確認済みの条件だけを参照する。LLM がこれから確認する事項をここに置いてはならない。`language_task` は生成または判断する文章の範囲を表し、commit、push、spec.json 更新、review-run 実行などの機械操作手順を埋め込まない。
+
+`prompt_length` は、判定点ごとの長さ上下限を構造化 prompt に写した監査用フィールドである。正本は `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml#decision_points` の各判定点に置く `prompt_length_bounds` とし、個別判定点に未設定の場合は同ファイルの `default_prompt_length_bounds` を使う。上下限は `min_chars`、`max_chars`、`failure_verdict` を持ち、`min_chars` と `max_chars` は正の整数かつ `min_chars < max_chars` でなければならない。`failure_verdict` は範囲外 prompt の第1層機械検査 verdict であり、未設定値を runner が推測してはならない。
+
+長さ基準の設定主体は workflow-management の設計・規律マップ更新手続きであり、task 個別の review-run や prompt generator が場当たり的に決めてはならない。上下限の変更は Requirement 13〜15 の責務境界を変えるため、通常の design / tasks / implementation 連鎖で扱う。
+
+### 2. 第1層機械検査（Req 15 受入 5）
+
+有効プロンプト検査は次を確認する。
+
+- 参照先ファイルとアンカーが存在する
+- `decision_point`、`preconditions_checked`、`language_task`、`postconditions`、`on_completion` が存在する
+- `prompt_length` が `WORKFLOW_DISCIPLINE_MAP.yaml` の `prompt_length_bounds` または `default_prompt_length_bounds` と一致し、長さがその上下限内にある。範囲外の場合は当該 bounds の `failure_verdict` を返す
+- DISCIPLINE_MAP または後継 registry に未登録の action kind を使っていない
+- review target manifest と review-run target が一致する
+- `language_task.output_format` と `postconditions` が対応している
+- `preconditions_checked` が機械確認済み条件だけを参照している
+- `on_completion` が operation contract の postconditions と次 action に矛盾しない
+
+staged file set とのコミット混線、side track depth、operation preflight の pending conflict は Requirement 12・14 の責務であり、有効プロンプト検査はその結果を参照するだけにする。
+
+### 3. LLM judge audit（Req 15 受入 6〜7）
+
+Phase 6 では、構造化有効プロンプト、該当する `WORKFLOW_NAVIGATION.md` 節、operation contract を入力として LLM judge audit を実行できるようにする。出力は schema 適合 JSON または同等の構造化形式とし、最低限 `gap_id`、`severity`、`prompt_ref`、`contract_ref`、`finding`、`recommended_action`、`blocks_approval` を持つ。
+
+LLM judge audit は意味的な不足を見つける補助であり、最終承認を自動化しない。既知 gap fixture には、必須構造節欠落、機械タスクの prompt 内残留、preconditions の網羅不足、postconditions の確認不能性を含める。
+
+## Requirement 16 設計モデル：段階的実装計画 Phase 0〜6（Req 16）
+
+Requirement 16 は、選択層と実行層の機械化を一度に混ぜず、既存挙動を壊さない順序で実装するための計画である。
+
+### 1. Phase anchor と順序（Req 16 受入 1〜10）
+
+| Phase | 主対象 | 完了条件 |
+|---|---|---|
+| Phase 0 | D-003 選択層 | 19段階優先順位、`required_action` 唯一化、invariant 検査、mechanical workflow-state repair detection、reopen plan compiler / `reopen-recompile` 相当が TDD で通る |
+| Phase 1 | 語彙・schema | `.reviewcompass/schema/` の required_action / next_action / operation contract / effect_kind / phase_boundary / snapshot / language task schema が meta-schema 検証を通る |
+| Phase 2 | read-only registry | `check-workflow-action.py operation-list --json` または同等が operation contract を読み取り専用で返す |
+| Phase 3 | advisory preflight | `operation-preflight <id> --json` または同等が pending conflict、side track depth、commit mixing、prompt 機械検査を `WARN` 以上で返す |
+| Phase 4 | structured effective prompt | 全判定点で構造化 prompt と既存 Markdown prompt を生成し、互換 path を維持する |
+| Phase 5 | mechanical blocking | Phase 3 の警告対象のうち serial_only 違反、承認欠落、side track depth 超過、commit mixing を `DEVIATION` で止める |
+| Phase 6 | LLM judge audit | 構造化 prompt と運用文書を入力に gap を構造化出力する。承認自動化はしない |
+
+Phase 0 の安定 anchor は `docs/notes/working/2026-06-16-next-json-unique-state-redesign.md` の D-003 とする。ただし Phase 0 完了条件は working note の節番号に依存させず、本設計の次の 6 失敗テストを tasks / implementation の受入単位へ写す。
+
+1. `commit_stop_point=true` の reopen state では、`pending_gates` が残っていても `required_action=commit_stop_point`、`active_gate=null`、`phase=null`、`stage=null` を返す。
+2. `current_blocker` がある reopen state では、`pending_gates` が残っていても `required_action=wait_for_human_decision`、`active_gate=null` を返す。
+3. 正本変更済み phase が `canonical_update_phases` にあるのに `future_gates` / `pending_gates` が full gate を含まない場合、`verdict=DEVIATION`、`required_action=repair_workflow_state` を返す。
+4. 第3過程で active gate がある場合だけ、`phase` / `stage` が非 null になる。
+5. commit stop point commit 後、worktree clean で HEAD が当該 stop point を含む場合、`required_action=advance_reopen_after_commit_stop_point` を返し、同じ commit stop point を再提示しない。
+6. `required_action` ごとの JSON 相互排他 schema を fixture で検証する。
+
+mechanical workflow-state repair detection は Phase 0 の完了条件である。`next --json` は、reopen state の `active_reopen_scope` / `active_impact_review_scope`、`pending_gates`、`completed_gates`、`drafting_completed_gates`、`downstream_impact_decisions`、commit stop point、`current_blocker`、`spec.json` workflow_state の間に矛盾を検出した場合、通常 action へ進まず `required_action=repair_workflow_state` と `verdict=DEVIATION` を返す。Phase 0 は、この repair detection が少なくとも上記 6 失敗テストの 3 番と active scope 欠落・矛盾ケースで TDD 検証されるまで完了扱いにしない。
+
+Phase 1 のうち `required_action.schema.json` と `next_action_response.schema.json` は Phase 0 開始をブロックする最小前提として先行済みである。他の operation contract 系 schema は Phase 0 と並行可能だが、Phase 2 へ進む前にはそろえる。
+
+各 Phase の終了時は、`next --json` が通常作業へ戻れる状態、または明示された停止状態を返すことを確認する。Phase をまたいだ途中状態を単一 commit に混在させない。
+
+### 2. reopen scope と impact review scope（Req 16 受入 11〜12）
+
+本改訂の active reopen scope は `workflow-management` の requirements から design / tasks / implementation への連鎖再実施である。active scope の正本は `stages/in-progress/reopen-procedure-*.yaml` の `active_reopen_scope` と `active_impact_review_scope` である。`spec.json.reopened` は過去に上流を reopen した履歴フラグとして保持され得るため、現在の active reopen scope と同一視しない。
+
+`active_reopen_scope` は正本を再オープンして workflow_state flag を false に戻した feature / phase / gate 範囲を持つ。`active_impact_review_scope` は、正本変更の有無を確認する consumer / derivative feature / phase / gate 範囲を持つが、当該 feature の workflow_state flag を自動で false に戻す根拠ではない。`next --json` は reopen 中にこの in-progress record を必ず読み、scope が欠落・不整合・stale の場合は `repair_workflow_state` を返す。
+
+初期化は reopen 第1過程で行う。trigger_map と分類根拠から両 scope を生成し、利用者承認後に in-progress record へ固定する。更新は gate 完了記録と downstream impact decision の追加に限定し、scope の拡張・縮小は新しい利用者判断または `repair_workflow_state` を必要とする。終了は reopen 第4過程で行い、全 pending gate が解消し、active scope 全件が completed gate または downstream impact decision で覆われた場合だけ in-progress record を `stages/completed/` へ移す。
+
+operation contract、構造化有効プロンプト、状態スナップショット、proxy_model triage decision の機械処理化は、他 feature が consumer / derivative として参照し得る。正本 reopen 対象を `workflow-management` に限定する場合でも、review-wave では foundation、runtime、evaluation、analysis、self-improvement、conformance-evaluation への正本変更要否と consumer 契約影響を確認し、reopen scope と impact review scope を混同せず記録する。
+
+### 3. proxy_model triage decision の機械処理化
+
+proxy_model triage decision は、review-run 後の重要件判断を一括化しても、finding ごとの traceability と承認 scope を失わないための operation family として扱う。対象 operation は次を初期集合とする。
+
+- `proxy_triage_prepare_input`：raw response、parsed finding、同根 cluster、候補案を読み、proxy_model 入力 bundle を作る。
+- `proxy_triage_record_cluster_decision`：cluster 単位の proxy raw response と decision を保存する。
+- `proxy_triage_expand_findings`：cluster-level decision を finding-level decision へ展開する。
+- `proxy_triage_validate_coverage`：triage 対象 finding ID が decision file で過不足なく覆われているか検査する。
+- `proxy_triage_apply_batch`：coverage validation が通った finding-level decision だけを `triage.yaml` へ batch 適用する。
+
+proxy_model triage decision の適用前には、human-required predicate を必ず評価する。predicate は provider / model 名を見ず、次の証跡だけを読む。
+
+1. proxy 適用対象 finding / cluster coverage と raw / parsed / prompt 証跡
+2. approval gate record の `decision_scope`、`decision`、`decided_by`、`target_operation_id`、`target_required_action`、`binding_kind`、digest 束縛
+3. operation contract の `approval_required`、`phase_boundary`、`effect_kind`、`actor.kind`、human-only override set
+4. review-wave impact evidence の未解決状態
+5. downstream impact decisions と active reopen scope / impact review scope の整合
+
+triage item の `decision_status`、`final_label`、`decision_actor_type` は適用対象の状態確認と二重適用防止には使ってよいが、human-required predicate の正本にはしない。human-required predicate の正本は approval gate record と operation contract、および review-wave / downstream impact evidence である。
+
+human-required predicate は `proxy_triage_evaluate_human_required` という read-only internal check として扱う。入力は、対象 finding / cluster IDs、finding-to-operation mapping、関連 approval gate record、対象 operation contract、review-wave impact evidence、active reopen scope / impact review scope とする。出力は最低限、`verdict`、`blocks_proxy_apply`、`blocking_reasons[]`、`checked_records[]`、`checked_contracts[]`、`source_refs[]` を持つ。`blocks_proxy_apply=true` の場合、後続の `proxy_triage_apply_batch` は `DEVIATION` とし、`triage.yaml` を更新しない。
+
+`未解決 approval gate` は、対象 finding / cluster または対象 operation に紐づく approval gate record のうち、`decision` が `approved` ではない、`consumed=false` のまま対象 operation に未反映、`decision_scope=human_only`、binding digest 不一致、または `next_action_expectation` が `proceed` 以外のものを指す。record が欠落していて、対象 operation contract が `approval_required=true`、human-only override set、phase / gate completion、commit、push、`spec.json` 更新、reopen finalize、または approval-required irreversible operation execution に該当する場合も、未解決 approval gate と同等に扱う。
+
+`approval_required=true の対象 operation` は、finding-to-operation mapping から得た `target_operation_id` / `target_required_action` を `stages/operation-contracts.yaml` の operation contract に解決し、その contract の `approval_required=true`、または branch 内部 step の approval aggregation が true になるものを指す。mapping が欠落、複数候補で一意に解決不能、contract 参照欠落、contract digest / schema_version drift の場合は、proxy が安全に適用可能とは扱わず `blocks_proxy_apply=true` とする。
+
+predicate の評価順序は次の固定順とする。
+
+1. coverage と証跡存在を検査し、対象 finding / cluster、raw、parsed、prompt、proxy raw、decision file、mapping が過不足なくそろわない場合は `DEVIATION`。
+2. finding-to-operation mapping から対象 operation contract を解決し、一意に解決できない場合は `DEVIATION`。
+3. 対象 operation contract と human-only override set から `approval_required`、`phase_boundary`、`effect_kind`、`actor.kind`、approval aggregation を評価する。
+4. 関連 approval gate record の `decision_scope`、`decision`、`decided_by`、`binding_kind`、digest、`consumed`、`next_action_expectation` を検査する。
+5. review-wave impact evidence、downstream impact decisions、active reopen scope / impact review scope の未解決・矛盾を検査する。
+6. 3〜5 のいずれかが human-required を示す場合は、triage item の `decision_status`、`final_label`、`decision_actor_type`、proxy decision の selected option に関係なく `blocks_proxy_apply=true` とする。
+
+優先順位は次のとおりとする。
+
+1. `decision_scope=human_only`、未解決 approval gate、`approval_required=true` の対象 operation、未解決 review-wave impact evidence は、proxy_model の判断より常に優先し、proxy apply を止める。
+2. 必須証跡が欠落、競合、または対象 finding / cluster coverage を満たさない場合は `DEVIATION` とする。
+3. triage 上の `leave-as-is`、`proxy_approved`、または proxy_model の selected decision は、1 の human-required 証跡を打ち消さない。
+4. 1〜3 を通過し、かつ finding / cluster coverage が完全な場合だけ、proxy decision を finding-level decision へ展開できる。
+
+`proxy_triage_apply_batch` の operation contract は、preconditions に次を持つ。
+
+- `proxy_triage_validate_coverage` が成功している
+- `proxy_triage_evaluate_human_required` が成功し、`blocks_proxy_apply=false` を返している
+- すべての対象 finding に raw response、parsed finding、decision prompt、proxy raw response、cluster/finding mapping が存在する
+- 対象 finding / cluster に紐づく approval gate record が存在する場合、その `decision_scope` は `proxy_allowed` または `advisory_only` であり、`human_only` ではない
+- 対象 operation contract の `approval_required` が true、または human-only override set に該当する場合、proxy apply を停止する
+- review-wave impact evidence、downstream impact decisions、active reopen scope / impact review scope に未解決または矛盾がない
+
+これらの preconditions のいずれかが満たされない場合、`proxy_triage_apply_batch` は `DEVIATION` とし、triage.yaml を更新しない。
+
+cluster-level decision は保存してよいが、実装修正や manifest 作成の承認単位は finding-level decision とする。`proxy_triage_expand_findings` は、cluster ID、含まれる finding IDs、採用案、棄却案理由、final label、source raw paths、decision prompt path、proxy raw path を finding ごとに複製し、各 finding decision に `cluster_decision_id` を保持する。
+
+coverage validation は次を fail-closed にする。
+
+- triage 対象 finding ID が decision file に存在しない
+- decision file に triage 対象外 finding ID が混入している
+- cluster decision の finding set と展開後 finding decisions が一致しない
+- `final_label`、採用案、判断理由、source raw paths、decision prompt path、proxy raw path のいずれかが欠落している
+- `review_triage_decide` approval と apply-fixes approval の scope が一致しない
+
+approval scope は `approval_record.scope` で区別する。`review_triage_decide` は triage label の採否だけを許可し、仕様文書・実装・spec.json・workflow_state の変更は許可しない。apply-fixes は対象 finding IDs、対象ファイル、期待する変更種別を別 record として持つ。batch 適用は triage decision の一括反映に限り、修正実装を同時に行わない。
+
+## 主要な設計判断（Interface Decisions）
+
+### 判断 1：段集合は静的列挙、Markdown からの動的解析はしない
+
+理由：素材設計（節ハッシュ・独立再導出パーサ・通過マーカー）は実装コストが高く、フェーズ 1 では維持できない。YAML 静的列挙に置き換えることで実装コストを 1／10 に抑え、Markdown 側との整合は人手で取る前提とする（§5.4 受け入れリスク）。
+
+### 判断 2：検査スクリプトは中身を判定しない
+
+理由：中身の妥当性判定を始めると検査スクリプトの規模が爆発し、第 1 層の本来の責務（証跡＋必須節の機械判定）が薄まる。中身判定は第 3 層（利用者監査）と第 4 層（定期事後監査）に委ね、第 1 層は「形式が揃っているか」のみに絞る。
+
+### 判断 3：fail-closed を全面採用
+
+理由：誤って不可逆操作を許可することによる被害は、検査が pass しないことで作業が止まる不便さを大きく上回る。曖昧なときは止める方針を全段に適用する。
+
+### 判断 4：直前ゲートは最小集合に絞る
+
+理由：機械ゲートをすべての段遷移に置くと、検査スクリプトを呼ぶ頻度が上がり、LLM が「検査を回避する」「結果を読み飛ばす」失敗モードを誘発する。不可逆操作の直前のみに絞ることで、検査の存在感を維持し、回避のコストを上げる。
+
+### 判断 5：reopen 連鎖は actor=human で必ず停止
+
+理由：「LLM が intent を勝手に書き換えて承認なしで進む」リスクは構造的に止めなければならない。trigger_map の連鎖を `actor=human` の段で必ず停止させ、人間承認なしには次に進めない設計とする。
+
+### 判断 6：機能依存マップは 1 ファイル所有
+
+理由：各フェーズの YAML に依存関係を分散させると、新機能追加時の整合漏れが避けられない。1 ファイル所有・他機能は参照のみ、の構造で整合漏れを構造的に防ぐ。
+
+### 判断 7：規律変更は本機能が所定手続き経由で実体変更（A-007 案 2、A-012 対処で時系列契約・完了通知形式を詳細化）
+
+理由：規律ファイル本体の変更権を `self-improvement`（提案権）と本機能（実体変更権）に分散させ、自己承認の空洞化を防ぐ。`self-improvement` が直接ファイル書き換えを行うことを禁じ、必ず本機能の所定手続き（drafting → review → approval）を通す。
+
+**self-improvement との時系列契約・完了通知形式（A-012 対処、2026-05-26 セッション 28 確定、self-improvement design §13.5 の合意点を受け入れ）**：
+
+self-improvement design §13.5 で本機能との接合面の詳細が定義されており、本機能はこの合意点を受け入れる。
+
+- **時系列契約**：
+  - `approved` ＝ self-improvement の提案レビュー承認時点
+  - `materialized_at` ＝ 本機能の所定手続き完了時点（self-improvement の status は `approved` のまま、本フィールドのみ追記）
+- **入力経路**：self-improvement が承認済み提案 YAML を `git mv` で `learning/workflow/approved-updates/` に配置、本機能はこのディレクトリを所定手続きの input として読む
+- **完了通知形式**：本機能が所定手続き完了時に `approved-updates/<日付>-<id>.yaml` に次のフィールドを追記：
+  - `materialized_at`：ISO 8601 形式の完了時点
+  - `materialization_commit_hash`：規律ファイルの実体変更コミットのハッシュ
+- **ロールバック責務**：`approved` だが未 `materialized` の状態でロールバックが必要になった場合、self-improvement が `superseded` に遷移させ、本機能に通知する（本機能側で能動的なロールバック実行は不要、状態は self-improvement が管理）
+- **整合性検査タイミング**：本機能の `materialized_at` 記録後、self-improvement の遵守検査再実行のトリガーとなる（self-improvement §11.6 と整合）
+
+### 判断 8：補助層 C の段階 2 を本機能が所有
+
+理由：補助層 C 段階 2 の検査スクリプト（`check-workflow-action.py`）は本機能の Req 2 検査スクリプトと実体が同一であり、別経路で同じ機能を実装すると保守コストが二重化する。段階 2 は本機能が単独所有し、段階 1（LLM 規律）と段階 3（Claude Code フック）は段階 2 を呼ぶだけの薄い層とする。
+
+## 要件と設計の対応（Requirements Traceability）
+
+| 要件 | 受入基準 | 対応する設計節 |
+|---|---|---|
+| Requirement 1：段集合の静的列挙 | 受入 1（YAML 静的列挙、動的解析しない） | §段集合の静的列挙モデル §1〜§2 |
+| | 受入 2（9 ファイル体制） | §段集合の静的列挙モデル §1 |
+| | 受入 3（段名／actor／証跡パス／必須節／完了判定） | §段集合の静的列挙モデル §2 |
+| | 受入 4（feature_order 参照） | §段集合の静的列挙モデル §3、§機能依存マップモデル §3 |
+| | 受入 5（YAML 1 箇所修正、Markdown 整合は人手） | §段集合の静的列挙モデル §4 |
+| Requirement 2：検査スクリプト | 受入 1（Python 実装） | §軽量版検査スクリプトモデル §1 |
+| | 受入 2（証跡＋必須節のみ判定） | §軽量版検査スクリプトモデル §1〜§3 |
+| | 受入 3（中身の妥当性判定しない） | §軽量版検査スクリプトモデル §4、§主要な設計判断 判断 2 |
+| | 受入 4（結論不能は fail） | §軽量版検査スクリプトモデル §1、§不可逆操作の直前ゲートモデル §3、§主要な設計判断 判断 3 |
+| | 受入 5（in-progress 警告） | §軽量版検査スクリプトモデル §2、§session 跨ぎ状態管理モデル §4 |
+| | 受入 8（WORKFLOW_DISCIPLINE_MAP.yaml と required_disciplines／required_inputs） | §軽量版検査スクリプトモデル §2 |
+| Requirement 3：起草者と判定者の分離 | 受入 1（author／reviewer 必須） | §起草者と判定者の分離モデル §1 |
+| | 受入 2（identity 同一を許容しない） | §起草者と判定者の分離モデル §1、§3 |
+| | 受入 3（subagent_mediated の判定役は別エンティティ） | §起草者と判定者の分離モデル §2 |
+| | 受入 4（front-matter 検査、別モデル／別 session は第 1 層対象外） | §起草者と判定者の分離モデル §3 |
+| Requirement 4：不可逆操作の直前ゲート | 受入 1（4 種類の不可逆操作） | §不可逆操作の直前ゲートモデル §1 |
+| | 受入 2（pass ＋ in-progress 空、毎回独立走行） | §不可逆操作の直前ゲートモデル §2 |
+| | 受入 3（fail-closed） | §不可逆操作の直前ゲートモデル §3、§主要な設計判断 判断 3 |
+| | 受入 4（最小集合方針） | §不可逆操作の直前ゲートモデル §1、§主要な設計判断 判断 4 |
+| | 受入 5（commit 承認レコード・target_sha256） | §不可逆操作の直前ゲートモデル §2 |
+| | 受入 6（nonce challenge・target digest・consume） | §不可逆操作の直前ゲートモデル §2.1 |
+| | 受入 7（LLM 非依存・保証範囲） | §不可逆操作の直前ゲートモデル §2.1 |
+| | 受入 8（LLM commit 実行代行承認の正式 CLI） | §不可逆操作の直前ゲートモデル §2.2 |
+| Requirement 5：reopen 機械強制 | 受入 1（二次元表記） | §reopen 機械強制モデル §1 |
+| | 受入 2（trigger_map） | §reopen 機械強制モデル §2 |
+| | 受入 3（actor=human で停止） | §reopen 機械強制モデル §3、§主要な設計判断 判断 5 |
+| | 受入 4（人間承認なしに進まない） | §reopen 機械強制モデル §3 |
+| | 受入 5（種別判定根拠の保存） | §reopen 機械強制モデル §4 |
+| Requirement 6：session 跨ぎ状態管理 | 受入 1（in-progress ファイル） | §session 跨ぎ状態管理モデル §1 |
+| | 受入 2（必須フィールド） | §session 跨ぎ状態管理モデル §1 |
+| | 受入 3（標準フロー） | §session 跨ぎ状態管理モデル §2 |
+| | 受入 4（完了時の移動） | §session 跨ぎ状態管理モデル §3 |
+| | 受入 5（in-progress ある状態での遮断） | §session 跨ぎ状態管理モデル §4、§不可逆操作の直前ゲートモデル §2 |
+| Requirement 7：多層防御 | 受入 1（第 1 層の限界の明文化） | §多層防御の位置付けモデル §1 |
+| | 受入 2（第 2〜5 層を宿題として参照） | §多層防御の位置付けモデル §2 |
+| | 受入 3（第 5 層運用ルールの反映） | §多層防御の位置付けモデル §4 |
+| | 受入 4（第 1 層の限界の運用文書への明示） | §多層防御の位置付けモデル §5 |
+| Requirement 8：機能依存マップの一元化 | 受入 1（feature-dependency.yaml が一元保管先） | §機能依存マップモデル §1 |
+| | 受入 2（features ＋ feature_order、2 形式の depends_on） | §機能依存マップモデル §2 |
+| | 受入 3（feature_order 参照） | §機能依存マップモデル §3 |
+| | 受入 4（1 箇所修正で完結） | §機能依存マップモデル §4、§主要な設計判断 判断 6 |
+| | 受入 5（所有者は本機能、他機能は参照のみ） | §機能依存マップモデル §5、§主要な設計判断 判断 6 |
+| Requirement 9：既存システムへの後追い intent 追加時の下流再展開 | 受入 1（受け皿判定） | §reopen 機械強制モデル §6 |
+| | 受入 2（既存 requirements で早期終了しない） | §reopen 機械強制モデル §6 |
+| | 受入 3（既存設計・実装との衝突確認） | §reopen 機械強制モデル §6、§session 跨ぎ状態管理モデル §1 |
+| | 受入 4（conformance-evaluation の候補を入力として扱う） | §reopen 機械強制モデル §6、§下流仕様への影響 |
+| | 受入 5（下流 phase の判断記録） | §reopen 機械強制モデル §6、§session 跨ぎ状態管理モデル §1 |
+| | 受入 6（dogfooding 中の side track 管理） | §reopen 機械強制モデル §6、§session 跨ぎ状態管理モデル §1 |
+| Requirement 10：review-wave 横断確認の要約コマンド | 受入 1（要約サブコマンド・読み取り元） | §review-wave 要約コマンドモデル §1〜§2 |
+| | 受入 2（出力項目） | §review-wave 要約コマンドモデル §2〜§3 |
+| | 受入 3（Markdown／JSON 両方・安定スキーマ・情報同等） | §review-wave 要約コマンドモデル §3 |
+| | 受入 4（結論不能は fail-closed・機械可読シグナル） | §review-wave 要約コマンドモデル §4、§軽量版検査スクリプトモデル §4 |
+| | 受入 5（読み取り専用・自身の出力のみ保存） | §review-wave 要約コマンドモデル §1・§5、§不可逆操作の直前ゲートモデル §1 |
+| Requirement 11：重要決定の出典検査 | 受入 1（記録スキーマ） | §Req 11 設計モデル §1 |
+| | 受入 2（束ね検出 fail-closed・例外の人承認） | §Req 11 設計モデル §2 |
+| | 受入 3（逐語照合・正規化・保留管理） | §Req 11 設計モデル §3 |
+| | 受入 4（内容なし語リスト） | §Req 11 設計モデル §4 |
+| | 受入 5（読み取り専用・fail-closed） | §Req 11 設計モデル §5、§軽量版検査スクリプトモデル §4 |
+| | 受入 6（意味一致は人/判定役） | §Req 11 設計モデル §3（保留管理）、§主要な設計判断 判断 2 |
+| | 受入 7（サブコマンド必須・commit ゲート組み込み） | §Req 11 設計モデル §5 |
+| Requirement 12：operation registry / preflight | 受入 1（operation registry） | §Req 12 設計モデル §1 |
+| | 受入 2（read-only preflight） | §Req 12 設計モデル §2、§13 |
+| | 受入 3（共通 response・verdict） | §Req 12 設計モデル §2〜§3 |
+| | 受入 4（command validation） | §Req 12 設計モデル §4 |
+| | 受入 5（worktree / pending / integrity conflict） | §Req 12 設計モデル §5 |
+| | 受入 6（review artifact preflight） | §Req 12 設計モデル §6 |
+| | 受入 7（serial_only・commit approval chain） | §Req 12 設計モデル §7 |
+| | 受入 8（current-session formal record guard） | §Req 12 設計モデル §8 |
+| | 受入 9（nested issue handling） | §Req 12 設計モデル §9 |
+| | 受入 10（deployment / export preflight） | §Req 12 設計モデル §10 |
+| | 受入 11（all feature impact review scope） | §Req 12 設計モデル §11 |
+| | 受入 12（LLM / provider / model 非依存） | §Req 12 設計モデル §12 |
+| | 受入 13（next state uniqueness） | §Req 12 設計モデル §11、§軽量版検査スクリプトモデル §2 |
+| Requirement 13：operation contract 語彙と required_action 対応 | 受入 1（共通語彙） | §Req 13 設計モデル §1 |
+| | 受入 2（Phase 1 schema） | §Req 13 設計モデル §1、§全体構造 |
+| | 受入 3（19 required_action 対応） | §Req 13 設計モデル §3 |
+| | 受入 4（対応表の最低フィールド） | §Req 13 設計モデル §2〜§3 |
+| | 受入 5（承認必須の単純操作） | §Req 13 設計モデル §3 |
+| | 受入 6（record_human_decision） | §Req 13 設計モデル §4、§Req 14 設計モデル §1（`decision_scope` / `binding_kind` による承認対象束縛） |
+| | 受入 7（run_reopen_pending_gate 分岐） | §Req 13 設計モデル §3 |
+| | 受入 8（run_maintenance / run_workflow_stage 複合操作） | §Req 13 設計モデル §3〜§4 |
+| | 受入 9（複合操作 schema 表現） | §Req 13 設計モデル §4 |
+| | 受入 10（preconditions / postconditions） | §Req 13 設計モデル §2 |
+| | 受入 11（registry / contract 単一正本境界） | §Req 13 設計モデル §3、§5 |
+| | 受入 12（contract 参照 drift / 重複検出） | §Req 13 設計モデル §3、§5 |
+| Requirement 14：承認ゲート、側道スタック、状態スナップショット | 受入 1（wait_for_human_decision / record_human_decision） | §Req 14 設計モデル §1 |
+| | 受入 2（承認／拒否／保留／修正要求） | §Req 14 設計モデル §1 |
+| | 受入 3（判断 record の対象束縛） | §Req 14 設計モデル §1（`decision_scope` / `binding_kind` / digest 束縛）、§Req 13 設計モデル §4 |
+| | 受入 4（side track frame schema） | §Req 14 設計モデル §2 |
+| | 受入 5（staged file set / digest 照合） | §Req 14 設計モデル §2 |
+| | 受入 6（top frame pop と return_to） | §Req 14 設計モデル §2 |
+| | 受入 7（max_depth） | §Req 14 設計モデル §2 |
+| | 受入 8（workflow-state snapshot） | §Req 14 設計モデル §3 |
+| | 受入 9（snapshot 最低フィールド） | §Req 14 設計モデル §3 |
+| | 受入 10（snapshot は補助で正本ではない） | §Req 14 設計モデル §3 |
+| | 受入 11（proxy / human decision 境界） | §Req 14 設計モデル §1 |
+| | 受入 12（read-only / mutating 操作境界） | §Req 14 設計モデル §2、§4 |
+| Requirement 15：構造化有効プロンプトと監査 | 受入 1（prompt 構造） | §Req 15 設計モデル §1 |
+| | 受入 2（language_task） | §Req 15 設計モデル §1 |
+| | 受入 3（機械タスクの分離） | §Req 15 設計モデル §1〜§2 |
+| | 受入 4（Phase 4 生成と互換） | §Req 15 設計モデル §1 |
+| | 受入 5（第1層機械検査） | §Req 15 設計モデル §2 |
+| | 受入 6（LLM judge audit） | §Req 15 設計モデル §3 |
+| | 受入 7（監査出力 schema と既知 gap） | §Req 15 設計モデル §3 |
+| Requirement 16：段階的実装計画 Phase 0〜6 | 受入 1（Phase 0 D-003） | §Req 16 設計モデル §1 |
+| | 受入 2（Phase 0 開始前提） | §Req 16 設計モデル §1 |
+| | 受入 3（Phase 0 完了条件） | §Req 16 設計モデル §1 |
+| | 受入 4（Phase 1） | §Req 16 設計モデル §1、§Req 13 設計モデル §1 |
+| | 受入 5（Phase 2） | §Req 16 設計モデル §1 |
+| | 受入 6（Phase 3） | §Req 16 設計モデル §1 |
+| | 受入 7（Phase 4） | §Req 16 設計モデル §1、§Req 15 設計モデル §1 |
+| | 受入 8（Phase 5） | §Req 16 設計モデル §1 |
+| | 受入 9（Phase 6） | §Req 16 設計モデル §1、§Req 15 設計モデル §3 |
+| | 受入 10（Phase 終了時の next 確認） | §Req 16 設計モデル §1 |
+| | 受入 11（reopened と active reopen scope の区別） | §Req 16 設計モデル §2 |
+| | 受入 12（consumer / derivative impact review） | §Req 16 設計モデル §2、§下流仕様への影響 |
+| | 受入 13（proxy decision の evidence / human-required predicate） | §Req 16 設計モデル §3、§Req 14 設計モデル §1 |
+| | 受入 14（human-required 優先順位と競合解決） | §Req 16 設計モデル §3 |
+
+## 下流仕様への影響（Impact on Downstream Specs）
+
+本設計は次の下流仕様に影響を与える：
+
+- **`self-improvement`**：規律変更の提案権と実体変更権の分離（判断 7、A-007 案 2）。`self-improvement` の design.md／tasks.md で「規律ファイルを直接書き換える」記述があれば、本機能の所定手続き経由に変更する必要がある。**時系列契約・完了通知形式は self-improvement design §13.5 と本機能 判断 7 で相互参照（A-012 対処、2026-05-26 セッション 28 確定）**
+- **`conformance-evaluation`**：機能依存マップの依存種別（`hard`／`review`）を仕様内で明示する必要（A-005 の conformance-evaluation 側対処、`feature-dependency.yaml` の連想配列構造を Req 7 で参照）
+- **`conformance-evaluation`**：後追い intent 追加時のコード由来差分候補を生成し、本機能へ渡す必要（Req 9）。本機能は候補を作らず、候補の検証・記録・reopen 順序化を担う
+- **全 7 機能の design 段以降**：レビュー記録の front-matter に `author.identity` ／ `reviewer.identity` ／ `separation_from_author` を必須化（Req 3 受入 1）。既存のレビュー記録 7 件（requirements の各機能）はフェーズ 2 の検査スクリプト導入時に遡及検査の対象に含めるか、grandfathering（移行期免除）として扱うかを別途決定する
+- **全 7 機能の運用・実装段**：operation contract、structured effective prompt、workflow-state snapshot、side track stack は `workflow-management` が正本を持つが、foundation／runtime／evaluation／analysis／self-improvement／conformance-evaluation が consumer / derivative として参照し得る。正本変更要否は review-wave で確認し、reopen scope と impact review scope を分けて記録する
+- **`evaluation`**：LLM judge audit の意味評価ロジックそのものは `evaluation` の責務と接続し得る。ただし本機能は監査対象の prompt / contract / state refs と出力 schema を所有し、評価ロジックの妥当性判定は自機能内へ取り込まない
+
+`evaluation` の既存評価ロジック本体への正本変更要否は review-wave で確認する。本 design drafting 時点では、operation contract と prompt audit の contract consumer としての確認対象に置く。
+
+## 先送り論点（Open Issues Deferred to Later Specs）
+
+本設計で確定せず、後続フェーズで決定する論点：
+
+1. **段集合の変更そのものを不可逆操作の対象とするか**：第 5 層（処理表面積の抑制）導入時に検討（フェーズ 4 以降）
+2. **第 2 層 git フックの具体配線**：フェーズ 4 で `pre-commit` ／ `pre-push` のフック実装、本機能の検査スクリプトを再利用する形を想定
+3. **第 3 層 利用者監査の具体手順**：フェーズ境目（要件→設計、設計→タスク等）での確認チェックリストを `docs/operations/PHASE_BOUNDARY_AUDIT.md` として別途整備
+4. **既存レビュー記録の遡及検査**：Req 3 の front-matter 必須化を既存 7 件（requirements の各機能）に遡及適用するか、grandfathering で免除するか
+5. **段階 3 の Claude Code フック実装**：補助層 C 段階 3 はフェーズ 2 以降の宿題、本機能の検査スクリプトとの結合方式を別途設計
+6. **規律変更の所定手続きの段集合**：規律変更を `drafting → review → approval` の 3 段で扱うか、`triad-review` を含めるかを A-007 案 2 対応の細部として後続セッションで確定
+7. **`stages/cross-spec-alignment.yaml` の段集合**：機能横断整合手続きの段集合は別途確定、本設計では枠のみ確保
+8. **規律変更の所定手続きの実装と参照層 5 件の扱い**：A-007 対処で active 必読 12 件は `docs/disciplines/` に移管済み（2026-05-25 セッション 26）。本機能の所定手続きが `docs/disciplines/` 内の規律変更を扱う実装はフェーズ 2 以降。参照層 5 件（feedback_dominant_dominated_options 等）の memory → repo 移管要否は別途判断
+9. **運営ガイド等の現行規律本体の改廃手続き**：`docs/operations/SESSION_WORKFLOW_GUIDE.md` 等の運営文書を本機能の所定手続きの対象に含めるかは別論点。フェーズ 2 で `docs/disciplines/` 配置構造との整合とともに整理
+
+## テスト戦略（Test Strategy）
+
+本機能の検証境界を設計段で次のとおり明示する。詳細ケース分解は tasks 段で行う。
+
+- **単体テスト**：
+  - 段集合 YAML のパース（壊れた YAML、必須フィールド欠落のケース）
+  - 完了述語の判定（`artifact_exists`、`artifact_exists_and_sections_present` 等の各述語）
+  - `author.identity` ≠ `reviewer.identity` の文字列比較
+  - 手戻り種別の解析（`D-1` → `trigger_map[D-1]` の再実施対象リスト）
+  - 進行中状態ファイルの読み書き（必須フィールド欠落の検出）
+  - 依存マップの解析（`depends_on` の単純リスト構造と連想配列構造の両方）
+  - operation contract schema、`effect_kind`、`phase_boundary`、snapshot、language task I/O の meta-schema 検証
+  - required_action 19語彙と operation contract 対応表の網羅性検査
+  - side track stack frame の depth、top frame pop、staged file set digest の検査
+  - structured effective prompt の必須構造、参照 anchor、output_format / postconditions 対応検査
+
+- **統合テスト**：
+  - 不可逆操作（spec.json 書き込み、commit、push）の直前ゲートが実際に遮断すること
+  - reopen 連鎖が `actor=human` 段で停止し、`stages/in-progress/` にファイルが残ること
+  - `stages/in-progress/` ある状態での不可逆操作が遮断されること
+  - 機能依存マップの 1 箇所修正が各フェーズ YAML の解釈に正しく反映されること
+  - operation preflight が `next --json` の active state dimensions と operation contract を照合すること
+  - Phase 3 advisory では WARN 以上を返し、Phase 5 では同じ条件を DEVIATION に昇格すること
+  - workflow-state snapshot が `next --json` と照合できる場合だけ監査補助として使えること
+  - LLM judge audit が既知 gap fixture を構造化 finding として返し、承認を自動化しないこと
+
+- **異常系 fixture**：
+  - YAML パースエラー（壊れた構文）
+  - 証跡ファイル不在
+  - 必須節欠落
+  - `author.identity` ＝ `reviewer.identity` の同一
+  - `feature-dependency.yaml` 不在または依存循環
+  - 検査スクリプト実行失敗（Python 例外）
+  - operation contract 対応表の 19語彙欠落
+  - 複合 operation の branch 欠落または最大副作用欠落
+  - side track stack の depth 超過、allowed_files 外 staged 変更、digest 不一致
+  - structured prompt の機械タスク混入、preconditions の未確認条件参照、postconditions 確認不能
+  - いずれも fail-closed となることを検証
+
+- **境界条件**：
+  - `depends_on: []`（依存先なし）の foundation の扱い
+  - `depends_on` の連想配列構造で未知の依存種別（`hard`／`review` 以外）の扱い
+  - 進行中状態ファイルが複数存在する場合（複数の `reopen-procedure-*.yaml` 並存）の扱い
+
+- **対象外**：
+  - 中身の妥当性判定（判断 2 で明示的に除外）
+  - 別モデル・別 session の機械判定（Req 3 受入 4 で除外）
+  - LLM judge audit による最終承認の自動化（Req 15 で除外）
+  - 第 2〜5 層のうち本設計で Phase 0〜6 に含めていない外部 hook / CI 強制
+
+## 完成判定基準（Completion Criteria）
+
+本設計に基づく実装が完成したとみなす条件：
+
+1. `stages/` 配下に 9 ファイル（`intent.yaml`／`feature-partitioning.yaml`／`feature-dependency.yaml`／`requirements.yaml`／`design.yaml`／`tasks.yaml`／`implementation.yaml`／`reopen-procedure.yaml`／`cross-spec-alignment.yaml`）がすべて配置されている
+2. `tools/check-workflow-action.py` が通常 workflow と reopen の選択層入口（少なくとも `next`、`spec-set`、`commit`、`push`、`reopen-start`、commit / push 直前 gate）を提供し、各サブコマンドが exit code 0／1／2 を正しく返す
+3. 機能単位 spec.json 7 件（全 7 機能）が `workflow_state` を計画書 §5.24 の正本スキーマで持つ
+4. レビュー記録の front-matter 検査が機能横断段（review-wave／alignment）の前提として組み込まれている
+5. 進行中状態ファイル（`stages/in-progress/*.yaml`）の有無検査が `git commit`／`git push` の直前ゲートに統合されている
+6. 手戻り種別判定の根拠ファイル（`docs/reviews/reopen-classification-*.md`）の雛形が `templates/review/reopen_classification_template.md` として配置されている
+7. 運用文書（`docs/operations/WORKFLOW_PRECHECK.md`）にワークフロー事前検査の限界が明示されている
+8. `.reviewcompass/schema/` に operation contract、`effect_kind`、`phase_boundary`、workflow-state snapshot、language task I/O の schema が配置され、operation registry / structured effective prompt / side track stack と相互参照できる
+9. Phase 0〜6 の各完了条件が tasks 段で TDD 可能な単位に分解され、Phase をまたいだ途中状態を単一 commit に混在させない順序が明示されている
+10. decision-source-lint、review-wave summary、operation registry / preflight、structured effective prompt、workflow-state snapshot、proxy_model triage decision 機械処理化など、Requirement 11〜16 で追加された operation surface が、該当 Phase の tasks / implementation で実装・検査されている
+
+本 design drafting 時点では、条件 1〜3 の一部と `required_action.schema.json` / `next_action_response.schema.json` の先行実装が存在するが、Requirement 13〜16 の operation contract、side track stack、structured effective prompt、workflow-state snapshot、proxy_model triage decision 機械処理化は今後の tasks / implementation 段で TDD 対象として分解・実装する。したがって本節は完成判定の目標条件であり、現時点の実装完了主張ではない。
+
+## 先行実装・運用由来契約の設計入力（Implementation-Derived Contract Inputs）
+
+本節は、dogfooding、先行実装、運用文書、conformance check で観測された契約を、design drafting の入力として整理する。ここでいう「取り込む」「設計境界とする」は、本 design に契約候補を明文化する意味であり、review-wave、alignment、approval、または Requirement 13〜16 の tasks / implementation 完了を主張しない。実装済みの証跡に触れる場合も、既存状態の説明に限り、本 reopen の後続 gate 完了とは区別する。
+
+### XDI-WM-001：post-write・承認・監査・自律台帳契約
+
+2026-06-08 の機能横断 conformance check で、workflow-management の post-write verification、commit approval、audit trail、autonomous ledger に関する契約が、運用文書・規律・ゲート実装・テストにまたがって具体化されていることを確認した。本設計はその差分を先行実装・運用由来の設計入力として取り込む。
+
+- post-write verification は、対象ファイルと検証結果の対応を commit 前に確認し、必要な検証記録がない変更を不可逆操作へ進ませないための境界である
+- commit approval は、利用者の明示指示、対象ファイル、ハッシュ、rationale を `.reviewcompass/runtime/approvals/commit-approval.json` に固定し、ガード付き commit の入力として扱う（旧 `.reviewcompass/approvals/` からの変更は 2026-06-12 配置規約 PLC-DEC-004・009〜011 反映。凍結・読み取り互換は §実行時生成物の凍結期（P3 まで）の扱いを正本とする）
+- audit trail は `check-workflow-action.py` と `guarded-git-commit.py` の verdict、理由、staged files、承認レコード状態を観測可能な証跡として残す
+- autonomous ledger は、進行中状態・未消化所見・承認済み不可逆操作を workflow の状態判断に反映し、自律進行と人間承認境界を混同しない
+
+### XDI-WM-002：後追い intent 下流再展開契約
+
+2026-06-09 の dogfooding で、既存システムに intent を後から追加した場合、既存 requirements が受け止められるかだけで処理を終えず、該当 feature の requirements／design／tasks／implementation を上流から再展開する必要が確認された。本設計はその差分を先行運用由来の設計入力として取り込む。
+
+- 受け皿 feature がある場合は既存 feature を reopen し、ない場合は feature-partitioning に戻る
+- `conformance-evaluation` はコード由来差分候補を生成し、本機能はその候補を reopen 手続きへ取り込む
+- `pending_gates` が triad-review を指していても、drafting 証跡がなければ `next` は `run_reopen_drafting` を返す
+- side track は `process_id: maintenance` で本線と分離し、開始と終了を明示する
+
+### XDI-WM-003：配布側複数 LLM 入口の配布契約（2026-06-12 反映）
+
+2026-06-10〜12 の配布側複数 LLM 入口整備（設計記録 `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md`、conformance 評価 `2026-06-12-completed-followup-conformance.md` の MLE-C-005・C-006）で確立した配布契約を、本機能の設計入力として取り込み、後続 tasks / implementation で検査可能な境界へ分解する。
+
+- **対象アプリ入口規律**：`templates/entry/AGENT_ENTRY.template.md` を配布し、対象アプリの `.reviewcompass/AGENT_ENTRY.md` として実体化する。LLM 別差分（入口ファイル・記憶の扱い・設定の置き場）は §10 に 1 ファイル同居とし、別ファイル化しない。既存入口（CLAUDE.md／AGENTS.md）への合流条件（設計記録 2026-06-10 §3.4、方式 A、利用者承認済み）：追記前に書き込み先・挿入行・挿入位置（末尾）を利用者へ提示して承認を得る。同じ行が既にあれば何もしない。ファイルが存在しなければ承認のうえその 1 行のみで新規作成する。既存記述は変更しない。追記する 1 行の正本は `AGENT_ENTRY.template.md` §11 の定型文（Claude 用は取り込み行 `@.reviewcompass/AGENT_ENTRY.md`、Codex 用は AGENT_ENTRY を最初に読む旨の指示文）とする。
+- **hook 配布**：`templates/hooks/pre-bash-precheck.sh.template` を 1 本だけ配布する。プレースホルダは `{{REVIEWCOMPASS_PYTHON}}`・`{{REVIEWCOMPASS_DIR}}` の 2 つで、いずれも絶対パス必須。初期設定時に LLM が実パスへ置換し、`.claude/hooks/` と `.codex/hooks/` の両方へ同一内容で複製する。**自己診断の契約**：診断の主体は hook スクリプト自身、実行タイミングは hook 起動時（検査ツール呼び出しの前）。未置換トークンの残存、検査ツール（`tools/check-workflow-action.py`）の不在、Python 実行系の実行不能を検出した場合、「hook 設定不備」という明確な理由を出力して当該 commit／push を拒否する（fail-closed、非 0 終了）。復旧手順（プレースホルダの再置換）は初期設定ガイドに記載する。置換が正しく完了したことの検証は、hook 起動時の自己診断（最初の commit／push 時）に加え、初期設定完了時の有効化確認手順（正本＝`docs/operations/INITIAL_SETUP_LLM_GUIDE.md`）で初期設定の時点でも行う。動作仕様の実体正本はテンプレート本体（`pre-bash-precheck.sh.template` の deny 関数と診断部）とする。
+- **登録雛形**：`.claude/settings.json` の hook 登録断片（`templates/hooks/claude-settings.json.template`）と `.codex/hooks.json` 雛形（`templates/hooks/codex-hooks.json.template`）を配布する。実体化先は対象アプリの `.claude/settings.json`（既存設定があれば断片を統合）と `.codex/hooks.json`。導入は強推奨であり、有効化確認（hook が commit／push 時に起動すること）の手順と検証責務は `docs/operations/INITIAL_SETUP_LLM_GUIDE.md` を正本とする。導入を見送る場合は利用者の明示判断とし、見送った事実を初期設定の完了報告に記録する。hook が未登録または見送られた間は、機械ガード第 1 層（hook による commit／push 直前の事前検査）が存在しない状態であり、この保護境界の不在は利用者明示判断による受容リスクとして扱う。その間の運用は AGENT_ENTRY の規律（検査ツールの手動実行）に委ねる。
+- **配布 allowlist**：`deploy-manifest.yaml` に entry／hooks／feature-dependency の各テンプレートを含める。
+- 運用手順の正本は `docs/operations/INITIAL_SETUP_LLM_GUIDE.md`・`INITIAL_DEPLOYMENT_USER_GUIDE.md`・`DEPLOYMENT.md` §4 とし、本設計は配布物の契約境界（何を配布し、何を対象アプリ側で実体化するか）を定める。
+
+### XDI-WM-004：operation registry / preflight 契約（2026-06-16 反映）
+
+2026-06-16 の workflow recovery smell inventory と operation registry / preflight reopen R-0 で確認した、推測コマンド、誤 entrypoint、review artifact drift、approval record gap、staged / unstaged 対象誤り、current-session formal record 作成、nested issue scope drift を、本機能の設計入力として取り込み、Requirement 12〜13 の境界へ接続する。
+
+- operation registry は `stages/operation-registry.yaml` を正本とし、operation id、kind、canonical invocation、workflow binding、required inputs、target identity、planned outputs の参照・投影・binding hint、sequence mode、worktree / pending / artifact policy、operation contract 参照を定義する。`effect_kind`、承認要否、phase boundary、preconditions / postconditions、side effects、branch / internal step semantics、approval aggregation、出力・副作用 contract field は registry で定義しない。
+- preflight は read-only を Phase 1 とし、review-run directory、manifest、approval record、session record、commit、deployment / export output を作成しない。
+- `next --json` の reopen 状態は Requirement 2 の契約を拡張し、reopen scope、impact review scope、direct / indirect features、flag policy、pending / completed / superseded gate、参照 state files を一意に返す。
+- approval chain、review artifacts、bundle、manifest、criteria、document-type、target digest、session record、deployment / export は operation preflight の初期対象とする。
+- 判定は LLM / provider / model 名に依存しない。
+
+### XDI-WM-005：選択層／実行層接続と構造化プロンプト契約（2026-06-19 反映）
+
+2026-06-18〜19 の統合設計メモ反映で確認した、`next --json` の唯一 action selector と operation contract / structured effective prompt / side track stack / workflow-state snapshot の接続を、本機能の設計入力として取り込み、Requirement 13〜16 の段階的実装計画へ接続する。
+
+- `required_action` 19語彙は operation contract に接続し、`effect_kind`、承認要否、phase boundary、sequence、preconditions / postconditions を機械可読に持つ。
+- 複合 operation は単一代表値へ丸めず、branch / internal step / max effect / approval aggregation を operation contract 上で表す。registry はそれらを再定義せず、contract 参照・投影・binding に限定する。
+- 承認ゲートは判断記録 operation と対象 operation の承認を分離し、`record_human_decision` の完了だけで不可逆操作を許可しない。
+- side track は stack frame として管理し、`return_to`、allowed files、staged file set digest、max depth を機械検査対象にする。
+- workflow-state snapshot は `next --json` の副産物であり、正本ではなく可視化・監査補助である。
+- structured effective prompt は LLM の言語タスク仕様であり、機械タスクは operation contract / preflight / runner / guard の責務とする。
+- Phase 0〜6 は選択層、schema、read-only registry、advisory preflight、structured prompt、mechanical blocking、LLM judge audit の順に分け、TDD 実装時に混在させない。
+
+## 変更意図（Change Intent）
+
+本設計は先行プロジェクトの `dual-reviewer-implementation-governance/design.md`（466 行、節ハッシュ・独立再導出パーサ・supersedes リンク・通過マーカーの後続確認等を含む大規模機構）を、ReviewCompass の方針（計画書 §5.4〜§5.8）に基づき **思想は継承、実装は 1／10** で再設計した。
+
+### 継承した思想
+
+- 不可逆操作の直前にしか機械ゲートを置かない（fail-closed の最小集合）
+- 証跡 artifact の存在＋構造適合で完了を判定する（主張ではなく証拠）
+- 起草者と判定者を分ける（自己承認の禁止）
+- 検査が結論不能なら遮断（fail-closed の既定）
+- 完了判定述語と独立性 marker の分離（素材の小節 2 と小節 3 を §軽量版検査スクリプトモデル §3 と §起草者と判定者の分離モデル §1 に縮約継承）
+
+### 削減・除去した機構（素材から継承しない、§5.4 確定）
+
+- 節ハッシュ（`section_content_hash`）と陳腐化／改竄検知（素材の小節 1.3、§5.4 で削除確定）
+- supersedes リンクによる旧台帳保全（素材の小節 1.1、§5.4 で削除確定）
+- grandfathering と format-migration の機構（素材の小節 10、§5.4 で削除確定。本設計でも先送り論点 4 として grandfathering の判断は別途）
+- 権威マップ（authority-map）と独立再導出パーサ（素材の小節 1.2、§5.4 で削除確定）
+- 通過マーカーの後続確認（素材の小節 4 後段、§5.4 で削除確定、二次防御は補助層 C 段階 3 と第 2 層に分離）
+- 実行台帳（workflow-execution-ledger）の機構全体（素材の §Workflow Execution Ledger and Enforcement Model、§5.4 で削除確定）
+- 上位文書同期（C-1／C-2／C-3 取り込み、素材の小節 6）：人手の整合に置き換え
+
+### ReviewCompass 固有の追加
+
+- 補助層 C 段階 2 として `tools/check-workflow-action.py` を本機能に組み込む（§5.8 補助層 C、計画書 §5.8 採用承認 2026-05-25 セッション 24）
+- サブエージェント方式（`mode: subagent_mediated`）への対応を §起草者と判定者の分離モデル §2 に明示（計画書 §5.23.12 由来）
+- 規律変更の提案権と実体変更権の分離を §責務境界の明確化と §主要な設計判断 判断 7 に明示（A-007 案 2、2026-05-23 利用者承認）
+- 機能依存マップの依存種別（`hard`／`review`）の連想配列構造を §機能依存マップモデル §2 に明示（A-005 対処由来、計画書 §5.5 行 368〜373）
+- 検査スクリプトの 3 サブコマンド構成（`spec-set`／`commit`／`push`）と verdict 3 値（OK／WARN／DEVIATION）を §軽量版検査スクリプトモデル §2 に明示（運用契約 `docs/operations/WORKFLOW_PRECHECK.md` と詳細仕様 `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` 由来）
+- proxy_model は approval 段の代行主体ではなく、triad-review 段内の review-run 後の修正方針判断だけを代行できることを §段集合の静的列挙モデル §2 に明示（計画書 §5.12.4 由来の旧構想を human-only approval 境界へ修正）
+- 規律ファイル本体を `~/.claude/projects/.../memory/feedback_*.md`（Claude Code auto memory 機構の領域）から `docs/disciplines/discipline_*.md`（リポジトリ内 git 追跡対象）へ軽量手続きで移管、12 件（active 必読相当）を移管、memory 側は短い参照索引に置換（2026-05-25 セッション 26、計画書 §5.21 前倒し実施、利用者明示承認）
+- 2026-06-08 の requirements 再確認への対応として、intent の「レビュー収集処理を事前設定の写像にしない」意図は §軽量版検査スクリプトモデルの `next`、§不可逆操作の直前ゲートモデル、§session 跨ぎ状態管理モデル、§機能依存マップモデルで受けられるため、設計構造の追加は不要と確認
+- 2026-06-08 の reopen 判定修正として、完了済み workflow で上流正本が後続成果物より新しい場合、`next` は `upstream_recheck` ではなく `reopen_classification_required` を返す。意味変更の有無と reopen 種別は分類根拠を保存して `reopen-start` に渡す。
+- 2026-06-09 の後追い intent 追加への対応として、既存システムで intent が後から追加された場合は、受け皿 feature 判定、requirements 以降の下流再展開、CE 候補受け取り、drafting 漏れ防止、side track 分離を §reopen 機械強制モデル §6 と §session 跨ぎ状態管理モデル §1 に反映した。
+- 2026-06-12 の reopen R-0（conformance 評価 `2026-06-12-completed-followup-conformance.md` の gap 反映）として、feature 一覧の解決と立ち上げ案内を §機能依存マップモデル §7 に、機能順キー名の `feature_order` 統一（旧称 `phase_order`、案 A、MLE-DEC-001）を §機能依存マップモデル §1〜3 に、配布側複数 LLM 入口の配布契約を §XDI-WM-003 に反映した。コミット cde1f5c・c2903df は先行実装証跡として参照するが、本 design drafting はその契約を設計入力として再記述する段階であり、本 reopen の review-wave / alignment / approval / implementation 完了を意味しない。
+- 2026-06-12 の reopen R-0（parse-error-failclosed、MLE-DEC-005）として、パース不能ファイルの扱いを立ち上げ案内（OK）から遮断（DEVIATION）へ改めた（§機能依存マップモデル §7「パース不能の遮断」）。本改訂は仕様確定後に TDD で実装する正順の手続きである。
+- 2026-06-15 の reopen R-0（decision-source-lint）として、Requirement 11（重要決定の出典検査）の設計節（§Req 11 設計モデル）を追加し、記録スキーマ・ロケータ表現・正規化規則・保留管理・内容なし語リスト・サブコマンドと接続点（commit ゲート組み込み）の 6 事項を確定した。本改訂は仕様確定後に TDD で実装する正順の手続きである。
+- 2026-06-15 の reopen R-0（commit-approval-nonce）として、Requirement 4 受入 6〜7 の設計を §不可逆操作の直前ゲートモデル §2.1 に追加し、commit 承認を staged 内容に束縛する nonce challenge、承認レコードとの照合、consume、LLM／provider／model 非依存、機微情報除去後の出典保存方針を確定した。本改訂は仕様確定後に TDD で実装する正順の手続きである。
+- 2026-06-16 の reopen R-0（commit-execution-delegation-formal-cli）として、Requirement 4 受入 8 の設計を §不可逆操作の直前ゲートモデル §2.2 に追加し、`commit-approval delegate-execution`、`execution_delegation` record、staged 内容承認との順序制約、nonce / target digest / expiry 束縛、許可文言の正規化と完全一致、secret 検出時の fail-closed、LLM／provider／model 非依存を確定した。後続の配布可能 UX 改善として、`guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` が承認 1 行から staged 内容承認 record、execution delegation、直前 gate、commit までを連続実行する wrapper を §2.2 に追記した。本改訂は仕様確定後に TDD で実装する正順の手続きである。
+- 2026-06-16 の reopen R-0（operation-registry-preflight-unified-design）として、Requirement 12 の設計を §Req 12 設計モデルに追加し、operation registry schema、read-only preflight response、command validation、worktree / pending / integrity conflict、review artifact / bundle preflight、serial_only approval chain、current-session guard、nested issue handling、deployment / export preflight、reopen scope / impact review scope、`next` state uniqueness、LLM／provider／model 非依存、Phase 1 / Phase 2 境界を確定した。本改訂は requirements approval r2 後に design へ連鎖した正順の手続きである。
+- 2026-06-17 の maintenance（next-json-unique-state）として、D-003 rollback 退避資料 `/private/tmp/reviewcompass-d003-rollback-20260617/files/docs/notes/2026-06-16-next-json-unique-state-redesign.md` を根拠に、§軽量版検査スクリプトモデルへ `next --json unique action selector` を追加した。maintenance action と `required_action` の分離、reopen blocker / commit stop point / pending gate の相互排他、`active_gate` / `blocked_by` の JSON 契約は先行 maintenance 証跡を設計入力として再記述したものであり、後続 Phase 0 tasks / implementation の完了条件とは別に扱う。
+- 2026-06-18 の reopen R-0（phase1-schema-definitions）として、§軽量版検査スクリプトモデル §5 に `required_action.schema.json`・`next_action_response.schema.json` のスキーマ定義節を追加し、ファイル配置（`.reviewcompass/schema/`）・`$schema`・`$id`・`enum` 19語彙順・`next_action` 必須フィールド 10 個・条件付き必須フィールド（`repair_reasons`・`action_parameters`）・`$ref` による語彙参照・後方互換フィールド整合規則を確定した。§全体構造のリポジトリ配置図にも 2 ファイルを追記した。本改訂は仕様確定後に TDD で実装する正順の手続きである（失敗テスト `tests/tools/test_phase1_schema_definitions.py` は作成済み）。
+- 2026-06-19 の reopen R-0（integrated-design-requirements-followup）として、Requirement 13〜16 の設計を §Req 13〜§Req 16 設計モデルに追加した。operation contract 語彙、required_action 19語彙対応、承認ゲート、side track stack、workflow-state snapshot、structured effective prompt、第1層 prompt 検査、LLM judge audit、Phase 0〜6 の段階的実装順序を確定した。これは 2026-06-18 セッション 77e272a2 の「統合設計メモ全体を requirements に書き込む」依頼から漏れていた設計層への連鎖反映であり、requirements approval 後の reopen 第3過程 design drafting として実施した。
+
+### 機能横断レビューで対処された所見の反映状況
+
+- **A-005**（feature-dependency 依存記述の連想配列構造）：§機能依存マップモデル §2 で対処済み
+- **A-007**（self-improvement との権限分散調停、案 2 採用＋規律ファイルの配置先移管）：§責務境界の明確化、§主要な設計判断 判断 7、ReviewCompass 固有の追加で対処済み。本セッション 26 で軽量手続きにより `docs/disciplines/` への移管も完了（精査により memory ファイルが規律本体であることが判明、技術機構（Claude Code）と内容（ReviewCompass 規律）の二重性を移管で解消）
+- **A-011**（analysis／design の 3 役差分集約ファイル、未消化）：本機能の責務範囲外、`analysis`／`evaluation` の design レビュー波段で消化予定（本設計の対処事項に含めない）
+
+### must-fix 所見の対処状況（本セッション 26 triad-review）
+
+主役 19 件＋敵対役独立発見 12 件＝計 31 件の所見のうち、判定役が must-fix と判定した 10 件への対処：
+
+- **F-003**（verdict 語彙 BLOCK → DEVIATION 統一）：機能内対処済み、§全体構造／§軽量版検査スクリプトモデル §2／§変更意図 の 4 箇所
+- **F-006**（テンプレート変数の展開規則明示）：機能内対処済み、§段集合の静的列挙モデル §2 末尾に新節追加
+- **F-009 ＋ F-010**（commit／push の `--rationale` 必須引数と参照節番号修正）：機能内対処済み、§軽量版検査スクリプトモデル §2 の表と出力形式説明
+- **F-016**（「fook」→「フック」タイポ修正）：機能内対処済み、§多層防御の位置付けモデル §3
+- **A-001 ＋ A-009**（`phase_order` 7 機能採用の根拠注記、「全 N 機能」を `feature-dependency.yaml#phase_order` 参照に変更）：機能内対処済み、§機能依存マップモデル §2 と §不可逆操作の直前ゲートモデル §1
+- **A-002**（trigger_map の `actor` 値域を動的解決に修正）：機能内対処済み、§reopen 機械強制モデル §2
+- **A-004**（`depends_on` の連想配列構造のパース仕様と判定述語追加）：機能内対処済み、§軽量版検査スクリプトモデル §3 の述語集合と §機能依存マップモデル §6 新節
+- **A-007**（規律ファイル所有先パスと実体配置の不一致）：軽量手続き経由で `docs/disciplines/` への移管実施により解消（本節と §責務境界の明確化に反映）
+
+### triad-review 段への引き継ぎ事項
+
+- 主要な設計判断 8 件（特に判断 1〜4 の fail-closed と最小集合方針、判断 7 の権限分散）の合理性を 3 役レビューで検証
+- 先送り論点 7 件（特に論点 4 の grandfathering、論点 6 の規律変更の段集合）の妥当性と漏れの確認
+- 素材設計から削減した機構（節ハッシュ・supersedes リンク等）の削減判断が ReviewCompass のリスク受容範囲内であるかの再確認
+```
+
+### .reviewcompass/specs/workflow-management/tasks.md
+
+content_mode: full_text
+content_sha256: 7e5ba6f3e76bb762c1fd0245cecdbc5abcff671eec12ee74e91d9ee16c28705a
+
+```text
+---
+spec: workflow-management
+phase: tasks
+stage: drafting
+author:
+  identity: claude-opus-4-7
+  role: drafter
+created_at: 2026-05-28
+updated_at: 2026-06-19
+language: ja
+---
+
+# Tasks Document：workflow-management
+
+## 概要（Overview）
+
+本文書は `workflow-management`（所定手続きの定義と機械強制を担う機能）の実装タスクを列挙する。本機能は、所定手続きの段集合定義、軽量版検査スクリプト、起草者と判定者の分離機械検査、不可逆操作の直前ゲート、reopen 機械強制、session 跨ぎ状態管理、多層防御の第 1 層位置付け、機能依存マップの一元化、既存システムへの後追い intent 追加時の下流再展開、operation contract 語彙、承認ゲート／side track stack／workflow-state snapshot、構造化有効プロンプト、proxy_model triage decision 機械処理化を担う。計画書 §5.4「軽量化方針」に従い、思想は継承、実装は 1／10 を目標として再設計する。
+
+タスクは設計文書（design.md）の所有モデル単位でまとめ、各タスクは「起草・実装・テスト・コミット」まで一気通貫で完結できる粒度とする。タスクの依存順は design.md §全体構造（リポジトリ内配置の 3 層構造）と各 Requirement 対応モデル節に従う。
+
+## タスク粒度と方針（Granularity and Policy）
+
+- **粒度**：1 タスク ＝ 1 つの所有モデル領域。design.md の節と必ずしも 1 対 1 でなく、密接に関連する節は同じタスクにまとめる。tasks.md は implementation drafting へ直接入れる粒度で書く。各タスクには、実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を含める
+- **一気通貫**：1 タスクは「起草・実装・テスト・コミット」まで止めず連続で進められる単位
+- **依存順**：前提タスクが完了してから後続タスクに進む
+- **自律進行**：実装段で per-task 承認は取らず、コミット・プッシュ・spec.json 更新・フェーズ移行のみ明示承認（規律 [[implementation-autonomy]] 準拠）
+- **テスト要件**：成果物は静的検証（YAML スキーマ整合、述語値域、必須節充足、front-matter 異名）と動的検証（fail-closed の遮断、reopen 連鎖の actor=human 停止、後追い intent の下流再展開、drafting-before-review 防止）で機械的に判定可能とする
+- **contract consumer 原則**：foundation が所有する語彙正本を再定義せず参照のみで使用。本機能が実際に参照するのは `review_mode`（レビューモード語彙、front-matter 検査 T-005 で使用）であり、所見系（`counter_status`／`severity`／`final_label`／`confidence_label`）・状態軸系（`run_status`／`validator_status`／`human_signoff_status`／`evidence_class`）は本機能の責務外で参照しない（A-003 対処 2026-05-28）。本機能所有の正本（`completion_predicate` 述語集合 7 値 ／ `verdict` 3 値 OK／WARN／DEVIATION ／ 手戻り種別記号 5 値 N／R／D／A／I ／ 依存種別 2 値 `hard`／`review`）は本機能で確定
+- **fail-closed の徹底**：結論不能（YAML パースエラー、必須フィールド欠落、未知の値）の場合は合格判定を出さず必ず fail を返す（判断 3 全面採用）
+- **implementation-drafting.md 非採用**：implementation-drafting.md は正本成果物として採用しない。implementation drafting は、tasks.md に従って実際のテストと実装コードを生成する段である。実装前の手順整理が必要な場合も、正本は tasks.md のタスク記述粒度で担保し、別の implementation plan 文書を完了条件にしない
+
+`workflow-management` 全体で 19 タスク（T-012 は 2026-06-14 reopen R-0、T-013 は 2026-06-15 reopen R-0 decision-source-lint、T-014 は 2026-06-16 reopen R-0 operation registry / preflight、T-015 は 2026-06-18 reopen R-0 phase1-schema-definitions、T-016〜T-019 は 2026-06-19 reopen R-0 integrated design Requirement 13〜16 で追加）。2026-06-15 reopen R-0 commit-approval-nonce と 2026-06-16 reopen R-0 commit-execution-delegation-formal-cli は新タスクを増やさず、既存の commit 直前ゲート領域である T-004／T-006／T-011 へ展開する。
+
+2026-06-16 reopen R-0 の design triad-review で利用者が選択した案A（commit 実行代行承認を別ファイル化する案）は、保存先と検証対象を分離する設計変更であり、所有領域は既存の commit gate 領域に収まる。したがって T-004 が CLI 入口、T-006 が runtime record と gate 判定、T-011 が統合・回帰テストを担う。
+
+## タスク一覧（Task List）
+
+### T-001：成果物配置の準備
+
+- **対応設計節**：design.md §全体構造、§段集合の静的列挙モデル §1
+- **対応要件**：Requirement 1 受入 1（段集合の静的列挙）、Requirement 6 受入 1（進行中状態ファイル配置）
+- **責務**：リポジトリ内に `stages/` ディレクトリと配下の 9 ファイル骨格、`stages/in-progress/` と `stages/completed/` の 2 サブディレクトリ、検査スクリプト配置先 `tools/`、ログ書き出し先 `docs/logs/`、reopen 種別判定根拠ファイル配置先 `docs/reviews/`、種別判定根拠ファイル雛形配置先 `templates/review/` を新設し、各ディレクトリに配置目的を記す README を置く。`stages/in-progress/.gitkeep` と `stages/completed/.gitkeep` で空ディレクトリを Git 追跡可能にする（foundation T-001 ／ runtime T-001 ／ evaluation T-001 ／ analysis T-001 の方針継承）
+- **前提タスク**：なし（起点）
+- **成果物**：
+  - `stages/README.md`
+  - `stages/in-progress/.gitkeep`
+  - `stages/in-progress/README.md`
+  - `stages/completed/.gitkeep`
+  - `stages/completed/README.md`
+  - `docs/logs/README.md`（`workflow-precheck.log` の所在説明、初版は空ログ。ログの現行書き出し先は `.reviewcompass/runtime/logs/`、2026-06-12 配置規約 PLC-DEC-004〜005 反映。既存配置は凍結保全）
+  - `docs/reviews/README.md`（`reopen-classification-<日付>.md` の所在説明）
+  - `templates/review/reopen_classification_template.md`（reopen 種別判定根拠ファイルの雛形＝空の骨格を配置。内容の確定は T-007 が担い、本ファイルの成果物所有は T-001 単独、A-010 対処 案 2 2026-05-28）
+  - `docs/operations/WORKFLOW_MANAGEMENT.md`（アプリ側規約節を追記、計画書 §5.4〜§5.8 由来）
+  - `tools/README.md`（検査スクリプト配置先 `tools/` の説明、実体 `.py` は T-004 で配置。`tests/` との対称化、F-017 対処 2026-05-28）
+  - `tests/workflow-management/.gitkeep`
+- **完了条件**：
+  1. `stages/` 配下のディレクトリ構造（直下 9 ファイル骨格 ＋ `in-progress/` ＋ `completed/`）と各 README が存在し、`docs/operations/WORKFLOW_MANAGEMENT.md` に配置規約が記述されている。`tools/` ディレクトリに README が存在し Git 追跡可能である（F-017 対処 2026-05-28）
+  2. `templates/review/reopen_classification_template.md` が design.md §reopen 機械強制モデル §4 の最低限の構造（front-matter ＋分類根拠節）を満たす
+  3. `tests/workflow-management/.gitkeep` が Git に追跡可能な状態である
+- **テスト要件**：ディレクトリ存在検査、README 存在検査、`reopen_classification_template.md` 必須節検査、`.gitkeep` 存在検査
+
+### T-002：機能依存マップ（feature-dependency.yaml）
+
+- **対応設計節**：design.md §機能依存マップモデル §1〜§6、§主要な設計判断 判断 6
+- **対応要件**：Requirement 8 受入 1〜5
+- **責務**：`stages/feature-dependency.yaml` を作成、7 機能（foundation／runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）の `features.<機能>.depends_on` と `feature_order`（機能間処理順。旧称 phase_order、requirements.md Requirement 8 受入 2 の由来注記参照）を一元保管。`depends_on` の 2 形式（単純リスト構造 ／ 連想配列構造）を許容し、`conformance-evaluation` のみ連想配列構造（`hard` ／ `review` 併記）。`feature_order` は 7 機能を依存マップ順で列挙。本機能が単独所有・他機能は再定義せず参照のみ、を運用文書に明示
+- **前提タスク**：T-001
+- **成果物**：
+  - `stages/feature-dependency.yaml`（features ＋ feature_order）
+  - パース仕様の正本：`tools/check-workflow-action.py` の解決・整合検査の実装（`resolve_feature_order`・`validate_feature_order_consistency`・`depends_on` 解釈）とそのテスト（単純リスト構造 ／ 連想配列構造の許容、値域 `hard` ／ `review` の 2 値、それ以外は結論不能）。独立した JSON Schema ファイルは作成しない（MLE-DEC-002、2026-06-12 利用者決定。当初計画の `stages/feature-dependency.schema.json` を実装検査で代替）
+  - `docs/operations/WORKFLOW_MANAGEMENT.md` の §機能依存マップ節（所有者明示、改廃ルール）
+- **完了条件**：
+  1. `feature-dependency.yaml` の `features` に 7 機能すべてが列挙、`feature_order` が 7 機能を依存マップ順で列挙
+  2. `conformance-evaluation` の `depends_on` が連想配列構造で `foundation: hard ／ runtime: review ／ evaluation: review ／ workflow-management: review` を保持
+  3. `hard` ／ `review` 以外の値が結論不能になることが、検査ツールの実装とテストで機械検証される（MLE-DEC-002）
+  4. 単純リスト構造と連想配列構造の両方が検査ツールでパース可能であることが機械検証される
+- **テスト要件**：パース仕様の実装検査テスト、7 機能列挙テスト、依存マップ順テスト、連想配列構造の値域テスト（`hard` ／ `review` ／ 不正値 `weak` ／ 空文字 ／ null の 5 ケース）、依存循環検出テスト
+
+### T-003：段集合 YAML 8 ファイル（9 ファイル体制のうち feature-dependency.yaml を除く）
+
+- **対応設計節**：design.md §段集合の静的列挙モデル §1〜§4、§テンプレート変数の展開規則
+- **対応要件**：Requirement 1 受入 1〜5、Requirement 5 受入 1〜5（reopen-procedure.yaml の構造）
+- **責務**：`stages/` 配下に 8 ファイル（`intent.yaml` ／ `feature-partitioning.yaml` ／ `requirements.yaml` ／ `design.yaml` ／ `tasks.yaml` ／ `implementation.yaml` ／ `reopen-procedure.yaml` ／ `cross-spec-alignment.yaml`）を作成。各 YAML は段集合（段名・`actor`・`artifact_paths`・`required_sections`・`completion_predicate`）を静的列挙、機能横断段は `feature_order: feature-dependency.yaml#feature_order` を参照。テンプレート変数（`{feature}` ／ `{phase}` ／ `{日付}`）の展開規則は設計書 §テンプレート変数の展開規則に従う。`reopen-procedure.yaml` に `trigger_map` を持たせ（第3過程で参照）、種別記号 N／R／D／A／I × 深さの二次元表記から再実施対象を機械的に決定。`cross-spec-alignment.yaml` は段集合本体を後続フェーズで確定する旨を YAML コメントに明記、枠のみ確保
+- **前提タスク**：T-001、T-002（`feature_order` 参照先）
+- **成果物**：
+  - `stages/intent.yaml`（drafting／review／approval の 3 段、actor=human／llm／human）
+  - `stages/feature-partitioning.yaml`（candidate-proposal／approval の 2 段、actor=llm／human）
+  - `stages/requirements.yaml`（drafting／triad-review／review-wave／alignment／approval の 5 段、機能横断段 3 段は `feature_order` 参照）
+  - `stages/design.yaml`（同 5 段）
+  - `stages/tasks.yaml`（同 5 段）
+  - `stages/implementation.yaml`（同 5 段）
+  - `stages/reopen-procedure.yaml`（4 過程構成、`trigger_map` ＋ `actor_resolution: per_target_stage` を第3過程で参照）
+  - `stages/cross-spec-alignment.yaml`（枠のみ、段集合は後続フェーズで確定）
+  - `stages/stage_schema.json`（段集合 YAML 共通スキーマ：段名・actor・artifact_paths・required_sections・completion_predicate・feature_order・front_matter_required）
+- **完了条件**：
+  1. 8 ファイルすべてが配置、各 YAML が `stage_schema.json` で構造検証を通る。`stage_schema.json` は `completion_predicate` を 7 値（design §軽量版検査スクリプトモデル §3 確定）に、`actor` を 3 値（`human` ／ `llm` ／ `proxy_model`、design §段集合 §1／§3 確定）に enum で値域制限し、いずれも未知の値が DEVIATION（fail-closed）になることが機械検証される（F-015／A-004 対処 2026-05-28）
+  2. 機能横断段（review-wave／alignment／approval）が `feature_order: feature-dependency.yaml#feature_order` を参照、機能単位段（drafting／triad-review）は `feature_order` を持たない
+  3. `reopen-procedure.yaml` の `trigger_map` が手戻り種別 N-0 ／ R-0〜1 ／ D-0〜2 ／ A-0〜3 ／ I-0〜4 の全 15 種について再実施対象段リストを保持
+  4. `trigger_map` 各エントリの参照先段（`<YAML ファイル>#<段名>` 形式）が、`actor_resolution: per_target_stage` により段定義から動的解決可能であることが機械検証される
+  5. テンプレート変数 `{feature}` ／ `{phase}` ／ `{日付}` の展開元と解決規則が `stage_schema.json` の構造化フィールド（各変数の展開元を列挙する `template_vars` 等）に格納され、フィールドの存在が機械検証される（自由記述コメントの grep ではなく構造化、F-010 対処 案 2 2026-05-28）
+- **テスト要件**：8 ファイルすべての構造検証、`feature_order` 参照解決テスト、`trigger_map` 全 15 種テスト、テンプレート変数展開テスト（3 種それぞれ）、`cross-spec-alignment.yaml` の枠のみ確保テスト、`completion_predicate` 値域 7 値テスト（7 値 OK ＋ 未知値 DEVIATION）、`actor` 値域 3 値テスト（human ／ llm ／ proxy_model OK ＋ 未知値 DEVIATION、F-015／A-004 対処 2026-05-28）
+
+### T-004：軽量版検査スクリプト本体（補助層 C 段階 2）
+
+- **対応設計節**：design.md §軽量版検査スクリプトモデル §1〜§4、§主要な設計判断 判断 2 ／ 判断 3 ／ 判断 8
+- **対応要件**：Requirement 2 受入 1〜5、Requirement 4 受入 2 ／ 3 ／ 6 ／ 7 ／ 8（fail-closed、独立走行、commit approval nonce challenge、LLM 非依存判定、commit execution delegation formal CLI）、Requirement 8 受入 6〜8（feature 一覧解決・整合検査・立ち上げ案内）、Requirement 9 受入 2 ／ 5（drafting-before-review と下流再展開判定）
+- **責務**：`tools/check-workflow-action.py` を Python で実装。3 サブコマンド（`spec-set <feature> <phase> <stage> <new_value> [--rationale "..."]` ／ `commit --rationale "..."` ／ `push --rationale "..."`）と next サブコマンド、`--json` 出力オプションを提供。next サブコマンドは標準のワークフロー遷移入口として `workflow_state`、`stages/in-progress/`、reopen pending、post-write-verification pending、上流成果物が下流成果物より新しい状態を読み、次作業を返す。完了済み workflow でも、intent → feature-partitioning、feature-partitioning → requirements、requirements → design、design → tasks、tasks → implementation の順で上流更新後の再展開漏れを `upstream_recheck` として返す。`docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml` を読み、判定点ごとの `required_disciplines` と `required_inputs` を `next_action` に含める。このマップは判定点ごとの `effective prompt` 生成に使う元資料の正本である。`next` は判定点ごとの元資料を 1 本の prompt に束ね、`.reviewcompass/runtime/effective-prompts/` に保存し（旧 `.reviewcompass/effective-prompts/` からの変更は 2026-06-12 配置規約 PLC-DEC-004・009〜011 反映、旧パス読み取り互換は P3 まで維持）、`next_action.effective_prompt` の `effective_prompt_path`、`effective_prompt_sha256`、`effective_prompt_loaded` として返す。元資料を読めない場合は `effective_prompt_loaded: false` とし、`DEVIATION` で fail-closed する。`tools/api_providers/run_role.py` と `tools/api_providers/run_review.py` は review-run の `rounds.yaml` に `effective_prompt_path` と `effective_prompt_sha256` を記録する。後追い intent を既存システムへ適用する reopen では、pending_gates が triad-review を指していても、対応 phase の `drafting_completed_gates` または `completed_gates` に `stages/<phase>.yaml#drafting` がなければ、next は triad-review ではなく `run_reopen_drafting` を返す。verdict 3 値（OK／WARN／DEVIATION）と exit code（0 ／ 1 ／ 2）の対応。`completion_predicate` 述語集合 7 値（`artifact_exists` ／ `artifact_exists_and_sections_present` ／ `artifact_exists_and_sections_present_and_author_reviewer_distinct` ／ `all_features_drafting_and_triad_review_completed` ／ `cross_spec_alignment_passed` ／ `explicit_human_approval_recorded` ／ `depends_on_resolves_correctly`）の判定ロジックを符号化。post-write target detection と manifest verification を実装契約として扱い、completed manifest の `target_files`、`target_sha256`、`required_verifiers`、`verifications[]`、`unresolved_substantive_findings` を検査する。feature 一覧と機能順は `feature-dependency.yaml` の `feature_order` キーから解決する（ツール実行時のカレントディレクトリ基準で `.reviewcompass/feature-dependency.yaml` → `stages/feature-dependency.yaml` → `feature-dependency.yaml` の順、最初に存在した 1 ファイルのみ、遡上探索なし。`resolve_feature_order`。design §機能依存マップモデル §7、2026-06-12 反映）。ファイル不在・`feature_order` 未定義は `next_action.kind: feature_definition_required`（verdict OK、exit 0）で intent／feature-partitioning の実施を案内し、探索で選ばれた 1 ファイルが読めない場合（パース不能・空・最上位が連想配列でない場合を含む。値の整合検査より先に判定）と `feature_order` と `depends_on` の整合違反（依存先行違反・循環、`validate_feature_order_consistency`）は `next_action.kind: unknown`・`reasons` 列挙・DEVIATION（exit 2）で遮断する（パース不能は破損ファイルのパスと内容確認を促す理由、空の場合は `feature_order` の記録を促す理由を含める）。fail-closed の既定（YAML パースエラー（段集合・feature-dependency とも） ／ 証跡欠落 ／ 必須フィールド欠落 ／ `feature_order` 整合違反で遮断。feature-dependency.yaml の不在・未定義のみ立ち上げ案内として OK）を全面採用（パース不能の遮断分離は MLE-DEC-005 により本契約へ反映、FUP-2026-06-12-001 解消、2026-06-12）。`.reviewcompass/runtime/logs/workflow-precheck.log` への追記（旧 `docs/logs/workflow-precheck.log` からの変更は同配置規約反映。commit 承認記録も同様に `.reviewcompass/runtime/approvals/commit-approval.json` へ〔旧 `.reviewcompass/approvals/commit-approval.json`〕）、出力形式は `[VERDICT]` ／ `[ACTION]` ／ `[REASON]` ／ `[CURRENT STATE]` の 4 ブロック大括弧付きラベル形式。**凍結期（P3 まで）の責務（2026-06-12 配置規約反映、正本は design §実行時生成物の凍結期（P3 まで）の扱い）**：実行時生成物 3 パス（検査ログ・effective prompt・commit 承認記録）の書き込みは常に新配置とし、旧配置（`docs/logs/workflow-precheck.log`・`.reviewcompass/effective-prompts/`・`.reviewcompass/approvals/commit-approval.json`）への新規書き込みを行わない（凍結契約。効力発生は P1 実装反映コミット＝書き込み先切替と同時。互換の終了は P3 の専用 reopen における設計改訂として扱い、暗黙の終了はない）。読み取りは新配置優先・旧配置フォールバック（**新→旧の順**、3 パスとも P3 まで）。新旧いずれにも記録がない場合は各ツールの既存挙動（検査ログの初回新規作成、effective prompt 元資料欠落の DEVIATION fail-closed、commit 承認記録不在のガード遮断）に従い、本配置変更はそれらの挙動を変えない
+- **next unique action selector 補足責務**：`next --json` は状態投影ではなく唯一 action selector として `required_action`、`active_gate`、`blocked_by`、`action_parameters` を返す。maintenance は `required_action=run_maintenance` に固定し、個別 action 名は `maintenance_action` へ分離する。reopen では `current_blocker` を `wait_for_human_decision`、`commit_stop_point: true` を `commit_stop_point` として pending gate より優先し、第3過程で停止点がない場合だけ `run_reopen_drafting` / `run_reopen_pending_gate` を active gate とする。
+- **commit 承認 nonce 補足責務**：`tools/check-workflow-action.py` に `commit-approval prepare --json`、`commit-approval record --nonce <nonce> --source-text-stdin --json`、`commit-approval record --nonce <nonce> --no-source-text --json`、`commit-approval invalidate --json` を追加する。承認本文を argv で受け取る経路は提供しない。`--json` 指定時の正常系出力は機械可読 JSON に限定し、happy path で自由文を混在させない。これらのサブコマンドは T-006 の `commit_approval.py` を呼び、challenge／承認レコードの生成・検証・invalidate・consume を行う。承認本文を保存する場合は `tools.session_record_extractor.redact.redact_text` と `find_residual_secrets` を通し、保存不能時は T-006 の `source_omission_reason` enum に従う。
+- **commit 実行代行承認補足責務**：`tools/check-workflow-action.py` に `commit-approval delegate-execution --nonce <nonce> --source-text-stdin --json` を追加する。承認文を argv で受け取る経路は提供しない。`--json` 指定時の正常系出力は機械可読 JSON に限定し、happy path で自由文を混在させない。このサブコマンドは T-006 の `commit_approval.py` を呼び、同じ nonce の challenge と staged 内容承認 record が有効で、現在の index と target digest が一致する場合だけ `.reviewcompass/runtime/approvals/commit-execution-delegation.json` を作成する。承認文は UTF-8 stdin、末尾 POSIX LF 1 個のみ許容、CR／CRLF／内部改行／NUL／空白のみ／256 bytes 超過を fail-closed とし、許可文言の完全一致を T-006 の正規化規則に委譲する。
+- **配布可能 commit UX 補足責務**：`tools/guarded-git-commit.py` に `--approval-nonce <nonce>` と `--approval-source-text-line-stdin` を追加する。この wrapper は stdin から承認文を 1 行だけ読み、EOF を待たずに staged 内容承認 record と commit 実行代行 delegation record を順序作成してから commit 直前ゲートを実行する。低レベル `record`／`delegate-execution` はデバッグ・検査用に残すが、第三者向け通常手順には露出させない。`commit-approval prepare` は古い壊れた runtime approval / delegation record を invalidated へ寄せ、新しい challenge 準備の邪魔にしない。commit 直前ゲート通過後、`git commit` 呼び出し直前に `index.lock` の排他作成可否を preflight し、permission / sandbox 系の作成失敗を `sandbox_git_write_denied`、`required_action=rerun_commit_with_escalation` として表示して停止する。この停止では `git commit` を呼ばず、approval / challenge / delegation を consumed または invalidated にしない。`git commit` 実行後に `.git/index.lock` / permission 系エラーが返った場合も同じ分類表示を行い、承認保持・staged 内容不変なら再承認不要・sandbox 外 guarded commit 再実行が必要、の 3 点に絞って利用者へ示す。
+- **前提タスク**：T-001、T-002、T-003
+- **成果物**：
+  - `tools/check-workflow-action.py`（argparse 定義 ＋ 3 サブコマンド ＋ `--json` ＋ ログ追記）
+  - `tools/check_workflow_action/predicates.py`（`completion_predicate` 述語集合 7 値の判定ロジック）
+  - `tools/check_workflow_action/yaml_loader.py`（YAML 読み込み ＋ パースエラー fail-closed）
+  - `tools/check_workflow_action/output_formatter.py`（4 ブロック大括弧付きラベル形式 ／ JSON 形式）
+  - `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml`（判定点ごとの `required_disciplines`、`required_inputs`、effective prompt 元資料マップ）
+  - `docs/operations/WORKFLOW_PRECHECK.md`（ワークフロー事前検査の運用契約）
+  - `docs/operations/WORKFLOW_PRECHECK_DETAILS.md`（サブコマンド引数 ／ 出力形式 ／ ログの詳細仕様）
+- **完了条件**：
+  1. 3 サブコマンドと `next` サブコマンドが exit code 0 ／ 1 ／ 2 を正しく返す
+  2. 述語 7 値すべてが正常系で OK、異常系（証跡欠落 ／ 必須節欠落 ／ 異名不成立 等）で DEVIATION を返す
+  3. YAML パースエラー時に DEVIATION（exit 2）を返す（fail-closed）
+  4. `--rationale` が `commit` ／ `push` で必須引数として強制される（省略時はエラー）。`spec-set` の `--rationale`（任意）を省略した場合もログ記録が正しく行われる（F-013 対処 2026-05-28）
+  5. ログ追記が `.reviewcompass/runtime/logs/workflow-precheck.log` に発生し、4 ブロックラベル形式と JSON 形式の両方が正しく出力される。実行時生成物 3 パス（検査ログ・effective prompt・commit 承認記録）それぞれについて、(1) 新配置への書き込み、(2) 旧配置への新規書き込みが発生しないこと、(3) 旧パスにしか記録がない場合の新→旧フォールバック読み取り、(4) 新旧両方に記録がある競合時に新配置が採用されること（design 契約「新→旧の順」の直接検証）、(5) 凍結済み旧成果物の不変性（P1 実装反映コミット以降に旧既存ファイルが変更・削除されていないこと）、の凍結期挙動が機械検証される（2026-06-12 配置規約反映、観点 4・5 は triad-review round-3 所見の適用）
+  6. `explicit_human_approval_recorded` 述語は `actor=proxy_model` の場合 `reviewcompass.yaml#human_proxy.proxy_allowed` を参照して代行可否を機械判定する（条件を満たさなければ DEVIATION）。`depends_on_resolves_correctly` 述語は値域チェック（依存先の解決可能性）のみを担い、依存先の変更検知と recheck 更新発火は別機構（フェーズ 2 宿題、DVT-W007）であることを境界テストで明示する（A-004／A-006 対処 2026-05-28）
+  7. review-run の proxy_model 判断代行ゲートは、`proxy-approval.yaml`、`proxy-decisions/<finding-id>.decision.yaml`、decision prompt、元 review raw、raw response、候補案、採用案、判断理由、最終ラベルを検査し、欠落または triage との不一致があれば DEVIATION にする。proxy_model 代行は実装方針判断に限定し、コミット・プッシュ・spec.json 更新・フェーズ移行には使わない
+  8. post-write-verification pending の検出、completed manifest の sha 一致、verifier ごとの全対象 coverage、未解決本質的指摘 0 件が機械検証される
+  9. triad-review が pending でも drafting が未完了なら、next が `run_reopen_drafting` を返し、review を先に実施しない
+  10. `WORKFLOW_DISCIPLINE_MAP.yaml` から判定点ごとの `required_disciplines` と `required_inputs` を返せる
+  11. `next` は `effective_prompt_path`、`effective_prompt_sha256`、`effective_prompt_loaded` を返し、元資料欠落時は `DEVIATION` で fail-closed する
+  12. review-run は `rounds.yaml` に `effective_prompt_path` と `effective_prompt_sha256` を記録できる
+- **テスト要件**：3 サブコマンド × 各 verdict 3 値 = 9 ケース、`next` サブコマンドの通常 workflow／reopen pending／post-write-verification pending／upstream_recheck ケース、述語 7 値の正常系 ／ 異常系テスト、YAML パースエラーの fail-closed テスト、`--rationale` 必須化テスト（commit／push）＋ `spec-set` 省略時ログ記録テスト（F-013）、ログ追記テスト、4 ブロックラベル形式 ／ JSON 出力テスト、`explicit_human_approval_recorded` の proxy_model 代行可否テスト（proxy_allowed 満たす／満たさないの 2 ケース、A-004）、`depends_on_resolves_correctly` の境界テスト（値域チェックのみで変更検知しないことの確認、A-006）、post-write target detection と manifest verification の正常系／sha 不一致／coverage 不足／未解決本質的指摘ありテスト、proxy_model 判断代行ゲートの正常系／raw 欠落／候補案欠落／採用案欠落／判断理由欠落／triage 不一致の fail-closed テスト、intent 更新後に feature-partitioning 確認を返すテスト、requirements 更新後に design 再確認を返すテスト、tasks 更新後に implementation 再確認を返すテスト、triad-review pending かつ drafting 未完了なら `run_reopen_drafting` を返すテスト、reopen `commit_stop_point: true` が pending gate より優先されるテスト、reopen blocker が `wait_for_human_decision` と `blocked_by` を返すテスト、maintenance が `required_action=run_maintenance` と `maintenance_action` を分離するテスト、active gate がある時だけ `active_gate` / `phase` / `stage` が非 null になるテスト、`WORKFLOW_DISCIPLINE_MAP.yaml` の `required_disciplines`／`required_inputs` 反映テスト、`effective_prompt_path`／`effective_prompt_sha256`／`effective_prompt_loaded` の JSON 出力テスト、effective prompt 元資料欠落時の fail-closed テスト、`rounds.yaml` への effective prompt 記録テスト、**凍結期挙動テスト（実行時生成物 3 パス × 5 観点＝計 15 観点：新配置への書き込み／旧配置への新規書き込みが発生しないこと／旧パスにしか記録がない場合の新→旧フォールバック読み取り／新旧両方に記録がある競合時に新配置が採用されること〔新旧に異なる内容を置き、新配置の内容が採用されることを 3 パスそれぞれで検証。design 契約「新→旧の順」の直接検証〕／凍結済み旧成果物の不変性〔P1 実装反映コミット以降に旧 3 パスの既存ファイルが変更・削除されていないことを git 追跡履歴で検出。conformance-evaluation の凍結違反検出と同一判定規則〕。境界条件として、観点 2 が凍結の効力発生時点〔P1 実装反映コミット以後の旧書き込み不在〕の検証を兼ねること、観点 3 のフォールバックが設定・条件分岐等で暗黙に無効化されないことを検証対象に含める。2026-06-12 配置規約反映、観点 4・5 は triad-review round-3 所見の適用、TDD 先行）**、feature_order 外出し・探索順・立ち上げ案内（feature_definition_required）・整合検査・対象アプリ独自 feature 構成での next 動作テスト（2026-06-12 反映、cde1f5c で実装済み）、feature-dependency.yaml パース不能・空・非連想配列の遮断テスト（`next_action.kind: unknown`・verdict DEVIATION・exit 2 を検証し、`reasons` に対象ファイルパスと、パース不能・非連想配列では内容確認を促す文言、空では `feature_order` の記録を促す文言が含まれることを検証）と、不在・未定義の案内維持テスト（`next_action.kind: feature_definition_required`・verdict OK・exit 0 を検証）（MLE-DEC-005、仕様確定後に TDD で実装。検証粒度の明記は triad-review 同根所見対処）
+
+### T-005：起草者と判定者の分離 機械検査
+
+- **対応設計節**：design.md §起草者と判定者の分離モデル §1〜§3
+- **対応要件**：Requirement 3 受入 1〜4
+- **責務**：レビュー記録の front-matter 検査機能を `tools/check_workflow_action/front_matter_checker.py` として実装、`completion_predicate=artifact_exists_and_sections_present_and_author_reviewer_distinct` から呼び出される。判定 3 点：(1) `author.identity` ／ `reviewer.identity` フィールドの存在、(2) `author.identity` ≠ `reviewer.identity`（文字列比較）、(3) `reviewer.separation_from_author=true`。`mode: subagent_mediated` の場合の `role` フィールド複合役（`drafter_and_primary_reviewer` 等）を許容する暫定特例を符号化。別モデル ／ 別 session の機械判定は範囲外（第 3 層利用者監査に委ねる、Req 3 受入 4）であることを運用文書に明示
+- **前提タスク**：T-004
+- **成果物**：
+  - `tools/check_workflow_action/front_matter_checker.py`（3 点判定ロジック）
+  - `tools/check_workflow_action/front_matter_schema.json`（必須フィールド：type ／ target ／ target_commit ／ target_content_hash ／ date ／ mode ／ author ／ reviewer、author/reviewer の必須サブフィールド：identity ／ model ／ role、reviewer.separation_from_author=true 必須）
+  - `docs/operations/WORKFLOW_PRECHECK_DETAILS.md`（関連する判定詳細を必要に応じて更新）
+- **完了条件**：
+  1. 3 点判定が機械検証で確実に発火する（異名のみ／同名／separation_from_author=false の 3 ケース）
+  2. `subagent_mediated` の複合役（`drafter_and_primary_reviewer`）が許容される
+  3. 既存レビュー記録 7 件以上（各機能の requirements ／ design ／ tasks）への本検査の遡及適用は、grandfathering（遡及検査の免除）判断（DVT-W002、利用者承認事項）が確定するまで検査対象から除外する（未確定のまま走らせて既存記録が DEVIATION を返し本機能のゲートが自己ロックするのを回避）。本完了条件としては「DVT-W002 のエントリが DVT 表に存在すること」を grep で機械検証する（実装作業と人手判断を分離、F-009／A-007 対処 2026-05-28）
+- **テスト要件**：3 点判定テスト（異名 ／ 同名 ／ separation_from_author=false の 3 ケース）、`mode` の各値（foundation 正本が定める）の複合役許容テスト（複合役の許容は `subagent_mediated` 特例のみ、他の値は不許容）、必須フィールド欠落テスト、fail-closed テスト
+
+### T-006：不可逆操作の直前ゲート機構
+
+- **対応設計節**：design.md §不可逆操作の直前ゲートモデル §1〜§4、§主要な設計判断 判断 4
+- **対応要件**：Requirement 4 受入 1〜8
+- **責務**：4 種類の不可逆操作（`spec.json` の `approval` 段書き込み ／ `git commit` ／ `git push` ／ フェーズ移行）の直前ゲート判定ロジックを `tools/check_workflow_action/gate_predicates.py` として実装、T-004 のサブコマンドから呼ばれる。ゲート発火条件：(1) Requirement 2 検査スクリプトが pass を返す、(2) `stages/in-progress/` が空。毎回独立走行（session 開始時のキャッシュを使わない、状態変化を直前で再検出）。fail-closed の既定（検査結論不能で必ず遮断）。`git commit` では commit 承認 challenge と承認レコードを読み、nonce 一致、UTC ISO-8601 の `created_at`／`expires_at`、TTL 10 分、`now_utc` 注入可能な時刻判定、clock rollback fail-closed、未期限切れ、未消費、staged ファイル集合一致、staged 内容一致、approval と challenge の全体 target digest 一致、実際に commit される exact index との一致を検査する。承認レコード単体の `target_sha256` 検査は互換入力として維持するが、nonce challenge がある場合は challenge と承認レコードの両方を必須とする。canonical target digest は `commit-approval-v1` の固定形式で計算し、path 順非依存、削除 staged、git index mode、staged object id を覆う。challenge／承認レコードが JSON として読めない、object でない、必須フィールド欠落、型不正、path 重複、不正 path、未知 path、file set 不一致などの場合は、部分推測せず fail-closed とする。schema に `llm`、`provider`、`model`、`model_id`、`proxy_model_id` を受け入れず、承認レコードは `attestation_type=staged_content_nonce_binding` と `guarantee_scope=staged_content_binding_not_ui_utterance_proof` を必須とする。承認本文は stdin または no-store mode のみで扱い、保存する場合は `tools.session_record_extractor.redact.redact_text` と `find_residual_secrets` を通す。`source_omission_reason` は `source_not_provided`、`unsafe_source_omitted`、`redaction_failed`、`residual_secret_detected` の 4 値に限定する。`--execution-actor llm` の commit gate では、challenge と staged 内容承認 record に加えて `.reviewcompass/runtime/approvals/commit-execution-delegation.json` を必須とし、strict schema、`approved_action=commit_execution_delegation`、`delegated_action=commit`、`delegated_to=llm`、`approved_by=user`、nonce／target digest／staged file set digest／staged 内容承認 digest／expiry 一致、未期限切れ、未消費、未 invalidated、禁止 LLM/provider/model 系 field 不在、許可文言完全一致、`attestation_type=commit_execution_delegation_nonce_binding`、`guarantee_scope=stdin_text_instruction_bound_to_commit_approval_not_ui_utterance_proof` を検査する。`--execution-actor human` では execution delegation を不要とする。delegation record の作成は保存直前再検証と atomic write を必須にし、既存未期限切れ delegation、形式不正、unknown field、外部変更、保存直前の期限切れは fail-closed とする。`commit-approval invalidate --json` は challenge／staged 内容承認 record／delegation record を一括 invalidated にする。validation failure は security failure として challenge／承認レコード／delegation record を invalidated にし、commit 成功後は consumed にする。consume 永続化失敗後は later gate で再利用を拒否する。通常の git execution failure は index と approval 状態が validation 時と同一の場合だけ再試行可能とする。フェーズ移行検査は `feature-dependency.yaml#feature_order` の全機能で approval=true を要求。最小集合方針の徹底（中間段の遷移には機械ゲートを置かない）
+- **前提タスク**：T-002、T-003、T-004
+- **成果物**：
+  - `tools/check_workflow_action/gate_predicates.py`（4 種類のゲート判定）
+  - `tools/check_workflow_action/commit_approval.py`（nonce challenge、承認レコード、canonical digest、redaction、validation、invalidate／consume）
+  - `tools/check_workflow_action/state_resolver.py`（spec.json ／ in-progress ／ pending 所見の状態解決、毎回独立走行）
+- **完了条件**：
+  1. 4 種類のゲートそれぞれが正常系で OK、異常系（前段未完了 ／ in-progress あり ／ 未消化所見あり ／ 全機能 approval 未完了）で DEVIATION を返す
+  2. session 開始時のキャッシュを使わず、毎回 spec.json と `stages/in-progress/` を読み直すことが機械検証される
+  3. 最小集合方針（中間段の遷移には機械ゲートが発火しない）が機械検証される
+  4. commit 承認レコードの `target_sha256` 欠落、形式不正、staged 内容との不一致が DEVIATION になる
+  5. nonce challenge の prepare／record／invalidate／commit validation／consume が機械検証され、欠落・形式不正・期限切れ・消費済み・staged 内容不一致・approval/challenge target digest 不一致・exact index 不一致・clock rollback が DEVIATION になる
+  6. 承認 schema に `llm`、`provider`、`model`、`model_id`、`proxy_model_id` が混入した場合は形式不正で DEVIATION になる
+  7. `attestation_type=staged_content_nonce_binding`、`guarantee_scope=staged_content_binding_not_ui_utterance_proof` が機械検証される
+  8. 承認本文の stdin 入力、no-store mode、4096 bytes 上限、redaction 失敗時の source omission が機械検証される
+  9. LLM commit 実行代行承認は staged 内容承認と別 record として `.reviewcompass/runtime/approvals/commit-execution-delegation.json` に保存され、`commit-approval.json` は staged 内容承認のみを保持することが機械検証される
+  10. delegation record の全必須 field（`approved_action`、`delegated_action`、`delegated_to`、`approved_by`、`nonce`、`target_digest`、`staged_file_set_digest`、`staged_content_approval_digest`、`challenge_path`、`approval_record_path`、`created_at`、`expires_at`、`explicit_instruction`、`instruction_sha256`、`attestation_type`、`guarantee_scope`、`consumed`、`invalidated`）の生成・検証・欠落時 fail-closed が機械検証される
+  11. delegation record の strict schema、禁止 LLM/provider/model 系 field、staged 内容 binding、stdin 正規化、許可文言完全一致、secret redaction、保存直前再検証、atomic write、invalidate／consume／再利用拒否が機械検証される
+  12. `--execution-actor llm` では challenge／staged 内容承認 record／delegation record／現在 index を commit gate 直前に再検証し、`--execution-actor human` では delegation を不要とすることが機械検証される
+  13. precheck OK 後に `git commit` 本体が commit 未作成のまま失敗した場合、approval／challenge／delegation を consumed または invalidated にせず、同じ staged exact index と nonce の wrapper 再実行で既存 active transaction を再利用できることが機械検証される
+  14. `guarded-git-commit.py` が `git commit` 呼び出し直前に `index.lock` 作成可否を preflight し、permission / sandbox 系の作成失敗では `git commit` を呼ばず、approval／challenge／delegation を consumed または invalidated にせず、`sandbox_git_write_denied` と `required_action=rerun_commit_with_escalation` を表示することが機械検証される
+  15. `git commit` 実行後に `.git/index.lock` / permission 系エラーが返った場合も、approval／challenge／delegation を consumed または invalidated にせず、同じ `sandbox_git_write_denied` 分類表示を行うことが機械検証される
+- **テスト要件**：4 種類ゲート × 正常系 ／ 異常系 = 8 ケース、独立走行テスト（同 session 内で状態変化させて再検査が異なる結果を返す）、最小集合テスト（drafting ／ triad-review の遷移ではゲート発火しない）、commit 承認レコードの `target_sha256` 正常系／欠落／不一致テスト、nonce challenge 正常系（prepare→record→commit validation→consume）、期限切れ、UTC ISO-8601 不正、TTL 10 分以外、`now_utc` 注入、clock rollback、未消費 challenge あり prepare、明示 invalidate、canonical digest `commit-approval-v1`、canonical digest のパス順非依存、削除 staged、approval/challenge target digest 不一致、exact index 不一致、malformed challenge／approval record の no partial inference、schema 禁止フィールド混入、`attestation_type`／`guarantee_scope` 欠落・不正、stdin source text、no-store mode、UTF-8 不正、4096 bytes 超過、`source_not_provided`、`unsafe_source_omitted`、`redaction_failed`、`residual_secret_detected` の 4 値、`redact_text` 呼び出し、`find_residual_secrets` 呼び出し、residual secret 検出、validation failure 後の再利用拒否、consume 永続化失敗後の再利用拒否、git execution failure 後の条件付き retry、`commit-approval * --json` の parseable JSON 出力テスト、`delegate-execution` 正常系（prepare→record→delegate-execution→commit validation→consume）、staged 内容承認前の delegation 拒否、既存未期限切れ delegation 拒否、delegation record の全必須 field の生成／欠落／型不正、delegation の nonce／target digest／staged file set digest／staged 内容承認 digest／challenge path／approval record path／expiry／instruction hash 不一致、malformed delegation record、unknown field、禁止 LLM/provider/model 系 field、`attestation_type=commit_execution_delegation_nonce_binding`、`guarantee_scope=stdin_text_instruction_bound_to_commit_approval_not_ui_utterance_proof`、両 field の欠落・不正、末尾 POSIX LF 1 個だけ許容、CR／CRLF／内部改行／2 個以上の末尾 LF／NUL／空／空白のみ／256 bytes 超過／全角 Latin 拒否、ASCII 英字のみ小文字化、末尾日本語句点 1 個だけ除去、許可文言 `コミット`／`コミットして`／`コミットを実行`／`承認`／`commit`／`commitして` の完全一致、secret redaction failure／residual secret 検出時の delegation 作成拒否、保存直前再検証、atomic write 失敗、保存直前 expiry race、`--execution-actor llm` で challenge／staged 内容承認 record／delegation record／現在 index の全再検証と delegation 必須、`--execution-actor human` で delegation 不要、invalidate が challenge／staged 内容承認 record／delegation record を一括 invalidated にすること、`guarded-git-commit.py --approval-nonce --approval-source-text-line-stdin` が承認 1 行で record／delegate-execution／commit／consume まで完了すること、同 wrapper が precheck OK 後の git execution failure で commit 未作成の場合に record を消費・無効化せず、同一 nonce 再実行で既存 approval／delegation を再利用すること、`index.lock` preflight 失敗時に commit を呼ばず承認を保持して `sandbox_git_write_denied` / `required_action=rerun_commit_with_escalation` を表示すること、`git commit` 実行後の `.git/index.lock` / permission 系失敗も同じ分類で表示し承認を保持すること、壊れた古い delegation が `prepare` 後の新規承認フローを妨げないこと
+
+### T-007：reopen 機械強制
+
+- **対応設計節**：design.md §reopen 機械強制モデル §1〜§4、§主要な設計判断 判断 5
+- **対応要件**：Requirement 5 受入 1〜5、Requirement 9 受入 1〜4
+- **責務**：reopen 手続きの 4 過程構成を T-003 の `stages/reopen-procedure.yaml` で静的列挙、第3過程の `trigger_map` 解決ロジックを `tools/check_workflow_action/reopen_resolver.py` として実装。手戻り種別の二次元表記（N／R／D／A／I × 深さ）から再実施対象段リストを取得、各段の `actor` を当該段定義から動的解決（`actor_resolution: per_target_stage`）。`actor=human` 段に到達した時点で作業を停止し、`stages/in-progress/reopen-procedure-<日付>.yaml` に「人間承認待ち」を記録して待機。種別判定根拠ファイル（`docs/reviews/reopen-classification-<日付>.md`）の保存・読み込み機構を実装。後追い intent の downstream impact では、conformance-evaluation から受け取った候補を直接の実行命令にせず、既存 feature の受け皿ありなら `reopen_existing_feature`、受け皿なしなら `new_feature_required`、根拠不足なら `human_decision_required` として分類する。CE から渡される `downstream_impact_candidate` や `implementation_change_candidate` が tasks phase を指す場合も、候補 ID、対象 feature、対象 phase、根拠参照を読み、T-007 が受け皿判定を行って `pending_gates` に反映する。`reopen_existing_feature` は既存 feature の該当 phase を reopen し、`new_feature_required` は feature-partitioning へ戻し、`human_decision_required` は blocker として停止する。fail-closed の既定（人間承認なしに次段への進行を許さない）
+- **前提タスク**：T-003、T-004、T-005、T-006（T-005 を追加：reopen 解決器が triad-review 段の述語 `artifact_exists_and_sections_present_and_author_reviewer_distinct` 経由で `front_matter_checker` を呼ぶため、T-005 完了前の着手を防ぐ。F-006 対処 2026-05-28）
+- **成果物**：
+  - `tools/check_workflow_action/reopen_resolver.py`（`trigger_map` 解決 ＋ `actor` 動的解決 ＋ actor=human 自動停止）
+  - `tools/check_workflow_action/classification_loader.py`（種別判定根拠ファイルの読み込み）
+  - （`templates/review/reopen_classification_template.md` の成果物所有は T-001 単独。本タスクは内容確定のみで成果物に再列挙しない、A-010 対処 案 2 2026-05-28）
+- **完了条件**：
+  1. 全 15 種の手戻り種別（N-0 ／ R-0〜1 ／ D-0〜2 ／ A-0〜3 ／ I-0〜4）に対する `trigger_map` 解決が機械検証される
+  2. `actor=human` 段で自動停止し、`stages/in-progress/reopen-procedure-<日付>.yaml` に `current_blocker` フィールドが書き込まれる
+  3. 種別判定根拠ファイル不在の場合は結論不能（DEVIATION）で遮断
+  4. 人間承認なしに次段への進行が機械的に許可されない（fail-closed）
+  5. T-001 が配置した `reopen_classification_template.md` の内容（front-matter ＋ 分類根拠節）が確定している（成果物所有は T-001、本タスクは内容確定のみ、A-010 対処 案 2 2026-05-28）
+  6. 後追い intent の受け皿判定が `reopen_existing_feature` ／ `new_feature_required` ／ `human_decision_required` の 3 値で記録される
+  7. CE から渡された tasks phase の `downstream_impact_candidate` を、直接実装せず reopen pending gate へ変換できる
+- **テスト要件**：15 種類の `trigger_map` 解決テスト、`actor=human` 自動停止テスト、種別判定根拠ファイル欠落の fail-closed テスト、人間承認なし進行禁止テスト、後追い intent の受け皿判定 3 値の分岐テスト、CE 由来 tasks phase 候補の reopen pending gate 変換テスト
+
+### T-008：session 跨ぎ状態管理
+
+- **対応設計節**：design.md §session 跨ぎ状態管理モデル §1〜§5
+- **対応要件**：Requirement 6 受入 1〜7、Requirement 9 受入 3 ／ 5 ／ 6
+- **責務**：進行中状態ファイル（`stages/in-progress/<process_id>-<日付>.yaml`）の発行 ／ 読み込み ／ 完了時移動（`stages/completed/` への移動）の機構を `tools/check_workflow_action/in_progress_manager.py` として実装。最低限のフィールド 6 件（`process_id` ／ `started_at` ／ `trigger` ／ `completed_steps` ／ `next_step` ／ `pending_gates`）を必須化、任意フィールド（`classification_basis` ／ `current_blocker` ／ `escalation_status`）を許容。後追い intent の reopen では `completed_gates`、`drafting_completed_gates`、`downstream_impact_decisions` を保持できる。`downstream_impact_decisions` は `gate`、`feature_scope`、`decision`、`rationale`、`evidence`、`decision_actor`、`decision_source` を最低フィールドとする。これらの進行中状態フィールドは workflow-management が所有する `stages/in-progress.schema.json` を正本とし、foundation の共有スキーマへ昇格するまでは foundation tasks.md に追加タスクを作らない。通常の `next_action` と異なる side track、または `next` 判定自体の欠陥修復に入る場合は、`process_id: maintenance` と `mainline_blocked_by`、`allowed_scope`、`allowed_files`、`completion_conditions` を持つ進行中ファイルを先に作成する。session 開始時の標準フロー 7 ステップ（TODO 確認 ／ 直近 session 記録確認 ／ git log ／ 検査スクリプト全件 ／ in-progress 有無 ／ 進行中優先 ／ 次作業決定）と、session record 作成手順（重要な判断・承認・レビュー結果・修正経緯を `docs/sessions/session-<N>-<YYYY-MM-DD>.md` に残す）を運用文書に明示、`tools/check-workflow-action.py session-start` サブコマンドとして実装可能か別途判断（任意拡張）。fail-closed：`stages/in-progress/` に何かファイルがある状態での不可逆操作実行を遮断（T-006 と整合）。reopen 固有フィールド（`current_blocker` 等）の意味解釈は T-007 の責務とし、T-008 は進行中ファイルの一般管理（発行 ／ 読み込み ／ 移動 ／ 遮断）に徹して reopen 連動を内包しない（前提タスクに T-007 を加えず独立性を保つ、F-007 対処 案 2 2026-05-28）
+- **前提タスク**：T-001、T-004、T-006
+- **成果物**：
+  - `tools/check_workflow_action/in_progress_manager.py`（発行 ／ 読み込み ／ 完了時移動）
+  - `stages/in-progress.schema.json`（必須 6 フィールド ＋ 任意フィールド。命名をディレクトリ名 `in-progress/` に合わせハイフン統一、design 配置ツリーにも追記、F-018 対処 案 1 2026-05-28）
+  - `docs/operations/WORKFLOW_PRECHECK.md`（段階 1・段階 3 との接続）
+  - `docs/operations/SESSION_WORKFLOW_GUIDE.md` §セッション記録の作成規律
+- **完了条件**：
+  1. `in-progress.schema.json` が JSON Schema として meta-schema 検証を通る、必須 6 フィールドが確定（F-018 対処 命名統一）
+  2. 進行中状態ファイルの発行 ／ 読み込み ／ 完了時移動が機械検証される
+  3. `stages/in-progress/` に何かある状態での不可逆操作実行が遮断される（T-006 連動）
+  4. 進行中状態ファイル自体の更新（次ステップ進行 ／ 人間承認の記録）は遮断対象外であることが機械検証される
+  5. `SESSION_WORKFLOW_GUIDE.md` と workflow-management 仕様が session record 作成手順を持つことが機械検証される
+  6. maintenance 進行中ファイルが `mainline_blocked_by`、`allowed_scope`、`allowed_files`、`completion_conditions` を保持できる
+  7. `completed_gates`、`drafting_completed_gates`、`downstream_impact_decisions` の最低フィールドを保持できる
+- **テスト要件**：スキーマ検証、必須 6 フィールド検査、発行 ／ 読み込み ／ 移動の 3 機能テスト、in-progress あり状態での不可逆操作遮断テスト、自己更新の許容テスト、maintenance side track の読み込みテスト、複数 in-progress 並存テスト（複数 reopen-procedure-*.yaml が正常系として並ぶ場合の優先完了対象と解決順。design §テスト戦略 境界条件 L840、reopen やり直し時の証跡保全 L505 由来、A-008 対処 案 1 2026-05-28）、`downstream_impact_decisions` の gate coverage テスト、`drafting_completed_gates` による再開位置判定テスト
+
+### T-009：多層防御の位置付けと運用文書
+
+- **対応設計節**：design.md §多層防御の位置付けモデル §1〜§5、§主要な設計判断（全般）
+- **対応要件**：Requirement 7 受入 1〜4
+- **責務**：ワークフロー事前検査の呼び出し責務、対象操作、判定結果の扱いを `docs/operations/WORKFLOW_PRECHECK.md` に置き、サブコマンド引数、判定条件、出力形式、ログ、テスト観点の詳細を `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` に置く。自律・並列実行の安全契約として自律 plan と履歴 ledger を運用文書に明示し、依存順、recheck 対象、許可パス、期待テスト、統合判断、未解決 blocker を追跡できるようにする。本タスクは実装ではなく運用文書の整備が主、機械検査の対象ではない。
+- **前提タスク**：T-004、T-005、T-006、T-007、T-008
+- **成果物**：
+  - `docs/operations/WORKFLOW_PRECHECK.md`（ワークフロー事前検査の運用契約）
+  - `docs/operations/WORKFLOW_PRECHECK_DETAILS.md`（ワークフロー事前検査の詳細仕様）
+  - `docs/operations/WORKFLOW_MANAGEMENT.md` の §多層防御位置付け節
+- **完了条件**：
+  1. 運用契約と詳細仕様の分離が明示される
+  2. 自律 plan と履歴 ledger の必須目的が運用文書に明示される
+- **テスト要件**：本タスクの「実装ではなく運用文書の整備が主、機械検査の対象ではない」位置づけ（責務記述）と整合させ、文書内容の grep キーワード検査は完了条件・テスト要件から外す
+
+### T-010：規律変更の所定手続き経由実体変更（A-007 案 2、A-012 連動）
+
+- **対応設計節**：design.md §責務境界の明確化、§主要な設計判断 判断 7
+- **対応要件**：Requirement 4 受入 1（規律変更は不可逆操作）、Boundary Context 隣接期待（self-improvement との接合面）
+- **責務**：`learning/workflow/approved-updates/` ディレクトリを新設、`self-improvement` から承認済み提案 YAML が `git mv` で配置される入力経路を確立。本機能の所定手続き（drafting → review → approval）を経て規律ファイル（`docs/disciplines/discipline_*.md`）の実体変更を実施。完了時に `approved-updates/<日付>-<id>.yaml` に `materialized_at`（ISO 8601 完了時点）と `materialization_commit_hash`（規律変更コミットのハッシュ）を追記。`self-improvement` design §13.5 と本機能 判断 7 の相互参照、時系列契約（`approved` ＝ self-improvement 承認時点 ／ `materialized_at` ＝ 本機能完了時点）の符号化。ロールバック責務は `self-improvement` 側、本機能は受動的に状態通知を受ける
+- **前提タスク**：T-003（段集合 YAML 群の配置）、T-004。**規律変更段集合の方針（F-008 対処 案 1 2026-05-28）**：規律変更専用の段集合は機能横断整合用 `cross-spec-alignment.yaml` への相乗り（責務混在）を避け、独立ファイル `stages/discipline-update.yaml` とする方針に一意化。ただし段集合本体（`drafting → review → approval` の 3 段か `triad-review` を含むか）は未確定のため **DVT-W003 として後続セッションに延期**し、本ファイルは T-003 の成果物には含めず DVT-W003 解除時に静的列挙する（tasks 段 2 軸整合性監査 #5 で「T-003 が枠を新設」との誤記述を訂正、2026-05-29）
+- **成果物**：
+  - `learning/workflow/approved-updates/.gitkeep`
+  - `learning/workflow/approved-updates/README.md`（入力経路の説明、`git mv` 配置の規約）
+  - （入力 YAML のスキーマは本機能で独自定義しない。self-improvement design §8.4 の正本スキーマを唯一の定義元として参照し、項目名は §8.4（`target_discipline_path` ／ `status` ／ `materialized_at` ／ `materialization_commit_hash` 等）に従う。受け手側の検証は §8.4 由来の共有フィクスチャで行う。**A-019 対処（案1、2026-05-29 セッション40）**：独自 `approved_update.schema.json` の新設と独自項目名 `approved_at` ／ `target_discipline` を廃止し、二重管理を解消）
+  - `tools/check_workflow_action/discipline_update_processor.py`（規律変更の所定手続き実施 ＋ 完了通知の追記）
+  - （`learning/workflow/approved-updates/` の配置は本機能 design 配置ツリー外だが、self-improvement design §13.5 に正本記述があり機能横断では整合済み。tasks.md 側は出典注記で吸収し design 遡及はしない、F-020 対処 案 1 2026-05-28）
+- **完了条件**：
+  1. `approved-updates/` ディレクトリが配置され、入力 YAML が self-improvement §8.4 正本スキーマに適合することを検証する（本機能は独自スキーマを定義しない、A-019 対処 案1）
+  2. `self-improvement` から `git mv` で配置された YAML を本機能が読み、所定手続きを経て規律ファイル実体変更を完了
+  3. 完了時に `materialized_at` ／ `materialization_commit_hash` が追記される
+  4. `self-improvement` design §13.5 との時系列契約の整合が機械検証される（DVT-W003）。さらに **§13.5 の変更が機能依存マップ（feature-dependency.yaml）に記録されたとき、DVT-W003 を自動的に open（未解決）へ差し戻し、事前検査スクリプトが再評価完了を確認するまで本タスクを完了扱いにしない**（依存マップ駆動の追従強制、本機能の自己適用、F-016 対処 案 3 2026-05-28）。**【実装時の調停】** A-006 で「`depends_on_resolves_correctly` の汎用的な変更検知はフェーズ 2 の宿題（DVT-W007）」と確定したため、本条件では §13.5（self-improvement 接合面）の変更検知のみを先行実装し、機能依存マップ全般の汎用変更検知はフェーズ 2 に据え置く
+- **テスト要件**：スキーマ検証、所定手続きの 3 段（drafting → review → approval）が走るテスト、完了通知の追記テスト、時系列契約の整合テスト、self-improvement の `git mv` 外部依存をモック／スタブ化した consumer 側統合テスト（`approved-updates/` への YAML 配置を擬似再現、実 git mv は呼ばない。擬似 YAML は self-improvement §8.4 正本スキーマ準拠の共有フィクスチャとする（A-019 解消＝案1 採用 2026-05-29 により §8.4 を唯一の定義元として参照）。producer/consumer 境界の契約確認は T-011 に集約、F-012 対処 別案 2026-05-28）
+
+### T-011：テスト戦略全体の整備
+
+- **対応設計節**：design.md §テスト戦略 §1〜§5、§完成判定基準
+- **対応要件**：本機能全要件の機械的合否判定、foundation 語彙正本（本機能が参照する `review_mode`）の参照のみ使用の機械検証、要件追跡表の双方向整合、DVT 解除確認、Requirement 9 の統合検証
+- **責務**：design.md §テスト戦略で定義された 4 検証類（単体テスト ／ 統合テスト ／ 異常系 fixture ／ 境界条件）をすべて Python テストとして整備。pytest で一括実行可能。foundation 語彙正本（本機能が参照する `review_mode`）の参照のみ使用の機械検証、および所見系・状態軸系語彙を参照していないことの機械検証、本機能所有正本（`completion_predicate` 述語 7 値 ／ `verdict` 3 値 ／ 手戻り種別記号 5 値 ／ 依存種別 2 値）が T-002 ／ T-003 ／ T-004 ／ T-007 の成果物で正本確定されていることの機械検証。要件追跡表と各タスク本文の対応要件欄の双方向整合チェック（foundation T-010 ／ runtime T-011 ／ evaluation T-011 ／ analysis T-011 の方針継承）。Requirement 4 受入 8 については、T-004 の `delegate-execution` CLI、T-006 の delegation record 生成・validation・`--execution-actor llm` gate、staged 内容承認との分離、LLM/provider/model 非依存、secret handling、invalidate／consume の一連の統合・回帰テストを T-011 が覆う。XDI-WM-002 として、後追い intent の下流再展開、conformance-evaluation 候補の受け取り、drafting-before-review 防止、side track 分離、`downstream_impact_decisions` の証跡保持を統合検証する。**遅延確認事項テーブル（DVT）内の未解除項目がない、または延期理由が明記されている**ことを完了条件にゲート化（evaluation T-011 ／ analysis T-011 の方針継承）
+- **前提タスク**：T-001 ／ T-002 ／ T-003 ／ T-004 ／ T-005 ／ T-006 ／ T-007 ／ T-008 ／ T-009 ／ T-010
+- **成果物**：`tests/workflow-management/` 配下のテストファイル群（`test_feature_dependency.py` ／ `test_stages_yaml.py` ／ `test_check_workflow_action.py` ／ `test_front_matter.py` ／ `test_gate_predicates.py` ／ `test_reopen.py` ／ `test_in_progress.py` ／ `test_discipline_update.py` ／ `test_operations_docs.py` ／ `test_traceability.py` の 10 ファイル相当）
+- **完了条件**：すべての pytest が pass、4 検証類を網羅、foundation 語彙正本（本機能が参照する `review_mode`）の参照のみ使用が機械検証される（所見系・状態軸系の不参照を含む）、workflow-management 所有正本（`completion_predicate` 述語 7 値 ／ `verdict` 3 値 ／ 手戻り種別記号 5 値 ／ 依存種別 2 値）が正本確定されている、要件追跡表の双方向整合が機械チェックされる、DVT 内の未解除項目がない（または延期理由が明記されている）
+- **テスト要件**：すべての pytest が pass、回帰なし、要件追跡表の双方向整合チェック、DVT ゲート化、self-improvement との接合面の producer/consumer 境界の契約確認（T-010 の consumer 側統合テストと対をなす境界テスト、`git mv` 経由の `approved-updates/` 取り込みの整合確認を集約、F-012 対処 別案 2026-05-28）、Requirement 4 受入 8 の一気通貫統合テスト（prepare→record→delegate-execution→`--execution-actor llm` commit gate→consume、human actor 免除、staged 内容承認と execution delegation の分離、LLM/provider/model 非依存、secret handling、invalidate／再利用拒否）、XDI-WM-002 の後追い intent 下流再展開テスト、CE 候補受け取りテスト、drafting-before-review 防止テスト、side track 分離テスト、`downstream_impact_decisions` 証跡保持テスト
+
+### T-012：review-wave 横断確認の要約コマンド（Req 10、reopen R-0 2026-06-14）
+
+- **対応設計節**：design.md §review-wave 要約コマンドモデル §1〜§6
+- **対応要件**：Requirement 10 受入 1〜5
+- **責務**：`tools/check-workflow-action.py` に `review-wave-summary` サブコマンドを追加（`next`／`spec-set`／`commit` と同じ CLI 体系）。design §2 の読み取り元（各 feature の spec.json の `workflow_state`・`recheck`、`stages/in-progress/`、feature-dependency.yaml の `feature_order`、review-run の `triage.yaml` 群〔`evidence/review-runs/` 優先・旧 `_cross_feature/reviews/` 互換、`run_id` 単位で重複排除〕、carry-forward register）から design §2 の算出定義で指標を集計する。出力は Markdown（既定）と JSON（`--json`、design §3 の安定スキーマ）で情報同等。fail-closed（design §4：必須記録〔spec.json・feature-dependency.yaml〕の欠落・解析不能、および任意記録の解析不能で `status: insufficient`＋非ゼロ終了コード 2。任意記録〔triage.yaml 群・carry-forward register〕の非在は 0 件として `ok`）。読み取りに徹し spec.json・triage・phase を書き換えない。保存は `--out`／`--save` で自身の要約出力のみ（design §5）。既存関数（`load_all_feature_specs`・`feature_order` 解決・`collect_recheck_items`・`review_triage` 集計）を再利用し二重定義を避ける。
+- **前提タスク**：T-002（feature-dependency）、T-003（段集合 YAML）、T-004（検査スクリプト本体）
+- **成果物**：`tools/check-workflow-action.py` の `review-wave-summary` サブコマンド（必要に応じ `tools/check_workflow_action/` 配下の helper モジュール）、`tests/tools/`（または `tests/workflow-management/`）のテストファイル
+- **完了条件**：design §1〜§6 を満たす。Markdown と JSON が情報同等で JSON が安定スキーマ（キー名・型固定）。必須記録の欠落・解析不能で `status: insufficient`＋終了コード 2、任意記録の非在は `ok`（0 件）。spec.json・triage・phase を書き換えない。TDD（赤→緑→全テスト通過、回帰なし）。
+- **テスト要件（TDD：先に失敗テストを書く）**：(1) 各指標の集計（feature coverage・phase/stage 状態・triage の unresolved/draft/human_required・recheck・依存状況・carry-forward 未消化）、(2) JSON 安定スキーマの**キー名・型を固定値として表明検証**（design §3 のトップレベル・ネスト構造と一致）と `status` 判定基準、(3) Markdown と JSON の情報同等、(4) fail-closed：必須記録（spec.json・feature-dependency.yaml）の**欠落**と**解析不能（パースエラー・非連想配列）**で `status: insufficient`＋**exit 2**、任意記録（triage.yaml 群・carry-forward register・stages/in-progress/）の**非在は `ok`・0 件**だが**存在して解析不能なら `status: insufficient`＋exit 2**、(5) 読み取り専用（実行後に spec.json・triage が不変）、(6) draft は run 単位・unresolved/human_required は item 単位の集計軸の区別、(7) **`--out`／`--save` の保存正常系**（指定パス／既定保存先 `_cross_feature/reviews/` へ自身の要約出力が書かれ、spec.json・triage・phase は不変）。全 pytest が pass、回帰なし。
+
+### T-013：重要決定の出典検査（decision-source-lint サブコマンド、Req 11、reopen R-0 2026-06-15）
+
+- **対応設計節**：design.md §Req 11 設計モデル §1〜§6
+- **対応要件**：Requirement 11 受入 1〜7
+- **責務**：`tools/check-workflow-action.py` に `decision-source-lint` サブコマンドを追加し、`.reviewcompass/decisions/` 直下の重要決定記録 YAML を逐語照合・束ね検出・内容性検査する。①`stages/decision-source-lint-config.yaml` の生成（内容なし語リスト初期値 11 件）。②決定記録スキーマの機械検査（必須フィールド・category 3 値 enum・multiplicity 制約・verification_status 3 値 enum）。③逐語照合：source.locator のパス部分に対応する転写ファイル全文に対して NFC 正規化・連続空白→単一スペース・前後除去の正規化を両辺に適用し `source.excerpt` が含まれるかを検索（ターン番号は絞り込みに使わない）。④束ね例外の 3 条件確認（承認レコードが存在し・当該 decision_id が covered_decision_ids に含まれ・multiplicity が single）。⑤内容なし語リスト判定（句読点除去→スペース区切りトークン化→全トークンがリスト一致で fail-closed）。⑥commit 直前ゲートへの統合（`cmd_commit` から `decision-source-lint --all` を呼び出し、pending=WARN・unverifiable=DEVIATION・multiplicity:bundled かつ承認なし=DEVIATION）。⑦`--verify-pending` フラグ（verification_status: pending の決定を再照合し合格なら verified に更新・verified_at に現在日時を記録。書き換えるのは verification_status・verified_at の 2 フィールドのみ。照合不合格時はファイル不変・差分表示・非ゼロ終了）。
+- **前提タスク**：T-001（配置）、T-004（検査スクリプト本体）
+- **成果物**：`tools/check-workflow-action.py` の `decision-source-lint` サブコマンド、`stages/decision-source-lint-config.yaml`（初期内容なし語リスト）、`tests/tools/` のテストファイル
+- **完了条件**：design §1〜§6 を満たす。TDD（赤→緑→全テスト通過、回帰なし）。commit 直前ゲートへの統合済み（`pending=WARN`・`unverifiable=DEVIATION`）。`--all` が `bundle-exceptions/` サブディレクトリを除外する。`--verify-pending` が `verification_status`・`verified_at` の 2 フィールドのみを更新し他フィールドを書き換えない。design §6 の実装委譲 4 事項（`--verify-pending` 安全性保証・`bundle_exception_id` 採番規則・逐語不一致時の差分表示形式・既存関数との統合方法）が implementation で確定されていること。
+- **テスト要件（TDD：先に失敗テストを書く）**：(1) 必須フィールドと category 3 値 enum の検査（欠落・不正値・空文字列・非文字列型で DEVIATION）、(2) multiplicity: bundled → fail-closed（承認レコードなし）、束ね例外 3 条件の**部分満足も fail-closed**（承認レコードあり＋covered_decision_ids 含むが multiplicity=bundled で DEVIATION・承認レコードなし＋multiplicity=single で DEVIATION）、全 3 条件充足（承認レコード有＋covered_decision_ids 含む＋multiplicity=single）で通過、(3) 逐語照合正常系（正規化後 excerpt が転写ファイル全文に含まれる → verified 判定）、(4) 逐語照合不合格系（転写ファイルに excerpt なし → pending 維持・差分表示・非ゼロ終了）、(5) verification_status: pending → WARN（commit 遮断しない）、verification_status: unverifiable → DEVIATION、(6) 内容なし語リスト正常系（全トークンが empty_content_words に一致 → fail-closed）と不合格系（一部不一致 → 通過）、(7) `--all` で `decisions/` 直下のみ（`bundle-exceptions/` YAML は検査対象外）、(8) `--verify-pending` 正常系（pending → verified・verified_at 記録・他フィールド不変）、(9) `--verify-pending` 不合格系（ファイル内容不変・差分表示・非ゼロ終了）、(10) commit ゲート統合（`python3 check-workflow-action.py commit` の end-to-end テストで decision-source-lint の DEVIATION/WARN 判定が commit 結果に反映されること）、(11) 設定ファイル `stages/decision-source-lint-config.yaml` の読み取り（リストの内容が正しく反映される）。全 pytest が pass、回帰なし。
+
+### T-014：operation registry / read-only preflight（Req 12、reopen R-0 2026-06-16）
+
+- **対応設計節**：design.md §Requirement 12 設計モデル §1〜§13、§XDI-WM-004
+- **対応要件**：Requirement 12 受入 1〜13
+- **責務**：`stages/operation-registry.yaml` と read-only preflight を追加し、review-run、post-write verification、triage、reopen、commit approval chain、session-record、deployment / export などの操作を、記憶・前例・短縮名ではなく operation contract から開始できるようにする。Phase 1 は成果物を作らない preflight のみとし、review-run directory、manifest、approval record、session record、commit、deployment / export output を作成・更新しない。実際に artifact を作る runner は Phase 2 として分離する。
+- **前提タスク**：T-002（feature-dependency）、T-003（段集合 YAML）、T-004（`next`／workflow CLI／parser 接続）、T-006（commit gate）、T-007（reopen 解決）、T-008（in-progress 管理）、T-012（review-wave summary）、T-013（decision-source-lint）。T-011 は T-014 の前提ではなく、T-014 の個別テストを後段で統合・回帰検証する集約タスクとして扱う。
+- **成果物**：
+  - `stages/operation-registry.yaml`（operation_id、kind、operation_family、canonical_invocation、workflow_binding、required_inputs、target_identity、planned_outputs、sequence_mode、worktree_policy、pending_conflict_policy、artifact_policy、family_required_checks、vocabulary_refs）
+  - `tools/check_workflow_action/operation_registry.py`（registry 読み込み、schema 検査、operation family 必須 check 検査）
+  - `tools/check_workflow_action/operation_preflight.py`（read-only preflight 判定、state_refs、conflict、planned_outputs、canonical_commands、verdict 生成）
+  - `tools/check-workflow-action.py operation-preflight --operation-id <id> --json` サブコマンド
+  - `tests/workflow-management/test_operation_registry.py`
+  - `tests/workflow-management/test_operation_preflight_response.py`
+  - `tests/workflow-management/test_operation_preflight_next_state.py`
+  - `tests/workflow-management/test_operation_preflight_review_artifacts.py`
+  - `tests/workflow-management/test_operation_preflight_approval_chain.py`
+  - `tests/workflow-management/test_operation_preflight_session_record.py`
+  - `tests/workflow-management/test_operation_preflight_nested_issue.py`
+  - `tests/workflow-management/test_operation_preflight_deployment_export.py`
+- **完了条件**：
+  1. registry が `operation_id`、`kind`、`operation_family`、canonical invocation、workflow binding、required inputs、target identity、planned outputs、sequence mode、各 policy、family required checks、`vocabulary_refs` を機械検査できる。
+  2. preflight response が `schema_version`、`operation_id`、`verdict`、`allowed_verdicts`、`sequence_mode`、`allowed_sequence_modes`、`state_refs`、`required_inputs`、`missing_inputs`、`template_available`、`target_identity`、`worktree_state`、`pending_conflicts`、`integrity_conflicts`、`checks`、`planned_outputs`、`canonical_commands`、`next_step` を返す。
+  3. workflow state に依存する operation では、Requirement 2 が所有する `next --json` の active state dimensions（current mainline、required action、phase、stage、reopen scope、impact review scope、direct / indirect features、flag policy、next pending gate、next drafting gate、pending / completed / superseded gates、state files）を `state_refs.next_action` に返す。Requirement 12 は `next` 正本を複製せず、preflight が参照・照合する側として実装する。
+  4. command validation は help 文字列ではなく parser / parser adapter と registry の `canonical_invocation` を照合し、存在しない entrypoint、subcommand、option、未登録 alias、誤 script path を成果物作成前に DEVIATION または確認不能 WARN として返す。
+  5. worktree conflict と integrity conflict を分け、post-write pending、reopen in-progress、staged / unstaged 混在、承認 record / delegation record / manifest / bundle / target digest の欠落・stale・不一致・消費済み・対象外を検出できる。
+  6. `operation_family=review_artifact` は target / manifest / bundle / criteria / document-type / approval record / existing review-run artifact の対象集合一致、approval.yaml の finding id / final_label、bundle 非空、staged / unstaged 対象選択、上書き・stale・drift を必須 check として作成前に検査できる。
+  7. `serial_only` operation は `prepare -> record -> delegate-execution -> guarded commit` の内部順序、または配布可能 UX の `prepare -> guarded commit --approval-nonce --approval-source-text-line-stdin` の wrapper 順序、nonce、target digest、staged file set digest、staged content approval digest、expiry、consume、invalidated、target を検査し、並列・順序外実行を DEVIATION にする。
+  8. current-session formal record guard は `session_record_mode`、`current_session_id`、`target_session_id` を返し、formal 出力で current と target が同一または不明なら DEVIATION にする。
+  9. nested issue handling は parent task、discovered issue、relation、allowed files、return condition、nesting depth を検査し、記録なしの scope drift を DEVIATION にする。
+  10. deployment / export preflight は planned outputs、既存成果物、上書き禁止 policy、外部 app root、既存 bundle / smoke-run / app file 衝突を作成前に返す。観測範囲は registry または明示入力で与えられた repo-relative output、許可済み external output root、target app root に限定し、未指定の外部探索はしない。観測範囲が不明な場合は OK にせず WARN 以上、runner-enabled operation では DEVIATION とする。
+  11. `reopen_scope` と `impact_review_scope` を区別し、direct / indirect feature sets、flag policy、判断理由、証跡を `next --json` と整合させる。不整合は WARN または DEVIATION として通常進行を止める。
+  12. 判定は LLM、provider、model 名に依存しない。registry / response schema に `llm`、`provider`、`model`、`model_id`、`proxy_model_id` を合否条件として持たせない。
+  13. read-only preflight は正本 artifact を作らず、runner-enabled operation は本タスクの範囲外として明示されている。
+- **operation_family 初期必須 check**：
+  - `review_artifact`：target / manifest / bundle / criteria / document-type / approval record / existing artifact drift / staged-vs-unstaged target selection。
+  - `workflow_cli`：parser / parser adapter invocation、workflow binding、`next --json` active state dimensions、scope consistency。
+  - `commit_approval_chain`：nonce、target digest、staged file set digest、staged content approval digest、expiry、consume、invalidated、target。
+  - `session_record_capture`：session_record_mode、current_session_id、target_session_id、formal output の current-session 禁止。
+  - `deployment_export`：planned outputs、overwrite policy、external output root、target app root、existing bundle / smoke-run / app file。
+  - `nested_issue_control`：parent task、discovered issue、relation、allowed files、return condition、nesting depth。
+- **テスト要件（TDD：先に失敗テストを書く）**：(1) registry schema 正常系と必須 field 欠落・未知 kind・未知 operation_family・family_required_checks / vocabulary_refs 欠落の fail-closed、(2) parser / parser adapter との invocation 照合正常系・存在しない subcommand / option / entrypoint / alias の DEVIATION、(3) preflight response JSON のキー名・型固定、`allowed_verdicts` と `verdict` 整合、DEVIATION hard-stop の WARN downgrading 拒否、(4) `state_refs.next_action` の必須キー固定検証（current mainline、required_action、phase、stage、reopen_scope、impact_review_scope、direct / indirect features、flag policy、next_pending_gate、next_drafting_gate、pending_gates、completed_gates、superseded_gates、state_files）、(5) Requirement 2 所有の `next --json` 出力を参照し、別正本を作らないことの検証、(6) `feature_impact_decisions` / `spec.json` / `pending_gates` / `drafting_completed_gates` / `downstream_impact_decisions` 不整合の検出、(7) worktree conflict と integrity conflict の分離、(8) review artifact preflight の target / manifest / bundle / criteria / document-type / approval.yaml / existing artifact drift / staged-vs-unstaged target selection 検査、(9) serial_only approval chain の順序外・期限切れ・消費済み・invalidated・digest 不一致検査、(10) current-session formal record guard、(11) nested issue scope drift、(12) deployment / export planned output / overwrite policy / explicit external root / target app root 衝突、および未指定外部探索をしないこと、(13) read-only 不変性（preflight 実行前後で registry 以外の正本 artifact が変化しない）、(14) LLM/provider/model 系 field 非依存・禁止 field 検査。全 pytest が pass、回帰なし。
+
+### T-015：Phase 1 最小スキーマ定義ファイルの作成（Req 2 受入 10・11、reopen R-0 2026-06-18）
+
+- **対応設計節**：design.md §軽量版検査スクリプトモデル §5（§5.1 required_action.schema.json・§5.2 next_action_response.schema.json）
+- **対応要件**：Requirement 2 受入 10・11
+- **責務**：`.reviewcompass/schema/required_action.schema.json` と `.reviewcompass/schema/next_action_response.schema.json` の 2 ファイルを TDD で作成する。スキーマ形式は JSON Schema Draft 2020-12。テストファイル `tests/tools/test_phase1_schema_definitions.py` の 17 テストを通過させることで実装の正しさを担保する。スキーマの設計仕様は design.md §5 を正本とし、コード内に語彙を直書きしない。
+- **前提タスク**：T-004（`check-workflow-action.py` が参照するスキーマの実体）、T-011（回帰テスト統合）
+- **成果物**：
+  - `.reviewcompass/schema/required_action.schema.json`（Req 2 受入 10）
+  - `.reviewcompass/schema/next_action_response.schema.json`（Req 2 受入 11）
+- **完了条件**：
+  1. `required_action.schema.json` が design §5.1 の設計（`$schema: https://json-schema.org/draft/2020-12/schema`・`$id: urn:reviewcompass:schema:required_action`・`type: string`・`enum` 19語彙）を満たし、かつ `enum` の配列が D-003 §6 の優先順位順に並んでいること（テストは順序を確認しないため手動確認）
+  2. `next_action_response.schema.json` が design §5.2 の設計を満たすこと：最上位5フィールド必須（`verdict`・`exit_code`・`next_action`・`reasons`・`current_state`）、`next_action` 10フィールド必須（`kind`・`required_action`・`active_gate`・`feature`・`phase`・`stage`・`required_feature_scope`・`blocked_by`・`future_gates`・`state_refs`）、`next_action` 内で `properties: { "verdict": false }` による verdict 禁止（手動確認）、`next_action.required_action` が `$ref: "urn:reviewcompass:schema:required_action"` を参照（手動確認、テストは $ref 値を検証しない）、`kind` が 14 値インライン enum であること（手動確認）、条件付き必須フィールドが `if/then` 構文で定義されていること：`repair_reasons`（`required_action = "repair_workflow_state"` のとき必須）・`action_parameters`（`required_action = "run_maintenance"` のとき必須）（手動確認）
+  3. `python3 -m pytest tests/tools/test_phase1_schema_definitions.py -v` の 17 テストが全て pass する（exit 0）。ただし17テスト全通過は必要条件であり、完了条件1の enum 順序、完了条件2の手動確認項目（verdict 禁止・kind 14 値の具体値・$ref 具体値・条件付き必須フィールド）の充足は別途手動で確認する
+- **テスト要件（TDD：テストは作成済み、失敗状態）**：テストは `tests/tools/test_phase1_schema_definitions.py` に作成済みで commit 済み（失敗状態）。実装でテストを通過させる。テストの変更は禁止。
+
+### T-016：operation contract 語彙と required_action 対応（Req 13、reopen R-0 2026-06-19）
+
+- **対応設計節**：design.md §Requirement 13 設計モデル、§D-003、§XDI-WM-005
+- **対応要件**：Requirement 13 受入 1〜12
+- **責務**：operation contract を、operation registry / preflight の補助情報ではなく、`next --json` の `required_action` と実行前検査を束ねる正本契約として定義する。`effect_kind`、`phase_boundary`、operation contract response、precondition／postcondition、side effect 宣言、commit boundary 宣言、required_action mapping を構造化し、各 `required_action` が必ず 1 つ以上の operation contract に接続されることを機械検査する。T-014 の registry / read-only preflight は参照側として残し、T-016 が operation contract 語彙・schema・対応表の所有タスクとなる。
+- **上流意図継承**：Requirement 13 の目的は「`next --json` が選んだ唯一 action を、記憶や前例ではなく operation contract に基づいて実行できるようにする」ことである。design.md §Requirement 13 は、`stages/operation-contracts.yaml` を operation contract 正本、`stages/operation-registry.yaml` を registry / preflight binding 正本として確定した。T-016 はこの設計に従い、contract 側に副作用・承認要否・順序・前提・事後条件・side effects・承認要否集約規則を置き、registry 側は canonical invocation / workflow binding / policies / contract ID / digest / schema_version 参照だけを持つようにする。preflight は contract を読み取って確認する read-only confirmation であり、contract 更新、operation 実行、approval consume、workflow state 更新を行わない。
+- **前提タスク**：T-004（`next --json`）、T-014（operation registry / preflight）、T-015（required_action schema）
+- **実装対象ファイル**：
+  - `.reviewcompass/schema/effect_kind.schema.json`
+  - `.reviewcompass/schema/phase_boundary.schema.json`
+  - `.reviewcompass/schema/operation_contract.schema.json`
+  - `stages/operation-contracts.yaml`
+  - `tools/check_workflow_action/operation_contracts.py`
+  - `tools/check-workflow-action.py`（`operation-contract-check --json` サブコマンド追加）
+  - `tests/workflow-management/test_operation_contract_schema.py`
+  - `tests/workflow-management/test_required_action_contract_mapping.py`
+  - `tests/workflow-management/test_operation_contract_cli.py`
+- **最初に書く失敗テスト**：
+  1. `test_required_action_contract_mapping_covers_required_action_enum`：`required_action.schema.json` の enum 全値が `stages/operation-contracts.yaml` に 1 件以上接続されていなければ失敗する。
+  2. `test_operation_contract_check_reports_unmapped_required_action`：一時 fixture で `required_action` を 1 つ未接続にし、`operation-contract-check --json` が `verdict=DEVIATION` を返すことを期待して失敗させる。
+  3. `test_commit_boundary_blocks_bypass_for_irreversible_actions`：`commit_stop_point`、`advance_reopen_after_commit_stop_point`、`finalize_reopen` など commit 境界必須 operation が `commit_boundary.required=true` でない場合に失敗する。
+  4. `test_registry_references_contract_without_duplicating_contract_fields`：`stages/operation-registry.yaml` が contract の正本 field（`effect_kind`、`approval_required`、`approval_contract_refs`、`phase_boundary`、preconditions / postconditions、side effects、承認要否の集約規則、branch / internal step semantics、max effect、出力・副作用 contract field）を複製した場合、または参照 contract ID / digest が不一致の場合に失敗する。
+  5. `test_record_human_decision_does_not_satisfy_target_approval_required`：`record_human_decision` の完了だけで対象 operation の `approval_required=true` が満たされた扱いになる場合に失敗する。
+  6. `test_preflight_reads_contract_without_mutating_state_or_approval`：operation preflight が contract / workflow state / approval record / side track stack / snapshot / review-run artifact を作成・更新・consume した場合に失敗する。
+  7. `test_branchy_operations_require_branch_and_internal_step_contracts`：`run_maintenance`、`run_reopen_pending_gate`、`run_workflow_stage` の contract が `branching.branches[]`、branch ごとの `internal_steps[]`、`max_effect_kind`、`approval_aggregation`、`human_only_override_applies` を持たない場合、または design.md の branch / step 基線より弱い場合に失敗する。
+  8. `test_branch_internal_steps_preserve_approval_contract_refs_and_phase_boundaries`：branch 内 step が `step_id`、`effect_kind`、`approval_required`、`approval_contract_ref`、`phase_boundary`、`source_ref` を欠く場合、または `approval_contract_ref` / `phase_boundary` が design.md の基線と矛盾する場合に失敗する。
+- **実装順序**：
+  1. JSON Schema 3 件を追加し、enum 値は design.md の語彙をそのまま写す。
+  2. `operation_contract.schema.json` に `approval_required`、`approval_contract_refs`、`sequence.internal_steps`、`branching.branches[]`、`max_effect_kind` を含める。`branching.branches[]` の最低構造は `branch_id`、`condition`、`internal_steps[]`、`max_effect_kind`、`approval_aggregation`、`human_only_override_applies`、`precondition_ids[]`、`postcondition_ids[]` とし、`internal_steps[]` の各要素は `step_id`、`effect_kind`、`approval_required`、`approval_contract_ref`、`phase_boundary`、`source_ref` を持つ。
+  3. `stages/operation-contracts.yaml` を新設し、既存 required_action enum 全値を最小契約へ接続する。`run_maintenance`、`run_reopen_pending_gate`、`run_workflow_stage` は代表値だけにせず、design.md の branch / internal step 基線を弱めずに展開する。
+  4. `operation_contracts.py` に読み込み、schema 検証、required_action coverage、commit boundary 検査を実装する。
+  5. registry / contract 境界検査を追加し、registry 側は `operation_contract` ID / digest / schema_version 参照、contract 側は副作用・承認要否・順序・前提・事後条件・side effects・承認要否集約規則、branch / internal step semantics、max effect を持つことを検査する。
+  6. `tools/check-workflow-action.py` に read-only の `operation-contract-check --json` を追加する。
+  7. T-014 の operation registry / preflight とは正本を重複させず、必要な場合は contract id と digest を参照するだけにする。
+- **完了条件**：
+  1. `effect_kind` と `phase_boundary` が JSON Schema Draft 2020-12 で定義され、未知値・空文字・型不一致を fail-closed にできる。
+  2. operation contract が `operation_id`、`required_action`、`effect_kind`、`approval_required`、`approval_contract_refs`、`phase_boundary`、`sequence.internal_steps`、`branching.branches[]`、`max_effect_kind`、preconditions、postconditions、side_effects、commit_boundary、workflow_state_effect、canonical_invocation を構造化して保持する。
+  3. `required_action.schema.json` の enum 全値が operation contract に接続され、未接続・重複矛盾・未知 `required_action` を DEVIATION にする。
+  4. `run_maintenance`、`run_reopen_pending_gate`、`run_workflow_stage` は branchy operation として、branch ごとの条件、internal step、step ごとの `effect_kind`、`approval_required`、`approval_contract_ref`、`phase_boundary`、branch `max_effect_kind`、`approval_aggregation`、`human_only_override_applies` を design.md の基線から弱めずに保持する。
+  5. commit を強制すべき operation と強制しない operation が `commit_boundary` で区別され、停止点消費・approval consumption・phase boundary などの強制 commit 点を bypass できない。`commit_boundary`、`phase_transition`、`reopen_boundary`、`external_boundary` を独自に拡大適用せず、19語彙基線と branch 内 step の `phase_boundary` を検査する。
+  6. T-014 の preflight response が operation contract ID / digest / schema_version を参照でき、別正本の再定義を持たない。registry と contract の不一致、参照先欠落、digest drift、正本 field 重複は DEVIATION になる。
+  7. operation preflight は read-only confirmation に閉じ、contract 更新、operation 実行、approval consume、workflow state 更新、side track stack 更新、snapshot 保存を行わないことが機械検証される。
+- **検証コマンド**：
+  - `.venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_schema.py tests/workflow-management/test_required_action_contract_mapping.py tests/workflow-management/test_operation_contract_cli.py -q`
+  - `.venv/bin/python3 tools/check-workflow-action.py operation-contract-check --json`
+  - `.venv/bin/python3 -m pytest tests/tools/test_phase1_schema_definitions.py tests/tools/test_operation_registry_preflight.py -q`
+- **禁止事項**：
+  - `required_action` 語彙を schema、YAML、コードへ別々に手書きして不一致を作らない。
+  - T-014 の operation registry を operation contract 正本として上書きしない。
+  - operation contract の副作用・承認要否・前提・事後条件を registry に複製して二重正本を作らない。
+  - commit 境界必須 operation を WARN に格下げしない。
+- **停止条件**：
+  - `required_action.schema.json` と `stages/operation-contracts.yaml` の語彙差分が残る場合。
+  - 既存 preflight と contract の責務境界が衝突し、どちらを正本にするか判断が必要な場合。
+
+### T-017：承認ゲート・side track stack・workflow-state snapshot（Req 14、reopen R-0 2026-06-19）
+
+- **対応設計節**：design.md §Requirement 14 設計モデル、§XDI-WM-005
+- **対応要件**：Requirement 14 受入 1〜12
+- **責務**：承認ゲート、side track stack、workflow-state snapshot を同一の状態防御層として追加する。承認ゲートは human / proxy_model decision の対象・根拠・有効期限・消費状態を構造化し、side track stack は本線作業、maintenance、nested issue、post-write verification などの入れ子状態を LIFO で保持する。workflow-state snapshot は `spec.json`、`stages/in-progress/`、pending gates、drafting completed gates、completed gates、worktree digest、staged file set、operation contract を同時点の証跡として記録し、状態 drift を検出する。
+- **上流意図継承**：Requirement 14 の目的は、承認・側道・状態可視化を LLM の暗黙解釈ではなく機械可読状態として扱うことである。design.md §Requirement 14 は、approval gate record、side track stack、workflow-state snapshot の保存先・正本性・read-only / mutating 操作境界を確定した。T-017 は `decision_scope=human_only|proxy_allowed|advisory_only` により proxy / human decision 境界を実装し、commit、push、`spec.json` 更新、phase approval、reopen finalize、`approval_required=true` の不可逆 operation 実行許可を human-only として扱う。side track stack は `current` / `inspect` を read-only、`push` / `pop` / `repair` を mutating とし、snapshot は正本ではなく `next --json` と state refs の監査補助として扱う。
+- **前提タスク**：T-006（直前ゲート）、T-008（in-progress 管理）、T-014（preflight）、T-016（operation contract）
+- **実装対象ファイル**：
+  - `.reviewcompass/schema/approval_gate.schema.json`
+  - `.reviewcompass/schema/side_track_stack.schema.json`
+  - `.reviewcompass/schema/workflow_state_snapshot.schema.json`
+  - `tools/check_workflow_action/approval_gate.py`
+  - `tools/check_workflow_action/side_track_stack.py`
+  - `tools/check_workflow_action/workflow_state_snapshot.py`
+  - `tools/check-workflow-action.py`（`workflow-snapshot --json`、`side-track-stack --json` を追加）
+  - `tests/workflow-management/test_approval_gate.py`
+  - `tests/workflow-management/test_side_track_stack.py`
+  - `tests/workflow-management/test_workflow_state_snapshot.py`
+  - `tests/workflow-management/test_workflow_snapshot_cli.py`
+- **最初に書く失敗テスト**：
+  1. `test_workflow_snapshot_includes_reopen_and_worktree_digests`：snapshot に `spec.json.workflow_state`、`recheck`、in-progress sha、pending gates、staged file set digest、worktree dirty path digest が欠けると失敗する。
+  2. `test_snapshot_drift_reports_pending_gate_change`：snapshot 後に pending gate を変えた fixture で drift reason が返らなければ失敗する。
+  3. `test_side_track_stack_rejects_non_lifo_pop`：LIFO でない pop を `DEVIATION` にしなければ失敗する。
+  4. `test_side_track_push_pop_are_mutating_but_current_is_read_only`：`side-track-stack current --json` が正本を書き換えず、push / pop だけが stack state を変更することを期待して失敗させる。
+  5. `test_snapshot_is_not_trusted_without_matching_next_action_digest`：`.reviewcompass/runtime/workflow-state-snapshot.yaml` が古い、手動更新された、または `source_next_action_sha256` が直近 `next --json` digest と一致しない場合に通常進行の根拠にできないことを期待して失敗させる。
+  6. `test_approval_record_non_approved_decisions_block_irreversible_operation`：rejected / deferred / changes_requested が対象不可逆操作を許可しないことを期待して失敗させる。
+  7. `test_proxy_model_cannot_approve_human_only_decision_scope`：`decision_scope=human_only` かつ `decided_by=proxy_model` の approval gate record が不可逆操作を許可しないことを期待して失敗させる。
+  8. `test_side_track_pop_unresolved_return_to_routes_to_repair`：pop 後に `return_to` が解決不能、または staged file set が本線復帰条件を満たさない場合に通常作業へ戻らず repair 停止になることを期待して失敗させる。
+  9. `test_approval_gate_record_requires_target_binding_fields`：approval gate record が `decision_id`、`decision`、`decision_scope`、`target_operation_id`、`target_required_action`、`target_artifact`、`target_artifact_digest`、`staged_file_set_digest`、`binding_kind`、`decided_by`、`decided_at`、`source_ref`、`source_digest`、`rationale`、`next_action_expectation`、`consumed` のいずれかを欠く場合に失敗する。
+  10. `test_decision_scope_is_derived_from_operation_contract`：record 内の `decision_scope` が `target_required_action` から解決した operation contract の `approval_required`、`phase_boundary`、`effect_kind`、`actor.kind`、human-only override set から導出した値と一致しない場合に失敗する。
+  11. `test_binding_kind_requires_matching_digest_fields`：`binding_kind=artifact_digest` / `staged_file_set_digest` / `both` で必要 digest が欠落・null・不一致の場合、または承認済み不可逆操作で `binding_kind=none` が使われた場合に失敗する。
+  12. `test_workflow_snapshot_schema_matches_design_minimum_structure`：snapshot が `schema_version`、`generated_by`、`generated_at`、`source_next_action_sha256`、`current_work`、`active_side_tracks`、`git_tree_summary`、`post_write_manifest_summary`、`workflow_state_summary` を欠く場合、または `current_work.required_action/title/outer_node/inner_node/active_gate` を欠く場合に失敗する。
+- **実装順序**：
+  1. approval gate / side track stack / snapshot の schema を追加する。
+  2. approval gate record schema に `decision_id`、`decision`、`decision_scope`、`target_operation_id`、`target_required_action`、`target_artifact`、`target_artifact_digest`、`staged_file_set_digest`、`binding_kind`、`decided_by`、`decided_at`、`source_ref`、`source_digest`、`rationale`、`next_action_expectation`、`consumed` を持たせる。
+  3. `decision_scope` を `target_required_action` から解決した operation contract の `approval_required`、`phase_boundary`、`effect_kind`、`actor.kind`、human-only override set から導出し、record 内の値と不一致なら fail-closed にする。
+  4. `binding_kind` は `artifact_digest`、`staged_file_set_digest`、`both`、`none` の 4 値とし、`artifact_digest` では `target_artifact_digest`、`staged_file_set_digest` では `staged_file_set_digest`、`both` では両 digest を必須にする。`binding_kind=none` は read-only / wait-only operation に限り、`approval_required=true`、human-only override set、phase / gate completion、commit、push、`spec.json` 更新、reopen finalize では禁止する。
+  5. snapshot の読み取り専用 builder を実装し、path と sha256 は repo-relative で安定化する。保存先は `.reviewcompass/runtime/workflow-state-snapshot.yaml` とし、snapshot は正本ではなく `next --json` と state refs の監査補助として扱う。
+  6. snapshot schema は `schema_version`、`generated_by`、`generated_at`、`source_next_action_sha256`、`current_work`、`active_side_tracks`、`git_tree_summary`、`post_write_manifest_summary`、`workflow_state_summary` を持つ。`current_work` は `required_action`、`title`、`outer_node`、`inner_node`、`active_gate` を持つ。
+  7. drift 検査を `workflow_state`、`recheck`、in-progress sha、pending gate、operation contract digest、staged / dirty digest、`source_next_action_sha256` の順で実装する。
+  8. side track stack の `current` を read-only、`push` / `pop` を mutating operation として分け、LIFO、許可ファイル境界、return_to、staged digest を検査する。
+  9. approval gate record の decision 4 値、`decision_scope` 3 値、human-only 初期集合、next 分岐を実装し、approved 以外または proxy_model による human-only approval は不可逆操作を許可しない。
+  10. side track pop 後の `return_to` 解決、staged file set の本線復帰条件、親子 frame overlap 許可境界を検査する。
+  11. CLI は read-only 系と mutating 系を operation contract で分ける。`workflow-snapshot --json` と `side-track-stack current --json` は成果物を書かず、保存が必要な段は別 contract に委ねる。
+- **完了条件**：
+  1. 承認ゲートは `decision_id`、`decision`、`decision_scope`、`target_operation_id`、`target_required_action`、`target_artifact`、`target_artifact_digest`、`staged_file_set_digest`、`binding_kind`、承認 actor、source evidence、expiry、consume / invalidate 状態を保持し、欠落・期限切れ・対象不一致を fail-closed にする。
+  2. proxy_model decision は人間承認を置換しない対象と、代行可能な判断対象を schema / gate で区別する。`decision_scope` は operation contract から機械的に導出し、record 内の値と一致しない場合は DEVIATION にする。
+  3. side track stack は push / pop / current の 3 操作を持ち、親 task、許可ファイル、戻り条件、nesting depth、関連 operation を検査する。
+  4. side track 完了後に本線へ戻る条件が未充足なら通常進行を返さず、必要 action を `next --json` に反映する。
+  5. `binding_kind` は operation contract から導出し、必要 digest の欠落・null・不一致を fail-closed にする。`binding_kind=none` は `wait_for_human_decision`、`collect_required_decisions`、`completed` など read-only / wait-only operation に限り、承認済み不可逆操作には使えない。
+  6. workflow-state snapshot は `.reviewcompass/runtime/workflow-state-snapshot.yaml` に保存され、正本状態と worktree / staged 対象を同時点で固定し、snapshot と現状態の drift を WARN または DEVIATION として検出する。snapshot payload は最低限、`schema_version`、`generated_by`、`generated_at`、`source_next_action_sha256`、`current_work`、`active_side_tracks`、`git_tree_summary`、`post_write_manifest_summary`、`workflow_state_summary` を持つ。
+  7. `current_work` は `required_action`、`title`、`outer_node`、`inner_node`、`active_gate` を持つ。`spec.json.workflow_state`、`spec.json.reopened`、`spec.json.recheck`、`stages/in-progress/` の対象ファイル path / sha256、`pending_gates`、`drafting_completed_gates`、`completed_gates`、参照した operation contract id / sha256、staged file set digest、worktree dirty path digest は `workflow_state_summary` 等の下位構造で保持する。`downstream_impact_decisions` を入れる場合は追加情報であり、design.md の最低構造を置き換えない。
+  8. snapshot は commit / phase transition / approval consumption など T-016 の commit boundary と接続する。
+  9. snapshot drift 判定は、`source_next_action_sha256`、`pending_gates`、`drafting_completed_gates`、`completed_gates`、operation contract digest、staged file set digest、worktree dirty path digest のいずれかが snapshot 時点と異なる場合を個別理由として返す。
+  10. snapshot は正本ではなく、古い snapshot、手動更新 snapshot、`next --json` digest と一致しない snapshot は操作許可の根拠にしない。
+  11. side track stack の保存先、read-only 操作、mutating 操作、return_to 解決、commit / push 直前の digest 照合がそれぞれ機械検査される。
+  12. `decision_scope=human_only` の承認は proxy_model decision で通過できず、human-only 初期集合が機械検査される。
+  13. side track pop 後に `return_to` が解決できない、または staged file set が本線復帰条件を満たさない場合、通常作業へ戻さず `repair_workflow_state` または同等の停止状態を返す。
+- **検証コマンド**：
+  - `.venv/bin/python3 -m pytest tests/workflow-management/test_approval_gate.py tests/workflow-management/test_side_track_stack.py tests/workflow-management/test_workflow_state_snapshot.py tests/workflow-management/test_workflow_snapshot_cli.py -q`
+  - `.venv/bin/python3 tools/check-workflow-action.py workflow-snapshot --json`
+  - `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py -k \"reopen or maintenance or commit_stop_point\" -q`
+- **禁止事項**：
+  - snapshot 作成コマンドで正本ファイルや approval record を書き換えない。
+  - proxy_model decision を commit / push / spec.json 更新の人間承認として扱わない。
+  - proxy_model decision を `decision_scope=human_only` の承認として扱わない。
+  - side track stack の current だけを見て親 task / 戻り条件を省略しない。
+  - read-only CLI と mutating CLI を同じ operation として曖昧に扱わない。
+- **停止条件**：
+  - snapshot digest が実行ごとに不安定で、同じ状態から同じ値を再現できない場合。
+  - proxy_model 代行可否の境界が既存承認規律と衝突する場合。
+  - stack state の保存先または mutation boundary を design.md の意図と一致させられない場合。
+
+### T-018：構造化有効プロンプトと prompt audit（Req 15、reopen R-0 2026-06-19）
+
+- **対応設計節**：design.md §Requirement 15 設計モデル、§XDI-WM-005
+- **対応要件**：Requirement 15 受入 1〜7
+- **責務**：`effective prompt` を単なる連結テキストではなく、language task I/O、入力 artifact、制約、禁止事項、出力 schema、completion routing、監査 anchor を持つ構造化成果物として生成・検査する。LLM に実行させる作業と機械が検査する作業を分け、prompt 内の on_completion 指示が workflow state を暗黙に変更しないようにする。prompt audit は、元資料 digest、schema coverage、禁止指示、機械実行タスク混入、出力 schema 不整合を検出する。
+- **前提タスク**：T-004（effective prompt 生成）、T-014（operation preflight）、T-016（operation contract）、T-017（snapshot）
+- **実装対象ファイル**：
+  - `.reviewcompass/schema/language_task_io.schema.json`
+  - `.reviewcompass/schema/effective_prompt_manifest.schema.json`
+  - `tools/check_workflow_action/effective_prompt_builder.py`
+  - `tools/check_workflow_action/prompt_audit.py`
+  - `tools/check-workflow-action.py`（`prompt-audit --prompt-manifest <path> --json` を追加）
+  - `tests/workflow-management/test_language_task_io_schema.py`
+  - `tests/workflow-management/test_effective_prompt_manifest.py`
+  - `tests/workflow-management/test_prompt_audit.py`
+  - `tests/workflow-management/test_prompt_manifest_rounds_recording.py`
+- **最初に書く失敗テスト**：
+  1. `test_effective_prompt_manifest_covers_source_digests`：manifest の source artifact に path と sha256 がない場合に失敗する。
+  2. `test_prompt_audit_rejects_direct_state_mutation_instruction`：prompt の completion routing に spec.json 直接変更や commit 実行指示が含まれると `DEVIATION` を期待して失敗する。
+  3. `test_rounds_records_prompt_manifest_without_removing_text_prompt_fields`：review-run の `rounds.yaml` が manifest path / sha256 を追加しつつ既存 text field を保持しなければ失敗する。
+  4. `test_prompt_audit_rejects_machine_execution_steps_beyond_state_mutation`：review-run artifact 作成、approval consume、side-track mutation、operation execution などの機械実行手順が prompt の language_task に残ると `DEVIATION` になることを期待して失敗させる。
+  5. `test_prompt_length_bounds_are_resolved_from_discipline_map`：`prompt_length` が `WORKFLOW_DISCIPLINE_MAP.yaml` の `prompt_length_bounds` または `default_prompt_length_bounds` と一致しない場合、範囲外 prompt で当該 bounds の `failure_verdict` を返さない場合、または `failure_verdict` 未設定値を runner が推測する場合に失敗する。
+  6. `test_prompt_audit_rejects_on_completion_not_next_action_compatible`：`postconditions.check_kind=next_action_compatible` で `on_completion.next_required_action` / `allowed_followups` が operation contract の postconditions または次 action と矛盾する場合に `DEVIATION` を期待して失敗させる。
+  7. `test_language_task_io_uses_design_vocabulary`：`language_task` が `document_kind`、`input`、`output_format`、`constraints` を欠く場合、または `input role` / `allowed action` / `forbidden action` など design.md と異なる正本語彙を schema 必須 field として受け入れる場合に失敗する。
+  8. `test_llm_judge_audit_outputs_structured_known_gap_findings`：Phase 6 の LLM judge audit 出力が `gap_id`、`severity`、`prompt_ref`、`contract_ref`、`finding`、`recommended_action`、`blocks_approval` を欠く場合、または既知 gap fixture（必須構造節欠落、機械タスクの prompt 内残留、preconditions 網羅不足、postconditions 確認不能性）を検出できない場合に失敗する。
+- **実装順序**：
+  1. language task I/O と effective prompt manifest の schema を追加する。
+  2. `language_task_io.schema.json` は `document_kind`、`input`、`output_format`、`constraints` を正本語彙とし、`input.required_files`、`input.state_refs`、`input.source_refs`、`output_format.kind`、`output_format.required_sections`、`output_format.schema_ref` を構造化する。
+  3. effective prompt manifest に `prompt_length`、`preconditions_checked`、`postconditions`、`on_completion` を追加する。`prompt_length` は `WORKFLOW_DISCIPLINE_MAP.yaml#decision_points` の `prompt_length_bounds` または `default_prompt_length_bounds` から解決し、`min_chars`、`max_chars`、`source_ref`、`failure_verdict` を保持する。
+  4. 既存 effective prompt 生成は壊さず、manifest builder を横に追加する。
+  5. prompt audit で source digest、禁止 action、output schema、operation contract 参照、機械実行タスク混入、`prompt_length` bounds、`postconditions.check_kind=next_action_compatible`、`on_completion` と次 action の互換性を検査する。
+  6. `run_role.py` / `run_review.py` の rounds 記録へ manifest path / sha256 を追加する。既存 `effective_prompt_path` / `effective_prompt_sha256` は P1 互換として残す。
+  7. `prompt-audit` CLI を read-only として追加し、manifest 欠落時と text-only 互換時の WARN / DEVIATION を固定する。
+  8. Phase 6 の LLM judge audit は Phase 5 までの機械的強制後の後回し可能段階として追加し、構造化有効プロンプト、該当 `WORKFLOW_NAVIGATION.md` 節、operation contract を入力に、gap を構造化出力する。承認自動化には使わない。
+- **完了条件**：
+  1. effective prompt manifest が source artifacts、sha256、required disciplines、operation contract、expected output schema、completion routing を構造化して保持する。
+  2. language task I/O schema が `document_kind`、`input`、`output_format`、`constraints` を定義し、未知 field / 欠落を fail-closed にする。`language_task` は LLM が生成または判断する文章の範囲を表し、commit、push、spec.json 更新、review-run 実行などの機械操作手順を埋め込まない。
+  3. `prompt_length` は `WORKFLOW_DISCIPLINE_MAP.yaml` の `prompt_length_bounds` または `default_prompt_length_bounds` と一致し、`min_chars < max_chars` の正整数 bounds と `failure_verdict` を持つ。範囲外の場合は当該 bounds の `failure_verdict` を返し、runner が未設定値を推測しない。
+  4. prompt に含まれる on_completion / next step 指示は `next --json` または operation contract への参照に限定され、spec.json・phase・commit の直接変更指示を禁止する。
+  5. `postconditions.check_kind` は `section_exists`、`schema_valid`、`target_set_matches`、`next_action_compatible`、`manual_review_required` を扱い、`on_completion` が operation contract の postconditions と次 action に矛盾する場合は DEVIATION にする。
+  6. prompt audit が元資料 digest 不一致、必須 source 欠落、機械実行タスク混入、出力 schema 欠落、禁止事項違反、prompt length bounds 不一致、`on_completion` 矛盾を DEVIATION にする。機械実行タスク混入には、commit / push / spec.json 更新 / phase 移行だけでなく、review-run artifact 作成、approval consume、side-track mutation、operation execution を含める。
+  7. review-run / role-run の `rounds.yaml` は prompt manifest path と sha256 を、既存 T-004 の `effective_prompt_path` / `effective_prompt_sha256` を置換せず拡張 field として記録する。移行中は既存 text-only effective prompt field と structured manifest field の併存を許可し、manifest field がある場合は manifest sha256 と source digest coverage を正本検査対象にする。manifest field がなく text-only field のみの場合は P1 互換として WARN、manifest field があるが text-only field と対象 decision point が不一致の場合は DEVIATION、どちらの field もない場合は DEVIATION とする。
+  8. Phase 6 LLM judge audit は構造化有効プロンプト、該当 `WORKFLOW_NAVIGATION.md` 節、operation contract を入力にし、`gap_id`、`severity`、`prompt_ref`、`contract_ref`、`finding`、`recommended_action`、`blocks_approval` を持つ構造化出力を返す。既知 gap fixture は必須構造節欠落、機械タスクの prompt 内残留、preconditions 網羅不足、postconditions 確認不能性を含む。Phase 6 は Phase 5 後の任意・後回し可能段階であり、意味的な最終承認を自動化しない。
+- **検証コマンド**：
+  - `.venv/bin/python3 -m pytest tests/workflow-management/test_language_task_io_schema.py tests/workflow-management/test_effective_prompt_manifest.py tests/workflow-management/test_prompt_audit.py tests/workflow-management/test_prompt_manifest_rounds_recording.py -q`
+  - `.venv/bin/python3 tools/check-workflow-action.py prompt-audit --prompt-manifest <fixture-or-generated-manifest> --json`
+  - `.venv/bin/python3 -m pytest tests/tools/test_effective_prompt_contract.py tools/api_providers/tests/test_run_review.py -q`
+- **禁止事項**：
+  - 既存 text-only effective prompt path を同時削除しない。
+  - prompt の on_completion に spec.json 更新、commit、push、phase 移行を直接書かない。
+  - prompt audit の WARN / DEVIATION を provider や model 名に依存させない。
+- **停止条件**：
+  - manifest と既存 effective prompt の decision point を一意に対応付けられない場合。
+  - `rounds.yaml` の既存互換フィールド削除が必要になった場合。
+
+### T-019：段階的実装計画 Phase 0〜6 と proxy_model triage decision 機械処理化（Req 16、reopen R-0 2026-06-19）
+
+- **対応設計節**：design.md §Requirement 16 設計モデル、§XDI-WM-005
+- **対応要件**：Requirement 16 受入 1〜14
+- **責務**：Requirement 13〜15 の実装を Phase 0〜6 に分け、各 phase の開始条件・完了条件・禁止事項・成果物・回帰範囲を機械的に確認できるようにする。proxy_model triage decision は review-run の raw response、triage 候補、decision prompt、decision output、採用理由、最終反映先を束ね、human decision と proxy_model decision の境界を operation contract / approval gate / prompt audit に接続する。review-wave への影響は consumer impact として追跡し、未反映のまま完了できないようにする。
+- **上流意図継承**：Requirement 16 の目的は、選択層と実行層の機械化を一度に混ぜず、既存挙動を壊さない順序で TDD 実装できるようにすることである。design.md §Requirement 16 は Phase 0〜6 の順序、active reopen scope と impact review scope の分離、proxy_model triage decision の証跡処理、human-required predicate の優先順位を定義している。実装では phase plan の entry / exit criteria と forbidden operations を正本化し、human-required decision は triage item、approval gate record、operation contract の `approval_required`、review-wave impact evidence、downstream impact decisions / scope 整合から machine-readable に導出する。`decision_scope=human_only`、未解決 approval gate、`approval_required=true`、未解決 review-wave impact evidence は proxy decision より常に優先する。`spec.json.reopened` は履歴であり active scope ではない。
+- **前提タスク**：T-012（review-wave summary）、T-014（operation preflight）、T-016（operation contract）、T-017（approval / snapshot）、T-018（structured prompt）
+- **実装対象ファイル**：
+  - `stages/workflow-management-implementation-phases.yaml`
+  - `.reviewcompass/schema/implementation_phase.schema.json`
+  - `.reviewcompass/schema/proxy_triage_decision.schema.json`
+  - `tools/check_workflow_action/implementation_phases.py`
+  - `tools/check_workflow_action/operation_list.py`
+  - `tools/check_workflow_action/proxy_triage_decisions.py`
+  - `tools/check-workflow-action.py`（`implementation-phase-check --feature workflow-management --json`、`operation-list --json`、`proxy-triage-decision-check --run <path> --json` を追加）
+  - `tests/workflow-management/test_implementation_phase_plan.py`
+  - `tests/workflow-management/test_operation_list_read_only.py`
+  - `tests/workflow-management/test_proxy_triage_decision_machine.py`
+  - `tests/workflow-management/test_review_wave_consumer_impact.py`
+  - `tests/workflow-management/test_implementation_phase_cli.py`
+- **最初に書く失敗テスト**：
+  1. `test_implementation_phase_plan_covers_phase_0_to_6`：Phase 0〜6 の欠落、順序違反、entry / exit criteria 欠落で失敗する。
+  2. `test_proxy_triage_decision_requires_raw_prompt_candidate_selected_reason_target`：proxy decision の raw、prompt、候補、採用、理由、反映先のいずれかが欠けると失敗する。
+  3. `test_reopened_history_flag_is_not_active_scope`：`spec.json.reopened` だけを根拠に active reopen scope と判定すると失敗する。
+  4. `test_human_required_decision_blocks_proxy_application`：triage item / approval gate / operation contract / review-wave impact evidence のいずれかが human-required を示す場合に、proxy decision apply が失敗する。
+  5. `test_phase_checker_uses_entry_exit_and_forbidden_operations`：phase plan が entry criteria 未充足、exit criteria 未充足、または forbidden operation 実行済みの場合に DEVIATION を返すことを期待して失敗させる。
+  6. `test_human_required_priority_overrides_proxy_approved_leave_as_is`：`decision_scope=human_only`、未解決 approval gate、`approval_required=true`、未解決 review-wave impact evidence がある場合、triage の `leave-as-is` や `proxy_approved` があっても proxy apply が失敗する。
+  7. `test_proxy_triage_requires_complete_finding_cluster_coverage`：finding / cluster coverage が不足・過剰・競合する場合に proxy decision 展開が DEVIATION になる。
+  8. `test_phase2_operation_list_returns_read_only_registry_fields_without_changing_next_json`：Phase 2 の `operation-list --json` または同等が各 operation の `canonical_commands`、`effect_kind`、`approval_required`、`sequence`、`pending_conflicts` を返し、既存 `next --json` の出力・状態・副作用を変更しないことを期待して失敗させる。
+  9. `test_proxy_triage_rejects_review_and_apply_scope_mismatch`：`review_triage_decide` approval と apply-fixes approval の対象 finding / cluster scope が一致しない場合に DEVIATION になることを期待して失敗させる。
+  10. `test_human_required_predicate_evaluation_order_is_fixed`：coverage と証跡存在、finding-to-operation mapping、operation contract、approval gate record、review-wave impact evidence の固定順を変えた実装、または順序を検査できない実装で失敗する。
+- **実装順序**：
+  1. implementation phase plan schema と `stages/workflow-management-implementation-phases.yaml` を追加する。
+  2. phase check を read-only で実装し、Phase 0〜6 coverage、順序、entry / exit criteria、禁止 operation を検査する。
+  3. Phase 2 成果物として `operation-list --json` または同等を read-only で実装し、operation contract から `canonical_commands`、`effect_kind`、`approval_required`、`sequence`、`pending_conflicts` を返す。Phase 2 では既存 `next --json` の挙動、出力 schema、状態 mutation を変更しない。
+  4. human-required predicate を、triage item、approval gate record の `decision_scope` / decision / decided_by、operation contract の `approval_required` / `phase_boundary`、review-wave impact evidence、downstream impact decisions / scope 整合から機械的に導出する。
+  5. human-required の優先順位を実装し、human-only / 未解決 approval / `approval_required=true` / 未解決 review-wave impact evidence を proxy apply より優先する。predicate は coverage と証跡存在、finding-to-operation mapping、operation contract、approval gate record、review-wave impact evidence の固定順で評価する。
+  6. proxy triage decision schema と検査器を追加し、provider / model 名ではなく証跡 completeness、対象一致、coverage、human-required predicate で判定する。`review_triage_decide` approval と apply-fixes approval の scope が一致しない場合は DEVIATION にする。
+  7. review-wave consumer impact 検査を、review-wave summary、carry-forward register、downstream impact decisions、spec recheck から組み立てる。
+  8. CLI 3 件を追加し、既存 review triage の生成物を壊さず検査だけを行う。
+- **完了条件**：
+  1. Phase 0〜6 が schema 化され、各 phase の entry criteria、exit criteria、allowed operations、forbidden operations、required tests、commit boundary を検査できる。
+  2. Phase の順序違反、未完了 exit criteria、禁止 operation 実行、必要 snapshot 欠落を DEVIATION にする。
+  3. Phase 2 は read-only registry として、`operation-list --json` または同等が各 operation の `canonical_commands`、`effect_kind`、`approval_required`、`sequence`、`pending_conflicts` を返す。Phase 2 は既存 `next --json` の動作を変更しない。
+  4. proxy_model triage decision が raw response、triage item、decision prompt、candidate decisions、selected decision、reasoning summary、final application target を構造化して保持する。
+  5. proxy_model decision は LLM/provider/model 名ではなく、証跡 completeness、対象一致、decision schema、approval gate 可否で判定する。
+  6. human 承認が必要な decision を proxy_model decision で通過させない。human-required は triage item、approval gate record の `decision_scope` / decision / decided_by、operation contract の `approval_required` / `phase_boundary`、review-wave impact evidence、downstream impact decisions / scope 整合から導出され、判定元が欠ける場合は DEVIATION にする。
+  7. human-required predicate は coverage と証跡存在、finding-to-operation mapping、operation contract、approval gate record、review-wave impact evidence の固定順で評価され、順序変更や対象省略を検出できる。
+  8. proxy triage coverage は対象 finding / cluster の不足・過剰・競合に加え、`review_triage_decide` approval と apply-fixes approval の scope 不一致を DEVIATION にする。
+  9. review-wave summary / carry-forward register / downstream impact decisions への consumer impact が未反映なら完了判定を出さない。必須入力は `review-wave-summary` JSON / Markdown 出力、`learning/workflow/carry-forward-register/reviewcompass-import.yaml`、reopen in-progress / completed YAML の `downstream_impact_decisions`、`spec.json.recheck.impacted_downstream_phases`、履歴参照としての `spec.json.reopened` とする。
+  10. T-019 は `spec.json.reopened` を履歴フラグとして扱い、active reopen scope と同一視しない。active reopen scope は reopen in-progress / completed YAML の `pending_gates`、`completed_gates`、`drafting_completed_gates`、`feature_impact_decisions`、`downstream_impact_decisions` から解決し、impact review scope は review-wave summary と downstream impact decisions から解決する。両 scope が混同・欠落・矛盾した場合は DEVIATION とする。
+  11. `decision_scope=human_only`、未解決 approval gate、`approval_required=true` の対象 operation、未解決 review-wave impact evidence は proxy_model の判断より常に優先し、triage 上の `leave-as-is` や `proxy_approved` で打ち消されない。
+- **検証コマンド**：
+  - `.venv/bin/python3 -m pytest tests/workflow-management/test_implementation_phase_plan.py tests/workflow-management/test_operation_list_read_only.py tests/workflow-management/test_proxy_triage_decision_machine.py tests/workflow-management/test_review_wave_consumer_impact.py tests/workflow-management/test_implementation_phase_cli.py -q`
+  - `.venv/bin/python3 tools/check-workflow-action.py implementation-phase-check --feature workflow-management --json`
+  - `.venv/bin/python3 tools/check-workflow-action.py operation-list --json`
+  - `.venv/bin/python3 tools/check-workflow-action.py proxy-triage-decision-check --run <fixture-or-review-run> --json`
+- **禁止事項**：
+  - `spec.json.reopened` を active reopen scope として扱わない。
+  - proxy_model decision を human-required decision の承認として通過させない。
+  - review-wave consumer impact を carry-forward register なしで完了扱いにしない。
+- **停止条件**：
+  - Phase 0〜6 の順序や境界が design.md と一致しない場合。
+  - proxy decision 証跡の既存形式が複数あり、単一 schema へ写像できない場合。
+
+## 要件追跡（Requirements Traceability）
+
+| 要件 | 対応タスク |
+|------|-----------|
+| Requirement 1 受入 1：YAML 静的列挙、Markdown 動的解析しない | T-003 |
+| Requirement 1 受入 2：9 ファイル体制 | T-001（配置）＋ T-002（feature-dependency）＋ T-003（8 ファイル） |
+| Requirement 1 受入 3：段名／actor／証跡パス／必須節／完了判定 | T-003 |
+| Requirement 1 受入 4：feature_order 参照 | T-002（参照先）＋ T-003（参照側） |
+| Requirement 1 受入 5：YAML 1 箇所修正、Markdown 整合は人手 | T-003 |
+| Requirement 1 受入 6：機能横断段 review-wave の作業内容（7 モデル評価 2 回方式） | T-003（`cross-spec-alignment.yaml` 枠）＋ T-009（運用文書）※ 段集合本体は DVT-W004 で延期、cross-spec-alignment.yaml 確定後に符号化（F-001 対処 2026-05-28） |
+| Requirement 2 受入 1：Python 実装 | T-004 |
+| Requirement 2 受入 2：証跡＋必須節のみ判定 | T-004 |
+| Requirement 2 受入 3：中身の妥当性判定しない | T-004（判定範囲）＋ T-009（運用文書での明示） |
+| Requirement 2 受入 4：結論不能は fail（fail-closed） | T-004（パースエラー）＋ T-006（ゲート） |
+| Requirement 2 受入 5：in-progress 警告 | T-004（警告出力）＋ T-008（in-progress 管理） |
+| Requirement 2 受入 10：required_action 語彙スキーマ定義 | T-015 |
+| Requirement 2 受入 11：next_action_response 応答スキーマ定義 | T-015 |
+| Requirement 3 受入 1：author／reviewer 必須 | T-005 |
+| Requirement 3 受入 2：identity 同一を許容しない | T-005 |
+| Requirement 3 受入 3：subagent_mediated の判定役は別エンティティ | T-005（複合役許容） |
+| Requirement 3 受入 4：front-matter 検査、別モデル／別 session は第 1 層対象外 | T-005（検査範囲）＋ T-009（運用文書での明示） |
+| Requirement 4 受入 1：4 種類の不可逆操作 | T-006 |
+| Requirement 4 受入 2：pass ＋ in-progress 空、毎回独立走行 | T-006（独立走行）＋ T-008（in-progress 連動） |
+| Requirement 4 受入 3：fail-closed | T-004 ／ T-006 ／ T-007 ／ T-008（全体方針） |
+| Requirement 4 受入 4：最小集合方針 | T-006 |
+| Requirement 4 受入 5：commit 承認レコード・staged `target_sha256` | T-006（互換入力検査）＋ T-011（回帰テスト） |
+| Requirement 4 受入 6：nonce challenge・target digest・consume | T-004（commit-approval サブコマンドと `--json` 契約）＋ T-006（prepare／record／validation／invalidate／consume／consume 永続化失敗）＋ T-011（統合テスト） |
+| Requirement 4 受入 7：LLM 非依存・保証範囲 | T-006（schema 禁止フィールド、判定入力限定、`attestation_type`、`guarantee_scope`）＋ T-011（統合テスト） |
+| Requirement 4 受入 8：LLM commit 実行代行承認の正式 CLI | T-004（`commit-approval delegate-execution --source-text-stdin --json`）＋ T-006（delegation record 生成／validation／invalidate／consume／`--execution-actor llm` gate）＋ T-011（統合テスト） |
+| Requirement 5 受入 1：手戻り種別の二次元表記 | T-003（reopen-procedure.yaml）＋ T-007（解決ロジック） |
+| Requirement 5 受入 2：trigger_map | T-003（trigger_map 列挙）＋ T-007（解決） |
+| Requirement 5 受入 3：actor=human で停止 | T-007 |
+| Requirement 5 受入 4：人間承認なしに進まない | T-007 |
+| Requirement 5 受入 5：種別判定根拠の保存 | T-001（雛形配置）＋ T-007（読み込み機構） |
+| Requirement 6 受入 1：in-progress ファイル配置 | T-001（配置）＋ T-008（管理機構） |
+| Requirement 6 受入 2：必須フィールド | T-008 |
+| Requirement 6 受入 3：session 開始時の標準フロー | T-008（実装）＋ T-009（運用文書） |
+| Requirement 6 受入 4：完了時の移動 | T-008 |
+| Requirement 6 受入 5：in-progress ある状態での遮断 | T-006 ／ T-008 連動 |
+| Requirement 7 受入 1：第 1 層の限界の明文化 | T-009 |
+| Requirement 7 受入 2：第 2〜5 層を宿題として参照 | T-009 |
+| Requirement 7 受入 3：第 5 層運用ルールの反映 | T-009 |
+| Requirement 7 受入 4：第 1 層の限界の運用文書への明示 | T-009 |
+| Requirement 8 受入 1：feature-dependency.yaml が一元保管先 | T-002 |
+| Requirement 8 受入 2：features ＋ feature_order、2 形式の depends_on | T-002 |
+| Requirement 8 受入 3：feature_order 参照 | T-003 |
+| Requirement 8 受入 4：1 箇所修正で完結 | T-002（運用文書）※ T-009 は本受入に直接寄与しないため追跡先から除外（F-003 対処 2026-05-28） |
+| Requirement 8 受入 5：所有者は本機能、他機能は参照のみ | T-002（運用文書） |
+| Requirement 9 受入 1：後追い intent を既存システムへ適用する reopen 分類 | T-007 |
+| Requirement 9 受入 2：受け皿あり／なし／人間判断の分岐 | T-004 ＋ T-007 |
+| Requirement 9 受入 3：downstream impact decision の証跡保持 | T-007 ＋ T-008 |
+| Requirement 9 受入 4：conformance-evaluation 候補を実行命令にしない | T-007 ＋ T-008 |
+| Requirement 9 受入 5：drafting-before-review の機械強制 | T-004 ＋ T-008 |
+| Requirement 9 受入 6：side track と本線 reopen の分離 | T-008 ＋ T-009 |
+| Requirement 10 受入 1：要約サブコマンド・読み取り元 | T-012（T-002／T-003／T-004 を前提） |
+| Requirement 10 受入 2：出力項目 | T-012 |
+| Requirement 10 受入 3：Markdown／JSON 両方・安定スキーマ・情報同等 | T-012 |
+| Requirement 10 受入 4：結論不能は fail-closed・機械可読シグナル | T-012（T-004 の fail-closed と整合） |
+| Requirement 10 受入 5：読み取り専用・自身の出力のみ保存 | T-012 |
+| Requirement 11 受入 1：決定記録スキーマ・category 種別判定基準・going-forward 適用 | T-013 |
+| Requirement 11 受入 2：multiplicity:bundled の fail-closed・束ね例外 3 条件 | T-013 |
+| Requirement 11 受入 3：逐語照合・正規化規則・保留管理・照合不合格時 pending 維持 | T-013 |
+| Requirement 11 受入 4：内容なし語リスト・判定ロジック・設定ファイル配置 | T-013 |
+| Requirement 11 受入 5：サブコマンド呼び出し形式・--all（bundle-exceptions/ 除外）・読み取り専用例外（--verify-pending） | T-013 |
+| Requirement 11 受入 6：lint が内部エラー時に unverifiable 判定・人が設定するのは口頭合意等の場合のみ | T-013 |
+| Requirement 11 受入 7：commit 直前ゲート組み込み（pending=WARN・unverifiable=DEVIATION） | T-013 |
+| Requirement 12 受入 1：operation registry | T-014 |
+| Requirement 12 受入 2：read-only preflight | T-014 |
+| Requirement 12 受入 3：共通 response・verdict・fail-closed | T-014 |
+| Requirement 12 受入 4：command validation と parser / parser adapter 照合 | T-014（T-004 の parser 接続を前提） |
+| Requirement 12 受入 5：worktree / pending / integrity conflict 分離 | T-014（T-006／T-008 と連動） |
+| Requirement 12 受入 6：review artifact / bundle / approval 作成前検査 | T-014（T-012／T-013 と連動） |
+| Requirement 12 受入 7：serial_only approval chain | T-014（T-004／T-006／T-011 と連動） |
+| Requirement 12 受入 8：current-session formal record guard | T-014（T-008 と連動） |
+| Requirement 12 受入 9：nested issue handling | T-014（T-008 と連動） |
+| Requirement 12 受入 10：deployment / export preflight | T-014 |
+| Requirement 12 受入 11：reopen scope / impact review scope 分離 | T-014（T-007／T-008 と連動） |
+| Requirement 12 受入 12：LLM / provider / model 非依存 | T-014（T-006 の非依存契約と整合） |
+| Requirement 12 受入 13：`next --json` 状態一意性 | T-014（T-004 の `next` 契約を拡張） |
+| Requirement 13 受入 1〜2：operation contract 語彙・schema | T-016 |
+| Requirement 13 受入 3〜4：required_action と operation contract の対応 | T-016（T-015 と連動） |
+| Requirement 13 受入 5〜7：precondition / postcondition / side effect / phase boundary | T-016（T-014 と連動） |
+| Requirement 13 受入 8〜10：commit boundary 強制・bypass 防止・LLM 非依存 | T-016（T-006／T-014 と連動） |
+| Requirement 13 受入 11〜12：registry / contract 単一正本境界、drift / 重複検出、preflight read-only 境界 | T-016（T-014 と連動） |
+| Requirement 14 受入 1〜3：承認ゲート、proxy_model / human decision 境界、decision 消費状態 | T-017（T-006／T-016 と連動） |
+| Requirement 14 受入 4〜7：side track stack、push / pop / current、本線復帰条件、許可ファイル・nesting depth | T-017（T-008／T-014 と連動） |
+| Requirement 14 受入 8〜10：workflow-state snapshot、staged file set / worktree digest、pending / completed gates drift 検出 | T-017（T-016 と連動） |
+| Requirement 14 受入 11〜12：proxy / human decision_scope、read-only / mutating 操作境界 | T-017（T-006／T-016 と連動） |
+| Requirement 15 受入 1〜2：language task I/O と effective prompt manifest | T-018 |
+| Requirement 15 受入 3〜5：prompt audit、on_completion 制御、機械実行タスク混入防止 | T-018（T-004／T-016 と連動） |
+| Requirement 15 受入 6〜7：Phase 6 LLM judge audit、構造化 gap 出力、既知 gap fixture | T-018（T-014／T-016／T-017 と連動） |
+| Requirement 16 受入 1〜4：Phase 0〜1 実装計画、D-003 anchor、schema 定義 | T-019（T-015〜T-018 と連動） |
+| Requirement 16 受入 5〜9：Phase 2 read-only registry、Phase 3 advisory preflight、Phase 4 structured prompt、Phase 5 blocking、Phase 6 judge audit | T-019（T-016〜T-018 と連動） |
+| Requirement 16 受入 10〜12：phase 終了条件、active reopen scope / impact review scope 分離、review-wave consumer impact | T-019（T-012／T-016〜T-018 と連動） |
+| Requirement 16 受入 13〜14：human-required predicate、proxy decision 優先順位、競合解決 | T-019（T-017／T-018 と連動） |
+| Boundary Context 隣接期待（self-improvement との接合面、A-007 案 2／A-012） | T-010 |
+
+## テスト戦略の継承（Test Strategy Inheritance）
+
+design.md §テスト戦略の 4 検証類を T-011 にまとめて継承する。各検証類の対応タスクは次のとおり：
+
+- 単体テスト → T-002 ／ T-003 ／ T-004 ／ T-005 ／ T-008 ／ T-014 ／ T-015 ／ T-016 ／ T-017 ／ T-018 ／ T-019 個別 ＋ T-011 統合
+- 統合テスト → T-006 ／ T-007 ／ T-010 ／ T-014 ／ T-016 ／ T-017 ／ T-018 ／ T-019 個別 ＋ T-011 統合
+- 異常系 fixture → 各タスクで fail-closed テスト ＋ T-011 統合
+- 境界条件 → T-002（依存マップ境界）／ T-003（テンプレート変数境界）／ T-008（複数 in-progress 並存）／ T-016（commit boundary）／ T-017（side track / snapshot drift）／ T-018（prompt / machine task 境界）／ T-019（proxy_model / human decision 境界）＋ T-011 統合
+
+## 完成判定基準（Completion Criteria）
+
+本タスク文書は次を満たすときに完了とみなす：
+
+- T-001〜T-019 のすべてが起草・実装・テスト・コミット完了
+- tasks.md の各タスクが、実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を持ち、implementation-drafting.md なしで実装に着手できる粒度である
+- design.md §完成判定基準の 7 項目すべてが T-011 の統合テストで pass
+- foundation が所有する語彙正本のうち本機能が参照する `review_mode` を再定義せず参照のみで使用し、所見系（`counter_status`／`severity`／`final_label`／`confidence_label`）・状態軸系（`run_status`／`validator_status`／`human_signoff_status`／`evidence_class`）を参照していないことが、機械検証で確認できる（A-003 対処 2026-05-28）
+- workflow-management 所有の正本（`completion_predicate` 述語集合 7 値 ／ `verdict` 3 値 OK／WARN／DEVIATION ／ 手戻り種別記号 5 値 N／R／D／A／I ／ 依存種別 2 値 `hard`／`review`）が T-002 ／ T-003 ／ T-004 ／ T-007 の成果物で正本として確定されている
+- 各タスクの成果物配置が design.md §全体構造 と一致
+- 各タスクの依存順が守られている（前提タスクなしで後続タスクを開始しない）
+- 遅延確認事項テーブル（DVT）内の未解除項目がない（または延期理由が明記されている）
+
+## 変更意図（Change Intent）
+
+本タスク文書は workflow-management 機能を「思想は継承、実装は 1／10」（計画書 §5.4 軽量化方針）の精神で実装するため、次を採用する：
+
+- **一気通貫粒度**：1 タスク ＝ 1 つの所有モデル領域。foundation T-001〜T-010 ／ runtime T-001〜T-011 ／ evaluation T-001〜T-011 ／ analysis T-001〜T-011 の粒度方針を継承
+- **所有モデル単位の分離**：design.md の所有モデル（段集合 ／ 検査スクリプト ／ 起草者判定者分離 ／ 直前ゲート ／ reopen 機械強制 ／ session 跨ぎ ／ 多層防御 ／ 機能依存マップ ／ review-wave 要約 ／ 重要決定の出典検査 ／ operation registry / preflight）に各タスクを対応付け
+- **依存順の明示**：T-001（配置）→ T-002（依存マップ）→ T-003（段集合 YAML）→ T-004（検査スクリプト本体）→ T-005〜T-008（各機械検査）→ T-009（運用文書）→ T-010（規律変更接合面）→ T-011（統合テスト）の流れを固定
+- **fail-closed の全面採用**：判断 3 を全タスクで徹底、結論不能（YAML パースエラー ／ 証跡欠落 ／ 必須フィールド欠落 ／ 未知の値）は必ず DEVIATION で遮断
+- **最小集合方針**：判断 4 を T-006 で徹底、中間段の遷移には機械ゲートを置かない
+- **contract consumer 原則の徹底**：foundation が所有する語彙正本を再定義せず参照のみで使用（本機能が参照するのは `review_mode` のみ。所見系・状態軸系は責務外で不参照、A-003 対処 2026-05-28）、本機能所有の正本（`completion_predicate` 述語 7 値 ／ `verdict` 3 値 ／ 手戻り種別記号 5 値 ／ 依存種別 2 値）は本機能で確定
+- **2026-06-08 の design 再確認への対応**：intent の「レビュー収集処理を事前設定の写像にしない」意図は、T-004 の `next` による上流更新再展開、T-006 の不可逆操作直前ゲート、T-008 の session 跨ぎ状態管理、T-002 の機能依存マップ一元化で受けられるため、タスク追加は不要と確認
+- **2026-06-08 の reopen 判定修正**：完了済み workflow で上流正本が後続成果物より新しい場合、T-004 の `next` は `reopen_classification_required` を返し、単なる再確認ではなく reopen 分類と `reopen-start` へ進ませる。テストは intent → feature-partitioning、requirements → design、tasks → implementation の代表経路を覆う。
+- **2026-06-09 の後追い intent 追加への対応**：既存システムに intent を後から追加した場合、conformance-evaluation から受け取る差分候補を実行命令にせず、T-007 で既存 feature reopen／新規 feature 必要／人間判断必要に分類する。T-004 は drafting-before-review を機械強制し、T-008 は `downstream_impact_decisions` と `drafting_completed_gates` を保持する。正式な requirements／design／tasks／implementation 更新は reopen 手続きで行う。
+- **テスト戦略の継承**：design.md §テスト戦略の 4 検証類を T-011 で網羅
+- **要件追跡表の双方向整合チェックを T-011 に組み込み**：foundation T-010 ／ runtime T-011 ／ evaluation T-011 ／ analysis T-011 の方針を踏襲
+- **遅延確認事項テーブル（DVT）の活用**：未確定上流仕様（段階 3 Claude Code フック ／ 既存レビュー記録の遡及検査 grandfathering ／ 規律変更の所定手続きの段集合 ／ cross-spec-alignment.yaml の段集合）を DVT で集約管理、T-011 完了条件で未解除項目がないことをゲート化（evaluation T-011 ／ analysis T-011 の方針継承）
+- **自律進行**：実装段で per-task 承認は取らず、コミット・プッシュ・spec.json 更新・フェーズ移行のみ明示承認（規律 [[implementation-autonomy]] 準拠）
+- **計画書 §5.4 軽量化方針との整合**：節ハッシュ・supersedes リンク・通過マーカー後続確認・独立再導出パーサ・実行台帳の機構全体は導入せず、`required_sections` 配列と `completion_predicate` 述語集合、構造化参照、機械検証可能な fail-closed 判定のみで mandatory ／ deferred を符号化
+- **2026-06-15 reopen R-0（decision-source-lint）Req 11 への対応**：重要決定の出典検査・束ね検出・逐語照合・内容性検査と構造化決定記録の新設を T-013 として追加。decision-source-lint サブコマンドを commit 直前ゲートに統合し、pending=WARN・unverifiable=DEVIATION で fail-closed を保証する。
+- **2026-06-15 reopen R-0（commit-approval-nonce）Req 4 受入 6〜7 への対応**：LLM 介在の commit 承認を staged 内容に束縛する nonce challenge は既存の不可逆操作直前ゲート強化であるため新タスク化せず、T-004 に commit-approval サブコマンド、T-006 に validation／consume／redaction／LLM 非依存 schema、T-011 に統合テストとして展開する。
+- **2026-06-16 reopen R-0（commit-execution-delegation-formal-cli）Req 4 受入 8 への対応**：LLM の commit 実行代行承認は staged 内容承認とは別責務だが、既存の commit 直前ゲート領域で受けられるため新タスク化しない。T-004 に `commit-approval delegate-execution` サブコマンド、T-006 に `.reviewcompass/runtime/approvals/commit-execution-delegation.json` の生成／validation／invalidate／consume／`--execution-actor llm` gate、T-011 に統合テストとして展開する。
+- **Req 4 受入 8 と T-013 の責務分離**：T-013 は重要決定の出典検査・束ね検出・逐語照合を担う。Req 4 受入 8 は runtime の commit execution delegation record と commit gate validation を担う。両者はいずれも commit 前の防御に関係するが、T-013 は判断出典の lint、T-004／T-006／T-011 は実行代行承認の CLI・record・gate・統合テストを担当し、互いの責務を置き換えない。
+- **2026-06-16 reopen R-0（operation-registry-preflight-unified-design）Req 12 への対応**：推測コマンド、誤 entrypoint、review artifact drift、approval record gap、staged / unstaged 対象誤り、current-session formal record 作成、nested issue scope drift を個別対処ではなく、operation registry / read-only preflight として T-014 に集約する。Phase 1 は作成前に止める read-only 検査に限定し、runner-enabled operation は後段に分離する。
+- **2026-06-19 reopen R-0（integrated design）Req 13〜16 への対応**：operation contract 語彙と required_action 対応を T-016、承認ゲート・side track stack・workflow-state snapshot を T-017、構造化有効プロンプトと prompt audit を T-018、Phase 0〜6 実装計画と proxy_model triage decision 機械処理化を T-019 として追加する。T-014 の operation registry / preflight は参照側、T-016〜T-019 は新規正本・状態防御・prompt 防御・実装段階防御の所有タスクとして分離する。
+
+---
+
+## 遅延確認事項テーブル（Deferred Verification Table、DVT）
+
+本テーブルは tasks 段で参照される未確定上流仕様または将来確定予定の事項を集約管理する。evaluation T-011 ／ analysis T-011 の DVT 同型運用。
+
+| ID | 関連タスク | 遅延内容 | 解除トリガー | 状態 |
+|---|---|---|---|---|
+| DVT-W001 | T-004 ／ T-006 | 段階 3 Claude Code フックとの結合方式（design.md §先送り論点 5）。検査スクリプトを `pre-commit` ／ `pre-push` フックから呼ぶ経路、および Claude Code の PreToolUse フックから呼ぶ経路の具体配線はフェーズ 2 以降の宿題 | フェーズ 2 で段階 3 フック実装着手時に T-004 ／ T-006 完了条件と整合を再確認 | 未解除（フェーズ 2 以降まで延期） |
+| DVT-W002 | T-005 | 既存レビュー記録の遡及検査（design.md §先送り論点 4）。Req 3 の front-matter 必須化を既存 7 件（requirements の各機能）に遡及適用するか、grandfathering（移行期免除）で扱うかが未確定 | フェーズ 2 で検査スクリプト導入時に grandfathering 判断を確定、または利用者明示承認で遡及適用範囲を確定 | 未解除 |
+| DVT-W003 | T-010 | 規律変更の所定手続きの段集合（design.md §先送り論点 6）。規律変更を `drafting → review → approval` の 3 段で扱うか、`triad-review` を含めるかが未確定。A-007 案 2 対応の細部 | 後続セッションで規律変更の段集合を確定、`stages/discipline-update.yaml` 等として静的列挙 | 未解除 |
+| DVT-W004 | T-003 | `cross-spec-alignment.yaml` の段集合（design.md §先送り論点 7）。機能横断整合手続きの段集合本体が未確定、本タスクでは枠のみ確保 | フェーズ 2 以降で機能横断整合手続きの実体設計時に段集合を確定 | 未解除（フェーズ 2 以降まで延期） |
+| DVT-W005 | T-010 | 規律変更の所定手続き実装と参照層 5 件（memory 配下の現行規律本体）の memory→repo 移管要否（design.md §先送り論点 8）。参照層が repo 未移管なら本機能の機械検査が効かない構造問題 | 参照層の移管方針を利用者明示承認で確定、またはフェーズ 2 で対象範囲を確定 | 未解除（A-005 対処で登録 2026-05-28） |
+| DVT-W006 | T-009 ／ T-010 | 運営ガイド等の現行規律本体の改廃手続きを本機能の規律変更手続きの対象に含めるか（design.md §先送り論点 9） | フェーズ 2 以降で対象範囲を確定 | 未解除（A-005 対処で登録 2026-05-28） |
+| DVT-W007 | T-004 ／ T-010 | `depends_on_resolves_correctly` の汎用的な変更検知と recheck 更新発火（design.md §機能依存マップ §6、フェーズ 2 宿題）。**ただし F-016 案 3 により §13.5（self-improvement 接合面）の変更検知のみ T-010 で先行実装**、機能依存マップ全般の汎用変更検知は本 DVT で据え置き | フェーズ 2 で変更検知機構の実装着手時に T-004／T-010 完了条件と整合を再確認 | 未解除（A-006／F-016 調停で登録 2026-05-28、フェーズ 2 以降まで延期） |
+
+**運用ルール**：
+
+- 本テーブルの「未解除」項目があるとき、関連タスクは完了判定可能だが、解除トリガー発火時に再評価が必須
+- T-011 完了条件は本テーブル内の未解除項目がない（または延期理由が明記されている）ことをゲート化
+- 新規の遅延項目が発生した場合は本テーブルに追記、解除時に「状態」を「解除済（日付、解除根拠）」に更新
+
+---
+
+## 機能横断段への持ち越し事項
+
+本機能の triad-review 段で発見された機能横断波及所見は、carry-forward register 正本 `learning/workflow/carry-forward-register/reviewcompass-import.yaml` に追記し、tasks の機能横断段（review-wave）で消化する。7 モデル評価 2 回目と同根問題集約は本機能では実施せず、機能横断段で一括実施する（(Q2) ／ (ニ) 採用、2 回方式に訂正、計画書 §5.5 ／ §5.9.6 反映済み）。
+
+## 実装由来契約の波及トレース
+
+- `XDI-WM-001`：T-003／T-006／T-009／T-011 の実装・検証範囲で post-write verification、commit approval、audit trail、autonomous ledger の回帰を保持する。commit approval は nonce challenge、canonical target digest、redaction、invalidate／consume、LLM 非依存 schema、commit execution delegation の別 record 化と `--execution-actor llm` gate を含み、判定が LLM／provider／model 名に依存しないことを invariant とする。詳細な設計採用は design.md §実装由来契約の採用を正本とし、本 tasks.md はタスク層から追跡可能であることを示す。
+- `XDI-WM-002`：T-004／T-007／T-008／T-011 の実装・検証範囲で、後追い intent の下流再展開、CE 候補の受け取り、drafting-before-review の強制、`downstream_impact_decisions` の証跡保持、side track と本線 reopen の分離を保持する。詳細な設計採用は design.md §既存システム後追い intent モデルと §実装由来契約の採用を正本とし、本 tasks.md はタスク層から追跡可能であることを示す。
+- `XDI-WM-004`：T-014 の実装・検証範囲で、operation registry / preflight、正本 invocation、parser / parser adapter 照合、worktree / pending / integrity conflict、review artifact / bundle / approval 作成前検査、serial_only approval chain、current-session formal record guard、nested issue handling、deployment / export preflight、reopen scope / impact review scope、`next --json` 状態一意性、LLM／provider／model 非依存を保持する。詳細な設計採用は design.md §XDI-WM-004 と §Requirement 12 設計モデルを正本とし、本 tasks.md はタスク層から追跡可能であることを示す。
+- `XDI-WM-005`：T-016／T-017／T-018／T-019 の実装・検証範囲で、operation contract 語彙、required_action 対応、commit boundary 強制、承認ゲート、side track stack、workflow-state snapshot、構造化有効プロンプト、prompt audit、Phase 0〜6 実装計画、proxy_model triage decision の機械処理化、review-wave consumer impact の完了遮断を保持する。詳細な設計採用は design.md §XDI-WM-005 と §Requirement 13〜16 設計モデルを正本とし、本 tasks.md はタスク層から追跡可能であることを示す。
+```
+
+### .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+
+content_mode: full_text
+content_sha256: 38728ca3a304f4e7c81f08f541247ef5e7027a57ea675c6341b1313855f982e5
+
+```text
+# SESSION_WORKFLOW_GUIDE：セッション運営ガイドライン
+
+最終更新：2026-06-10（現行のセッション運営契約として整理）
+
+本文書は ReviewCompass の開発セッションを確実に回すための運用ガイドラインである。作業開始、レビュー、利用者判断、コミット、完了報告の共通手順を定める。
+
+本文書は運用文書（`docs/operations/` 配下）であり、ReviewCompass の実行時手順を定める。仕様・設計・タスクの正本と矛盾する場合は、該当正本を確認し、必要に応じて reopen 手続きに乗せる。
+
+## 1. セッション開始時の必読フロー（5 分以内）
+
+セッション開始時は **作業着手前に必ず**次を順番に確認する。記憶や前回会話だけを根拠に作業へ入らない。
+
+### 1.1 必読 5 件
+
+順序は重要：
+
+1. **`TODO_NEXT_SESSION.md`**（最新進捗）
+   - 前セッション末尾の到達点、次の作業候補、未消化所見
+   - 「§0 重要事項」「§1 起動手順」「§3 次の作業候補」を最低限読む
+   - 直近の `docs/sessions/session-*.md` も併読し、TODO に圧縮された経緯の詳細を確認する
+
+2. **`.reviewcompass/guidance/WORKFLOW_NAVIGATION.md`**（次 action 判定）
+   - `tools/check-workflow-action.py next --json` の読み方
+   - 判定点ごとの required disciplines / required inputs / effective prompt の扱い
+
+3. **`.reviewcompass/guidance/WORKFLOW_PRECHECK.md`**（機械判定の入口）
+   - `spec-set`、`commit`、`push`、`next`、`reopen-start` の実行前条件
+   - 機械判定で停止した場合の扱い
+
+4. **`learning/workflow/carry-forward-register/reviewcompass-import.yaml`**（持ち越し所見の正本）
+   - 機能横断波及所見の未消化件数と内容を把握
+   - 正本と履歴 source を混同しない
+
+5. **`docs/extraction-mapping.md`**（抽出進捗）
+   - 各機能の状態（未着手／抽出中／抽出済／確認済）
+   - 機能ごとの実施履歴
+
+### 1.2 確認後の git 状態把握
+
+- `git log --oneline -10`：直近のコミット履歴
+- `git status`：未コミット変更の有無
+
+### 1.3 ワークフロー上の現在位置の確認
+
+- 現在どのフェーズか（intent ／ requirements ／ design ／ tasks ／ implementation）
+- 現在どの段か（drafting ／ triad-review ／ review-wave ／ alignment ／ approval の 5 段）
+- 残機能と消化予定所見
+
+## 2. ワークフロー段の役割と順序
+
+### 2.1 全体構造
+
+```
+intent 層（人間担当）
+  ↓
+機能分離
+  ↓
+requirements 段：drafting → triad-review → review-wave → alignment → approval
+  ↓
+design 段：drafting → triad-review → review-wave → alignment → approval
+  ↓
+tasks 段：drafting → triad-review → review-wave → alignment → approval
+  ↓
+implementation 段：drafting → triad-review → review-wave → alignment → approval
+```
+
+各フェーズは drafting／triad-review／review-wave／alignment／approval の 5 段で進める。
+
+### 2.2 各段の役割（責務分離後）
+
+- **drafting**：各機能の草案作成のみ。1 機能ずつ独立に進める。actor=llm（または human）。requirements／design／tasks の drafting は文書起草を意味する。implementation の drafting は文書起草ではなく、tasks.md に従ったテストと実装コードの生成を意味する。
+- **tasks drafting の粒度**：tasks 段の drafting では、対象機能の設計書 §14 要件追跡表（Req 受入単位 × 担当タスク単位）を骨格として tasks.md を作成する。tasks.md は implementation drafting へ直接入れる粒度で書く。各タスクには、実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を含める。implementation-plan.md や implementation-drafting.md のような別の実装前計画文書を正本成果物として要求しない。
+- **triad-review**：機能内の 3 役レビュー（主役・敵対役・判定役）と機能内対処の実施。手動 dogfooding または subagent_mediated（サブエージェント仲介方式）で実施。actor=llm
+- **review-wave**：複数機能を横断する複数ラウンドレビュー。機能横断波及所見と同根所見（異なる機能で同じ性格の所見が独立に発見された組）を集約し、一貫した対処方針で全該当機能の仕様文書に反映する
+- **alignment**：LLM 自動判定による整合確認段（actor=llm）
+- **approval**：人間または別モデルによる承認段（actor=human または proxy_model）
+
+drafting と triad-review を別段にする理由は、誰が何をしたかを段単位で明確に記録し、草案作成者と判定者の分離を機械検査可能にするためである。
+
+<a id="vertical-intent-transfer-review"></a>
+
+### 2.2.1 上流意図伝達の必須検査
+
+各 phase の triad-review／review-wave／alignment では、対象 phase の成果物だけでなく、上流成果物または上流判断材料からの意図伝達を必須検査項目とする。review prompt は、少なくとも「上流の目的・責務境界・受入条件・禁止事項が、対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか」を問わなければならない。
+
+- **requirements review**：`上流判断材料 → requirements.md` を確認し、reopen 分類根拠、利用者判断、計画メモ、設計メモなどの目的・責務境界・受入条件・禁止事項が要件へ欠落なく落ちているかを検査する。design.md / tasks.md は参照資料であり、審査対象ではない
+- **design review**：`requirements.md → design.md` を確認し、要件の目的・境界・受入条件が設計へ欠落なく落ちているかを検査する
+- **tasks review**：`requirements.md → design.md → tasks.md` を確認し、要件と設計の意図が implementation-ready なタスク粒度へ落ちているかを検査する
+- **implementation review**：`requirements.md → design.md → tasks.md → implementation` を確認し、実装がタスクだけでなく上流意図から逸脱していないかを検査する
+
+review prompt は、review target / source materials / out of scope を明示する。審査対象は現在 phase の成果物に限定し、source materials は背景・意図伝達確認のための参照資料として扱う。下流 phase の成果物が source materials に含まれる場合でも、その correctness を現在 phase の review で判定してはならない。
+
+source materials をパス名だけで列挙してはならない。縦方向監査の review prompt には、判断に必要な上流本文または要点抽出を、モデルが推測せず読める形で含める。要点抽出を使う場合は、少なくとも上流の目的、責務境界、受入条件、禁止事項、未確定事項、対象 phase へ引き継ぐべき判断を分けて記録する。上流資料を読んでいない場合は review-run を開始してはならない。prompt 内で上流資料の中身が確認できない場合も review-run を開始してはならない。
+
+tasks review では、単に tasks.md の粒度や項目数を見るだけでは不十分である。たとえば T-016〜T-019 を審査する場合は、Requirement 13〜16 の意図が design.md の設計判断を経由して、欠落・弱体化・勝手な追加なしに implementation-ready な作業単位へ落ちているかを必須で確認する。
+
+### 2.3 段の進め方の規律
+
+- **drafting 段の草案完成** → 当該機能の triad-review 段に進む（機能単位で逐次進行）
+- **triad-review 段で 3 役レビューと機能内対処** を完了 → 当該機能の drafting／triad-review がそろう
+- **全機能で drafting ＋ triad-review を完了** してから review-wave に進む（部分的に review-wave を始めない）
+- **review-wave の所見を消化** してから alignment に進む
+- **alignment で LLM 自動判定** を通過してから approval に進む
+- **approval で利用者または別モデル承認** を得てから次フェーズに進む
+
+### 2.4 「次の機能の drafting に進むべき」状況の判断
+
+triad-review 段で 3 役レビューを行った所見が **機能横断の波及所見**だった場合、当該機能の triad-review で対処せず、carry-forward register に持ち越して **次の機能の drafting に進む**。
+
+## 3. 修正案件の波及種別と処理段
+
+### 3.1 用語の使い分け
+
+両用語は **対象方向が異なる正当な技術用語** であり、優劣はない：
+
+- **遡及（そきゅう）**：**上流フェーズへの影響**。下流段の作業で発見された問題が、上流段（過去フェーズ）の修正を要するもの。例：実装段で発見した不整合が要件段の書き直しを要する
+- **波及（はきゅう）**：**同フェーズ内の他機能（フィーチャー）への影響**。ある機能のレビューが別機能との不整合を露出させるもの。例：foundation 要件の修正が runtime／evaluation 要件にも影響する
+
+所見を分類するときは、上流フェーズへ戻る必要があるか、同フェーズ内の他機能へ広がるかを分けて判断する。
+
+### 3.2 修正案件の 4 種別（＋ 2 補助種別）
+
+レビューで露出する所見は次の種別に分類する：
+
+| 種別 | 内容 | 例 |
+|---|---|---|
+| **機能内対処** | 当該機能の仕様修正のみで完結 | 表現修正、機能内の語彙不統一訂正 |
+| **波及（同フェーズ・横方向）** | 同フェーズ内の他機能の仕様修正も必要 | A-001：foundation 要件と runtime 要件の `not_run` 欠落 |
+| **遡及（上流フェーズ・縦方向）** | 上流フェーズの仕様修正が必要 | 設計段で「要件段の Req 6 受入 8 に矛盾あり」と発見 |
+| **遡及 ＋ 波及（縦 ＋ 横）** | 上流フェーズの複数機能に影響 | 設計段で発見した要件段の不整合が複数機能の要件文書に波及 |
+
+補助種別：
+
+- **leave-as-is（修正不要）**：判定役が「修正不要」と判断したもの、対処せず記録のみ
+- **延期**：「将来フェーズで対処」と判定役が明示したもの（例：F-004 の配置時対処）
+
+### 3.3 種別ごとの処理段と方法
+
+#### (a) 機能内対処
+
+- **発見されるタイミング**：drafting 段（起草者の自己発見）／ triad-review 段（3 役レビュー）
+- **処理する段**：当該機能の **triad-review 段** で対処（drafting に戻して草案修正、または triad-review 段内で直接修正）
+- **方法**：当該機能の仕様文書を直接修正
+- **次段への進行**：当該機能の triad-review 段が `completed` 状態になってから次機能へ
+- **記録先**：レビュー記録（`.reviewcompass/specs/<機能>/reviews/<日付>-<種別>.md`）の §4 統合節に「対処済み」と記録
+
+##### (a-1) must-fix 所見の対処手順
+
+triad-review 段で判定役が must-fix と判定した所見の対処は、起草者（LLM または人間）が独自判断で仕様文書を修正することを禁ずる。利用者と必ず議論し、各所見の対処方針を 1 件ずつ平易な日本語で説明して合意を得てから反映する。
+
+**手順**：
+
+1. must-fix 所見を 1 件ずつ取り上げる。複数所見が論理的に連動する場合は連動単位でまとめる（例：F-001 と F-007 が同一事象を別観点で扱う場合）
+2. 各所見について、対処方針の提案を次の構造で平易に説明する：
+   - その判断が必要になった経緯（要件文書や上流文書からの導出）
+   - 候補案の列挙（必ず複数）
+   - 各候補案の利点と弱点
+   - **後段で発生し得る問題の深掘り**：下流仕様（他機能の design／tasks／implementation）、対象アプリへの配置可能性、機械検証時の挙動、実装フェーズの運用、将来の拡張性
+   - 推奨案とその根拠
+3. 「現状維持」を推奨する場合も、現状維持の弱点を検証してから示す
+4. 一括処理（複数論点を一気に決着）を避け、各論点を個別に深掘りする
+5. 利用者の判断を得てから、仕様文書を 1 件ずつ Edit で修正する
+6. 各修正後に grep または Read で機械的に照合し、反映を確認する
+7. レビュー記録（reviews/...）の §4 統合節に「対処方針・利用者承認の根拠・反映箇所」を記録する
+
+**深掘りの具体内容**（推奨案を提示する際に必ず想定する事項）：
+
+- foundation 機能の場合：対象アプリへの配置可能性、配布対象外資産との分離、リポジトリ内資産の規則との整合
+- 値域・語彙の固定：将来拡張時の改訂コスト、機械検証時の不正値検出
+- 責務境界：foundation と runtime（または他機能）の責務分離、上流が下流の実装方針に踏み込まない原則
+- 不変性：成果物の追記性、生証拠は不変の原則
+- 依存関係：他機能が当該仕様を取り込む際の参照可否
+
+**禁則**：
+
+- 利用者と議論せずに must-fix 所見の対処内容を独自に確定する
+- 「現状維持を推奨」と表層的に提案する（弱点検証を欠く）
+- 候補案を 1 つしか提示しない（代替案との比較を欠く）
+- 後段影響を想定しない推奨
+
+<a id="3.3-a-2"></a>
+
+##### (a-2) review-run 後の proxy_model 判断代行手順
+
+API 経由の review-run 後に、人間の個別判断を proxy_model が代行する場合も、メインセッション LLM が重要件を独自に確定して実装へ進むことを禁ずる。proxy_model 代行は「人間判断を省略する」ものではなく、判断主体を別モデルへ移す運用である。
+
+**proxy_model 判断依頼前の利用者提示ゲート**：
+
+API review-run が完了したら、proxy_model 判断依頼、実装修正、spec.json 更新、フェーズ移行のいずれにも進む前に、メインセッション LLM は次を利用者へ提示して停止する。この提示ゲートを完了する前に proxy_model を呼び出してはいけない。
+
+1. 使用 variant 名
+2. role ごとの path／provider／model（例：primary／adversarial／judgment の割当）
+3. モデル別 raw 結果概要（parse 状態、所見数、severity 内訳、raw path）
+4. 同根所見クラスタの一覧
+5. `must-fix`／`should-fix`／`leave-as-is` の三段階トリアージ案
+6. `must-fix` 候補ごとの平易な説明、候補案、各案の利点と弱点、後段影響、推薦案
+7. proxy_model に判断させる場合の対象 finding／cluster、判断範囲、不可逆操作（commit／push／spec.json 更新／フェーズ移行）を含まないこと
+
+variant が未確定、または role 割当が曖昧な場合は review-run を開始しない。既定 variant が CLI 経路を含む等、実行環境と合わない場合は、設定ファイルを読んで候補 variant と role 割当を利用者へ説明し、選択理由を review-run 記録に残す。
+
+**役割分担**：
+
+1. メインセッション LLM は raw レビューを集約し、三段階トリアージの下書きを作る。parsed YAML だけでなく raw response も読み、同根所見をまとめ、`must-fix` ／ `should-fix` ／ `leave-as-is` の候補を作る
+2. メインセッション LLM は重要件ごとに、平易な問題説明、候補案、各案の利点と弱点、後段影響、推薦案を作る
+3. proxy_model は重要件の採用案・判断理由・最終ラベルを決定する。実装は担当しない
+4. メインセッション LLM は proxy_model の raw response を保存し、`proxy-decisions/<finding-id>.decision.yaml` と `proxy-approval.yaml` に構造化する
+5. 機械ガードは proxy decision の充足を検査する。未判断、raw 欠落、候補案欠落、採用案欠落、判断理由欠落、triage 最終ラベルとの不一致があれば実装へ進まない
+6. メインセッション LLM は機械ガード通過後、採用された修正だけを TDD で実装する
+7. コミット・プッシュ・spec.json 更新・フェーズ移行は人間の明示承認を要求する。proxy_model はこれらの不可逆操作を代行しない
+
+**重要件の判定閾値**：
+
+- `must-fix`、`ERROR`、`CRITICAL` は必ず重要件として扱う
+- `should-fix` でも、上流仕様、データ契約、機械ガード、証跡保持、ワークフロー権限境界、複数モデルの同根指摘に関わるものは重要件として扱う
+- 同根指摘とは、複数モデルの所見が同じ対象ファイル・同じ出力契約・同じ機械ガード・同じ証跡・同じ原因に触れているものをいう。表現が異なっても、対象または原因が一致する場合は同根として扱う
+- 正本削除、機械ガード削除、重要件閾値の引き下げ、承認証跡の削除、検証対象範囲の縮小は、コミット等と同じく人間の明示承認を要する不可逆操作として扱う
+- 判断に迷うものは重要件側に倒し、proxy_model 判断または人間判断へ回す
+
+**proxy_model への入力証跡**：
+
+- proxy_model へ渡す判断材料には、メインセッション LLM の要約だけでなく、元 review raw への参照または抜粋を必ず含める
+- `proxy-decisions/<finding-id>.prompt.md` を作成する前に、[[llm-as-judge-prompting]] の手順（材料揃え → 問い設計 → 選択肢なし分析）でプロンプトを設計する
+- `proxy-decisions/<finding-id>.prompt.md` に、元 review raw 参照、問題説明、候補案セット、推薦案、判断してほしい最終ラベルを保存する
+- `proxy-decisions/<finding-id>.decision.yaml` には、`candidate_options`、`source_raw_paths`、`decision_prompt_path`、採用案、棄却案理由、判断理由、最終ラベルを保存する
+- proxy_model が元 review raw を読めない形の判断材料しか受け取っていない場合、その decision は実装着手の承認証跡として扱わない
+- 現行の軽量ガードは、proxy_model_id の文字列一致、decision file の finding_id 一致、final_label 一致、prompt/raw/候補案証跡の存在を検査する。API 署名や暗号学的な生成元証明は将来課題とする
+
+**証跡配置**：
+
+- `raw/`：各モデルの生応答
+- `triage.yaml`：メインセッション LLM による三段階トリアージ
+- `proxy-decisions/<finding-id>.prompt.md`：proxy_model に渡した判断材料
+- `proxy-decisions/<finding-id>.raw.txt`：proxy_model の生応答
+- `proxy-decisions/<finding-id>.decision.yaml`：採用案、判断理由、最終ラベル、棄却案理由
+- `proxy-approval.yaml`：実装着手を許可する proxy approval record
+
+**並列化可能な単位**：
+
+- proxy_model への判断依頼は、同根所見クラスタ単位で並列化できる
+- TDD 実装は、互いに同じファイルを更新しない実装単位、または入出力契約が独立しているタスク単位で並列化できる
+- 共通スキーマ・共通ビルダー・同一ファイルを触る修正は直列で扱う
+- 生成物、共有 helper、推移的契約、同じ出力 manifest、同じ traceability 出力を共有する修正は直列で扱う
+- 並列実装の統合前に、メインセッション LLM が triage、proxy decision、テスト結果、ファイル差分を再照合する
+- 並列処理で新しい判断問題が出た場合、その単位は停止し、proxy_model 判断または人間判断へ戻す
+- 承認済み finding の実装中に見つけた未承認の便乗リファクタ、隣接挙動変更、対象外 cleanup は実施しない。必要なら新しい判断問題として停止する
+
+**実装サブ担当 LLM の扱い**：
+
+- 実装サブ担当 LLM は、原則として別スレッドかつ分離 worktree で扱う
+- 同じ repo での並列実装は原則禁止し、読み取り調査または差分を残さない確認に限定する
+- メインセッション LLM は、対象 finding、proxy decision、触ってよいファイル、期待テスト、禁止事項、停止条件を実装サブ担当へ渡す
+- 実装サブ担当は、指定範囲外のファイル変更、判断変更、コミット、プッシュ、spec.json 更新、フェーズ移行を行わない
+- 実装サブ担当が新しい判断問題、上流仕様への疑義、許可ファイル外の修正必要性を見つけた場合、その作業単位を停止してメインセッション LLM に戻す
+
+**別スレッド生成物の扱い**：
+
+- 別スレッド・分離 worktree で発生した生成物は、実装差分、検証結果、判断根拠、作業ノイズに分類する
+- 実装差分は、メインセッション LLM が確認したうえで本線 worktree への取り込み候補にする
+- 検証結果と判断根拠は、必要な要約だけを review-run、session record、または docs/notes に保存する
+- 判断に影響した失敗試行、失敗パッチ、途中ログは work_noise から decision_basis へ昇格し、メインセッション LLM が要約または該当箇所を保存する
+- 作業ノイズは本線 repo に取り込まない。作業ログ、一時メモ、途中のテスト出力、失敗パッチ案は原則としてサブ worktree 側に閉じる
+- 本線へ戻す標準単位は、パッチ、テスト結果サマリ、未解決事項の 3 点とする
+
+<a id="3.3-a-3"></a>
+
+##### (a-3) 操縦 LLM 別の API 既定 variant と独立性原則（本節を正本とする）
+
+セッションを操縦（起草・修正）する LLM と、その成果物を検証する LLM の系列を分離する。
+自己レビューによる独立性低下を防ぐための原則であり、利用者承認済み
+（設計記録 `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md` §3.6、2026-06-11 個別承認）。
+本節がこの原則と既定 variant 選択規則の正本である（仕様への昇格は実アプリ pilot 後に再検討、
+MLE-DEC-004、2026-06-12 利用者決定）。
+
+**独立性の原則**：
+
+1. 単独検証役（1 体での post-write 検証など）は、操縦 LLM と別系列を必須とする
+2. 3 役構成の adversarial（反証役）と judgment（判定役）は、操縦 LLM と別系列を必須とする
+3. 3 役構成の primary（検出役）は、操縦 LLM と同系列を許容する（最終判定を持たず、
+   残り 2 役の独立で全体の独立性が保たれるため）
+4. proxy_model（人の判断の代行）は、操縦 LLM と別系列を必須とする
+
+**操縦 LLM 別の既定 variant**（実体は `config/api-settings.yaml`）：
+
+- **Claude Code 操縦時**：接尾辞なしの `*_independent_3way` 系
+  （post_write_verification／yaml_audit／implementation_review の 3 用途。
+  primary=anthropic/claude-sonnet-4-6、adversarial=openai/gpt-5.5、
+  judgment=gemini/gemini-3.1-pro-preview）
+- **Codex CLI 操縦時**：`*_independent_3way_codex_operator` 系
+  （primary=openai/gpt-5.4、adversarial=anthropic/claude-opus-4-8、
+  judgment=gemini/gemini-3.1-pro-preview）
+- judgment（gemini-3.1-pro-preview）と小規模 1 体検証（`post_write_verification_google`）は
+  両操縦で共用し、操縦を切り替えても判定基準の連続性を保つ
+- 既存 variant の改名は行わない（規律文書・過去 run 記録・spec からの参照保全）。
+  別の LLM が操縦する場合（将来）は同じ原則で役を回転して対応する
+
+対象アプリ向けの同内容の案内は `templates/entry/AGENT_ENTRY.template.md` §10 と
+`.reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md` にあり、本節と整合させて保守する。
+
+#### (b) 波及（同フェーズ・他機能への影響）
+
+- **発見されるタイミング**：triad-review 段（3 役が他機能との不整合に気づく）／ review-wave 段（機能横断レビュー）
+- **処理する段**：**review-wave 段**（フェーズ終端の機能横断段、全機能の drafting ＋ triad-review 完了後に開始）
+- **方法**：
+  1. triad-review 段で波及と判定されたら **当該機能では対処せず**、carry-forward register に追記
+  2. 「次の機能の drafting」に進む（個別機能の段では対処しない）
+  3. 全機能の drafting ＋ triad-review が完了したら、review-wave 段で集約消化
+  4. 影響を受ける全機能の仕様文書を一括修正（依存順を守る、例：foundation を先に修正してから runtime）
+- **記録先**：`learning/workflow/carry-forward-register/reviewcompass-import.yaml` の各所見項目、消化後は `status: resolved` と `resolution` を更新
+
+#### (c) 遡及（上流フェーズへの影響）
+
+- **発見されるタイミング**：任意の下流段（triad-review／review-wave／alignment／approval のいずれか）
+- **処理方法**：[REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md) の 4 過程手順を起動。当該段の作業を停止し、上流フェーズに戻る
+- **手戻り種別判定**：N（intent）／R（requirements）／D（design）／A（tasks）／I（implementation）× 深さ 0〜4 の二次元表記で判定
+- **再実施対象決定**：第1過程で trigger_map（再実施対象段の決定表）を参照して決める。actor=human の段（approval 等）に来たら作業を止めて承認待ち
+- **記録先**：種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md` に残す、機能単位 spec.json の `reopened` 履歴と `recheck` フラグを更新
+
+#### (d) 遡及 ＋ 波及の組合せ
+
+- **発見されるタイミング**：任意の下流段
+- **処理方法**：reopen で上流フェーズに戻り、上流フェーズの review-wave 段で波及所見として集約消化、その後下流に伝播
+  1. **第 1 段階**：reopen 手続きで上流フェーズに戻り、影響範囲を特定（trigger_map）
+  2. **第 2 段階**：上流フェーズで carry-forward register に波及所見として追記し、当該フェーズの review-wave 段で消化
+  3. **第 3 段階**：上流フェーズの alignment ＋ approval を再実施
+  4. **第 4 段階**：下流フェーズの alignment ＋ approval を再実施（trigger_map で連鎖再実施対象として決定）
+- **記録先**：reopen 記録 ＋ carry-forward register の両方
+
+#### (e) leave-as-is と延期
+
+- **leave-as-is**：判定役が「修正不要」と判断したもの。対処せず、レビュー記録に判定根拠を残すのみ
+- **延期**：将来のフェーズで対処する判定。レビュー記録に延期理由と対処予定フェーズを残し、当該フェーズ着手時のチェックリストに追記
+
+### 3.4 振り分け判断のフロー（triad-review 段で実施）
+
+triad-review 段の判定役は、各所見について次の振り分けを行う：
+
+```
+所見発見
+  ↓
+当該機能の仕様修正のみで完結するか？
+  ├── YES → 機能内対処（triad-review 段内で対処）
+  └── NO
+      ↓
+  他機能の仕様修正も必要か？
+  ├── YES（同フェーズ内のみ） → carry-forward register に追記、review-wave 段で処理
+  ├── YES（上流フェーズに戻る必要あり、単機能） → reopen 手続きを起動
+  └── YES（上流フェーズに戻る必要あり、複数機能） → reopen ＋ 上流の review-wave で集約処理
+  
+別判定：
+  ├── 修正不要 → leave-as-is（記録のみ）
+  └── 将来フェーズで対処 → 延期（チェックリスト追記）
+```
+
+### 3.5 段ごとの露出と処理段の対応表
+
+| 段 | 主に露出する所見 | 当該段内で処理する所見 | 次段に持ち越す所見 |
+|---|---|---|---|
+| drafting | 起草中の自己発見 | 機能内（草案に直接反映） | なし |
+| triad-review | 機能内 ／ 波及 ／ 遡及 | **機能内** のみ | 波及 → review-wave、遡及 → reopen |
+| review-wave | 波及（横断ラウンド中の追加発見も） | **波及** | 遡及あり → reopen |
+| alignment | 自動判定の不整合検出 | （自動判定が通過するまで前段に戻す） | 遡及あり → reopen |
+| approval | 重大見落とし、利用者または別モデルによる指摘 | （承認しない） | reopen で上流戻し |
+
+### 3.6 機能横断波及所見の管理ルール
+
+- 各機能の triad-review 段で発見されたら、即時 carry-forward register に追記
+- 追記項目：所見 ID（A-XXX 形式）、検出セッション、波及範囲（影響を受ける機能と仕様箇所）、対処方針、依存関係
+- review-wave／alignment／approval の機能横断段着手時、全件を消化対象とする
+- 消化後、各所見に「✅ 対処済み（YYYY-MM-DD、要件 review-wave）」ラベルを追加
+
+## 4. サブエージェント方式の運用条件
+
+### 4.1 位置づけ
+
+- メインセッションは草案作成とレビュー結果の取りまとめを担う
+- 3 役レビューは、メインセッションから分離された reviewer session または外部 API 検証者で実行する
+- review-run の実行形は adapter と provider 設定に従う
+
+### 4.2 モデル割り当て（規律）
+
+3 役（主役・敵対役・判定役）は、メイン LLM から分離した実行主体が担う。メイン LLM は草案作成と三役レビュー結果の取りまとめのみを担い、3 役のいずれにもならない。
+
+各役のモデルは `runtime/config/reviewcompass.yaml` または review-run の provider 設定で指定する。利用者が設定で変更できる。
+
+**モデル能力配分の規律**：
+
+- **主役と敵対役は必ず異なるモデルを使う**（敵対役の独立性確保のため）
+- 判定役は主役または敵対役と同じモデルを使うことを許容する
+- 敵対役と判定役には、反証生成と責務境界判断を担う十分な能力のモデルを割り当てる
+
+### 4.3 サブエージェント呼び出し時の規律
+
+- **プロンプトに自己完結性を持たせる**：サブエージェントは別 session で、メインの作業文脈を共有しない
+- **参照文書の引用は事後検証**：サブエージェントの引用には節番号や参照先の誤りが発生しうる。メインセッションが grep やリンク検査で確認する
+- **ファイル書き込みは原則禁止**：読み取りと分析のみ。例外的にレビュー記録の §2 や carry-forward register への追記提案を許容
+- **モデル指定**：利用中の adapter が提供する model / provider 指定方法に従う。外部 API 経由では provider 設定を参照する
+
+### 4.4 レビュー記録の必須フィールド
+
+レビュー記録の front-matter に次を必須化：
+
+```yaml
+author:
+  identity: <adapter_main_session>
+  model: <model-id>
+  role: drafter
+reviewer:
+  identity: <adapter_reviewer_session>
+  model: <model-id>
+  role: final_judgment
+  separation_from_author: true
+```
+
+`author.identity` と `reviewer.identity` が異名であることを機械検査の対象とする。重要なのは provider 名ではなく、起草者と判定者が分離していることを記録できることである。
+
+### 4.5 mode 値
+
+レビュー記録の `mode` は `subagent_mediated`（正式値）。foundation のレビューモード語彙正本（Requirement 6 受入 6）の 3 値のうちのひとつ。
+
+## 5. 利用者判断が必要な論点の見極め
+
+### 5.1 利用者判断必須の項目
+
+次のいずれかに該当する場合、LLM は単独で確定せず、利用者の明示承認を仰ぐ：
+
+- **正本方針変更**：仕様・設計・タスク・運用規律の意味を変える修正
+- **大規模再設計**：既存の責務境界、機械判定、成果物配置を大きく変更する場合
+- **機能横断の権限分担**：複数機能にまたがる責務分担の決定（例：A-007 の self-improvement と workflow-management の権限調停）
+- **判定境界の判断**：must-fix／should-fix／leave-as-is の境界が曖昧な場合
+- **承認・コミット・push・フェーズ移行**：すべて利用者明示承認必須
+- **作業の打ち切り・先送りの誘導**：利用者の明示承認なく「続きは次セッションで」等と作業を終了・先送りに誘導しない
+
+### 5.2 LLM が自律的に決められる項目
+
+- **抽出時のクリーニング作業の細部**（機能名置換、自己適用前提除去等）
+- **観点 5（検証可能性）の機械判定可能な所見の指摘**
+- **レビュー記録の構造化**（front-matter、節構成）
+
+### 5.3 判断の記録規律
+
+利用者判断の結果は次の場所に記録：
+
+- **正本方針変更**：該当する仕様・設計・タスク・運用規律に決定日付付きで記載
+- **機能横断対処方針**：carry-forward register の該当所見に対処方針として追記
+- **重大論点**：レビュー記録の §1 主役レビュー、§4 統合の「利用者判断履歴」節に記録
+
+### 5.4 セッション記録の作成規律
+
+原則として毎セッション、セッション終了時または重要判断後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md` を作成または更新する。特に、重要な判断・承認・レビュー結果・修正経緯が発生した場合は必須とする。これは会話全文の逐語ログではなく、後で経緯を確認できる要約記録とする。
+
+`<N>` は `docs/sessions/` に存在する既存の最大セッション番号に 1 を加えた番号とする。同日の複数セッションでも番号を進め、同じ番号を再利用しない。
+1 session につき 1 ファイルとし、同一 session 内で重要判断が複数回発生した場合は同じファイルへ追記する。重要判断ごとに別番号を消費しない。
+並行セッションや未コミット作業により採番が衝突した場合、メインセッション LLM は既存記録・git 状態・未コミット差分を確認し、利用者が採番を確定するまで正式な新規セッション記録を作成しない。採番確定前に記録が必要な場合は、`docs/sessions/drafts/session-<YYYY-MM-DD>-<short-topic>.md` に一時草案を置き、正式番号確定後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md` へ移動する。移動後は draft ファイルを残さず、正式ファイルに草案内容が統合済みであることを確認する。
+
+メインセッション LLM はセッション記録の草案作成責任を持つ。利用者判断の引用・承認範囲・未確定事項に曖昧さがある場合は、記録前に利用者へ確認する。
+コンテキスト切れや中断により当該 LLM が記録できない場合、次セッションが草案を引き継ぐ。草案がない場合は、TODO、review-run、approval record、git diff から経緯を再構成して記録する。
+
+最低限、次を記録する：
+
+- このセッションで実施した作業
+- 利用者が承認した判断と、その対象
+- API レビューや独立検証の結果と三段階トリアージ
+- 修正した主要ファイルと検証結果
+- 失敗・見落とし・再発防止に必要な気づき
+- 次セッションへの引き継ぎ
+
+推奨見出しは既存 session 記録と同型とし、最低限次を含める：
+
+1. サマリ（このセッションでやったこと）
+2. 気づき・特筆点
+3. コミット一覧（該当する場合）
+4. 次セッションへの引き継ぎ
+
+`TODO_NEXT_SESSION.md` は次セッション向けの入口メモであり、詳細な経緯記録の正本ではない。詳細経緯は `docs/sessions/` に残し、TODO には必要な参照だけを置く。
+
+## 6. コミット規律
+
+### 6.1 コミット単位
+
+- **正本文書更新 ＋ 基盤整備**：1〜2 コミット（方針確定、運用ファイル整備）
+- **機能ごとに 1 コミット**：仕様文書 ＋ 運用文書 ＋ レビュー記録の 3 ファイル（または schema/template 等の関連ファイル）
+- **機能横断段（review-wave／alignment／approval）**：1 コミット（複数機能の小修正をまとめる）
+
+### 6.2 コミット順序
+
+依存マップ順に従う：
+
+1. foundation
+2. runtime
+3. evaluation
+4. analysis
+5. workflow-management
+6. self-improvement
+7. conformance-evaluation
+
+### 6.3 コミットメッセージ規律
+
+- **平易な日本語**：英語技術用語の連発を避け、完全な日本語の文で書く
+- **題名**：機能名 ＋ 作業種別（例：「foundation 機能の requirements 抽出と 3 役レビュー」）
+- **本文**：作成・更新ファイルの列挙、主な反映内容、機能横断所見の持ち越し有無
+- **Co-Authored-By**：利用中の adapter と利用者方針に従う。自動付与を前提にしない
+
+### 6.4 コミット前確認
+
+- `git status` で対象ファイルを確認
+- `git diff --cached` で内容確認（必要に応じて）
+- `--no-verify` や `--no-gpg-sign` は使わない（規律）
+
+### 6.5 不可逆操作の進行報告最小化
+
+commit、push、spec.json workflow_state 変更、フェーズ移行などの不可逆操作では、利用者が操作を明示指示した後の正常系進行報告を原則として省く。LLM は必要な確認、stage、承認 record、guard、実操作、事後確認を実行してよいが、各内部手順を逐一会話へ説明しない。
+
+途中報告を行うのは、利用者判断または追加承認が必要な場合に限る。例：承認 record の期限切れや対象不一致、precheck failure、post-write / reopen / in-progress による遮断、sandbox escalation が必要な場合、staged 内容が変わり再承認が必要な場合。
+
+commit 中に、staged 内容の確定、承認内容を作り直す、既存 delegation を使い直す、nonce を更新する、といった内部再準備が必要になっても、それ自体を利用者に報告しない。これらは、承認済みの対象範囲内であり利用者判断を要しない通常手順として黙って実行する。コミット対象が増えた、staged 内容が変わった、または再承認が必要になった場合は内部再準備として隠さず、追加判断が必要な停止理由だけを短く報告する。利用者へ報告するのは、作業を続けられない異常、追加判断が必要な WARN / DEVIATION、または成功結果だけとする。
+
+正常完了時の報告は、実行結果だけに絞る。commit なら commit hash、`git status` の clean 性、`next --json` の要点を示す。push なら push 先と結果、`git status` の clean 性を示す。詳細な手順ログ、precheck の全文、stage したファイル一覧、nonce / challenge の値は、利用者が求めた場合または失敗調査に必要な場合だけ示す。
+
+### 6.6 push
+
+push は **利用者明示承認**を仰いでから実行。LLM が自律的に push しない。
+
+## 7. 作業完了時レポート
+
+作業を終えて利用者へ返答するときは、adapter や利用モデルに依存しない会話末尾の運用契約として、最低限次を示す：
+
+- **作業サマリ**：このターンで実施した変更、判断、未変更の範囲
+- **検証結果**：実行したテスト、確認コマンド、`post_write_verification` の要否と結果
+- **現在状態**：`git status` と `next --json` の要点
+- **次タスク**：次に着手すべき具体的な作業、または workflow が要求する次 action
+
+未実施・失敗・承認待ち・保留判断がある場合は、完了扱いにせず明記する。commit、push、workflow_state 更新、spec.json 更新などの不可逆または状態変更を伴う操作は、実際に成功した場合だけ作業サマリに記録する。
+
+`next --json` が `post_write_verification`、`reopen_in_progress`、`resume_in_progress`、`unknown` など `completed` 以外を返している場合、次タスクには任意の改善候補ではなく、その workflow 状態に従う次 action を示す。
+
+### 7.1 進捗説明の平易化
+
+進捗説明では、内部処理名をそのまま主文にせず、利用者が理解しやすい作業状態で述べる。まず次の順で短く示す：
+
+1. 今どの段階か
+2. 何をしたか
+3. 次に何をするか
+
+必要な場合だけ、内部用語を括弧で補足する。
+
+完了報告や途中報告では、翻訳調の名詞句、英語混じりの見出し、内部状態名や英語の道具名を見出しや主語にしない。`next --json`、`commit wrapper`、`required_action`、`workflow_state` などの語は、利用者が判断するために必要な場合だけ、自然な日本語の説明の後ろへ括弧書きで添える。主文では「何を変えたか」「今どこで止まっているか」を自然な日本語で述べ、利用者が次に何をすればよいかを自然な日本語の文で示す。
+
+避ける表現：
+
+- 停止点を消費
+- gate を通過
+- required_action
+- pending_gate
+- workflow_state を更新
+- commit wrapper を開始条件にする
+- next --json は reopen_in_progress
+
+言い換え例：
+
+- 「tasks approval の停止点を消費」ではなく「tasks 段の承認を完了済みとして記録」
+- 「implementation drafting を完了」ではなく「implementation 段のコードとテストを作成」
+- 「次の required_action は run_reopen_pending_gate」ではなく「次は現在の段のレビュー作業」
+- 「commit wrapper を最初から sandbox 外で実行」ではなく「コミット用の検査手順は、最初から許可された実行環境で動かす」
+- 「next --json は reopen_in_progress」ではなく「やり直し手続きの途中で、次は requirements 段の確認を進める状態」
+
+### 7.2 利用者操作が必要な停止点の表示
+
+承認、コミット、push、判断など、利用者の短い返信で次へ進む停止点では、完了報告の末尾に次の 1 行を示す：
+
+```text
+次に必要な操作: <操作語>
+```
+
+`<操作語>` は、利用者がそのまま返信できる短い語にする。
+
+例：
+
+- `次に必要な操作: 承認`
+- `次に必要な操作: コミット`
+- `次に必要な操作: push`
+- `次に必要な操作: 判断`
+
+複数の選択肢が必要な場合だけ、候補を短く並べる。通常は候補を 1 つに絞る。内部用語、長い説明、手順ログをこの行に混ぜない。
+
+このレポートは会話末尾の完了報告であり、workflow_state や `spec.json` の正本を代替しない。
+
+## 8. 用語ガイド
+
+### 8.1 「遡及」と「波及」
+
+両用語は対象方向で使い分ける：
+
+- **遡及（そきゅう）**：上流フェーズへの影響（時間軸＝過去方向）
+- **波及（はきゅう）**：同フェーズ内の他機能への影響（横方向＝機能間）
+
+両方とも正当な技術用語で、避けるべき／推奨という関係ではない。所見の性格を正確に表すために使い分ける。
+
+### 8.2 判定値の使い分け
+
+- **must-fix**：仕様の致命的または重要な欠落、修正必須
+- **should-fix**：仕様の改善余地、修正推奨
+- **leave-as-is**：仕様として問題なし、修正不要
+
+### 8.3 機能内と機能横断
+
+- **機能内対処**：当該機能の drafting 段で本セッション内に修正
+- **機能横断持ち越し**：carry-forward register に集約、review-wave／alignment／approval の機能横断段で対処
+
+### 8.4 サブエージェント関連
+
+- **メインセッション**：作業の入口となる LLM session。草案作成とレビュー結果の取りまとめを担い、3 役レビューの判定者とは分離する
+- **サブエージェント**：敵対役・判定役を実行する別 session または外部 API 検証者。利用中の adapter が利用可能な実行形に従う
+- **mode = `subagent_mediated`**：サブエージェント方式のレビュー記録の mode 値
+
+## 9. 関連文書
+
+- ワークフローナビゲーション：[WORKFLOW_NAVIGATION.md](WORKFLOW_NAVIGATION.md)
+- 事前検査：[WORKFLOW_PRECHECK.md](WORKFLOW_PRECHECK.md)
+- reopen 手順：[REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md)
+- 抽出進捗：[../../docs/extraction-mapping.md](../../docs/extraction-mapping.md)
+- 機能横断波及所見：正本 [../../learning/workflow/carry-forward-register/reviewcompass-import.yaml](../../learning/workflow/carry-forward-register/reviewcompass-import.yaml)、履歴 source [../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md](../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md)
+- レビュー記録雛形：[../../templates/review/manual_dogfooding_review_template.md](../../templates/review/manual_dogfooding_review_template.md)
+- TODO：[../../TODO_NEXT_SESSION.md](../../TODO_NEXT_SESSION.md)
+
+## 10. 本ガイドラインの改訂規律
+
+- 本ガイドラインは運用文書として更新可能
+- セッションの経緯記録は `docs/sessions/` に残し、本文書には現行の運用契約だけを置く
+- 規律変更（§2〜§8）は利用者明示承認後に反映
+- 改訂時は最終更新日付を更新
+```
+
+
+## Scope
+
+- Check whether the changed target files clearly state the intended contract.
+- Check whether related instructions are mutually consistent across targets.
+- Check whether the documented procedure is actionable before API review, triage, manifest, or commit steps continue.
+
+## Out Of Scope
+
+- Do not request unrelated refactors or style-only rewrites.
+- Do not judge files that are not listed in Target Files.
+- Do not treat missing implementation work as a document defect unless the target text claims it already exists.
+
+## Finding Policy
+
+- Report must-fix findings for contradictions, missing required gates, or instructions that would allow an unsafe workflow action.
+- Report should-fix findings for ambiguity that could cause repeated manual judgment or unnecessary API review loops.
+- Return findings: [] when the target files are internally consistent for this review question.
+
+## Sensitive Information Check
+
+- status: passed
+- External API review must not proceed if this section reports potential secrets.
+
+
+# Output contract
+Return YAML only.
+The response must include the top-level key findings.
+Additional top-level keys are allowed only when the criteria explicitly defines them.
+Do not add wrapper keys such as review, result, metadata, or summary.
+Do not wrap the YAML in Markdown code fences.
+Do not write prose before or after the YAML.
+
+Each finding must include these keys:
+- severity
+- target_location
+- description
+- rationale
+
+Use only these severity values:
+- CRITICAL
+- ERROR
+- WARN
+- INFO
+
+If there are no findings and the criteria does not define additional top-level keys, return exactly:
+
+findings: []
+
+Valid shape example:
+
+findings:
+  - severity: WARN
+    target_location: "path or section"
+    description: "Plain finding summary"
+    rationale: "Why this matters"
+
+# Prior findings
+なし
+
+# Target path
+.reviewcompass/specs/workflow-management/design.md
+.reviewcompass/specs/workflow-management/tasks.md
+.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+
+# Target document
+## .reviewcompass/specs/workflow-management/design.md
+
+# Design Document：workflow-management
+
+最終更新：2026-06-19（Req 13〜16 統合設計メモ反映、reopen R-0 design drafting）
+
+## 概要（Overview）
+
+`workflow-management` は ReviewCompass における所定手続きの定義と機械強制を担う機能の **設計層** である。
+
+要件文書（requirements.md）は 16 件の Requirement で、段集合の静的列挙、軽量版検査スクリプト、起草者と判定者の分離、不可逆操作の直前ゲート、reopen 機械強制、session 跨ぎ状態管理、多層防御の第 1 層位置付け、機能依存マップの一元化、既存システムへの後追い intent 追加時の下流再展開、review-wave 横断確認の要約、重要決定の出典検査、operation registry / preflight、operation contract 語彙、承認ゲート・側道スタック・状態スナップショット、構造化有効プロンプト、段階的実装計画を求めている。本設計は計画書 §5.4〜§5.8（軽量化方針、所定手続きの階層構造、reopen 機械強制、session 跨ぎ状態管理、多層防御）を実装可能な形に落とし込み、先行プロジェクト `dual-reviewer-implementation-governance` の素材設計（466 行、節ハッシュ・独立再導出パーサ・supersedes リンク・通過マーカーの後続確認等を含む大規模機構）から **思想は継承、実装は 1／10** を目標として再設計する。
+
+本設計の所有物は **手続きの段集合定義・検査スクリプト・直前ゲート・reopen 機械強制・session 跨ぎ状態管理・後追い intent 下流再展開・review-wave 要約・重要決定の出典検査・operation registry / preflight・operation contract・承認ゲート／側道スタック／状態スナップショット・構造化有効プロンプト・段階的実装計画** の 13 モデルである。レビューロジック（3 役・観点・所見分類）は `foundation` と `evaluation` が所有し、本機能は所定手続きの「どの段がいつ完了するか」「どの不可逆操作の前にどの検査を走らせるか」「既存システムに後から intent を入れたときにどの下流段を reopen するか」「操作開始前に何を確認して止めるか」「選択層の action を実行層の contract にどう接続するか」を担う。
+
+## 目標（Goals）
+
+- 所定手続きの段集合を機械可読な YAML（構造化テキスト形式）として静的に列挙し、Markdown 節からの動的解析を行わない
+- 検査スクリプトの完了判定を「証跡ファイル存在＋必須節充足」のみに絞り、中身の妥当性判定を含めない（第 1 層の限界として明示）
+- 起草者と判定者の分離をレビュー記録の冒頭メタデータ（front-matter、文書頭の構造化メタ情報）で機械検査可能にする
+- 不可逆操作（spec.json 承認書き込み、コミット、プッシュ、フェーズ移行）の直前のみに機械ゲートを置き、それ以外には機械検査を強制しない（最小集合方針）
+- 結論不能（証跡ファイルが解析不能、YAML が壊れている等）の場合に合格判定を出さず、必ず遮断する（fail-closed、検査結果が出せないときは止める方針）
+- reopen 手続きの連鎖再実施を手戻り種別から機械的に決定し、`actor=human` の段（intent.yaml#approval 等）に到達した時点で必ず作業を停止する
+- 機能間の処理順と依存関係を 1 ファイル（`stages/feature-dependency.yaml`）に一元化し、追加・削除を 1 箇所修正で完結させる
+- 既存システムへ intent を後から追加した場合、既存 feature が受け皿になるか、新規 feature が必要かを記録し、該当 feature の requirements／design／tasks／implementation を上流から順に再展開する
+- operation registry / preflight により、review-run、post-write verification、triage、reopen、commit approval、session-record、deployment / export などの操作を、記憶や前例ではなく正本 operation contract から開始できるようにする
+- `next --json` の reopen 状態を一意に読み取れるようにし、reopen scope と impact review scope、flag policy、pending gate の混同を作業開始前に検出する
+- `required_action` 19語彙を operation contract に対応させ、`effect_kind`、承認要否、phase boundary、sequence、preconditions / postconditions を機械可読にする
+- 承認ゲートを判断記録と対象 operation の承認から分離し、side track を stack frame として管理し、`next --json` 由来の状態スナップショットを監査補助として出力できるようにする
+- 有効プロンプトを言語タスク仕様として構造化し、機械タスクは operation contract / preflight / runner / guard に寄せる
+- Phase 0〜6 の実装順序を固定し、選択層、registry、preflight、構造化 prompt、機械ブロック、LLM judge 監査を混在させず TDD で進める
+
+## 範囲外（Non-Goals）
+
+- 各機能の業務ロジック修正（`runtime`／`evaluation`／`self-improvement`／`analysis`／`conformance-evaluation` の挙動変更は本機能の責務外）
+- レビュー所見の妥当性判定（中身の質的評価は本機能の検査範囲外、利用者監査の第 3 層に委ねる）
+- 節ハッシュ・supersedes リンク・grandfathering・format-migration・独立再導出パーサ（§5.4 で削除確定、素材から継承しない）
+- 通過マーカーの後続確認（§5.4 で削除確定、二次防御は多層防御の第 2 層以降の宿題）
+- 外部 CI・GitHub Actions・PR 運用ルール
+- 人間レビュアーの組織割り当て方針
+- 規律ファイル自体の起案・改廃方針（`self-improvement` の責務、本機能は所定手続きの入力として規律変更提案を受け取るのみ）
+- 機械ゲートを git フックとして外部強制する仕組み（第 2 層、フェーズ 4 以降の宿題）
+
+## 設計の前提（Design Drivers）
+
+- 100% の規律遵守は原理的に不可能であり、複数層を重ねて実効遵守率を引き上げる方針（計画書 §5.8）
+- LLM は文脈圧力下で規律ファイルの優先度を下げる失敗モードを起こす（§5.8 第 1 層の限界、補助層 C で事前検査を別途設計）
+- 検査を呼ばない・結果を読まない・独断で進める経路は第 1 層の上にあるため、第 1 層単独では解決しない（多層防御の前提）
+- 起草と判定を同一の actor が兼ねると自己承認の空洞化が起きる（§5.4 規律）
+- 機能の追加・削除を 1 箇所修正で完結させないと、整合漏れが累積する（§5.5 選択肢 X の根拠）
+- session 跨ぎの最大の盲点は「複数段にまたがる手続きの途中状態」であり、状態ベース検査だけでは捉えられない（§5.7 由来）
+
+## 全体構造（Architecture）
+
+本機能は repo 内に **段集合 YAML 9 ファイル ＋ 検査スクリプト 1 本 ＋ 進行中状態ファイル群** を持つ。実体は次の 3 層構造を取る。
+
+```
+リポジトリ内配置（実体）
+├── stages/                              # 段集合 YAML の保管先（Req 1）
+│   ├── intent.yaml                      # intent 層（drafting／review／approval の 3 段）
+│   ├── feature-partitioning.yaml        # 機能分離（candidate-proposal／approval の 2 段）
+│   ├── feature-dependency.yaml          # 機能依存マップ（Req 8、所有者は本機能）
+│   ├── requirements.yaml                # 要件フェーズ（5 段、feature-dependency 参照）
+│   ├── design.yaml                      # 設計フェーズ（5 段、同上）
+│   ├── tasks.yaml                       # タスクフェーズ（5 段、同上）
+│   ├── implementation.yaml              # 実装フェーズ（5 段、同上）
+│   ├── reopen-procedure.yaml            # reopen 手続き（4 過程構成、trigger_map 含む）
+│   ├── cross-spec-alignment.yaml        # 機能横断整合（段集合は別途確定）
+│   ├── in-progress.schema.json          # 進行中状態ファイルのスキーマ（T-008、命名を in-progress/ に統一、F-018 対処 2026-05-28）
+│   ├── in-progress/                     # 進行中状態ファイル（Req 6、session 跨ぎ用）
+│   └── completed/                       # 完了済み手続きの記録
+├── tools/check-workflow-action.py       # 検査スクリプト本体（Req 2、補助層 C 段階 2）
+├── .reviewcompass/schema/               # ワークフロー管理スキーマ定義（Req 2 受入 10・11）
+│   ├── required_action.schema.json      # required_action 19語彙スキーマ（Req 2 受入 10）
+│   ├── next_action_response.schema.json # next --json 応答スキーマ（Req 2 受入 11）
+│   ├── effect_kind.schema.json          # operation contract 副作用語彙（Req 13）
+│   ├── phase_boundary.schema.json       # phase boundary 語彙（Req 13）
+│   ├── operation_contract.schema.json   # operation contract 共通構造（Req 13）
+│   ├── workflow_state_snapshot.schema.json # 状態スナップショット（Req 14）
+│   └── language_task_io.schema.json     # 構造化有効プロンプトの言語タスク入出力（Req 15）
+├── stages/operation-registry.yaml        # operation registry / preflight binding（Req 12・13）
+├── stages/operation-contracts.yaml       # operation contract 正本（Req 13）
+├── .reviewcompass/runtime/logs/workflow-precheck.log  # 検査結果のログ書き出し先（Req 2 受入 5 補強。旧 docs/logs/ からの変更は 2026-06-12 配置規約 PLC-DEC-004〜005・009〜011 反映。凍結・読み取り互換は §実行時生成物の凍結期（P3 まで）の扱いを正本とする）
+├── .reviewcompass/runtime/workflow-state-snapshot.yaml # next --json 由来の可視化補助（Req 14）
+├── docs/reviews/reopen-classification-<日付>.md  # reopen 種別判定の根拠（Req 5 受入 5）
+├── docs/operations/WORKFLOW_MANAGEMENT.md        # アプリ側規約（T-001 で配置、F-019 対処 2026-05-28）
+├── docs/operations/WORKFLOW_PRECHECK.md          # ワークフロー事前検査の運用契約
+└── docs/operations/WORKFLOW_PRECHECK_DETAILS.md  # ワークフロー事前検査の詳細仕様
+```
+
+実行時のデータの流れ：
+
+```mermaid
+graph TD
+    Trigger["利用者または LLM が<br>不可逆操作を要求"] --> Precheck["補助層 C 段階 1<br>事前検査呼び出し"]
+    Precheck --> Script["tools/check-workflow-action.py<br>（Req 2）"]
+    Script --> Stages["stages/*.yaml<br>段集合と完了判定（Req 1）"]
+    Script --> InProgress["stages/in-progress/<br>進行中状態（Req 6）"]
+    Script --> SpecJson["spec.json<br>機能単位 workflow_state"]
+    Script --> CarryForward["carry-forward register<br>未消化所見"]
+    Script --> Verdict{"verdict 判定"}
+    Verdict -->|OK| Pass["不可逆操作の実行を許可"]
+    Verdict -->|WARN| Warn["警告して継続"]
+    Verdict -->|DEVIATION| Block["fail-closed で遮断<br>（Req 4 受入 3）"]
+    Pass --> Log[".reviewcompass/runtime/logs/workflow-precheck.log<br>に検査結果を追記"]
+    Block --> Log
+```
+
+検査スクリプトは段集合 YAML、進行中状態ファイル、spec.json、持ち越し所見レジスタの 4 つを入力として読み、verdict（判定結果）を返す。verdict には OK／WARN／DEVIATION の 3 値を使う（actor=human の段で承認待ちのときは DEVIATION で止め、警告のみで継続できる軽微な未整合は WARN とする）。`docs/operations/WORKFLOW_PRECHECK.md`、`docs/operations/WORKFLOW_PRECHECK_DETAILS.md`、`tools/check-workflow-action.py` は軽量版 precheck の実行入口・表示形式・実装上の引数契約を担う。`required_action` 語彙、operation contract field、effect / approval / phase / output contract semantics の正本ではない。これらの正本は `.reviewcompass/schema/required_action.schema.json`、`.reviewcompass/schema/operation_contract.schema.json`、`stages/operation-contracts.yaml`、および Requirement 13 の contract 境界に従う。
+
+### 実行時生成物の凍結期（P3 まで）の扱い（2026-06-12 配置規約 P1）
+
+本機能の実行時生成物 3 パス（検査ログ `.reviewcompass/runtime/logs/workflow-precheck.log`〔旧 `docs/logs/workflow-precheck.log`〕、effective prompt `.reviewcompass/runtime/effective-prompts/`〔旧 `.reviewcompass/effective-prompts/`〕、commit 承認記録 `.reviewcompass/runtime/approvals/commit-approval.json`〔旧 `.reviewcompass/approvals/commit-approval.json`〕）の凍結期共通契約を本節の正本とする：
+
+- **書き込みは常に新配置**。旧配置への新規書き込みは行わない（凍結契約）
+- **既存分は旧置き場で凍結**する（移動・上書き・追記をしない）。凍結の効力発生は P1 実装反映コミット（書き込み先切替）と同時であり、それ以前の旧配置への書き込みは現行実装の正規動作として凍結対象に含まれる
+- **旧パス読み取り互換は 3 パスとも P3 まで維持**する（新 → 旧の順）。既存証跡（rounds.yaml 等）が記録する旧 `effective_prompt_path` の参照は凍結された旧配置で解決できる
+- **互換の終了は P3 の専用 reopen における本設計の改訂として扱う**（暗黙の終了はない）
+
+### 責務境界の明確化（Boundary Clarification）
+
+本機能が所有するのは **手続きの完了規則と検査スクリプト** であり、各機能の業務 artifact の所有権は持たない。
+
+| 所有関係 | 所有者 | 本機能との関係 |
+|---|---|---|
+| 段集合 YAML（`stages/*.yaml`） | **workflow-management** | 本機能が単独所有・改廃 |
+| 検査スクリプト（`tools/check-workflow-action.py`） | **workflow-management** | 本機能が単独所有・改廃 |
+| 機能依存マップ（`stages/feature-dependency.yaml`） | **workflow-management**（Req 8 受入 5） | 他機能は再定義せず参照のみ |
+| reopen 種別判定の根拠ファイル | **workflow-management**（Req 5 受入 5） | 他機能は参照のみ |
+| 各機能の spec.json（`.reviewcompass/specs/<機能>/spec.json`） | 各機能 | 本機能は読むのみ、書き込みは検査通過後に各機能の起草者が行う |
+| レビュー記録（`.reviewcompass/specs/<機能>/reviews/*.md`） | 各機能 | 本機能は front-matter の構造のみ検査（Req 3 受入 4） |
+| レビュー所見の妥当性 | `evaluation`／利用者監査の第 3 層 | 本機能の検査範囲外（Req 2 受入 3、Req 7 受入 1） |
+| 語彙正本（本機能が参照するのは `review_mode` のみ。所見系・状態軸系は責務外で不参照） | `foundation` | 本機能は再定義せず参照のみ（要件 Boundary Context 隣接期待。A-003 対処 2026-05-28） |
+| 規律ファイル本体（`docs/disciplines/discipline_*.md`、12 件配置済み） | **workflow-management**（実体書き換え、A-007 案 2） | `self-improvement` から変更提案を受け取り、所定手続き経由で実体変更。本機能の検査スクリプトと段階 3 フックの対象に含まれる |
+| 規律ファイルの提案権 | `self-improvement` | 本機能は提案を所定手続きの入力として受け取る |
+| 規律ファイルの memory 側索引（`~/.claude/projects/.../memory/feedback_*.md`、12 件） | Claude Code auto memory 機構（製品機能） | 本機能の管理対象外。短い参照索引のみ保持し、本体は `docs/disciplines/` を Read で参照する設計（A-007 対処、2026-05-25 セッション 26 移管） |
+
+**規律ファイルの所有先確定の経緯（A-007 対処、2026-05-25 セッション 26 利用者明示承認）**：本機能の所定手続きが規律変更を扱うには、規律ファイル本体がリポジトリ内（git 追跡対象）に存在する必要がある。素材設計時点では本体が memory（リポジトリ外、Claude Code auto memory 機構の領域）に置かれていたため、本機能の機械検査が効かない構造的問題があった。本セッション 26 で **軽量手続き** により次を実施し本問題を解消：
+
+- active 必読 11 件（feedback_must_fix_discussion_obligation／intent_conformance_is_the_acceptance_gate／standing_directives_are_hard_constraints／workflow_precheck_invocation／approval_operation／facts_vs_interpretation／pre_action_precheck／workflow_state_truth_source／concise_complete_report／reopen_procedure_for_settled_topics／plain_japanese）と参照層 5 件（feedback_dominant_dominated_options／feedback_choice_presentation／feedback_no_redundant_workflow_questions／feedback_plain_explanation_each_step／feedback_implementation_autonomy）の合計 **16 件** の本体を `docs/disciplines/discipline_*.md` にフラット配置で移管（コミット b830785 で active 必読 12 件＋参照層 5 件＝17 件として移管後、セッション 26 で利用者明示承認に基づき `no-unilateral-action` 規律 1 件を撤去、合計 16 件に減）。さらに memory 側の `feedback_*.md` 16 件はシンボリックリンクで repo 本体を指す構成に変更（2026-05-25 セッション 26、利用者明示承認「試してみる」）。当初は auto memory 機構がセッション起動時にリンクをたどって規律本体を完全に auto load する想定だったが、**2026-05-25 セッション 27 の検証で否定された**：auto memory の起動時 load 対象は `MEMORY.md` の索引（1 文要約）までで、シンボリックリンク経由でも本体はたどられない。**fallback 案イを採用**（利用者明示承認「推奨案」、2026-05-25 セッション 27）：シンボリックリンク 16 件は単一正本（repo）維持の補助機構として残置、TODO §1 起動手順に「規律本体 11 件を Read で読む」ステップを追加、active 必読 11 件は毎セッション開始時に Read で明示的に読み込む運用に切り替え。
+- memory 側は短い参照索引（移管先パスと改廃ルールへのリンクのみ）に置換、`MEMORY.md` 索引ファイルにも移管反映
+- archive 14 件（`memory/archive/2026-05-25-consolidation/`）のみ memory 側に残存（過去履歴の保全）
+- 移管後の整理として、front-matter の memory 機構固有メタ（`node_type: memory`／`originSessionId`）を全 17 件から削除、`plain_japanese` ／参照層 5 件の旧形式を統一形式に正規化、旧名リンク（`[[feedback-implementation-autonomy]]` 等）を新名に修正、`docs/disciplines/README.md` を新設して内部リンク `[[link-name]]` の解決規則と全 17 件のインデックスを明記
+- 計画書 §5.21（規律ファイルの ReviewCompass 方針への取り入れ手順）を前倒し実施した位置付け
+
+`self-improvement` との権限分散（A-007 案 2、2026-05-23 利用者承認）：規律ファイルの **提案権** は `self-improvement` が持ち、**実体変更権** は本機能が所定手続き（drafting → review → approval）経由で実施する。本機能は規律変更を Req 4 受入 1 の不可逆操作の対象として扱い、`self-improvement` が直接ファイル書き換えを行うことはない。
+
+## 段集合の静的列挙モデル（Stage Set Static Enumeration Model）— Req 1
+
+### 1. 9 ファイル体制（計画書 §5.5）
+
+段集合は次の 9 ファイルに静的列挙する。Markdown 節からの動的解析は行わない（Req 1 受入 1）。
+
+| ファイル | 段集合 | actor 構成 |
+|---|---|---|
+| `stages/intent.yaml` | drafting／review／approval の 3 段 | human／llm／human |
+| `stages/feature-partitioning.yaml` | candidate-proposal／approval の 2 段 | llm／human |
+| `stages/feature-dependency.yaml` | 段集合なし（機能依存マップ本体、Req 8） | — |
+| `stages/requirements.yaml` | drafting／triad-review／review-wave／alignment／approval の 5 段 | llm／llm／llm／llm／human |
+| `stages/design.yaml` | 同上 | 同上 |
+| `stages/tasks.yaml` | 同上 | 同上 |
+| `stages/implementation.yaml` | 同上 | 同上 |
+| `stages/reopen-procedure.yaml` | 4 過程構成（§reopen 機械強制モデル §5）、第3過程で trigger_map 参照 | llm／human 混合 |
+| `stages/cross-spec-alignment.yaml` | 段集合は別途確定（フェーズ 2 以降） | — |
+
+各 YAML 段は最低限、段名／`actor`／期待する証跡ファイルのパスパターン／必須節名のリスト／完了判定方式を含む（Req 1 受入 3）。
+
+### 2. 段定義の構造例
+
+`stages/requirements.yaml` の段定義例：
+
+```yaml
+process_id: requirements
+description: 要件フェーズの所定手続き（drafting → triad-review → review-wave → alignment → approval の 5 段）
+feature_order: feature-dependency.yaml#feature_order   # Req 8 受入 3、Req 1 受入 4
+
+stages:
+  - name: drafting
+    actor: llm                                      # 起草、主に LLM
+    artifact_paths:
+      - .reviewcompass/specs/{feature}/requirements.md
+    required_sections:
+      - Introduction
+      - Boundary Context
+      - Requirements
+      - Change Intent
+    completion_predicate: artifact_exists_and_sections_present
+    description: 起草者と判定者の分離規律により、起草段は判定段と別 actor で実施する
+
+  - name: triad-review
+    actor: llm
+    artifact_paths:
+      - .reviewcompass/specs/{feature}/reviews/*-requirements-triad-review.md
+    required_sections:
+      - 主役レビュー
+      - 敵対役レビュー
+      - 判定役レビュー
+      - 統合
+    completion_predicate: artifact_exists_and_sections_present_and_author_reviewer_distinct
+    front_matter_required:
+      - author.identity
+      - reviewer.identity
+      - reviewer.separation_from_author
+    description: 3 役レビュー、起草者と判定者の異名を front-matter で必須化
+
+  - name: review-wave
+    actor: llm
+    feature_order_required: true                    # 全機能の drafting＋triad-review 完了後に開始
+    artifact_paths:
+      - docs/reviews/{phase}-review-wave-{日付}.md
+    completion_predicate: all_features_drafting_and_triad_review_completed
+    description: 機能横断の波及所見の集約消化
+
+  - name: alignment
+    actor: llm                                      # LLM 自動判定
+    completion_predicate: cross_spec_alignment_passed
+    description: フェーズ終端の機能横断整合確認（LLM 自動判定）
+
+  - name: approval
+    actor: human                                    # phase / gate completion は human-only
+    actor_allowed:
+      - human
+    completion_predicate: explicit_human_approval_recorded
+    description: 不可逆操作（フェーズ移行）の直前ゲート。proxy_model は承認主体を代行しない
+```
+
+### review-run 後の proxy_model 判断代行モデル
+
+review-run 後の重要件判断は、approval 段の承認ではなく、triad-review 段内の修正方針決定に限って proxy_model が代行できる。対象は API 経由 review-run の `must-fix`、`should-fix`、`ERROR`、`CRITICAL`、または同根所見クラスタである。
+
+責務分担：
+
+- メインセッション LLM：raw response を読み、モデル別要約、同根所見集約、三段階トリアージ下書き、候補案、推薦案、proxy_model への判断材料を作る
+- proxy_model：重要件ごと、または同根所見クラスタごとに、採用案、判断理由、棄却案理由、最終ラベルを決定する
+- 機械ガード：proxy decision の存在、raw response の存在、候補案の存在、採用案と最終ラベルの整合、未判断件数 0 を確認する
+- メインセッション LLM：機械ガード通過後、採用された修正だけを TDD で実装する
+- 利用者：コミット、プッシュ、spec.json 更新、フェーズ移行、規律変更、大方針変更を承認する
+
+証跡構造：
+
+```text
+.reviewcompass/specs/<feature>/reviews/<review-run-id>/
+  raw/
+  parsed/
+  triage.yaml
+  model-result-summary.yaml
+  review_summary.md
+  proxy-decisions/
+    <finding-id>.prompt.md
+    <finding-id>.raw.txt
+    <finding-id>.decision.yaml
+  proxy-approval.yaml
+```
+
+`proxy-decisions/<finding-id>.decision.yaml` は最低限、`finding_id`、`approved_by: proxy_model`、`proxy_model_id`、`selected_option`、`final_label`、`rationale`、`rejected_options`、`raw_response_path` を持つ。`proxy-approval.yaml` は対象 review-run、対象 finding、参照した decision、summary/triage 提示済みフラグを束ねる。proxy approval は `decision_scope: proxy_allowed` の範囲（所見トリアージ・修正方針判断）に限った承認であり、human-only approval、commit、push、`spec.json` 更新、phase / gate completion、reopen finalize は許可しない。
+
+proxy decision の監査性を保つため、decision は `decision_prompt_path`、`source_raw_paths`、`candidate_options` も持つ。`decision_prompt_path` は proxy_model に渡した prompt 証跡、`source_raw_paths` は元 review raw、`candidate_options` は proxy_model に提示された候補案セットである。機械ガードは、これらの参照先が存在し、`candidate_options` が空でないことを確認する。現行の軽量ガードは、`proxy_model_id` の文字列一致、decision file の `finding_id` 一致、`final_label` 一致、prompt/raw/候補案証跡の存在を検査する。API 署名や暗号学的な生成元証明は将来課題とする。
+
+parallelizable_units：
+
+- proxy_model 判断依頼：同根所見クラスタ単位で並列化可能。同根とは、複数モデルの所見が同じ対象ファイル、同じ出力契約、同じ機械ガード、同じ証跡、または同じ原因に触れているものをいう
+- 実装：互いに同じファイルを更新しない実装単位、または入出力契約が独立したタスク単位で並列化可能
+- 直列必須：共通スキーマ、共通ビルダー、同一ファイル、同一 manifest、同一 traceability 出力、生成物、共有 helper、推移的契約を触る修正
+- 統合時：メインセッション LLM が triage、proxy decision、テスト結果、ファイル差分を再照合する
+
+実装サブ担当 LLM は、原則として別スレッドかつ分離 worktree で扱う。同じ repo での並列実装は原則禁止し、読み取り調査または差分を残さない確認に限定する。メインセッション LLM は、対象 finding、proxy decision、許可ファイル、期待テスト、禁止事項、停止条件を渡し、統合時に差分とテスト結果を検査する。未承認の便乗リファクタ、隣接挙動変更、対象外 cleanup は実施せず、新規判断問題として停止する。
+
+subimplementation_outputs：
+
+- implementation_diff：本線へ取り込み可能なソース、テスト、スキーマ、fixture、必要最小限の docs 差分
+- verification_summary：サブ担当が実行したテスト、赤確認、緑確認、未実行理由
+- decision_basis：実装不能、停止、新規判断問題、採否判断に影響する失敗ログ
+- work_noise：一時メモ、途中ログ、失敗パッチ案、ローカル調査メモ。原則として本線 repo に取り込まない
+
+本線へ戻す標準単位は、パッチ、テスト結果サマリ、未解決事項の 3 点である。メインセッション LLM は `work_noise` を直接取り込まず、必要な場合のみ session record または docs/notes に要約する。判断に影響した失敗試行、失敗パッチ、途中ログは `decision_basis` へ昇格し、メインセッション LLM が要約または該当箇所を保存する。
+
+### テンプレート変数の展開規則（F-006 対処、2026-05-25 セッション 26 利用者明示承認）
+
+段集合 YAML の `artifact_paths` フィールドに登場する 3 種のテンプレート変数（プレースホルダ）の展開元と解決規則を次のとおり確定する：
+
+- **`{feature}`**：機能横断段（`feature_order` を持つ段）では `feature-dependency.yaml#feature_order` から機能名を順に展開する。機能単位段（`feature_order` を持たない段）では当該機能名で固定する
+- **`{phase}`**：当該 YAML の `process_id` フィールドから取得する（例：`requirements.yaml` の `process_id: requirements` なら `{phase}` は `requirements` に展開）。`process_id` と YAML ファイル名は段集合 YAML 配置時に同期させる前提とし、両者がずれた場合は `process_id` を正本として優先する
+- **`{日付}`**：ファイル名のワイルドカード（`*`）として許容する。検査スクリプトは `glob` で `artifact_paths` パターンに一致する全ファイルを取得し、ファイル名に含まれる日付部分（`YYYY-MM-DD` 形式と仮定）の **辞書順最大** を最新と判定する
+
+ワイルドカード解決時の優先順位を「辞書順最大」（mtime 基準ではなく）にする理由：ファイル名の日付は人手で命名されるため意図が明示される一方、ファイルの更新時刻（mtime）は `git clone` ／ `git checkout` で書き換わるため再現性に劣る。`YYYY-MM-DD` 以外の日付形式が混入した場合、検査スクリプトは結論不能（fail-closed）として DEVIATION を返す。
+
+複数ファイルが存在しても重複定義の禁止ではなく、reopen による複数回生成（同じ段の証跡が日付違いで複数並存）を自然に扱うための設計。
+
+### 3. 機能横断段と機能単位段の区別
+
+- **機能横断段**：`feature_order` を持つ段（review-wave、alignment、approval の 3 段）。`feature_order: feature-dependency.yaml#feature_order` で機能依存マップを参照し、対象機能集合を一元化する（Req 1 受入 4、Req 8 受入 3）
+- **機能単位段**：`feature_order` を持たない段（drafting、triad-review の 2 段）。各機能の `spec.json` の `workflow_state.<フェーズ>.<段>` で個別に管理する
+
+機能横断段の機能横断側状態は `stages/<フェーズ>.yaml` の進行記録または別途配置する集約ファイルで保持し、機能単位の状態は各機能の `spec.json` で保持する（計画書 §5.24.8 由来）。
+
+**機能横断段 review-wave の作業内容（2026-05-27 セッション 34 追記、2026-05-28 セッション 35 で 2 回方式に訂正、軽量手続き、Req 1 受入 6 と整合）**：
+
+7 モデル比較実験は **2 回方式** で実施する（2026-05-28 セッション 35 確定、初版の「機能横断段で一括実施、機能ごとに実施しない」記述を訂正）：
+
+- **1 回目（機能ごとの triad-review 段）**：当該機能の機能内 must-fix／should-fix を 7 モデル評価し、機能内対処を triad-review 段で完了させる。前機能の機能内対処未完了に次機能の triad-review が依存しない構造を保つ
+- **2 回目（本機能横断段 review-wave）**：全機能の triad-review 完了後、機能横断波及所見と同根所見を 7 モデル評価
+
+機能横断段 review-wave は、機能横断波及所見の集約・対処に加え、次の作業を含む（計画書 §5.5 ／ §5.9.6 と整合）：
+
+- 全機能の triad-review が完了した時点で本段を開始する
+- 機能横断波及所見と同根所見を対象に 7 モデル評価（2 回目）を実施
+- 7 モデル評価データを全機能横並びで分析し、**同根所見**（異なる機能で同じ性格の所見が独立に発見された組）を grep ／ 集約で識別
+- 同根所見ごとに一貫した対処方針を立案、全該当機能の仕様文書（requirements.md ／ design.md ／ tasks.md）に同じ対処を反映
+- 個別機能の triad-review で「機能横断段に持ち越し」と判定された所見も本段で一括対処
+
+本作業内容は、セッション 33 利用者発言「あるフィーチャーだけをみてもダメで、全フィーチャーの triad-review を行い、それを 7 つのモデルで評価させたところで、同根の問題をまとめて考える」を受けた構造的対処、およびセッション 35 利用者指摘「機能内対処は triad-review 段で実施しないと、他のフィーチャーの処理に影響する可能性がある」を受けた 2 回方式への訂正。利用者明示承認の出典：「(ニ)」「提案通り」「計画書や仕様・設計にも反映」（2026-05-27 セッション 34）／「2 回に分けて 7 モデルの must-fix+should-fix の対応が必要」「案 イ」「案 ア」（2 回方式への訂正、2026-05-28 セッション 35）。本記述は計画書 §5.23.13 軽量手続き許容の範囲内で追加。
+
+### 4. 段集合の変更運用
+
+段集合の変更は YAML ファイル 1 箇所の修正で完結する（Req 1 受入 5）。Markdown 文書（運営ガイド、計画書）側との整合は人手で取る前提とし、自動同期は行わない（§5.4 受け入れリスク）。段集合の変更そのものを不可逆操作の対象とするかは本フェーズで決めず、第 5 層（処理表面積の抑制）導入時に検討する（先送り論点参照）。
+
+## 軽量版検査スクリプトモデル（Lightweight Check Script Model）— Req 2
+
+### 1. 検査の対象と原則
+
+検査スクリプト `tools/check-workflow-action.py` は Python 実装で（Req 2 受入 1）、次の 4 入力のみを読む：
+
+- 段集合 YAML（`stages/*.yaml`）
+- 進行中状態ファイル（`stages/in-progress/*.yaml`）
+- 機能単位 spec.json（`.reviewcompass/specs/<機能>/spec.json`）
+- 未消化所見（`learning/workflow/carry-forward-register/reviewcompass-import.yaml`）
+
+判定原則：
+
+- **段ごとの完了判定**：YAML に列挙された証跡ファイルがすべて存在し、必須節名がすべて含まれること、それ以外は判定対象としない（Req 2 受入 2）
+- **中身の妥当性判定は行わない**：所見の質、表現の適切性、論理的整合性は判定範囲外（Req 2 受入 3、第 1 層の限界として明示）
+- **fail-closed の既定**：結論不能（YAML が壊れている、証跡ファイルが解析不能、必須フィールド欠落）の場合は合格判定を出さず、必ず fail を返す（Req 2 受入 4）
+- **進行中手続きの警告**：`stages/in-progress/` に何かファイルがあれば「未完了の手続きあり」の警告を出す（Req 2 受入 5）
+
+### 2. サブコマンド構成（`docs/operations/WORKFLOW_PRECHECK.md` と `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` 参照）
+
+| サブコマンド | 入力（必須引数） | 用途 |
+|---|---|---|
+| `spec-set <feature> <phase> <stage> <new_value>` | 機能名・フェーズ・段・新しい真偽値、`--rationale "<理由>"`（任意、ログ記録用） | `spec.json` の `workflow_state` 変更前の依存検査 |
+| `commit` | `--rationale "<理由>"`（**必須**） | `git commit` 直前の検査（spec.json 整合、規律遵守、未消化所見の有無） |
+| `push` | `--rationale "<理由>"`（**必須**） | `git push` 直前の検査（コミット履歴整合、リモート状態） |
+| `next` | なし、`--json`（任意） | 標準のワークフロー遷移入口。`workflow_state`、`stages/in-progress/`、reopen pending、post-write-verification pending を読み、次作業を返す |
+
+引数仕様の正本は `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` と検査スクリプト本体 `tools/check-workflow-action.py` の argparse 定義。ただし、ここでいう引数仕様は軽量 precheck CLI の呼び出し形式に限る。`required_action` 語彙、operation contract field、preconditions / postconditions、出力・副作用 contract は `.reviewcompass/schema/`、`stages/operation-contracts.yaml`、および Requirement 12〜13 の registry / contract 境界を正本とする。`commit` と `push` の `--rationale` 必須化の理由：両者は不可逆操作で、人による承認の出典をログに残す必要があるため。next サブコマンドは、LLM が次作業を独断で選ばず、同じワークフロー遷移入口から状態を再確認するための読み取り専用入口である。
+
+next サブコマンドは、`workflow_state` が全完了を示す場合でも、上流成果物が下流成果物より新しければ `upstream_recheck` を返す。代表的な伝播は、intent → feature-partitioning、feature-partitioning → requirements、requirements → design、design → tasks、tasks → implementation である。これにより、intent 更新後に requirements へ飛ぶ、requirements 更新後に tasks や implementation へ飛ぶ、tasks 更新後に implementation 再確認を省く、といった手順逸脱を機械的に避ける。
+
+next サブコマンドは、feature 一覧が解決できない場合（`feature-dependency.yaml` 不在または `feature_order` 未定義、対象アプリの初期状態を想定）は `feature_definition_required`（verdict OK）を返して intent／feature-partitioning の実施を案内し、`feature_order` と `depends_on` の整合違反（依存先行違反・循環）は `kind: unknown`／DEVIATION で遮断する（§機能依存マップモデル 7、2026-06-12 反映）。
+
+`docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml` は、判定点ごとに読み込む規律文書と入力資料の機械可読マップである。`default`、`by_kind`、`by_stage` は `next_action.required_disciplines` の元資料を定義し、`required_inputs` は対象 feature 文書、reopen 状態、review-run bundle、carry-forward register などの入力資料を定義する。`next` はこのマップを読み、現在の判定点に対応する `required_disciplines` と `required_inputs` を JSON に含める。判定点ごとの `effective prompt` は、このマップが示す元資料を 1 本へ束ねる生成物であり、マップ自体は複数元資料の正本である。`next` は生成した prompt を `.reviewcompass/runtime/effective-prompts/` に保存し（旧 `.reviewcompass/effective-prompts/` からの変更は 2026-06-12 配置規約 PLC-DEC-004・009〜011 反映。実行時生成物の runtime 区画集約。旧パス読み取り互換は P3 まで維持し、凍結・互換の正本は §実行時生成物の凍結期（P3 まで）の扱い）、`next_action.effective_prompt` に `effective_prompt_path`、`effective_prompt_sha256`、`effective_prompt_loaded` を含める。元資料が読めない場合は `effective_prompt_loaded: false` として `DEVIATION` を返し、通常作業へ進ませない。API review-run では `run_role.py`／`run_review.py` が `rounds.yaml` に `effective_prompt_path` と `effective_prompt_sha256` を記録し、後続の raw response・triage・proxy decision と同じ review-run 証跡として追跡できるようにする。マップにない判定点は、規律読み込み規約が未定義の判定点として扱い、追加時は本マップへ登録する。
+
+### 2. next --json unique action selector
+
+`next --json` は状態要約ではなく、現在実行してよい唯一 action を選ぶ selector である。`required_action` は 1 つだけを返し、`pending_gates` や scope list は予定または補助情報として扱う。
+
+共通フィールドは `kind`、`required_action`、`active_gate`、`feature`、`phase`、`stage`、`blocked_by`、`action_parameters`、`state_refs` とする。active workflow unit があるのは、通常 workflow の `<feature, phase, stage>` または reopen 第3過程の drafting / review gate だけである。この場合だけ `active_gate`、`feature`、`phase`、`stage` を非 null にする。post-write verification、human decision、maintenance、reopen 第1・第2過程、commit stop point、workflow state repair は active workflow unit を持たない action であり、`feature`、`phase`、`stage`、`active_gate` は null にする。対象 feature、対象 phase、対象ファイル、実行コマンドは `action_parameters` または `state_refs` から読む。
+
+selector の優先順位は、workflow state / reopen plan の破損、post-write verification pending、human decision、maintenance / side track top frame、reopen commit stop point、reopen 第1・第2過程、reopen 第3過程 drafting、reopen 第3過程 gate、reopen 第4過程、通常 workflow、completed の順に固定する。maintenance は `required_action=run_maintenance` を返し、maintenance YAML 内の個別名は `maintenance_action` と `action_parameters.maintenance_action` に分離する。reopen では `current_blocker` がある場合に pending gate を active にせず `wait_for_human_decision` を返す。`commit_stop_point: true` がある場合も pending gate を active にせず、`blocked_by.type=commit_stop_point`、`active_gate=null`、`phase=null`、`stage=null` とする。第3過程の pending gate は、blocker と stop point がない場合だけ active gate にできる。
+
+post-write target detection と manifest verification は、`next` と `commit` の双方が参照する実装契約である。post-write-verification 対象の未コミット変更がある場合、`next` は通常 workflow ではなく post-write-verification pending を返す。completed manifest は `target_files` と現在内容の `target_sha256` が一致し、`required_verifiers` の各 verifier が `verifications[]` の単一エントリで全対象ファイルと同じ sha を覆い、`unresolved_substantive_findings` が 0 である場合だけ完了とみなす。
+
+各サブコマンドの戻り値（exit code）：
+
+- `0`：OK（不可逆操作を許可）
+- `1`：WARN（警告を出すが継続可、利用者判断で進める）
+- `2`：DEVIATION（fail-closed で遮断、不可逆操作を許可しない）
+
+出力形式は人間可読の既定形式と、`--json` 指定時の JSON 形式の 2 種類。出力構造とログ形式は `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` を正本参照する。ただし、この正本性は precheck CLI の表示・ログ出力形式に限り、operation contract の output / side-effect semantics を定義しない。人間可読既定の書式は `[VERDICT] OK ／ WARN ／ DEVIATION（exit N）` のように **大括弧付きラベル形式** で、`[VERDICT]`／`[ACTION]`／`[REASON]`／`[CURRENT STATE]` の 4 ブロックを順に出力する。判定結果はログ（`.reviewcompass/runtime/logs/workflow-precheck.log`、上書き可能＝ログファイル自体の再生成可否を指す。旧配置を対象とする凍結契約〔§実行時生成物の凍結期（P3 まで）の扱い〕とはスコープが異なる）に追記する。
+
+### 3. 完了判定の述語集合（completion_predicate 値域）
+
+段集合 YAML の `completion_predicate` フィールドが取る値の集合：
+
+| 述語名 | 判定内容 |
+|---|---|
+| `artifact_exists` | 期待する証跡ファイルが存在する |
+| `artifact_exists_and_sections_present` | ファイル存在＋必須節名がすべて含まれる |
+| `artifact_exists_and_sections_present_and_author_reviewer_distinct` | 上記＋front-matter の `author.identity` と `reviewer.identity` が異名 |
+| `all_features_drafting_and_triad_review_completed` | `feature_order` の全機能で drafting＋triad-review が true |
+| `cross_spec_alignment_passed` | 機能横断整合の判定が pass、未消化所見が 0 件 |
+| `explicit_human_approval_recorded` | 利用者の明示承認が human-only approval record として記録されている。proxy_model decision はこの述語を満たさない |
+| `depends_on_resolves_correctly` | `feature-dependency.yaml` の各機能の `depends_on` が単純リスト構造または連想配列構造として解析可能、連想配列構造の場合は値が `hard` または `review` のいずれかであること（A-004 対処、2026-05-25 セッション 26 利用者明示承認） |
+
+述語集合の追加・削除は本機能の責務。新しい述語を導入する場合は、本節と検査スクリプト実装の両方を同時に更新する。
+
+### 4. 第 1 層の限界の明示
+
+検査スクリプトが解決しない失敗モード（計画書 §5.8 由来、Req 7 受入 1）：
+
+- 中身の空疎（必須節は存在するが内容が「特に問題なし」のみ）
+- 検査スクリプト自体が呼ばれない経路
+- `stages/in-progress/` ファイルの自己申告性（嘘・古い・欠落の余地）
+- 文脈圧力下での規律ファイル優先度低下
+
+これらは hook 連携や人の確認で補完する。本機能はワークフロー事前検査の限界を運用文書（`docs/operations/WORKFLOW_PRECHECK.md`）に明示し、人の期待値を整える（Req 7 受入 4）。
+
+### 5. スキーマ定義（Phase 1 最小スキーマ、Req 2 受入 10・11）
+
+本節は `next --json` の語彙と応答形式を機械検証可能な JSON Schema として定義する。2 ファイルを `.reviewcompass/schema/` 配下に置く。スキーマ形式はいずれも JSON Schema Draft 2020-12 を使う。実装コードはこの 2 ファイルを語彙と応答構造の正本として参照し、コード内に語彙を直書きしない。
+
+#### 5.1 required_action.schema.json（Req 2 受入 10）
+
+`required_action` の取り得る値を列挙する語彙ファイル。
+
+- **`$schema`**：`https://json-schema.org/draft/2020-12/schema`
+- **`$id`**：`urn:reviewcompass:schema:required_action`
+- **`type`**：`string`
+- **`enum`**：D-003 §6 の優先順位順に 19 値を列挙する（この順が正本）
+
+| 優先順位 | 値 |
+|---:|---|
+| 1 | `repair_workflow_state` |
+| 2 | `run_post_write_verification` |
+| 3 | `wait_for_human_decision` |
+| 4 | `record_human_decision` |
+| 5 | `run_maintenance` |
+| 6 | `advance_reopen_after_commit_stop_point` |
+| 7 | `commit_stop_point` |
+| 8 | `draft_reopen_plan_candidates` |
+| 9 | `apply_approved_reopen_plan` |
+| 10 | `advance_reopen_after_approval_stop_point` |
+| 11 | `repair_canonical_documents` |
+| 12 | `run_reopen_drafting` |
+| 13 | `run_reopen_pending_gate` |
+| 14 | `collect_required_decisions` |
+| 15 | `finalize_reopen` |
+| 16 | `draft_reopen_classification` |
+| 17 | `run_reopen_start` |
+| 18 | `run_workflow_stage` |
+| 19 | `completed` |
+
+語彙の追加・変更はこのファイルの `enum` 修正で完結する。
+
+#### 5.2 next_action_response.schema.json（Req 2 受入 11）
+
+`next --json` の目標応答スキーマ。
+
+**最上位構造の設計確定事項**
+
+- **`$schema`**：`https://json-schema.org/draft/2020-12/schema`
+- **`$id`**：`urn:reviewcompass:schema:next_action_response`
+- **`type`**：`object`
+- **必須フィールド（5つ）**：`verdict`（文字列）・`exit_code`（整数）・`next_action`（オブジェクト）・`reasons`（配列）・`current_state`（オブジェクト）
+- **`additionalProperties`**：最上位は指定しない（**前向き拡張用**：将来の実装で新フィールドを追加してもスキーマ改訂なしに対応できるよう、段階的拡張を妨げない。スキーマファイルの `$comment` に意図を記録する）
+
+**`next_action` オブジェクトの設計確定事項**
+
+- **`type`**：`object`
+- **必須フィールド（10つ）**：`kind`・`required_action`・`active_gate`・`feature`・`phase`・`stage`・`required_feature_scope`・`blocked_by`・`future_gates`・`state_refs`
+- **`additionalProperties`**：指定しない（**後ろ向き互換用**：旧バージョンのツールが出力する `pending_gates`・`next_pending_gate` 等を許容するため。最上位の「前向き拡張」とは目的が異なる。スキーマファイルの `$comment` に意図を記録する）
+- **`properties: { "verdict": false }`**：`verdict` フィールドを `next_action` 内で明示禁止する（受入 11：`verdict` は最上位にのみ存在し `next_action` 内には含めない。`additionalProperties` を開放したまま特定フィールドのみを禁止できる最も局所的な方法）
+
+**`next_action` フィールド型定義**
+
+| フィールド | 型 |
+|---|---|
+| `kind` | string enum（14値インライン定義、下記参照） |
+| `required_action` | `$ref: "urn:reviewcompass:schema:required_action"`（19語彙に限定。絶対 URN 参照により基底 URI 解決不要） |
+| `active_gate` | string または null（作業単位がない場合は null） |
+| `feature` | string または null（単一機能名・`"all_features"`・null の 3 種） |
+| `phase` | string または null |
+| `stage` | string または null |
+| `required_feature_scope` | array of string |
+| `blocked_by` | object または null |
+| `future_gates` | array |
+| `state_refs` | object |
+
+**`kind` フィールドの値域**
+
+`kind` は `next_action_response.schema.json` 内にインライン `enum` として定義する（`required_action` とは異なり別ファイル化しない。`kind` は `next_action_response` 内でのみ参照されるため）。
+
+| 優先順位 | 値 |
+|---:|---|
+| 1 | `resume_in_progress` |
+| 2 | `reopen_in_progress` |
+| 3 | `maintenance_in_progress` |
+| 4 | `reopen_classification_required` |
+| 5 | `post_write_verification` |
+| 6 | `lightweight_self_check` |
+| 7 | `post_write_policy_violation` |
+| 8 | `post_write_human_decision_required` |
+| 9 | `stage` |
+| 10 | `cross_feature_stage` |
+| 11 | `upstream_recheck` |
+| 12 | `feature_definition_required` |
+| 13 | `completed` |
+| 14 | `unknown` |
+
+値の追加・変更はこの表と `next_action_response.schema.json` の `enum` 修正で完結する。
+
+**条件付き必須フィールド（`if/then` 構文で `next_action` 内に定義）**
+
+- `repair_reasons`（非空配列、`type: array, minItems: 1`）：`required_action = "repair_workflow_state"` のとき必須
+- `action_parameters`（オブジェクト）：`required_action = "run_maintenance"` のとき必須。サブフィールド必須 6 つ（`maintenance_action`・`allowed_scope`・`allowed_files`・`completion_conditions`・`active_stack_frame_id`・`parent_frame_id`）
+
+**後方互換フィールドの整合規則**
+
+`pending_gates` が存在する場合は `future_gates` と一致させること（実装側の不変条件）。JSON Schema の標準機能では 2 フィールドの内容が等しいことを機械検証できないため、この等価性はスキーマの責務対象外とし、実装コードで保証する。スキーマは `pending_gates` の型（配列）のみ定義する。
+
+## 起草者と判定者の分離モデル（Author-Reviewer Separation Model）— Req 3
+
+### 1. front-matter の必須フィールド（計画書 §5.4 由来）
+
+レビュー記録（`.reviewcompass/specs/<機能>/reviews/<日付>-<種別>.md`）の冒頭メタデータに次を必須化する：
+
+```yaml
+---
+type: <レビュー種別>                     # 例：design_triad_review
+target: <対象文書のパス>
+target_commit: <commit hash>
+target_content_hash: <sha256>
+date: 2026-05-25
+mode: subagent_mediated                  # レビューモード。値は foundation 正本を参照（再定義しない）
+author:
+  identity: claude_code_main_session     # 起草者の識別子
+  model: claude-opus-4-7
+  role: drafter
+reviewer:
+  identity: claude_code_subagent         # 最終判定者の識別子（必ず異名）
+  model: claude-opus-4-7
+  role: final_judgment
+  separation_from_author: true           # 明示的に異名であることを宣言
+---
+```
+
+機械検査は次の 3 点を判定する（Req 3 受入 4）：
+
+1. `author.identity` と `reviewer.identity` フィールドの存在
+2. `author.identity` ≠ `reviewer.identity`（文字列比較で同一を許容しない、Req 3 受入 2）
+3. `reviewer.separation_from_author` が `true`
+
+別モデル・別 session の機械判定は第 1 層検査対象外。これは利用者監査の第 3 層に委ねる（Req 3 受入 4 由来）。理由：CLI／API 経路の実行環境を機械判定で確実に区別する手段がフェーズ 1 では整わないため。
+
+### 2. サブエージェント方式（subagent_mediated）の特例（Req 3 受入 3）
+
+メインセッション LLM が主役（primary_reviewer）を兼ねる場合、判定役（judgment_reviewer）は **必ず別エンティティ**（別モデルかつ別 session）で実施する。これは計画書 §5.23.12 サブエージェント方式の限界（§5.23.12.7）を踏まえた特例である。
+
+サブエージェント方式採用時の front-matter 例：
+
+```yaml
+author:
+  identity: claude_code_main_session     # メインセッションが主役と起草を兼ねる
+  model: claude-opus-4-7
+  role: drafter_and_primary_reviewer     # 暫定許容の宣言
+reviewer:
+  identity: claude_code_subagent_judgment   # 判定役は別サブエージェント
+  model: claude-opus-4-7                    # 同モデル許容（§5.9.1 改訂後）
+  role: final_judgment
+  separation_from_author: true
+  subagent_invocation_method: agent_tool_with_general_purpose
+```
+
+`subagent_mediated` の場合、`role` フィールドに `drafter_and_primary_reviewer` 等の複合役を許容する（暫定許容の明示）。完全分離（メイン LLM が 3 役のいずれにもならない）はフェーズ 4 の runtime_mediated 経路で実装する。
+
+### 3. 異名判定の機械検査範囲
+
+機械検査の対象範囲（第 1 層で判定可能）：
+
+- フィールドの存在判定
+- 文字列の同一性判定
+- 値域チェック（`actor` フィールドが `human`／`llm`／`proxy_model` のいずれか等）
+
+機械検査の対象外（第 3 層 利用者監査または定期事後監査に委ねる）：
+
+- 別モデルであることの実体確認（環境変数や API 呼び出し履歴の照合）
+- 別 session であることの実体確認（session ID の独立性検証）
+- レビュー記録の中身が独立性を満たすかの質的判定
+
+## 不可逆操作の直前ゲートモデル（Pre-Operation Gate Model）— Req 4
+
+### 1. 不可逆操作の最小集合（Req 4 受入 1）
+
+機械ゲートの対象は次の 4 種類に絞る：
+
+| 不可逆操作 | 検査対象 | 検査結果が fail の場合 |
+|---|---|---|
+| `spec.json` の `approval` 段書き込み | 当該機能の前段（alignment）が true、未消化所見が 0 件 | spec.json 書き込みを許可しない |
+| `git commit` | 検査スクリプトが pass、`stages/in-progress/` が空 | commit を許可しない |
+| `git push` | 直前のコミットが上記検査を通過済み、リモート状態と整合 | push を許可しない |
+| フェーズ移行（次フェーズの drafting 段 true 化） | 当該フェーズの approval 段が `feature-dependency.yaml#feature_order` の全機能で true（本設計時点 7 機能、§機能依存マップモデル §2 の A-001 注記参照） | フェーズ移行を許可しない |
+
+それ以外（spec.json の drafting／triad-review 段の書き込み、中間段の遷移など）には機械ゲートを置かない（最小集合方針、Req 4 受入 4）。これは検査スクリプトを呼ぶ頻度を下げ、検査自体の存在感を高めるため。
+
+### 2. ゲート発火条件と独立走行（Req 4 受入 2）
+
+ゲートは次の 2 条件で発火する：
+
+1. Requirement 2 の検査スクリプトが pass を返す
+2. `stages/in-progress/` に未完了手続きが存在しない
+
+直前ゲートは **毎回独立して走行する**。session 開始時の検査結果（Req 6 受入 3）をキャッシュせず、session 開始後の状態変化（途中での `stages/in-progress/` ファイル追加、所見の追加等）を直前で再検出する。これは「session 開始時には pass だったが、その後の作業で状態が変わって本来 fail になるはずの遷移を見落とす」失敗モードを防ぐため。
+
+`git commit` の直前ゲートでは commit 承認レコードを別入力として読み、`approved_action=commit`、`approved_by=user`、未消費状態、staged ファイル被覆、staged 内容と一致する `target_sha256` を検査する。承認レコードの `target_sha256` は各 staged ファイルの現在 staged blob から計算した sha と比較し、欠落・形式不正・不一致のいずれも DEVIATION とする。これにより、承認後に対象ファイルが差し替わった commit を fail-closed で遮断する。
+
+### 2.1 commit 承認 nonce challenge（Req 4 受入 6〜7）
+
+commit 承認は、承認レコード単体ではなく nonce challenge と対で扱う。challenge の保存先は `.reviewcompass/runtime/approvals/commit-approval-challenge.json`、承認レコードの保存先は既存どおり `.reviewcompass/runtime/approvals/commit-approval.json` とする。challenge は `approved_action=commit` に限り、staged ファイル一覧、ファイル別 `target_sha256`、全体 target digest、nonce、有効期限、消費状態を保持する。
+
+`tools/check-workflow-action.py commit-approval prepare --json` は、staged ファイルが存在する場合だけ challenge を作成する。staged ファイルが 0 件、staged 内容の sha 計算不能、または保存不能の場合は fail-closed とし、commit 承認手続きに進ませない。`prepare` は新しい challenge を作る前に、古い runtime の staged 内容承認 record と実行代行 delegation record を invalidated 状態へ寄せる。これは、消費済み・期限切れ・壊れた旧 record が第三者向け commit UX の邪魔をしないようにするためである。手動の `commit-approval invalidate --json` は低レベル復旧手段として残すが、通常の準備操作で古い runtime record の掃除を利用者に求めない。全体 target digest は、正規化した staged ファイルパスと各 staged blob hash から安定順で計算し、ファイル順や環境差に依存させない。challenge は `created_at` と `expires_at` を UTC ISO-8601 文字列で保持し、TTL は 10 分とする。テスト時は checker の `now_utc` を注入できる実装境界を持つ。
+
+全体 target digest の canonical format は `commit-approval-v1` とする。digest 入力は UTF-8 bytes で、先頭行を `commit-approval-v1\n` とし、以後 staged entry を repo-relative POSIX path の UTF-8 byte 昇順で 1 行ずつ並べる。各 entry 行は、`{"mode":"<git-index-mode>","object_id":"<staged-object-id-or-DELETED>","path":"<repo-relative-posix-path>","target_sha256":"<sha256-or-DELETED>"}` を JSON object として、キー順 `mode`、`object_id`、`path`、`target_sha256`、区切り文字は `,` と `:` のみ、余分な空白なしで直列化し、末尾に `\n` を付ける。`mode` は git index の file mode、`object_id` は staged object id、削除 staged は `object_id=DELETED` かつ `target_sha256=DELETED` とする。全体 target digest はこの bytes 列の SHA-256 hex とする。canonical format のバージョンを変える場合は `commit-approval-v2` のように新しい header を使い、旧 challenge と混在させない。
+
+challenge と承認レコードは、部分的に読める場合でも補完や推測をしない。JSON として読めない、object ではない、必須フィールドが欠落している、フィールド型が違う、ファイルパスが重複している、repo-relative POSIX path として不正、repo 外を指す、空文字を含む、`target_sha256` の形式が不正、未知の path が混入している、challenge と承認レコードの file set が一致しない、のいずれも形式不正として fail-closed にする。この検査は承認レコード作成時と commit 直前ゲートの両方で行う。
+
+challenge と承認レコードの schema は、操縦 LLM、provider、model 名を持たない。`llm`、`provider`、`model`、`model_id`、`proxy_model_id` のように操縦主体を表すフィールドが混入した場合は、情報用フィールドとしても受け入れず形式不正として fail-closed にする。承認レコードは `attestation_type=staged_content_nonce_binding` と `guarantee_scope=staged_content_binding_not_ui_utterance_proof` を持ち、保証範囲を機械可読にする。
+
+`tools/check-workflow-action.py commit-approval record --nonce <nonce> --source-text-stdin --json` は、challenge が存在し、未期限切れ、未消費で、nonce が一致し、現在の staged ファイル集合・staged 内容が challenge と一致する場合だけ承認レコードを作成する。承認文は CLI 引数で受け取らず、標準入力から読む。これは、redaction 前の承認文が shell history、process listing、OS audit log 等へ露出することを避けるためである。承認文を保存しない運用では `--no-source-text` を指定し、本文の代わりに `source_omission_reason=source_not_provided` を記録する。`--source-text <user text>` のように本文を argv へ載せる入力経路は提供しない。
+
+承認文は UTF-8 text として扱い、UTF-8 として解析不能、または解析後の UTF-8 bytes が 4096 bytes を超える場合は fail-closed とする。承認レコードは `approved_action=commit`、`approved_by=user`、challenge と同じ target digest、ファイル別 `target_sha256`、作成時刻、消費状態を持つ。`source_text_redacted` を保存する場合は `tools.session_record_extractor.redact.redact_text` と `tools.session_record_extractor.redact.find_residual_secrets` の builtin rules を通し、API キー、token、secret、password、credential に相当する値を生のまま残さない。通常文まで一律に秘密扱いするのではなく、秘密性のある文字列だけを redaction 対象とする。ただし、秘匿情報除去に失敗した、または安全に保存できる形へ変換できない場合は、出典本文を保存せず、`source_omission_reason` を記録する。`source_omission_reason` は `source_not_provided`、`unsafe_source_omitted`、`redaction_failed`、`residual_secret_detected` のいずれかに限る。
+
+commit 直前ゲートは、commit 実行パス内で、実際に commit される index に対して承認レコードと challenge の両方を読み、nonce 一致、未期限切れ、未消費、target digest 一致、staged ファイル集合一致、staged 内容一致を検査する。欠落、形式不正、期限切れ、不一致、消費済みのいずれも DEVIATION とし、commit を遮断する。この validation 失敗は security failure として扱い、challenge と承認レコードを invalidated 状態にして、同じ承認の再利用を許可しない。
+
+validation 通過後に `git commit` 実行自体が失敗した場合は、通常の git execution failure として扱う。署名失敗や hook infrastructure 失敗など、commit が作成されず index が validation 時と同一で、challenge が期限内・未消費・未 invalidated のままなら再試行を許す。index が変わった、期限切れ、消費済み、invalidated、または validation 条件を再度満たせない場合は新しい承認を要求する。commit 成功後は challenge と承認レコードを消費済みに更新する。commit 成功後に consume 記録の永続化へ失敗した場合、その approval/challenge は次回以降の gate で拒否し、新しい承認なしに再利用させない。
+
+時刻判定は UTC の現在時刻 `now_utc` と challenge の `created_at`／`expires_at` で行う。`now_utc < created_at` はシステム時計の巻き戻りまたは challenge 破損の可能性として fail-closed にし、`now_utc > expires_at` は期限切れとして fail-closed にする。`created_at`／`expires_at` の欠落、UTC ISO-8601 として解析不能、`expires_at <= created_at`、TTL が 10 分以外に見える値も形式不正として fail-closed にする。
+
+本判定は、操縦する LLM、provider、model 名に依存しない。判定入力は staged ファイル集合、staged blob hash、全体 target digest、nonce、expiry、consumed 状態に限定する。LLM ごとの差異は、利用者へ nonce を提示する説明文やプロンプト表現だけに閉じる。本方式は、利用者が UI 上で nonce を発話したことを暗号的に証明するものではない。保証範囲は、古い承認、別対象の承認、承認後に staged 内容が差し替えられた commit を防ぐことに限る。UI 署名や runtime event 署名による発話証明は将来拡張とし、本 reopen では実装対象外とする。
+
+### 2.2 commit 実行代行承認（Req 4 受入 8）
+
+LLM が `git commit` の実行を代行する場合、staged 内容承認とは別に、LLM への commit 実行代行承認を記録する。staged 内容承認は「この staged 内容を commit してよい」という承認であり、実行代行承認は「LLM が commit 実行を代行してよい」という承認である。両者を混ぜないため、`commit-approval record` は `execution_delegation` を既定で書かない。
+
+低レベル正式 CLI は `tools/check-workflow-action.py commit-approval delegate-execution --nonce <nonce> --source-text-stdin --json` とする。承認文は標準入力からのみ読む。`--source-text <user text>` のように argv へ載せる入力経路は提供しない。これは、redaction 前の承認文が shell history、process listing、OS audit log 等へ露出することを避けるためである。
+
+第三者へ見せる通常 UX では、`record` と `delegate-execution` を別操作として露出させない。`tools/guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin ...` は stdin から承認文を 1 行だけ読み、EOF を待たずに staged 内容承認 record と実行代行 delegation record を順序どおり作成し、そのまま commit 直前ゲートと `git commit` へ進む。これにより利用者に見える手順は「1 回目の『コミット』で staged 対象・digest・nonce・期限を提示」「2 回目の『承認』で commit 完了」に閉じ、nonce / digest / delegation の多層防御を操作体験へ露出させない。
+
+`delegate-execution` は、同じ nonce の challenge と staged 内容承認 record が存在し、どちらも未期限切れ・未消費・未 invalidated で、現在の staged ファイル集合・staged 内容・全体 target digest が challenge / staged 内容承認 record と一致する場合だけ成功する。challenge 不在、staged 内容承認 record 不在、staged 内容承認より前の実行、期限切れ、消費済み、invalidated、target digest 不一致、staged 内容差し替え、形式不正 JSON、JSON object 以外、unknown field、nonce 衝突、または未期限切れの delegation record が既に存在する場合は fail-closed とする。ただし、既存 delegation record が同じ nonce、同じ staged exact index、同じ staged 内容承認 record digest、同じ正規化済み承認文に対する有効 record である場合、これは重複作成ではなく active transaction の再利用として扱う。壊れた旧 delegation が残っている場合は、次の `prepare` が旧 runtime record を invalidated へ寄せ、新しい challenge からやり直せるようにする。
+
+delegation record は `.reviewcompass/runtime/approvals/commit-approval.json` へ追記せず、`.reviewcompass/runtime/approvals/commit-execution-delegation.json` に独立して保存する。`commit-approval.json` は staged 内容承認のみを表す単一責務の record とし、commit gate は challenge、staged 内容承認 record、実行代行承認 record の 3 つを照合する。分離した record であっても別対象へ流用できないよう、delegation record は staged 内容へ明示的に束縛される。
+
+delegation record は strict schema とし、最低限、次を持つ。未定義 field は拒否する：
+
+```yaml
+approved_action: commit_execution_delegation
+delegated_action: commit
+delegated_to: llm
+approved_by: user
+nonce: <challenge nonce>
+target_digest: <commit-approval-v1 digest>
+staged_file_set_digest: <sha256 of canonical staged file paths and modes>
+staged_content_approval_digest: <sha256 of canonical commit-approval.json content>
+challenge_path: .reviewcompass/runtime/approvals/commit-approval-challenge.json
+approval_record_path: .reviewcompass/runtime/approvals/commit-approval.json
+created_at: <UTC ISO-8601>
+expires_at: <challenge expires_at>
+explicit_instruction: <normalized explicit commit instruction>
+instruction_sha256: <sha256 of normalized instruction>
+attestation_type: commit_execution_delegation_nonce_binding
+guarantee_scope: stdin_text_instruction_bound_to_commit_approval_not_ui_utterance_proof
+consumed: false
+invalidated: false
+```
+
+`created_at` は UTC ISO-8601 文字列とし、`expires_at` は challenge と同じ値にする。delegation record の有効期限は challenge を超えない。`nonce`、`target_digest`、`staged_file_set_digest`、`staged_content_approval_digest`、`expires_at` が challenge / staged 内容承認 record / 現在の index と一致しない場合は形式不正として fail-closed にする。schema には `llm`、`provider`、`model`、`model_id`、`proxy_model_id` のように操縦主体を表すフィールドを受け入れない。判定は LLM / provider / model 名に依存しない。`attestation_type` は `commit_execution_delegation_nonce_binding`、`guarantee_scope` は `stdin_text_instruction_bound_to_commit_approval_not_ui_utterance_proof` の完全一致だけを許可する。この `guarantee_scope` は、stdin で受けた明示文言が nonce と staged 内容承認へ束縛されていることだけを表し、UI 発話証明、provider 証明、model 証明ではない。
+
+承認文の stdin payload は UTF-8 text として扱う。UTF-8 として解析不能、NUL を含む、空、空白のみ、または UTF-8 bytes が 256 bytes を超える場合は fail-closed とする。標準的な pipe 入力に合わせ、末尾の POSIX LF `\n` は 1 個だけ除去してよい。ただし、`CR`、`CRLF`、内部改行、2 個以上の末尾 LF は拒否する。入力は、前後の ASCII 空白と全角空白を除去し、ASCII 英字だけを小文字化し、末尾の日本語句点 `。` を 1 つだけ除去して正規化する。内部空白は畳み込まず、複数行は許可しない。全角 Latin 文字は ASCII へ正規化せず、許可文言に完全一致しないため拒否する。
+
+正規化後の許可文言は次の完全一致に限定する：
+
+- `コミット`
+- `コミットして`
+- `コミットを実行`
+- `承認`
+- `commit`
+- `commitして`
+
+正規化後の文言が上記以外の場合は fail-closed とする。特に、`次のコミットまで`、`コミット点まで`、`コミット準備`、`コミット可能なところまで`、`自律実行`、`進めて`、`続けて`、`OK` は commit 実行代行承認として扱わない。`承認` は、直前に nonce / target digest / staged 対象 / 期限が提示済みである commit approval challenge に対する 2 回目入力に限って、staged 内容承認と LLM commit 実行代行承認を兼ねる許可文言として扱う。
+
+承認文を保存する場合は、`tools.session_record_extractor.redact.redact_text` と `find_residual_secrets` の builtin rules を通す。API キー、token、secret、password、credential に相当する値を生のまま残さない。redaction に失敗した、または redaction 後に残留 secret が検出された場合は、本文を省略した delegation record を作るのではなく、delegation record 自体を作成せず fail-closed にする。通常文まで一律に秘密扱いするのではなく、秘密性のある文字列だけを redaction 対象とする。
+
+delegation record の書き込みは、保存直前に challenge / staged 内容承認 record / 現在 index / expiry を再検証してから行う。再検証後に temp file へ書き、fsync 可能な環境では file と parent directory を fsync し、同一 filesystem 内の atomic rename で確定する。部分書き込み、外部変更、書き込み中の race、保存直前の期限切れを検出した場合は delegation record を作らず fail-closed とする。
+
+commit 直前ゲートで `--execution-actor llm` が指定された場合、staged 内容承認 record / challenge の検査に加え、`.reviewcompass/runtime/approvals/commit-execution-delegation.json` を必須とする。gate は commit 実行直前に challenge、staged 内容承認 record、delegation record、現在の index を再読込し、strict schema、`approved_action=commit_execution_delegation`、`delegated_action=commit`、`delegated_to=llm`、`approved_by=user`、nonce / target digest / staged file set digest / staged 内容承認 digest / expiry 一致、未期限切れ、未消費、未 invalidated、禁止 LLM/provider/model 系 field 不在、`explicit_instruction` の許可文言一致、`attestation_type`、`guarantee_scope` を検査する。欠落・形式不正・unknown field・不一致・期限切れ・消費済み・invalidated・不許可文言はいずれも DEVIATION として commit を遮断する。人間が自分で commit を実行する `--execution-actor human` では execution delegation は不要である。
+
+commit 成功後は、staged 内容承認 record / challenge と同じ commit approval 消費処理で delegation も再利用不能にする。consume 永続化失敗後は、次回以降の gate で同じ approval / challenge / delegation を拒否し、新しい承認なしに再利用させない。
+
+`guarded-git-commit.py --approval-nonce --approval-source-text-line-stdin` は、同じ nonce に対する有効な staged 内容承認 record と delegation record が既にある場合、approval record を再書き込みしない。これは、`git commit` 本体が sandbox、lock、hook、署名などの git execution failure で commit を作成できず終了した後、同一 staged exact index で wrapper を再実行したときに、既存 delegation の `staged_content_approval_digest` を壊さないためである。precheck が OK で `git commit` 本体だけが失敗した場合、wrapper は approval / challenge / delegation を consumed にせず、validation failure として invalidated にもしない。再実行時に staged exact index、nonce、expiry、approval、delegation がすべて同一なら同じ active transaction を使って commit を再試行できる。
+
+`guarded-git-commit.py` は commit precheck 通過後、`git commit` を呼ぶ直前に `git rev-parse --git-path index.lock` で解決した `index.lock` の排他作成を preflight する。`index.lock` が既に存在する場合は既存 lock の調査を促して停止し、作成が permission / sandbox 系の理由で失敗した場合は `sandbox_git_write_denied` として分類し、`required_action=rerun_commit_with_escalation` を表示して停止する。この停止では `git commit` を呼ばず、approval / challenge / delegation を consumed または invalidated にしない。`git commit` 実行後に `.git/index.lock` / permission 系エラーが返った場合も同じ分類と required action を表示し、承認は保持されたこと、staged 内容が変わらなければ再承認不要であること、sandbox 外で guarded commit を再実行する必要があることだけを利用者へ示す。sandbox 外再実行の直前 gate は既存の staged exact index / nonce / expiry / approval / delegation 再照合を再度行うため、staged 内容が変化した場合は既存 approval を使わず新しい challenge / approval からやり直す。
+
+### 3. fail-closed の既定（Req 4 受入 3）
+
+検査が結論不能な場合：
+
+- 検査スクリプトの実行に失敗した（exit code が 0 でも 1 でも 2 でもない、または stderr に致命的エラー）
+- 段集合 YAML が壊れている（YAML パースエラー）
+- 必須フィールドが欠落している
+- `feature_order` が参照する `feature-dependency.yaml` が存在しない
+
+これらの場合、ゲートを通さず必ず遮断する。判定不能を pass と解さない（fail-closed の既定）。これは「曖昧なときは止める」方針で、誤って不可逆操作を許可することによる被害を防ぐ。
+
+### 4. ゲートと補助層 C 段階 3 の関係
+
+本ゲートは検査スクリプト（補助層 C 段階 2）を内部で呼び出す。利用者または LLM が不可逆操作を要求した時点で、補助層 C の 3 段階が次の順に走る：
+
+1. **段階 1**：LLM 規律として、これから何をするかを応答内で明示し、段階 2 を呼ぶ
+2. **段階 2**：本ゲートの検査スクリプト（`check-workflow-action.py`）が走る
+3. **段階 3**：Claude Code フック機構（フェーズ 2 以降の宿題）が段階 2 を自動で呼び、逸脱なら遮断
+
+段階 3 が実装されるまでは段階 1 の規律で代用する。段階 1 と段階 3 は段階 2 を呼ぶ経路が異なるだけで、判定本体は段階 2 が単一の責務として持つ。
+
+## reopen 機械強制モデル（Reopen Mechanical Enforcement Model）— Req 5
+
+### 1. 手戻り種別の二次元表記（Req 5 受入 1、計画書 §5.6）
+
+手戻り種別は **起点フェーズ記号 ＋ 深さ** の二次元で表す：
+
+| 記号 | フェーズ | 深さの値域 |
+|---|---|---|
+| N | intent | 0 のみ（intent より上流なし） |
+| R | requirements | 0〜1 |
+| D | design | 0〜2 |
+| A | tasks | 0〜3 |
+| I | implementation | 0〜4 |
+
+深さは「起点フェーズの何段上に戻るか」を表す。例：
+
+- I-0 は実装段の整合ゲート再実施のみ
+- I-4 は実装段で発見された問題が intent まで遡る場合の全フェーズ連鎖再実施
+- D-1 は設計段で発見された問題が要件段の修正を要する場合（要件・設計の 2 フェーズ連鎖）
+
+旧表記 A／B／C／D は I-0／I-2／I-3／I-4 に対応し、旧表記で欠落していた I-1 を含めた完全二次元表記となる。
+
+### 2. trigger_map による連鎖再実施対象の決定（Req 5 受入 2）
+
+`stages/reopen-procedure.yaml` に `trigger_map` を持たせ、第3過程（連鎖再実施）で参照する。種別から再実施対象を機械的に決定する：
+
+```yaml
+- name: 該当ゲートの再実施
+  actor: llm                            # 第3過程の実行主体は LLM（trigger_map を解決して順次進行する）
+  actor_resolution: per_target_stage    # 各 trigger_map エントリの参照先段の `actor` を段定義から動的解決
+  trigger_map:
+    D-1:
+      - stages/requirements.yaml#alignment    # 参照先段の actor は当該段定義から取得（actor=llm 等）
+      - stages/requirements.yaml#approval     # 同上（actor=human）
+      - stages/design.yaml#alignment
+      - stages/design.yaml#approval
+    # 他種別（N-0／R-0〜1／D-0／D-2／A-0〜3／I-0〜4）の trigger_map は計画書 §5.6 行 457〜565 を正本参照
+```
+
+**第3過程の actor 解決規則（A-002 対処、2026-05-25 セッション 26 利用者明示承認）**：第3過程の進行ロジックは LLM が担うが、各 trigger_map エントリの参照先段（`<YAML ファイル>#<段名>` 形式）の実 actor は **当該段定義（`stages/<YAML>.yaml` の `stages` 配列のうち該当段の `actor` フィールド）から動的に解決** する。段定義の `actor` フィールドが単一正本で、trigger_map 側には actor を二重記述しない（Req 1 受入 5 の「YAML 1 箇所修正で完結」の趣旨と整合）。動的解決の挙動：
+
+- 参照先段の actor が `llm`：第3過程の進行ロジックが当該段の完了判定を実施
+- 参照先段の actor が `human`：作業を停止し、`stages/in-progress/` ファイルに「人間承認待ち」を記録して待機（Req 5 受入 3〜4）
+これにより Req 5 受入 3〜4 の機械強制が段定義 `actor` フィールドという単一正本に基づき動作する。
+
+連鎖再実施対象は「根本原因フェーズの整合ゲート」から「起点フェーズの整合ゲート」まで、上流から下流へ順に並べる。起点フェーズまで再実施することで、上流変更が下流に正しく伝播したかを機械判定できる（計画書 §5.6 連鎖再実施の対象範囲）。
+
+### 3. actor=human 段での自動停止（Req 5 受入 3〜4）
+
+LLM が trigger_map に沿って連鎖を進めるとき、`actor=human` の段（`intent.yaml#approval`、`feature-partitioning.yaml#approval`、`requirements.yaml#approval` 等）に到達した時点で **作業を停止し、`stages/in-progress/` ファイルに「人間承認待ち」を記録して待機する**。
+
+人間承認なしに次の段への進行を許さない（fail-closed、Req 5 受入 4）。これは「LLM が intent を勝手に書き換えて承認なしで進む」リスクを構造的に止めるため。
+
+待機中の `stages/in-progress/reopen-procedure-<日付>.yaml` の例：
+
+```yaml
+process_id: reopen-procedure
+started_at: 2026-05-25T14:00:00+09:00
+trigger: D-1（設計段で要件段の不整合発見）
+classification_basis: docs/reviews/reopen-classification-2026-05-25.md
+completed_steps: [第1過程：判定とフラグ差し戻し, 第2過程：正本修正]
+next_step: 第3過程：連鎖再実施
+pending_gates:
+  - stages/requirements.yaml#alignment   # actor=llm、機械判定で進行
+  - stages/requirements.yaml#approval    # actor=human、ここで停止
+  - stages/design.yaml#alignment
+  - stages/design.yaml#approval
+current_blocker: stages/requirements.yaml#approval（人間承認待ち）
+```
+
+### 4. 種別判定の根拠保存（Req 5 受入 5）
+
+reopen の第1過程で、種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md` として保存する。第3過程はこの判定ファイルを読み込んで `trigger_map` から連鎖再実施対象を決定する。
+
+種別判定根拠ファイルの最低限の構造：
+
+```markdown
+---
+date: 2026-05-25
+classifier: claude_code_main_session
+classification: D-1
+trigger_source: design/triad-review で発見した要件段の不整合
+---
+
+## 分類根拠
+- 発見段：design.triad-review
+- 影響範囲：要件段の Requirement X の語彙が design.md と矛盾
+- 上流戻り：requirements 段への修正が必須
+- 連鎖：requirements の修正後、design の再整合を要する → D-1
+```
+
+判定が後で誤りと分かった場合、reopen 自体をやり直す（`stages/in-progress/` ファイルを新しいものに置き換え、旧ファイルは削除せず証跡として保全）。
+
+### 5. 再オープン手続きの 4 過程構成
+
+本機能が管理する再オープン手続きの全体構成を、現在の 5 段ワークフロー（drafting → triad-review → review-wave → alignment → approval）に合わせて 4 つの過程で定義する。運用時の入口は `docs/operations/REOPEN_PROCEDURE.md` とし、本節は workflow-management 側の状態管理・機械判定契約を定める。各過程は「停止せず連続実行できる作業の単位」とし、人の承認点または commit 停止点で締める。
+
+| 過程 | 作業 | 停止点 |
+|---|---|---|
+| 1：判定とフラグ差し戻し | 種別判定 → trigger_map で再実施対象決定 → 根拠記録 → 進行中ファイル発行 → spec.json のフラグ差し戻し（reopened／recheck、上流・下流の対象段を false に） | フラグ差し戻しを人が承認（コミットなし） |
+| 2：正本修正 | 上流フェーズの正本を修正 | コミット（第1過程＋第2過程をまとめて） |
+| 3：連鎖再実施 | 依存順に上流→下流で再実施対象 gate を処理する。正本本文を実質修正した phase は triad-review → review-wave → alignment → approval の順に再実施し、正本本文を修正していない phase は trigger_map の pending gate に従って再確認する。各 gate の完了判定は `downstream_impact_decisions` に記録する | actor=human の approval、または人間判断が必要な blocker。全完了後にコミット |
+| 4：完了 | 整合性の最終確認 → recheck クリア → 進行中ファイルを completed へ | コミット |
+
+spec.json の `reopened`／`recheck` の更新は、`docs/operations/REOPEN_PROCEDURE.md` と commit 前検査の reopen 契約に従う。`reopened` は 6 フェーズ（intent／feature-partitioning／requirements／design／tasks／implementation）を対象とする。
+
+第3過程の進行中状態では、`pending_gates` は「これから処理する残 gate」として扱う。完了した gate は `pending_gates` から外し、`completed_gates` と `downstream_impact_decisions` に記録する。監査用に全体集合を固定したい場合は `required_gates` を併記できる。reopen 完了時の機械検査は `pending_gates`、`completed_gates`、`required_gates` の和集合を対象に、各 gate が `downstream_impact_decisions` で覆われていることを確認する。
+
+**`reopen-procedure.yaml` への反映**：本 4 過程構成を `stages/reopen-procedure.yaml` の段集合として静的列挙する（tasks 段 T-003／T-007 の実装対象）。trigger_map（§2）は本構成の第3過程（連鎖再実施）で参照される。
+
+本節により、tasks.md T-003／T-007 が参照する再オープン手続きの段集合を design.md に明示する。
+
+### 6. 後追い intent の下流再展開モデル（Req 9）
+
+既存システムに requirements／design／tasks／implementation が存在する状態で intent が後から追加または修正された場合、本機能は通常の新規開発とは別に、既存成果物へ意図を取り込むための reopen 手続きを管理する。
+
+最初に feature の受け皿を判定する。判定では intent 文面の所属表現よりも、実装上の所有、既存 requirements／design／tasks の責務、該当コードの配置、`conformance-evaluation` が出す証拠付き候補を重視する。
+
+| 判定 | 意味 | 次の処理 |
+|---|---|---|
+| `reopen_existing_feature` | 既存 feature が受け皿になる | 該当 feature を reopen し、requirements 以降の下流段を再展開する |
+| `new_feature_required` | 既存 feature では受け止められない | feature-partitioning の候補提案に戻り、新規 feature 作成を判断する |
+| `human_decision_required` | 機械的に決められない | `current_blocker` に人間判断待ちを記録して停止する |
+
+既存 requirements に似た記述があることは、処理終了の根拠にしない。受け皿がある場合は、その feature の requirements／design／tasks／implementation を上流から順に確認し、各段で「既存十分」「仕様追記が必要」「設計衝突候補」「下流影響候補」「実装変更候補」を記録する。受け皿がない場合は、既存文書を無理に解釈せず、新規 feature 分割に戻す。
+
+第3過程では、`pending_gates` は review／review-wave／alignment／approval などの正式 gate を表す。`pending_gates` の先頭が `stages/<phase>.yaml#triad-review` であっても、当該 phase の正本本文をまだ起草していない場合、`next` は triad-review ではなく `run_reopen_drafting` を返す。起草完了は `drafting_completed_gates` または `completed_gates` の `stages/<phase>.yaml#drafting` で判定する。これにより、レビューを先に実施してから本文を直す逸脱を防ぐ。
+
+第2過程の正本修正後に `commit_stop_point: true` が立っている場合、`pending_gates` は将来予定として残っていても active gate ではない。`next` は `required_action=commit_stop_point` を返し、`next_pending_gate`、`phase`、`stage`、`active_gate` を null にする。commit stop point を処理して構造化 ledger と step transition が完了した後だけ、第3過程の drafting / gate selector が動作する。
+
+`conformance-evaluation` から受け取る候補は、少なくとも次の項目を持つ評価記録として扱う。
+
+| フィールド | 内容 |
+|---|---|
+| `feature` | 候補が関係する feature |
+| `phase` | 候補が関係する phase（requirements／design／tasks／implementation） |
+| `classification` | `existing_sufficient`／`spec_update_candidate`／`design_conflict_candidate`／`downstream_impact_candidate`／`implementation_change_candidate` |
+| `code_refs` | 判断根拠となるコード参照 |
+| `existing_spec_refs` | 既存仕様側の参照 |
+| `reasoning_summary` | 候補抽出理由の短い説明 |
+| `needs_human_decision` | 人間判断が必要か |
+
+本機能はこれらの候補を生成しない。候補の生成とコード由来の証拠抽出は `conformance-evaluation` が担い、本機能は候補を reopen 手続きの入力として検証・記録・順序化する。
+
+下流判断は `downstream_impact_decisions` に記録する。各判断は `gate`、`feature_scope`、`decision`、`rationale`、`evidence`、`decision_actor`、`decision_source` を持つ。`decision` には既存語彙である `affected_update_required`、`existing_sufficient`、`no_impact`、`approved`、`proxy_approved` を使い、未定義語彙をその場で増やさない。衝突候補や人間判断候補がある場合は `current_blocker` を設定し、利用者承認または判断材料提示で停止する。
+
+dogfooding 中に workflow 手続き自体の欠陥が見つかった場合は、通常の reopen 候補として処理しない。`process_id: maintenance` の side track 進行中ファイルを作り、`mainline_blocked_by`、`allowed_scope`、`allowed_files`、`completion_conditions` を明示してから修復する。side track の開始と終了は利用者に明示し、終了後に本線の reopen 状態へ戻る。
+
+## session 跨ぎ状態管理モデル（Session-Spanning State Model）— Req 6
+
+### 1. 進行中状態ファイルの構造（Req 6 受入 1〜2）
+
+現在進行中の手続きは `stages/in-progress/<process_id>-<日付>.yaml` で表す。ファイル名は「手続き ID」と「開始日付」で一意化する。
+
+最低限のフィールド（Req 6 受入 2）：
+
+| フィールド | 内容 |
+|---|---|
+| `process_id` | 手続きの識別子（`reopen-procedure`／`requirements-review-wave` 等） |
+| `started_at` | 開始時刻（ISO 8601） |
+| `trigger` | 開始の契機（人間可読の短い説明） |
+| `completed_steps` | 完了済みステップの番号リスト |
+| `next_step` | 次に実施すべきステップの番号 |
+| `pending_gates` | 残ゲートのリスト（`stages/<ファイル>#<段名>` 形式） |
+| `completed_gates` | 完了済みの正式 gate |
+| `drafting_completed_gates` | 本文起草が完了した drafting 段。review gate より前の起草漏れ防止に使う |
+| `active_reopen_scope` | 現在 reopen 中の正本変更対象。feature、phase 範囲、開始 gate、終了条件を持つ |
+| `active_impact_review_scope` | 正本変更対象ではないが影響確認が必要な feature / phase 範囲。flag を false に戻さない確認対象 |
+| `downstream_impact_decisions` | 下流影響判断の記録。gate、feature_scope、decision、rationale、evidence、decision_actor、decision_source を持つ |
+| `current_blocker` | 人間判断や承認待ちで停止している位置 |
+
+任意の追加フィールド：`classification_basis`（reopen の場合、種別判定根拠ファイルへのリンク）、`escalation_status`（通知済みか否か）など。
+
+`active_reopen_scope` と `active_impact_review_scope` は active scope の正本である。`spec.json.reopened` は過去に reopen した履歴フラグであり、active scope の正本ではない。`next --json` は reopen 中に `stages/in-progress/reopen-procedure-*.yaml` を読み、これら 2 フィールドから `next_action.reopen_scope` と `next_action.impact_review_scope` を生成する。両フィールドが欠落している、`pending_gates` / `completed_gates` / `downstream_impact_decisions` と矛盾する、または `spec.json` の false 化対象と整合しない場合、`next --json` は通常進行を返さず `repair_workflow_state` または `DEVIATION` を返す。
+
+reopen 開始時は、種別判定と trigger_map 解決後に `active_reopen_scope` と `active_impact_review_scope` を初期化する。連鎖再実施中は gate 完了ごとに `pending_gates`、`completed_gates`、`downstream_impact_decisions` を更新するが、scope 自体は利用者判断または repair workflow なしに拡張・縮小しない。reopen 完了時は、`pending_gates` が空で、`required_gates` がある場合は全件が `completed_gates` または `downstream_impact_decisions` で覆われ、active scope 全体の downstream impact が記録済みであることを確認してから、in-progress record を completed へ移す。この移動により active scope は閉じる。
+
+通常の `next_action` と異なる side track、または `next` 判定自体の欠陥修復に着手する場合は、`process_id: maintenance` の進行中ファイルを先に作成する。maintenance 進行中ファイルは、少なくとも `trigger`、`mainline_blocked_by`、`allowed_scope`、`allowed_files`、`completion_conditions` を持ち、本筋が何によって一時停止しているか、どの範囲だけを修復してよいか、どの条件で本筋へ戻れるかを明示する。
+
+### 2. session 開始時の標準フロー（Req 6 受入 3）
+
+session 開始時、次を順に行う：
+
+1. `TODO_NEXT_SESSION.md` を読み、全体の到達点を把握
+2. 直近の `docs/sessions/session-*.md` を読み、TODO に圧縮された経緯の詳細を確認
+3. `git log --oneline -10` ／ `git status` で直近の到達点と未コミット変更を確認
+4. 検査スクリプトを `stages/*.yaml` 全件に走らせる（フェーズ 1 段階では人手で `check-workflow-action.py` を呼ぶ）
+5. `stages/in-progress/` の有無を確認
+6. 進行中手続きがあれば、それを優先的に完了させる（無視して新規作業を始めない）
+7. 完了済み・未着手の状態に基づき、次の作業を決定
+
+本フローは運営ガイド `docs/operations/SESSION_WORKFLOW_GUIDE.md` §1 必読フローと一体運用する。
+
+### 3. セッション記録の保存（Req 6 受入 6）
+
+原則として毎 session、特に重要な判断・承認・レビュー結果・修正経緯が発生した session は、セッション終了時または重要判断後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md` へ要約記録を残す。記録は会話全文の逐語ログではなく、後で判断経緯を再構成できる運用記録とする。`<N>` は `docs/sessions/` に存在する既存の最大セッション番号に 1 を加えた番号とし、同じ番号を再利用しない。1 session につき 1 ファイルとし、同一 session 内の重要判断は同じファイルへ追記する。並行 session や未コミット作業により採番が衝突した場合、メインセッション LLM は既存記録・git 状態・未コミット差分を確認し、利用者が採番を確定するまで正式な新規セッション記録を作成しない。採番確定前に記録が必要な場合は、`docs/sessions/drafts/session-<YYYY-MM-DD>-<short-topic>.md` に一時草案を置き、正式番号確定後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md` へ移動する。移動後は draft ファイルを残さず、正式ファイルに草案内容が統合済みであることを確認する。
+
+メインセッション LLM はセッション記録の草案作成責任を持つ。利用者判断の引用・承認範囲・未確定事項に曖昧さがある場合は、記録前に利用者へ確認する。コンテキスト切れや中断により当該 LLM が記録できない場合、次 session が草案を引き継ぐ。草案がない場合は、TODO、review-run、approval record、git diff から経緯を再構成して記録する。
+
+`TODO_NEXT_SESSION.md` は次セッション開始時の入口メモであり、詳細経緯の正本ではない。詳細経緯は `docs/sessions/`、API レビューの raw/parsed/triage は各 review-run ディレクトリ、承認記録は approval record に分けて保持する。
+
+### 4. 完了時の移動（Req 6 受入 4）
+
+手続きが完了したら、`stages/in-progress/<process_id>-<日付>.yaml` を `stages/completed/` に移動するか削除する。移動を採用する利点は「過去の手続きの記録が残り、事後監査に使える」こと、削除を採用する利点は「ディレクトリが肥大化しない」こと。本フェーズでは移動を既定とし、定期的に古いものを `docs/archive/in-progress/` 配下に退避する運用とする。
+
+### 5. 進行中状態と不可逆操作の関係（Req 6 受入 5）
+
+`stages/in-progress/` に何かファイルがある状態での不可逆操作実行を遮断する（fail-closed、Req 4 と整合）。これは「進行中の手続きを放置して別の不可逆操作を始める」失敗モードを防ぐため。
+
+例外：進行中状態ファイル自体の更新（次ステップ進行、人間承認の記録）は遮断対象外。これらは進行中の手続きを進めるための更新であり、別の不可逆操作とは区別する。
+
+## 多層防御の位置付けモデル（Multi-Layered Defense Positioning Model）— Req 7
+
+### 1. 第 1 層の限界の明文化（Req 7 受入 1）
+
+本機能（軽量版 YAML 検査機構）は多層防御の **第 1 層** に位置付ける。第 1 層が解決しない失敗モードを次のように明文化する：
+
+| 失敗モード | 発生原因 | 補完する層 |
+|---|---|---|
+| 中身の空疎 | 必須節は存在するが内容が「特に問題なし」のみ | 第 3 層（フェーズ境目の利用者監査）、第 4 層（定期事後監査） |
+| 検査スクリプト呼び出し依存 | LLM が検査を呼ばない、結果を読まない | 第 2 層（git フック）、補助層 C 段階 3（Claude Code フック） |
+| in-progress ファイルの自己申告性 | 「進行中」「次ステップ」を書くのは LLM 自身、嘘・古い・欠落の余地 | 第 3 層、第 4 層 |
+| 文脈圧力下での規律低下 | 規律ファイルを増やすほど LLM が優先度を下げる | 第 5 層（処理表面積の抑制方針）、補助層 C |
+
+これらは多層防御の他層で補完し、第 1 層単独で 100% の遵守を達成しようとしない。
+
+### 2. 第 2〜5 層への参照（Req 7 受入 2、計画書 §5.8）
+
+第 2〜5 層はフェーズ 4 以降の宿題として参照する：
+
+- **第 2 層：git フックによる外部強制**：検査スクリプトを `pre-commit`／`pre-push` フックに組み込み、LLM が「呼ばない」選択を構造的に不可能にする
+- **第 3 層：フェーズ境目の利用者監査**：フェーズの境目で利用者が検査結果を必ず確認する手続きを必須化
+- **第 4 層：定期事後監査**：一定 session 数または期間ごとに独立 LLM で過去証跡全件を監査
+- **第 5 層：処理表面積の抑制方針**：「新規規律を追加するときは既存規律 1 つ以上を統廃合する」等の縮減義務
+
+本機能は第 2〜5 層の具体実装を持たないが、設計時に **将来導入する余地を残す** ことを明示する。例：段集合 YAML の `completion_predicate` 述語集合は第 2 層の git フックから直接呼び出せる構造とする（CLI からもフックからも同じスクリプトを呼ぶ）。
+
+### 3. 補助層 A／B／C の位置付け（計画書 §5.8、§5.12、§5.13）
+
+第 1 層と第 2 層の中間に補助層を 3 つ置く：
+
+- **補助層 A：人間代役機構（§5.12）**：軽い判断を外部モデルが代行、本人関与の頻度を下げる
+- **補助層 B：人間への通知機構（§5.13）**：本人判断が必要な場面で外部チャネル（メール・LINE 等）に即時通知
+- **補助層 C：処理開始時のワークフロー事前検査（§5.8 補助層 C、3 段階共存モデル）**：本機能の検査スクリプトがその実体
+
+補助層 C は本機能の検査スクリプトを段階 2 として持ち、段階 1（LLM 規律）と段階 3（Claude Code フック）から呼ばれる。本機能は段階 2 の実装を所有し、段階 1 の規律化と段階 3 のフック実装は別経路で進める。
+
+### 4. 第 5 層運用ルールの反映（Req 7 受入 3）
+
+第 5 層（処理表面積の抑制方針）の運用ルール「新規規律を追加するときは既存規律 1 つ以上を統廃合する」を本機能の運用ルールに反映する。フェーズ 4 までは利用者の意識に依拠（機械強制は第 5 層導入時に検討、Req 7 受入 3）。
+
+本機能の段集合 YAML を変更する場合：
+
+- 段の追加：既存段の統廃合または明確な根拠を運用文書に記録
+- 段の改廃：影響を受ける機能（依存先・依存元）の確認と整合
+- 述語の追加：既存述語との重複確認、検査スクリプトの拡張
+
+これらは現時点では運用上の規律としてのみ存在し、機械検査の対象ではない。
+
+自律・並列実行を使う場合は、第 1 層の補助的な安全契約として自律 plan と履歴 ledger を持つ。自律 plan は run ID、依存順、recheck 対象、許可パス、期待テスト、停止条件を宣言し、履歴 ledger は各作業単位の実行結果、統合判断、検証コマンド、未解決 blocker を追跡する。新しい依存、未記録依存、上流 recheck の下流反映が必要になった場合は、当該作業単位を進めず統合判断へ戻す。
+
+### 5. 第 1 層の限界の運用文書への明示（Req 7 受入 4）
+
+ワークフロー事前検査の限界を運用文書（`docs/operations/WORKFLOW_PRECHECK.md`）に明示し、人の期待値を整える。「本検査スクリプトは中身の妥当性を判定しない」「結論不能なら必ず遮断する」「必要に応じて hook 連携や人の確認で補完する」の 3 点を最低限明示する。
+
+## 機能依存マップモデル（Feature Dependency Map Model）— Req 8
+
+### 1. 一元保管先（Req 8 受入 1、計画書 §5.5 選択肢 X）
+
+機能間の処理順と依存関係を `feature-dependency.yaml` に一元化する。各フェーズの YAML はこのファイルを参照し、重複させない。開発リポジトリでは `stages/feature-dependency.yaml` に置き、対象アプリでは feature-partitioning の承認結果を `.reviewcompass/feature-dependency.yaml` として実体化する（テンプレートは `templates/specs/feature-dependency.yaml.template` として配布。設計記録 2026-06-10 §3.5 由来、2026-06-12 反映）。
+
+### 2. ファイル構造（Req 8 受入 2）
+
+最低限のフィールド：
+
+```yaml
+features:
+  foundation:
+    depends_on: []
+  runtime:
+    depends_on: [foundation]
+  evaluation:
+    depends_on: [foundation, runtime]
+  analysis:
+    depends_on: [foundation, evaluation]
+  workflow-management:
+    depends_on: [foundation, runtime, evaluation, analysis]
+  self-improvement:
+    depends_on: [foundation, workflow-management]
+  conformance-evaluation:
+    depends_on:
+      foundation: hard                  # 連想配列構造、依存種別あり
+      runtime: review
+      evaluation: review
+      workflow-management: review
+
+feature_order:
+  - foundation
+  - runtime
+  - evaluation
+  - analysis
+  - workflow-management
+  - self-improvement
+  - conformance-evaluation
+```
+
+機能順のキー名は `feature_order` とする（旧称 `phase_order`。語彙調停 案 A、MLE-DEC-001、2026-06-12 利用者決定。過去記録・計画書・分割提案書の `phase_order` 表記は書き換えず、requirements.md Requirement 8 受入 2 の由来注記で読み解く）。
+
+**機能順 7 機能採用の根拠（A-001 対処、2026-05-25 セッション 26 利用者明示承認）**：計画書 §5.5 の `phase_order` 構造例（行 376〜383）には self-improvement が記載漏れで 6 機能のみ列挙されている。本設計は次の確定事項に基づき機能順に self-improvement を含めて **7 機能** を採用する：
+
+- 計画書 §3.1（self-improvement の workflow 層改善を第 1 期に含める確定）
+- 計画書 §5.16（self-improvement の全面書き直し方針）
+- A-007 案 2（2026-05-23 利用者承認による本機能と self-improvement の権限分散調停、規律ファイルの提案権と実体変更権の分離）
+- 全 7 機能の requirements 段 approval 完了（2026-05-24 セッション 23 末）
+
+計画書 §5.5 の構造例の補正は計画書全体管理の責務範囲で、本機能の責務範囲外。本セッション末尾の TODO_NEXT_SESSION.md に「計画書 §5.5 phase_order の self-improvement 追記」を補正課題として記録する。
+
+`depends_on` は次の 2 形式を許容する（Req 8 受入 2 後段）：
+
+- **単純リスト構造**：`[foundation, runtime]` のように依存先を列挙するだけ
+- **連想配列構造**：`foundation: hard, runtime: review` のように依存種別（`hard`／`review`）を併記。`conformance-evaluation` のように依存性の強度を区別する機能で使う
+
+依存種別の語彙：
+
+- `hard`：その機能の仕様が変わると本機能の仕様も影響を受ける（必須整合）
+- `review`：その機能の出力を本機能がレビュー対象とする（参照関係）
+
+### 3. 各フェーズ YAML からの参照（Req 8 受入 3）
+
+各フェーズの YAML（`requirements.yaml`／`design.yaml`／`tasks.yaml`／`implementation.yaml`）の草案段とレビュー波段は `feature_order: feature-dependency.yaml#feature_order` の参照を持つ。検査スクリプトはこの参照を解決して機能名を順に展開する。
+
+### 4. 変更の一元化（Req 8 受入 4）
+
+機能の追加・削除や依存関係の変更は本ファイル 1 箇所の修正で完結する。各フェーズの YAML を個別に修正する必要はない。これにより、新機能追加時の整合漏れを構造的に防ぐ。
+
+### 5. 所有者の明示（Req 8 受入 5）
+
+機能間依存マップの所有者は本機能（`workflow-management`）であり、`runtime`／`evaluation` 等の他機能は再定義せず参照のみとする。他機能の design.md／tasks.md で「依存関係を独自に定義する」記述があれば、本機能の `feature-dependency.yaml` を正本として参照する形に統一する。
+
+### 6. パース仕様と依存種別の機械処理上の意味（A-004 対処、2026-05-25 セッション 26 利用者明示承認）
+
+検査スクリプトが `feature-dependency.yaml` を解析する際の規則と、依存種別（`hard` ／ `review`）の機械処理上の意味を次のとおり確定する。
+
+**パース仕様**：
+
+- `depends_on` の値が YAML パーサで配列（`list`）として解釈できる場合は **単純リスト構造**（例：`[foundation, runtime]`）と判定する
+- `depends_on` の値が YAML パーサで辞書（`dict` ／ `mapping`）として解釈できる場合は **連想配列構造**（例：`foundation: hard, runtime: review`）と判定する
+- 上記以外の型（文字列、整数、null、ネスト構造等）は結論不能とし、検査スクリプトは DEVIATION（exit 2）を返す（fail-closed、Req 2 受入 4 と整合）
+
+**連想配列構造の値域**：
+
+- 値は `hard` または `review` の 2 値のみ許容する
+- それ以外の値（例：`weak`、`strong`、空文字、null）は結論不能とし、DEVIATION を返す
+- 将来の依存種別追加（例：`weak`）は、本設計の本節と検査スクリプト実装の両方を同時に更新する
+
+**依存種別の機械処理上の意味**：
+
+- **`hard`（強依存）**：当該依存先の仕様が変更された場合、本機能の `spec.json` の `recheck.upstream_change_pending` を `true` に設定し、`recheck.impacted_downstream_phases` に本機能の下流フェーズ（design／tasks／implementation）を追記する。これにより本機能の下流フェーズの再検査が要求される（reopen 手続きの軽量版として動作）
+- **`review`（レビュー対象）**：当該依存先は本機能のレビュー対象として参照されるのみで、依存先の変更は本機能の `recheck` を自動発火しない。レビュー記録の作成時に依存先の最新状態を読むが、依存先の変更が本機能の再検査を必須化しない
+
+**判定述語との関係**：`depends_on_resolves_correctly` 述語は値域チェックのみを担い、依存先の変更検知と `recheck` の更新発火は別の機構（tasks 段で実装、本設計時点ではフェーズ 2 以降の宿題）が担う。本設計では「述語が値域を判定できる」「機械処理上の意味が確定している」までを設計範囲とし、変更検知ロジックの実装は先送り論点として §先送り論点に追加する。
+
+### 7. feature 一覧の解決と立ち上げ案内（Req 8 受入 6〜8、2026-06-12 反映）
+
+検査スクリプトの `next` サブコマンドは、feature 一覧と機能順をソース直書き定数ではなく
+`feature-dependency.yaml` の `feature_order` キーから解決する（`resolve_feature_order`）。
+ソース直書きの既定機能順は後方互換の既定値であり、`next` では解決結果で上書きされる。
+
+- **探索順**：ツール実行時のカレントディレクトリを基準に、相対パス
+  `.reviewcompass/feature-dependency.yaml` → `stages/feature-dependency.yaml` →
+  `feature-dependency.yaml` の順で確認し、最初に存在したファイル 1 つだけを読む
+  （`FEATURE_DEPENDENCY_SEARCH_PATHS`、`tools/check-workflow-action.py` 内の定数）。親ディレクトリへの遡上探索は行わない。
+  第一探索先の `.reviewcompass/` 配置は「ReviewCompass の物は `.reviewcompass/` に閉じる」原則と
+  整合させるための対象アプリ向け規約で、開発リポジトリは既存の `stages/` 配置のまま互換とする。
+  直下の `feature-dependency.yaml` は標準 2 配置に該当しない配置への後方互換の受け皿であり、
+  標準配置としては使わない（requirements Requirement 8 受入 6 と整合。2026-06-12 requirements
+  triad-review クラスタ A・F1 の精密化を design へ追従）。遡上探索を行わない根拠：親ディレクトリに
+  別の `feature-dependency.yaml` が存在すると、対象アプリ内の入れ子作業ディレクトリや一時ディレクトリ
+  からの実行で意図しないファイルを拾う恐れがあり、解決元の予測可能性（カレントディレクトリ基準の
+  3 パスだけを見れば解決元が確定する）を優先する。
+- **立ち上げ案内**：ファイル不在または `feature_order` 未定義の場合、エラーではなく `next_action.kind: feature_definition_required`（verdict OK／exit 0）を返し、
+  intent／feature-partitioning の実施と、承認された分割結果（依存の根拠と順序の導出を含む）の
+  記録先を案内する。`current_state.feature_dependency_source` に解決元（不在時 null）を含める。
+  **判断 3（fail-closed 全面採用）との両立**：判断 3 は「不可逆操作を誤って許可することによる被害」を
+  防ぐ原則であり、本案内は spec.json 更新・commit・push 等のいかなる操作も許可せず、通常 workflow の
+  次タスク判定も返さない。つまり「作業を進ませない」という安全側の性質は保たれており、fail-closed が
+  守る対象（不可逆操作の誤許可）に抵触しない。立ち上げ案内を DEVIATION にしないのは、対象アプリの
+  初期状態（feature 一覧が未定義であることが正常）で利用者を次の正規手順（intent／feature-partitioning）
+  へ誘導するためである。パース不能（ファイル破損）は未定義（初期状態）と区別して遮断するため
+  （次項「パース不能の遮断」）、破損が案内で覆い隠される弱点は解消済みである（MLE-DEC-005）。
+- **パース不能の遮断**：探索で選ばれた（最初に存在した）1 ファイルが、YAML として読めない、
+  空（内容なし）、または最上位が連想配列でない場合、未定義と区別して `next_action.kind: unknown`
+  （既存の判定種別。整合検査と同じ kind）を返し、破損ファイルのパスと内容確認を促す理由
+  （空の場合は `feature_order` の記録を促す理由）を `reasons` 配列に列挙して DEVIATION
+  （exit code 2、fail-closed）とする。これはファイルそのものの破損・構造異常の検査であり、
+  読み込み後の値の整合検査（次項）より先に判定する。破損を立ち上げ案内で覆い隠さない
+  （MLE-DEC-005、2026-06-12 利用者決定。当初 FUP-2026-06-12-001 として追跡したが同日の
+  利用者決定で遮断分離を実施。Req 8 受入 9 と整合）。
+- **整合検査**：`feature_order` と `depends_on` の整合（依存される機能［依存先］を依存する機能
+  ［依存元］より先に置くこと、循環依存なし）を `validate_feature_order_consistency` が検査し、
+  違反時は `next_action.kind: unknown` を返して違反内容を出力の `reasons` 配列に列挙し、
+  verdict DEVIATION（exit code 2、fail-closed）とする。失敗の種類で挙動を分ける：
+  不在・未定義 → 案内（OK）、パース不能・整合違反 → 遮断（DEVIATION）。
+- **判定点の登録**：`feature_definition_required` は `WORKFLOW_DISCIPLINE_MAP.yaml` の
+  `next_action_kind` 判定点として登録し、effective prompt の生成対象とする
+  （登録は 2026-06-12 の本変更セットで実施済み。書き込み後検証 3 系統を通過、
+  manifest post-write-2026-06-12-004）。
+
+実装：`tools/check-workflow-action.py`（コミット cde1f5c、maintenance side track
+`stages/completed/maintenance-2026-06-11-feature-order-generalization.yaml`、TDD テスト
+`tests/tools/test_check_workflow_action.py`）。本節は実装先行で確立した契約の設計追認である。
+
+## review-wave 要約コマンドモデル（Review-Wave Summary Command Model）— Req 10
+
+reopen R-0（2026-06-14、D-001）で新設。review-wave（機能横断段）の横断確認で使う指標を、手動集計ではなく機械生成する。Req 1 の「段集合 YAML の静的列挙」と Req 2 の検査スクリプトを土台にした、機能内の静的検査である（実装は仕様確定後に TDD で行う正順）。
+
+### 1. 配置と原則（Req 10 受入 1・5）
+
+- サブコマンド `review-wave-summary` を `tools/check-workflow-action.py` に追加する（`next`／`spec-set`／`commit` と同じ CLI 体系。Req 2 の検査スクリプトのサブコマンド）。
+- 読み取りに徹し、`spec.json`・フェーズ状態・トリアージを書き換えない（Req 3 受入 5・Req 4 受入 1 と整合）。書き込みは自身の要約出力に限る。
+
+### 2. 読み取り元と指標の算出定義（Req 10 受入 1・2）
+
+| 指標 | 読み取り元 | 算出定義 |
+| --- | --- | --- |
+| feature coverage | 各 feature の spec.json `workflow_state` | feature ごとに、全 phase × 全 stage のうち true の比率、および「全 phase approval 済みか」。`FEATURE_ORDER` の全 feature を対象。 |
+| phase／stage 状態 | 同上 | feature × phase × stage の真偽をそのまま展開。 |
+| triage 未解決／draft／human_required 件数 | review-run の `triage.yaml` 群（`.reviewcompass/evidence/review-runs/*/triage.yaml`、互換で旧 `.reviewcompass/specs/_cross_feature/reviews/*/triage.yaml`） | unresolved／human_required は `items[]` の `decision_status` で集計、draft は run 単位（補足の判定規則を正とする）。 |
+| recheck 状態 | 各 feature の spec.json `recheck` | `upstream_change_pending` と `impacted_downstream_phases` をそのまま。 |
+| 依存状況 | `feature-dependency.yaml` の `feature_order` と各 feature の依存記述 | `feature_order` を提示し、上流が未 approval の依存（未充足依存）を列挙。解決は Req 8 受入 6 の探索順を再利用。 |
+| carry-forward 未消化件数 | carry-forward register（`learning/workflow/carry-forward-register/*.yaml`） | `items[]` のうち `status` が `resolved` 以外の件数。 |
+
+補足（集計規則）：
+
+- **triage の重複排除**：重複排除は `triage.yaml` ファイル（＝`run_id`）単位で行う。同一 `run_id` の `triage.yaml` が新旧両パスに見つかった場合は、新パス（`evidence/review-runs/`）を優先して 1 ファイルだけ採用する（旧パスは互換読みのみ）。各 finding item は単一の run に属するため、item レベルでの状態競合（同一 item が複数 run で異なる状態）は生じない。
+- **triage 件数の判定規則**（定義はここを正とする）：
+  - `unresolved`（item 単位）＝全 run の `items[]` のうち `decision_status` が `decided` 以外の item 数（`review_triage` の既存定義に一致）。
+  - `human_required`（item 単位）＝全 run の `items[]` のうち `decision_status: human_required` の item 数。
+  - `draft`（**run 単位**）＝`triage.yaml` の `triage_status: draft` である run の数。item 個別の draft は数えない。
+  - unresolved は human_required を内包しうる（重なりを許す内訳。合計は取らない）。draft は run 単位のため item 単位の 2 つとは集計軸が異なる点を Markdown でも明示する。
+- **carry-forward 未消化**：register の各 item の `status` が `resolved` 以外（`in_progress`・`deferred`・未設定などを含む）を未消化として数える。
+
+各指標の集計には既存関数（`load_all_feature_specs`、`feature_order` 解決、`collect_recheck_items`、`review_triage` の集計）を再利用し、二重定義を避ける。
+
+### 3. 出力形式とスキーマ（Req 10 受入 3）
+
+- `--json` で JSON、既定は Markdown。両者は同一情報源から生成し**情報同等**とする。
+- JSON の安定スキーマ（キー名・型を固定。追加は後方互換＝既存キーを変えない）：
+
+```
+{
+  "schema_version": int,                  # 本設計の初版は 1
+  "generated_at": str|null,               # ISO8601。実行時刻は呼び出し側が渡す。省略時 null
+  "status": "ok" | "insufficient",
+  "features": [                           # FEATURE_ORDER 順
+    {
+      "name": str,
+      "coverage": {"completed": int, "total": int, "all_approved": bool},
+      "phases": {                         # phase 名をキーとするオブジェクト
+        "<phase>": {"<stage>": bool, ...}  # 各 phase の stage→真偽
+      },
+      "recheck": {"upstream_change_pending": bool, "impacted_downstream_phases": [str]}
+    }
+  ],
+  "triage": {"unresolved": int, "draft": int, "human_required": int},
+  "dependencies": {"feature_order": [str], "unmet": [{"feature": str, "depends_on": str}]},
+  "carry_forward": {"unresolved": int},
+  "errors": [str]                         # insufficient 時に対象と理由を列挙
+}
+```
+
+- `features[].phases` は **phase 名をキーとするオブジェクト**（配列ではない）で、各値は stage 名→真偽（bool）のオブジェクト。stage キーの集合はその phase が spec.json `workflow_state` に持つ stage 群をそのまま用いる（requirements／design／tasks／implementation は drafting・triad-review・review-wave・alignment・approval、intent は drafting・review・approval、feature-partitioning は candidate-proposal・approval）。bool は当該 stage の完了真偽。spec.json に存在しない stage はキーに含めない。
+- **`status` の判定基準**（必須記録と任意記録を区別）：
+  - **必須記録**＝全 feature の spec.json と feature-dependency.yaml。これらの欠落・解析不能は `insufficient`。
+  - **任意記録**＝triage.yaml 群と carry-forward register。これらの**非在**（glob ゼロ件・ディレクトリ/ファイル欠落＝レビュー未実施の初期状態）は当該件数を 0 として正常に扱い `ok` を妨げない（非在を欠落と同一視しない）。ただし**存在するが解析不能**な任意記録があれば `insufficient`。
+  - 必須記録がすべて読め、存在する任意記録もすべて解析できたとき `ok`。
+- Markdown は同じ項目を見出し＋表で表し、JSON と情報同等とする。
+
+### 4. fail-closed（Req 10 受入 4）
+
+- **不能とする入力範囲（design で一意化）**：(a) **必須記録**（spec.json・feature-dependency.yaml）の欠落、(b) 読み取った記録（必須・任意いずれも）が YAML として解析不能（パース不能）、(c) 最上位が連想配列でない等の構造異常。**任意記録**（triage.yaml 群・carry-forward register）の非在は不能に含めず 0 件として扱う（§3 の status 判定と一致）。これは Req 8 受入 9（パース不能の遮断）と同型で、Req 2 受入 4（結論不能は fail）に従う。
+- これらの場合、`status: insufficient` とし、`errors[]` に対象パスと理由を列挙、**非ゼロ終了コード**を返す。**終了コード規約**は既存サブコマンド（`next`／`spec-set`／`commit`）と整合させ、`0`＝ok、`2`＝insufficient（fail-closed、DEVIATION 相当）とする。`1` は本コマンドの集計判定では使わず、想定外の実行時例外（呼び出し誤り等）にのみ割り当てる。
+- Markdown では見出しに不完全である旨を明示し、完了と誤読させない。
+- 部分的に読めた集計値があっても `status: ok` にしない（部分集計を完了扱いしない）。第 1 層の限界（Req 7・中身の妥当性は判定しない）と整合。
+
+### 5. 保存（Req 10 受入 5）
+
+- 既定は標準出力（保存しない）。オプションで自身の要約出力のみ書き出す：
+  - `--out <path>`：指定パスへ書き出す（パスは呼び出し側が決める）。
+  - `--save`：既定の保存先 `.reviewcompass/specs/_cross_feature/reviews/` に既定命名で書き出す。命名は `<generated_at の日付>-review-wave-summary.<md|json>`（`generated_at` 省略時は連番や日付の付与方法を implementation で確定）。
+- 保存先 `.reviewcompass/specs/_cross_feature/reviews/` は承認済み requirements 受入 5 で定めた現行の横断レビュー記録置き場であり、旧配置ではない（review-run 生成物の `evidence/review-runs/` とは別系統の、人が読む横断記録の置き場）。
+- いずれも spec.json・triage・phase 状態を書き換えない。自身の要約出力の書き出しは状態変更に当たらない（Req 3 受入 5・Req 4 受入 1 と整合）。
+
+### 6. implementation へ委譲する未確定事項
+
+§3 の JSON スキーマ（キー名・型・構造）は**本 design で固定する契約**であり、implementation は変更しない（将来の追加は後方互換でのみ）。implementation 段で確定するのは契約に属さない次の細部に限る：
+
+- `--save` 既定命名の連番・タイムスタンプ付与方法（`generated_at` 省略時の扱い）と、保存先ファイル名が衝突した場合の振る舞い（上書きするか・エラーにするか）。呼び出し側が保存先の一意性を保証する前提とする。
+- 既存関数の具体的な呼び出し・統合方法（`load_all_feature_specs` 等の再利用）。
+- Markdown の具体的な表レイアウト（情報同等を満たす範囲で）。
+
+## Requirement 11 設計モデル：重要決定の出典検査（Req 11）
+
+Requirement 11 は requirements フェーズで「design で確定」と明示した 6 つの事項（記録スキーマ・ロケータ表現・正規化規則・保留管理・内容なし語リスト・接続点）を本節で確定する。
+
+### 1. 重要決定の記録スキーマ（Req 11 受入 1）
+
+**配置先**：`.reviewcompass/decisions/{decision_id}.yaml`（1 決定 = 1 ファイル）。
+
+**フィールド定義**：
+
+```yaml
+decision_id: string          # プロジェクト内一意。命名則: DEC-{機能略称}-{連番3桁}  例: DEC-WM-001
+category: string             # 重要種別: irreversible_operation | discipline_change | spec_plan_change
+statement: string            # 決定文言（1 文〜数文）
+source:
+  excerpt: string            # 出典の逐語引用（会話転写から抜粋した原文）
+  session_id: string         # 転写ファイルのベース名（拡張子なし）例: 2026-06-15-claude-4e02c8a6
+                             # ※ファイル特定の正本は locator のパス部分。session_id はインデックス・メタデータ用補助
+  locator: string            # 形式: {転写ファイルパス}:{ターン番号}
+                             # 例: .reviewcompass/evidence/sessions/2026-06-15-claude-4e02c8a6.md:42
+                             # ターン番号: 転写内の ## セクションを先頭から 1 から数えた順序番号（人向け位置情報）
+                             # ※逐語照合はロケータを使わず転写全文を照合対象とする（§3 参照）
+  multiplicity: string       # single（当該決定専用）| bundled（他の決定と出典共有）
+verification_status: string  # verified | pending | unverifiable
+verified_at: string          # ISO 8601 タイムスタンプ（verified 時のみ。pending/unverifiable は省略）
+bundle_exception_id: string  # optional。multiplicity: bundled かつ例外承認済みの場合のみ
+                             # 命名則: BEX-{機能略称}-{連番3桁}  例: BEX-WM-001
+```
+
+**型制約**：
+- `category`：3 値 enum のみ。種別判定基準（§1 末尾参照）。
+- `multiplicity: bundled`：束ね検出が fail-closed する（Req 11 受入 2）。例外承認がある場合は `bundle_exception_id` フィールドを追加し、束ね例外承認手順（§2）を経て各決定の `multiplicity` を `single` に更新することを確定の必要条件とする。
+- `verification_status`：
+  - `verified`：逐語照合合格済み。`verified_at` が必須。
+  - `pending`：確定済み重要決定として扱わない。後続の確定・承認の根拠に用いない。
+  - `unverifiable`：逐語照合対象の転写ファイルが取得不能・解析不能、または必須フィールドが欠落しており機械が照合を完了できない状態。lint が内部エラー検出時に判定結果として扱う（commit を DEVIATION で遮断）。記録者が初期値として設定するのは出典が原則取得不能（口頭合意等でセッションログが存在しない）なケースに限る。
+
+**`category` 種別判定基準**（Req 11 受入 1 からの design 委任事項）：
+
+| 種別 | 対象例 | 除外例 |
+| --- | --- | --- |
+| `irreversible_operation` | コミット・プッシュ・フェーズ移行・reopen 開始 | ファイル読み取り・検査スクリプト実行 |
+| `discipline_change` | docs/disciplines/ の規律ファイル変更・内容なし語リスト拡張 | 規律の参照・説明 |
+| `spec_plan_change` | requirements.md / design.md / tasks.md の内容追加・変更、spec.json の確定的変更 | stages/in-progress/ への作業ログ追記、spec.json の段フラグ（true/false）更新のみ、進行中ファイルの next_step 記録 |
+
+**going-forward 適用**：本スキーマは新規重要決定にのみ適用し、過去の散文決定台帳は遡及移行しない（Req 11 受入 1 確定済み）。
+
+### 2. 束ね例外の扱いと記録（Req 11 受入 2）
+
+機械は `multiplicity: bundled` を検出して fail-closed（非ゼロ終了）する。例外が承認された場合のみ進行を許可する。例外の承認手順：
+
+1. 人の明示承認記録 `.reviewcompass/decisions/bundle-exceptions/{bundle_exception_id}.yaml` を別途保存する。
+   承認レコードの最低限スキーマ：
+   ```yaml
+   bundle_exception_id: string   # 例: BEX-WM-001
+   approved_by: string           # 承認者の識別子（人間のみ。proxy_model は束ね例外を承認できない）
+   approved_at: string           # ISO 8601 タイムスタンプ
+   covered_decision_ids:         # この例外が適用される decision_id のリスト
+     - string
+   rationale: string             # 束ねが避けられない理由の説明
+   ```
+2. 各決定に個別の `source.excerpt`・`source.locator`・`bundle_exception_id` フィールドを付与し、`multiplicity` を `single` に更新する（Req 11 受入 2「個別出典なしには確定させない」の機械強制）。
+3. lint は（a）承認レコードが存在し、（b）当該 `decision_id` が `covered_decision_ids` に含まれ、（c）`multiplicity: single` であること、の 3 条件をすべて満たす場合のみ通過とする。
+
+「個別出典なしには確定させない」という必要条件は design で緩めない。
+
+### 3. 逐語照合・正規化規則・保留状態管理（Req 11 受入 3）
+
+**正規化規則**（照合の前処理として両辺に適用）：
+1. Unicode NFC 正規化。
+2. 連続する空白・改行・タブを単一の半角スペースに置換。
+3. 先頭・末尾の空白を除去。
+
+**照合の対象範囲**：`source.locator` のパス部分に対応する層 1 転写ファイル（`.reviewcompass/evidence/sessions/`）の全文字列を検索する。`source.locator` のターン番号での絞り込みは行わず、全文を照合対象とする（ターン番号は人向けの位置情報であり、lint は使用しない）。
+
+**保留状態の管理と後追い確定の順序制御**：
+
+| ステップ | 主体 | 内容 |
+| --- | --- | --- |
+| 1 | 記録者 | `verification_status: pending` として記録する |
+| 2 | 作業継続 | 作業（コミット等）はブロックしない。確定済みとして扱わない |
+| 3 | SessionStart フック | セッション転写を `.reviewcompass/evidence/sessions/` に取り込む |
+| 4 | 保守担当 | `check-workflow-action.py decision-source-lint --verify-pending` を実行 |
+| 5 | lint | 逐語照合合格 → `verification_status: verified` へ更新・`verified_at` に現在日時を記録（Req 11 受入 5 の読み取り専用例外として design で明示。書き換えられるフィールドは `verification_status`・`verified_at` の 2 フィールドのみ） |
+| 5b | lint | 逐語照合**不合格** → `verification_status` を変更しない（`pending` のまま）。差分表示と非ゼロ終了のみを行う |
+| 6 | — | タイムアウト昇格なし。照合合格のみが確定の唯一の経路 |
+
+### 4. 内容なし語リスト（Req 11 受入 4）
+
+**設定ファイル配置**：`stages/decision-source-lint-config.yaml`
+
+**初期リスト**：
+
+```yaml
+empty_content_words:
+  - "OK"
+  - "ok"
+  - "承認"
+  - "了解"
+  - "はい"
+  - "Yes"
+  - "yes"
+  - "LGTM"
+  - "✓"
+  - "◯"
+  - "○"
+```
+
+**判定ロジック**：正規化後の `source.excerpt` に対して、以下の手順で判定する。
+1. 句読点・記号（。、！？）を除去する。
+2. スペース区切りでトークン化する。
+3. 全トークンが `empty_content_words` リストに含まれる場合、内容なし（fail-closed、非ゼロ終了）。
+（例：「承認！」→ 記号除去 →「承認」→ リスト一致 → fail-closed。「承認します」→「承認します」→ リスト不一致 → 通過）
+
+**リスト拡張**：規律変更扱い（Req 11 受入 4 の規定どおり人の明示承認を要する）。設定ファイル自体の変更も同じ扱いとする。
+
+### 5. サブコマンドと接続点（Req 11 受入 5・7）
+
+**サブコマンド名**：`decision-source-lint`（Req 2 サブコマンドとして提供する必須基線）。
+
+**呼び出し形式**：
+
+```
+check-workflow-action.py decision-source-lint [--all | <decision_file>]
+check-workflow-action.py decision-source-lint --verify-pending
+```
+
+- 引数なし or `--all`：`.reviewcompass/decisions/` 直下の YAML ファイルのみを検査（`bundle-exceptions/` サブディレクトリは除外する。承認レコードは decision スキーマと異なるためパース失敗→ unverifiable → commit 遮断の誤動作を防ぐ）。
+- `<decision_file>`：指定ファイルのみ検査。
+- `--verify-pending`：`verification_status: pending` の決定を再照合し、合格すれば `verified` へ更新する。ファイルを書き換える唯一の合法的な経路。Req 11 受入 5 の読み取り専用例外として design で明示的に確定する（書き換えるフィールドは `verification_status`・`verified_at` の 2 フィールドに限定）。
+
+**commit 直前ゲートへの組み込み**（Req 11 受入 7 の「設計拡張」として本 design で確定）：
+
+- **組み込む**。`commit` サブコマンドは `decision-source-lint --all` を呼び出す。
+- `verification_status: pending` の決定：WARN（commit の進行を遮断しない。AC3 のデッドロック回避）。
+- `verification_status: unverifiable`（記録が解析不能・必須フィールド欠落）：DEVIATION（fail-closed、commit を遮断）。
+- `multiplicity: bundled` かつ承認レコードなし：DEVIATION（fail-closed）。
+
+### 6. implementation へ委譲する未確定事項
+
+本節の §1〜5 のスキーマ・規則・サブコマンド構成は **本 design で固定する契約** であり、implementation は変更しない。implementation 段で確定するのは次の細部に限る：
+
+- `--verify-pending` でファイルを更新する際の安全性保証（並行書き込みの防止・失敗時の不完全書き込み防止）。
+- `bundle_exception_id` の採番規則の実装細部（予約済みの命名則 `BEX-{機能略称}-{連番3桁}` を実装で確認）。
+- 逐語不一致時の差分表示形式（どこが一致しなかったかの人向け出力。情報を含む範囲で形式を選ぶ）。
+- `decision-source-lint` の既存関数との統合方法（`load_all_feature_specs` 等の再利用可否）。
+
+## Requirement 12 設計モデル：operation registry / preflight（Req 12）
+
+Requirement 12 は、作業開始前に「正本コマンド・入力・成果物・順序・衝突・停止条件」を同じ形式で確認するための operation registry / preflight 層である。本節は registry と read-only preflight を先に確定し、operation contract の物理正本と runner による実行代行は後段へ分離する。
+
+### 1. operation registry / preflight binding schema（Req 12 受入 1）
+
+**配置先**：`stages/operation-registry.yaml`。workflow-management が所有し、他 feature は参照のみ行う。`stages/operation-registry.yaml` は registry 固有メタデータと preflight binding の正本であり、operation contract field または contract semantics の正本ではない。operation contract の物理正本は Requirement 13 の `stages/operation-contracts.yaml` とする。
+
+各 operation は最低限、次のフィールドを持つ。
+
+```yaml
+operation_id: string
+kind: irreversible | review_artifact | workflow_state | evidence_capture | deployment_export
+operation_family: review_artifact | workflow_cli | commit_approval_chain | session_record_capture | deployment_export | nested_issue_control
+canonical_invocation:
+  entrypoint: string
+  subcommand: string
+  options: [string]
+  positional_args: [string]
+  execution_context: repo_root | target_app_root | external_output
+workflow_binding:
+  phase: intent | feature-partitioning | requirements | design | tasks | implementation | null
+  stage: drafting | triad-review | review-wave | alignment | approval | null
+  gate: string | null
+  next_action_kind: string | null
+required_inputs: [string]
+target_identity: [string]
+planned_outputs: [string]  # contract 由来の参照・投影・binding hint。出力 contract 正本ではない。
+sequence_mode: parallel_ok | serial_only
+worktree_policy: string
+pending_conflict_policy: string
+artifact_policy: string
+family_required_checks: [string]
+vocabulary_refs: [string]
+```
+
+`workflow_binding` は workflow 段に属する operation のみ必須とする。該当しない operation では `null` を許すが、`kind` と `artifact_policy` で適用範囲を説明する。
+
+registry schema は operation contract field を構造的に受け付けない。`stages/operation-registry.yaml` の各 operation entry では、`effect_kind`、`approval_required`、`phase_boundary`、`preconditions`、`postconditions`、`side_effects`、`approval_aggregation`、`branching`、`max_effect_kind`、出力・副作用 contract field を禁止キーとする。これらの値は `operation_contract_ref`、`contract_digest`、`contract_schema_version` から `stages/operation-contracts.yaml` の contract 正本を解決して読む。禁止キーが registry entry に存在する場合は schema validation error とし、preflight の runtime integrity check 以前に `DEVIATION` として扱う。
+
+registry schema が許す contract 接続フィールドは、最低限 `operation_contract_ref`、`contract_digest`、`contract_schema_version` に限定する。`planned_outputs`、`sequence_mode`、`required_inputs`、`target_identity` は preflight binding hint として保持してよいが、contract 正本と矛盾した場合は registry 側を優先せず、contract digest / schema_version drift または binding projection drift として fail-closed にする。
+
+`operation_family` は operation ごとの policy 文字列だけに依存しないための型である。たとえば `review_artifact` は target / manifest / bundle / criteria / document-type / approval record の対応検査、`commit_approval_chain` は nonce / digest / expiry / consume / invalidated / target 検査、`deployment_export` は planned outputs / overwrite policy / external root 検査を `family_required_checks` として必ず持つ。`planned_outputs` は registry が operation contract から導出・参照・投影する binding hint であり、出力 contract の二重正本にしてはならない。未知の `kind`、未知の `operation_family`、未登録の `sequence_mode`、存在しない entrypoint、parser / parser adapter と一致しない option、family に必須の check 欠落は registry 定義エラーである。
+
+### 2. preflight response schema（Req 12 受入 2〜3）
+
+preflight は read-only であり、正本 artifact を作成・更新しない。出力は JSON を正本とし、Markdown は人向け表示に限る。
+
+```yaml
+schema_version: string
+operation_id: string
+verdict: OK | WARN | DEVIATION
+allowed_verdicts: [OK, WARN, DEVIATION]
+sequence_mode: parallel_ok | serial_only
+allowed_sequence_modes: [parallel_ok, serial_only]
+state_refs:
+  next_action:
+    kind: string
+    current_mainline: string
+    required_action: string
+    phase: string
+    stage: string
+    reopen_scope: [string]
+    impact_review_scope: [string]
+    direct_features: [string]
+    indirect_features: [string]
+    flag_policy: object
+    next_pending_gate: string | null
+    next_drafting_gate: string | null
+    pending_gates: [string]
+    completed_gates: [string]
+    superseded_gates: [string]
+    state_files: [string]
+    inconsistencies: [object]
+  current_session_id: string | null
+  target_session_id: string | null
+  session_record_mode: formal | diagnostic | none | null
+  nested_issue_state:
+    parent_task_id: string | null
+    discovered_issue_id: string | null
+    relation: blocker | follow-up | side-track | dependent_issue | null
+    allowed_files: [string]
+    return_condition: string | null
+    nesting_depth: integer
+  workflow_state_files: [string]
+  git_index: object | null
+required_inputs: [string]
+missing_inputs: [string]
+template_available: boolean
+target_identity: [string]
+worktree_state: object
+pending_conflicts: [object]
+integrity_conflicts: [object]
+checks: [object]
+planned_outputs: [string]
+canonical_commands: [string]
+next_step: string
+```
+
+workflow state に依存する operation は、`state_refs.next_action` に `next --json` から読んだ active state dimensions を含める。少なくとも current mainline、`required_action`、phase、stage、`reopen_scope`、`impact_review_scope`、direct / indirect features、flag policy、`next_pending_gate`、`next_drafting_gate`、`pending_gates`、`completed_gates`、superseded gate の有無、参照 state files を含める。
+
+`planned_outputs` は preflight が registry と operation contract を照合した結果として返す参照・投影・binding hint であり、preflight response が出力 contract を定義してはならない。
+
+`allowed_verdicts` は、その operation contract が許す verdict 集合である。省略時や通常 operation では `[OK, WARN, DEVIATION]` を使う。subset を許す場合は operation contract に理由を明示し、`verdict` は必ず `allowed_verdicts` の要素でなければならない。`DEVIATION` は hard-stop であり、operation policy や人向け表示の都合で `WARN` に下げてはならない。
+
+preflight は `review-run directory`、manifest、approval record、session record、commit、deployment / export output を作らない。作成が必要な場合は、Phase 2 runner operation として別 operation にする。
+
+### 3. verdict と fail-closed（Req 12 受入 3、7〜9）
+
+`DEVIATION` は対象 operation の開始を拒否する。次の場合は少なくとも `DEVIATION` とする。
+
+- 必須入力欠落
+- 正本 command / option / entrypoint が parser または parser adapter と不一致
+- 上書き禁止 policy 違反
+- serial_only operation の順序外・並列実行
+- approval chain の nonce / target digest / staged file set digest 不一致、期限切れ、消費済み、invalidated、対象外 record
+- current-session formal record の作成要求
+- side-track / follow-up / blocker 記録なしの scope drift
+- `next` active state dimensions と operation contract の workflow binding が矛盾
+- `feature_impact_decisions`、`spec.json`、`pending_gates`、`drafting_completed_gates`、`downstream_impact_decisions`、`reopen_scope`、`impact_review_scope` の間に矛盾がある
+- `allowed_verdicts` が不正、または `DEVIATION` 対象条件を `WARN` として返そうとしている
+- registry の contract 参照欠落、contract digest / schema_version drift、contract authority field の複製、未接続 `required_action` mapping
+
+`WARN` は advisory / read-only 条件で、かつ operation contract が「開始は妨げないが注意表示が必要」と明示した場合に限る。上記の hard-stop 条件は `WARN` にできない。安全性または適用可否を確認できない場合、read-only diagnostic 表示では `WARN` 以上を返してよいが、operation が安全に束縛済みまたは実行可能であるとは報告しない。runner-enabled operation では同じ状態を `DEVIATION` とする。
+
+### 4. command validation（Req 12 受入 4）
+
+command validation の正本は help 文字列ではなく、実 parser または parser adapter とする。adapter は、argparse 等からサブコマンド、option、required option、位置引数を取り出し、operation registry の `canonical_invocation` と照合する。
+
+`reopen-status`、`next --file`、誤った script path、短縮名、未登録 alias のような推測実行は、成果物作成前に `DEVIATION` または確認不能 `WARN` として返す。
+
+### 5. worktree / pending / integrity conflict（Req 12 受入 5）
+
+preflight は worktree conflict と integrity conflict を分けて返す。
+
+- worktree conflict：post-write pending、reopen in-progress、maintenance in-progress、staged / unstaged 混在、対象外差分同居、commit approval 後の staged 変更。
+- integrity conflict：worktree が clean でも発生する承認 record、delegation record、manifest、bundle、target digest の欠落、stale、不一致、消費済み、対象外。
+
+`pending_conflict_policy` と `artifact_policy` が明示されていない衝突は `OK` にしてはならない。
+
+### 6. review artifact preflight（Req 12 受入 6）
+
+初期・拡張可能な対象 operation id は次とする。
+
+- `post_write_review`
+- `review_run_create`
+- `triage_decide`
+- `document_type_preflight`
+- `review_criteria_preflight`
+- `post_write_manifest_coverage_preflight`
+- `approval_record_preflight`
+- `bundle_preflight`
+
+検査対象は review target、manifest、bundle、criteria、document-type、approval record、既存 review-run artifact の対象集合一致である。phase / artifact 種別に必要な一次情報が review target に含まれること、差分 bundle が空でないこと、staged / unstaged のどちらを対象にすべきか、既存 artifact の上書き・stale・drift がないことを作成前に確認する。
+
+### 7. commit approval chain と serial_only（Req 12 受入 7）
+
+`prepare -> record -> delegate-execution -> guarded commit` は内部 chain として `serial_only` として扱う。配布可能 UX では `guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` が `record -> delegate-execution -> guarded commit` を単一操作として順序実行する。preflight は各段階の成果物存在、nonce、target digest、staged file set digest、staged content approval digest、expiry、consume 状態を返す。
+
+この設計は Requirement 4 の commit approval / execution delegation 契約を置き換えない。Requirement 12 は操作開始前にそれらを参照して、順序外実行や古い承認を早期に止める。
+
+### 8. current-session formal record guard（Req 12 受入 8）
+
+evidence capture 系 operation では、formal 2 層 session record 出力が現セッションを対象にしていないことを作成前に確認する。preflight response は `session_record_mode`、`current_session_id`、`target_session_id` を返す。`session_record_mode=formal` の場合、`current_session_id` と `target_session_id` がどちらも既知であり、かつ一致しないことを必須条件にする。current session id を確認できない、target session id を確認できない、または両者が一致する場合は正式出力を fail-closed にする。
+
+commit guard による混入防止は最後の保険として維持し、preflight は生成前防止を担う。
+
+### 9. nested issue handling（Req 12 受入 9）
+
+preflight は、parent task、発見 issue、親作業との関係、分類（blocker / follow-up / side-track / dependent issue）、allowed files、return condition、nesting depth を確認する。
+
+この情報は `state_refs.nested_issue_state` に返す。`relation`、`allowed_files`、`return_condition` が欠けている状態で、元作業の対象、検証範囲、allowed files、review target、manifest target、return condition が広がる場合は `DEVIATION` とする。意味的にどの分類が妥当かは人または review / proxy が判断する。
+
+### 10. deployment / export preflight（Req 12 受入 10）
+
+deployment smoke、deploy package build、runtime bundle export など repo 外または出力ディレクトリへ成果物を書く operation は、作成予定ファイル一覧、出力先の既存成果物、上書き禁止 policy、外部 app root への書き込み、既存 bundle / smoke-run / app file との衝突を作成前に返す。
+
+deployment / export は read-only preflight の対象であり、実際の出力作成は Phase 2 runner operation として分離する。
+
+### 11. reopen scope / impact review scope と next state uniqueness（Req 12 受入 11・13）
+
+`next --json` は Requirement 2 が所有する。Requirement 12 は、その出力を operation preflight が一意に参照できるよう拡張する。
+
+`reopen_in_progress` の `next_action` は次を含める。
+
+- current mainline
+- `required_action`
+- `active_gate`
+- `blocked_by`
+- phase / stage
+- `reopen_scope`
+- `impact_review_scope`
+- direct / indirect features
+- flag policy
+- `next_pending_gate`
+- `next_drafting_gate`
+- `pending_gates`
+- `completed_gates`
+- superseded gate の有無
+- 参照した state files
+
+`reopen_scope` は正本を再オープンして flag を false に戻す feature、`impact_review_scope` は正本変更要否だけを確認し flag を維持する feature である。active scope の正本は `stages/in-progress/reopen-procedure-*.yaml` の `active_reopen_scope` と `active_impact_review_scope` であり、`next --json` はこれらを `next_action.reopen_scope` と `next_action.impact_review_scope` へ写す。これらは `feature_impact_decisions`、`spec.json`、`pending_gates`、`drafting_completed_gates`、`downstream_impact_decisions` と整合しなければならない。整合しない場合、`next` は通常進行を許す `OK` として扱わず、`WARN` または `DEVIATION` と理由を返す。
+
+Requirement 12 は `next --json` の別正本を持たない。operation preflight は `state_refs.next_action` に Requirement 2 の selector 結果を写し、operation 開始前の照合に使う。preflight 側が pending gate や maintenance action を独自に選んではならない。
+
+### 12. LLM / provider / model 非依存（Req 12 受入 12）
+
+preflight の合否判定は repository 状態、git index、workflow state、registry 定義、parser / parser adapter、既存成果物、明示入力に限定する。LLM、provider、model 名は合否条件に含めない。LLM ごとの差異は説明文や prompt 表現に限定する。
+
+### 13. Phase 1 / Phase 2 の境界
+
+- Phase 1：read-only registry / preflight。成果物を作らず、operation 可否と衝突を返す。
+- Phase 2：runner-enabled operation。Phase 1 の preflight が `OK` または明示許可された `WARN` の場合のみ、実際の artifact 作成・更新を行う。
+
+実装フェーズでは Phase 1 を先に TDD 対象にする。Phase 2 は runner 契約と安全確認を別タスクに分ける。
+
+## Requirement 13 設計モデル：operation contract 語彙と required_action 対応（Req 13）
+
+Requirement 13 は、`next --json` の選択層が返す唯一 action を、実行層の operation contract へ接続する。Requirement 12 の operation registry / preflight は「操作開始前の read-only 確認」を担い、本節の operation contract は「操作の副作用・承認要否・順序・前提・事後条件」を定義する。
+
+### 1. 共通語彙 schema（Req 13 受入 1〜2）
+
+Phase 1 で追加する schema は次の 5 ファイルである。いずれも JSON Schema Draft 2020-12 を使い、既存実行挙動を変更しない。
+
+| ファイル | 責務 |
+|---|---|
+| `.reviewcompass/schema/effect_kind.schema.json` | `read`、`write`、`state_mutation`、`external_call` の 4 値を定義する |
+| `.reviewcompass/schema/phase_boundary.schema.json` | `none`、`within_phase`、`phase_transition`、`reopen_boundary`、`commit_boundary`、`push_boundary`、`external_boundary` を定義する |
+| `.reviewcompass/schema/operation_contract.schema.json` | operation contract の共通構造を定義する |
+| `.reviewcompass/schema/workflow_state_snapshot.schema.json` | Requirement 14 の snapshot 構造を定義する |
+| `.reviewcompass/schema/language_task_io.schema.json` | Requirement 15 の `language_task` 入出力構造を定義する |
+
+`effect_kind` は副作用の種類だけを表す。承認要否は `approval_required` として独立させ、`read` でも承認が必要な操作、`state_mutation` でも承認不要な判断記録操作を表現できるようにする。
+
+### 2. operation contract schema（Req 13 受入 3〜4、10）
+
+`operation_contract.schema.json` の論理構造は次を最低限とする。
+
+```yaml
+schema_version: string
+operation_id: string
+required_action: string
+effect_kind: read | write | state_mutation | external_call
+approval_required: boolean
+approval_contract_refs: [string]
+phase_boundary: none | within_phase | phase_transition | reopen_boundary | commit_boundary | push_boundary | external_boundary
+sequence:
+  mode: parallel_ok | serial_only
+  internal_steps: [object]
+actor:
+  kind: human | llm | proxy_model | tool | mixed
+  source: string
+branching:
+  has_branches: boolean
+  branches: [object]
+max_effect_kind: read | write | state_mutation | external_call
+preconditions: [object]
+postconditions: [object]
+state_refs: [string]
+registry_refs: [string]
+```
+
+`approval_required` は boolean のみを許容する。外部送信承認、human-only gate、または対象 operation 固有の承認 contract への接続は `approval_contract_refs` または branch / internal step の `approval_contract_ref` に分離し、`approval_required` 欄に方針文を入れてはならない。`preconditions` と `postconditions` は `id`、`description`、`check_kind`、`machine_checkable`、`source_ref`、`failure_verdict` を持つ。`machine_checkable=false` の条件を `OK` の根拠にしてはならない。read-only advisory 段階では確認不能を `WARN` 以上、runner-enabled operation では `DEVIATION` として扱う。
+
+### 3. required_action 19語彙の対応表（Req 13 受入 3〜5、7〜8）
+
+19語彙の正本は `.reviewcompass/schema/required_action.schema.json` である。operation contract の物理正本は `stages/operation-contracts.yaml` とし、`stages/operation-registry.yaml` は operation registry / preflight binding の正本として各 `required_action` から `operation_contract` ID と contract digest / schema_version を参照する。
+
+`stages/operation-contracts.yaml` は、最低限 `required_action`、`effect_kind`、`approval_required`、`approval_contract_refs`、`phase_boundary`、`sequence`、実行主体、分岐条件、preconditions / postconditions、side effects、承認要否の集約規則、branch / internal step semantics、max effect、出力・副作用 contract field を持つ。`stages/operation-registry.yaml` は operation id、canonical invocation、workflow binding、required inputs、target identity、sequence mode、worktree / pending / artifact policy、planned outputs の参照・投影・binding hint、contract ID、contract digest、schema_version を持ち、contract field を再定義しない。registry / preflight は contract と state evidence を読み取って確認するだけで、contract 更新、operation 実行、approval consume、workflow state 作成、review-run artifact 作成、artifact mutation、action 独自選択を行わない。
+
+registry / contract の整合検査は次を fail-closed にする。
+
+- registry が参照する contract ID が存在しない
+- registry が保持する contract digest または schema_version が contract 正本と一致しない
+- registry が `effect_kind`、`approval_required`、`approval_contract_refs`、`phase_boundary`、preconditions / postconditions、side effects、承認要否の集約規則、branch / internal step semantics、max effect、出力・副作用 contract field を複製して二重正本化している
+- contract が required_action schema に存在しない語彙を参照している
+- required_action schema の語彙が contract に接続されていない
+
+19語彙の operation contract 基線は次とする。各 contract はこの表を最小境界とし、詳細 preconditions / postconditions は `stages/operation-contracts.yaml` でこの基線から弱めずに具体化する。
+
+| required_action | effect_kind | approval_required | phase_boundary | sequence.mode | actor.kind | 分岐 |
+|---|---|---:|---|---|---|---|
+| `repair_workflow_state` | `state_mutation` | true | `within_phase` | `serial_only` | `tool` | なし |
+| `run_post_write_verification` | `external_call` | false | `within_phase` | `serial_only` | `mixed` | なし |
+| `wait_for_human_decision` | `read` | false | `none` | `serial_only` | `human` | なし |
+| `record_human_decision` | `state_mutation` | false | `within_phase` | `serial_only` | `tool` | なし |
+| `run_maintenance` | `state_mutation` | true | `within_phase` | `serial_only` | `mixed` | あり |
+| `advance_reopen_after_commit_stop_point` | `state_mutation` | true | `reopen_boundary` | `serial_only` | `tool` | なし |
+| `commit_stop_point` | `state_mutation` | true | `commit_boundary` | `serial_only` | `human` | なし |
+| `draft_reopen_plan_candidates` | `write` | false | `within_phase` | `serial_only` | `llm` | なし |
+| `apply_approved_reopen_plan` | `state_mutation` | true | `reopen_boundary` | `serial_only` | `tool` | なし |
+| `advance_reopen_after_approval_stop_point` | `state_mutation` | true | `reopen_boundary` | `serial_only` | `tool` | なし |
+| `repair_canonical_documents` | `write` | false | `within_phase` | `serial_only` | `mixed` | なし |
+| `run_reopen_drafting` | `write` | false | `within_phase` | `serial_only` | `llm` | なし |
+| `run_reopen_pending_gate` | `external_call` | false | `within_phase` | `serial_only` | `mixed` | あり |
+| `collect_required_decisions` | `read` | false | `none` | `serial_only` | `tool` | なし |
+| `finalize_reopen` | `state_mutation` | true | `reopen_boundary` | `serial_only` | `tool` | なし |
+| `draft_reopen_classification` | `write` | false | `within_phase` | `serial_only` | `llm` | なし |
+| `run_reopen_start` | `state_mutation` | true | `reopen_boundary` | `serial_only` | `tool` | なし |
+| `run_workflow_stage` | `state_mutation` | true | `phase_transition` | `serial_only` | `mixed` | あり |
+| `completed` | `read` | false | `none` | `parallel_ok` | `tool` | なし |
+
+各 `required_action` の preconditions / postconditions 基線は次とする。`stages/operation-contracts.yaml` はこの基線を弱めず、各 `id` を machine-checkable な check と `source_ref` に展開する。
+
+| required_action | precondition baseline IDs | postcondition baseline IDs |
+|---|---|---|
+| `repair_workflow_state` | `state_evidence_present`, `repair_plan_bound`, `human_only_repair_authorized` | `state_consistency_restored`, `repair_evidence_saved` |
+| `run_post_write_verification` | `changed_targets_detected`, `verification_manifest_bound` | `verification_artifact_saved`, `unresolved_findings_recorded` |
+| `wait_for_human_decision` | `pending_human_gate_present`, `target_operation_bound` | `no_state_mutation`, `blocked_state_reported` |
+| `record_human_decision` | `pending_gate_present`, `decision_scope_derived`, `binding_digest_matches` | `decision_record_saved`, `target_operation_not_auto_approved` |
+| `run_maintenance` | `side_track_frame_present`, `allowed_scope_bound`, `branch_condition_resolved` | `maintenance_evidence_saved`, `return_condition_preserved` |
+| `advance_reopen_after_commit_stop_point` | `commit_stop_point_committed`, `worktree_clean`, `reopen_state_bound` | `commit_stop_point_cleared`, `reopen_gate_selector_reenabled` |
+| `commit_stop_point` | `staged_content_bound`, `commit_approval_valid`, `post_write_verification_clear` | `commit_created`, `approval_consumed`, `reopen_state_preserved` |
+| `draft_reopen_plan_candidates` | `classification_basis_present`, `reopen_scope_bound` | `candidate_plan_saved`, `human_decision_required` |
+| `apply_approved_reopen_plan` | `approved_plan_record_present`, `plan_digest_matches`, `human_only_approval_valid` | `reopen_in_progress_record_created`, `active_scope_initialized` |
+| `advance_reopen_after_approval_stop_point` | `human_approval_record_valid`, `pending_gate_bound` | `approval_stop_point_cleared`, `next_reopen_step_selected` |
+| `repair_canonical_documents` | `target_documents_bound`, `allowed_scope_bound`, `repair_basis_present` | `canonical_documents_updated`, `post_write_verification_required` |
+| `run_reopen_drafting` | `active_reopen_scope_present`, `drafting_gate_selected` | `draft_artifact_updated`, `drafting_completed_gate_recorded` |
+| `run_reopen_pending_gate` | `active_gate_resolved`, `gate_contract_bound`, `required_evidence_present` | `gate_evidence_saved`, `downstream_impact_recorded_if_needed` |
+| `collect_required_decisions` | `open_decision_sources_present`, `decision_records_discoverable` | `required_decision_list_reported`, `no_state_mutation` |
+| `finalize_reopen` | `pending_gates_empty`, `active_scope_covered`, `human_only_finalize_approval_valid` | `reopen_record_completed`, `active_scope_closed` |
+| `draft_reopen_classification` | `upstream_change_evidence_present`, `affected_feature_scope_known` | `classification_basis_saved`, `reopen_start_decision_required` |
+| `run_reopen_start` | `classification_approved`, `target_scope_bound`, `human_only_start_approval_valid` | `reopen_in_progress_record_created`, `spec_flags_updated` |
+| `run_workflow_stage` | `stage_contract_bound`, `branch_condition_resolved`, `required_artifacts_available` | `stage_evidence_saved`, `completion_predicate_rechecked` |
+| `completed` | `no_pending_required_action`, `workflow_state_consistent` | `completed_report_returned`, `no_state_mutation` |
+
+`run_maintenance`、`run_reopen_pending_gate`、`run_workflow_stage` は branchy operation であり、代表値だけで実行可否を判断してはならない。これらの contract は `effect_kind` に最大副作用、`max_effect_kind` に同じ値またはより強い値を持ち、`branching.branches[]` で各 branch の条件、内部 step、step ごとの `effect_kind`、承認要否、phase boundary を列挙する。
+
+`branching.branches[]` の最低構造は、`branch_id`、`condition`、`internal_steps[]`、`max_effect_kind`、`approval_aggregation`、`human_only_override_applies`、`precondition_ids[]`、`postcondition_ids[]` を持つ。`internal_steps[]` の各要素は、最低限 `step_id`、`effect_kind`、`approval_required`、`approval_contract_ref`、`phase_boundary`、`source_ref` を持つ。`approval_contract_ref` は `none` または `stages/operation-contracts.yaml` 内の承認 contract ID とする。branch 表の「internal steps」は人向け略記であり、operation contract ではこの step 構造へ展開する。
+
+`run_maintenance` の初期 branch は次とする。
+
+| branch condition | internal steps | branch max_effect_kind | approval aggregation | approval contract refs | 補足 |
+|---|---|---|---|---|---|
+| `maintenance_kind=read_only_diagnostic` | 対象資料読取、diagnostic artifact 生成なし、結果表示 | `read` | `all_false` | `none` | 正本 artifact を作らない |
+| `maintenance_kind=working_note_or_decision_basis` | working note / decision basis 作成、対象 digest 記録 | `write` | `any(child.approval_required)` | `none` | 正本変更ではなく判断根拠保存 |
+| `maintenance_kind=canonical_document_repair` | 対象正本文書読取、利用者または proxy 判断の照合、正本文書更新、post-write verification | `write` | `any(child.approval_required)` | `none` | source-of-truth 文書修正は対象 contract を別途参照する |
+| `maintenance_kind=workflow_state_repair` | state evidence 読取、repair plan 照合、workflow state 更新、整合検査 | `state_mutation` | `true` | `repair_workflow_state` | `repair_workflow_state` contract を参照する |
+| `maintenance_kind=external_review_or_audit` | prompt 生成、外部 provider 実行、raw / parsed / metadata 保存 | `external_call` | `any(child.approval_required)` | `external_send_approval` | provider/model は合否条件ではなく実行証跡 |
+
+`run_maintenance` の approval aggregation は `any(child.approval_required)` とする。ただし、子 step が `human_only` decision scope、commit / push / `spec.json` update、phase / gate completion、reopen finalize、approval_required irreversible operation execution を含む場合、proxy_model は承認主体になれない。
+
+`run_maintenance` の branch 内 step 基線は次とする。
+
+| branch condition | step_id | effect_kind | approval_required | approval_contract_ref | phase_boundary | source_ref |
+|---|---|---|---:|---|---|---|
+| `maintenance_kind=read_only_diagnostic` | `read_target_materials` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-read_target_materials` |
+| `maintenance_kind=read_only_diagnostic` | `present_diagnostic_result` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-present_diagnostic_result` |
+| `maintenance_kind=working_note_or_decision_basis` | `read_decision_basis_sources` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-read_decision_basis_sources` |
+| `maintenance_kind=working_note_or_decision_basis` | `write_working_note` | `write` | false | `none` | `within_phase` | `design.md#req13-run-maintenance-step-write_working_note` |
+| `maintenance_kind=canonical_document_repair` | `read_canonical_targets` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-read_canonical_targets` |
+| `maintenance_kind=canonical_document_repair` | `apply_canonical_repair` | `write` | false | `none` | `within_phase` | `design.md#req13-run-maintenance-step-apply_canonical_repair` |
+| `maintenance_kind=canonical_document_repair` | `require_post_write_verification` | `external_call` | false | `none` | `within_phase` | `design.md#req13-run-maintenance-step-require_post_write_verification` |
+| `maintenance_kind=workflow_state_repair` | `read_state_evidence` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-read_state_evidence` |
+| `maintenance_kind=workflow_state_repair` | `apply_state_repair` | `state_mutation` | true | `repair_workflow_state` | `within_phase` | `design.md#req13-run-maintenance-step-apply_state_repair` |
+| `maintenance_kind=workflow_state_repair` | `validate_state_consistency` | `read` | false | `none` | `none` | `design.md#req13-run-maintenance-step-validate_state_consistency` |
+| `maintenance_kind=external_review_or_audit` | `build_external_prompt` | `write` | false | `none` | `within_phase` | `design.md#req13-run-maintenance-step-build_external_prompt` |
+| `maintenance_kind=external_review_or_audit` | `execute_external_review` | `external_call` | true | `external_send_approval` | `external_boundary` | `design.md#req13-run-maintenance-step-execute_external_review` |
+| `maintenance_kind=external_review_or_audit` | `save_review_artifacts` | `write` | false | `none` | `within_phase` | `design.md#req13-run-maintenance-step-save_review_artifacts` |
+
+`run_workflow_stage` の初期 branch は次とする。
+
+| branch condition | internal steps | branch max_effect_kind | approval aggregation | approval contract refs | 補足 |
+|---|---|---|---|---|---|
+| `phase=drafting` | source materials 読取、draft artifact 更新、target digest 記録 | `write` | `all_false` | `none` | phase 内の草案更新 |
+| `stage=triad-review` | review prompt / target / manifest 作成、API/CLI review 実行、raw / parsed / triage artifact 保存 | `external_call` | `any(child.approval_required)` | `external_send_approval` | レビュー実行であり gate 完了ではない |
+| `stage=review-wave` | cross-feature source 読取、wave summary / impact decision artifact 保存 | `external_call` | `any(child.approval_required)` | `external_send_approval` | reopen scope と impact scope を混同しない |
+| `stage=alignment` | alignment prompt 実行、alignment artifact 保存 | `external_call` | `any(child.approval_required)` | `external_send_approval` | approval ではない |
+| `stage=approval` | approval request 表示、人間判断待機、承認記録保存、phase / gate 遷移前検査 | `state_mutation` | `true` | `human_only_phase_gate_approval` | phase / gate completion は human-only |
+| `phase_transition=true` | completed gate / next phase state 更新、snapshot 更新、post-transition validation | `state_mutation` | `true` | `human_only_phase_gate_approval` | `phase_boundary=phase_transition` |
+
+`run_workflow_stage` の approval aggregation は、branch 内に human-only decision scope または approval_required operation が含まれる場合 true とし、外部 API review の実行承認と phase / gate 完了承認を別 contract として分離する。
+
+`run_workflow_stage` の branch 内 step 基線は次とする。
+
+| branch condition | step_id | effect_kind | approval_required | approval_contract_ref | phase_boundary | source_ref |
+|---|---|---|---:|---|---|---|
+| `phase=drafting` | `read_source_materials` | `read` | false | `none` | `none` | `design.md#req13-run-workflow-stage-step-read_source_materials` |
+| `phase=drafting` | `write_draft_artifact` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-write_draft_artifact` |
+| `phase=drafting` | `record_target_digest` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-record_target_digest` |
+| `stage=triad-review` | `build_review_prompt_manifest` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-build_review_prompt_manifest` |
+| `stage=triad-review` | `execute_review_run` | `external_call` | true | `external_send_approval` | `external_boundary` | `design.md#req13-run-workflow-stage-step-execute_review_run` |
+| `stage=triad-review` | `save_raw_parsed_triage` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-save_raw_parsed_triage` |
+| `stage=review-wave` | `read_cross_feature_sources` | `read` | false | `none` | `none` | `design.md#req13-run-workflow-stage-step-read_cross_feature_sources` |
+| `stage=review-wave` | `execute_or_collect_wave_review` | `external_call` | true | `external_send_approval` | `external_boundary` | `design.md#req13-run-workflow-stage-step-execute_or_collect_wave_review` |
+| `stage=review-wave` | `save_impact_decisions` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-save_impact_decisions` |
+| `stage=alignment` | `execute_alignment_check` | `external_call` | true | `external_send_approval` | `external_boundary` | `design.md#req13-run-workflow-stage-step-execute_alignment_check` |
+| `stage=alignment` | `save_alignment_artifact` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-save_alignment_artifact` |
+| `stage=approval` | `present_approval_request` | `read` | false | `none` | `none` | `design.md#req13-run-workflow-stage-step-present_approval_request` |
+| `stage=approval` | `record_human_approval_decision` | `state_mutation` | true | `human_only_phase_gate_approval` | `within_phase` | `design.md#req13-run-workflow-stage-step-record_human_approval_decision` |
+| `stage=approval` | `validate_phase_gate_transition` | `read` | false | `none` | `none` | `design.md#req13-run-workflow-stage-step-validate_phase_gate_transition` |
+| `phase_transition=true` | `update_completed_gate_state` | `state_mutation` | true | `human_only_phase_gate_approval` | `phase_transition` | `design.md#req13-run-workflow-stage-step-update_completed_gate_state` |
+| `phase_transition=true` | `save_snapshot` | `write` | false | `none` | `within_phase` | `design.md#req13-run-workflow-stage-step-save_snapshot` |
+| `phase_transition=true` | `validate_post_transition_state` | `read` | false | `none` | `none` | `design.md#req13-run-workflow-stage-step-validate_post_transition_state` |
+
+単純操作で承認を必須とする action は次を基線とする。
+
+- `commit_stop_point`
+- `apply_approved_reopen_plan`
+- `run_reopen_start`
+- `advance_reopen_after_commit_stop_point`
+- `advance_reopen_after_approval_stop_point`
+- `finalize_reopen`
+- `repair_workflow_state`
+
+`run_reopen_pending_gate` は active gate で分岐する。
+
+| active gate | effect_kind | approval_required | 補足 |
+|---|---|---|---|
+| `triad-review` | `external_call` | false | review-run と proxy decision の承認境界は別 contract で扱う |
+| `review-wave` | `external_call` | false | 横断 impact check の証跡生成を含む |
+| `alignment` | `write` | false | LLM が整合確認 artifact を生成する |
+| `approval` | `state_mutation` | true | 承認要求を構造化し、人間判断待ちへ渡す。proxy_model は human-only approval を代行しない |
+
+`run_reopen_drafting` は drafting 正本の更新であり、`run_reopen_pending_gate` とは分離する。`run_maintenance` と `run_workflow_stage` は複合操作として扱い、内部 operation または stage 種別により `effect_kind` と `approval_required` が変わる。代表値だけで確定せず、`branching.branches[]` に分岐条件、内部 step、各 step の `effect_kind`、最大副作用、承認要否の集約規則を持たせる。
+
+### 4. 複合操作の schema 表現（Req 13 受入 8〜9）
+
+複合 operation は `effect_kind` を単一 enum のまま保持し、`max_effect_kind` に最大副作用を置く。複数副作用の詳細は `sequence.internal_steps[]` と `branching.branches[]` に展開する。これにより、既存の単一値 schema を保ちながら、`run_maintenance` や `run_workflow_stage` の内部差異を LLM の推測に戻さない。
+
+`record_human_decision` は承認対象 operation ではなく、判断記録 operation とする。`effect_kind=state_mutation`、`approval_required=false`、`phase_boundary=within_phase` とし、記録対象は `target_operation_id`、`target_required_action`、`target_artifact_digest` または `staged_file_set_digest` で束縛する。`record_human_decision` の完了だけでは、対象 operation の `approval_required=true` を満たさない。承認として対象 operation を進められるかどうかは、Requirement 14 §1 の approval gate record にある `decision_scope`、`binding_kind`、digest 束縛、および対象 operation contract から導出した human-only / proxy-allowed 判定で決まる。
+
+### 5. registry / preflight の read-only 境界（Req 13 受入 11〜12）
+
+operation preflight は `stages/operation-registry.yaml` を入口にし、参照先 `stages/operation-contracts.yaml` の preconditions / postconditions / side effects / approval_required を読み取る。preflight の責務は「開始前に確認すること」であり、contract 正本、workflow state、approval record、side track stack、snapshot、review-run artifact を作成・更新しない。
+
+read-only diagnostic 表示では、contract 参照欠落、digest drift、schema_version mismatch、確認不能 precondition、正本 field 重複、未接続 `required_action` mapping を `WARN` 以上にしてよい。ただし、その状態を operation が安全に束縛済みまたは実行可能である根拠にしてはならない。runner-enabled operation では同じ状態を `DEVIATION` とし、operation 実行を開始しない。
+
+## Requirement 14 設計モデル：承認ゲート、側道スタック、状態スナップショット（Req 14）
+
+Requirement 14 は、判断記録、側道作業、現在状態の可視化を、会話文脈ではなく機械可読状態として扱う。
+
+### 1. 承認ゲート record（Req 14 受入 1〜3）
+
+承認ゲートは `wait_for_human_decision` と `record_human_decision` のペアとして扱う。判断 record の最低構造は次とする。
+
+```yaml
+schema_version: string
+decision_id: string
+decision: approved | rejected | deferred | changes_requested
+decision_scope: human_only | proxy_allowed | advisory_only
+target_operation_id: string
+target_required_action: string
+target_artifact: string | null
+target_artifact_digest: string | null  # binding_kind=artifact_digest / both では必須
+staged_file_set_digest: string | null  # binding_kind=staged_file_set_digest / both では必須
+binding_kind: artifact_digest | staged_file_set_digest | both | none
+decided_by: user | proxy_model
+decided_at: string
+source_ref: string
+source_digest: string
+rationale: string
+next_action_expectation: proceed | stay_blocked | redraft | repair
+consumed: boolean
+```
+
+`approved` 以外の判断は対象不可逆操作へ進めない。`rejected` は停止維持、`deferred` は待機、`changes_requested` は再起草または repair へ分岐する。分岐を選ぶ責務は `next --json` に置き、LLM が会話上の雰囲気で選ばない。
+
+human-only decision と proxy-allowed decision は approval gate record の `decision_scope` で区別する。`decision_scope` は最低限 `human_only`、`proxy_allowed`、`advisory_only` の 3 値とする。`decision_scope` は record 作成者が任意に選ぶ値ではなく、`target_required_action` から解決した operation contract の `approval_required`、`phase_boundary`、`effect_kind`、`actor.kind`、および human-only override set から機械的に導出する。record 内の `decision_scope` が contract から導出した値と一致しない場合は形式不正として fail-closed にする。
+
+`binding_kind` も operation contract から導出する。正本文書・review artifact・approval artifact・proxy decision artifact を対象にする operation は `target_artifact_digest` を必須にする。commit / staged content / apply-fixes / state mutation のうち git index に束縛される operation は `staged_file_set_digest` を必須にする。両方を参照する operation は `binding_kind=both` とし、両 digest を必須にする。`binding_kind=none` は `wait_for_human_decision`、`collect_required_decisions`、`completed` のような read-only / wait-only operation に限る。`approval_required=true`、human-only override set、phase / gate completion、commit、push、`spec.json` 更新、reopen finalize の対象 record では `binding_kind=none` を禁止する。必要な digest が欠落、null、または現在の対象 digest と不一致の場合、`record_human_decision` は成功せず、`next --json` は対象 operation へ進めない。
+
+binding 条件は次のとおりとする。record schema はこの表を条件付き必須として実装し、両 digest を独立 optional として扱ってはならない。
+
+| binding_kind | 必須 digest | null を許す digest | 対象 operation |
+|---|---|---|---|
+| `artifact_digest` | `target_artifact_digest` | `staged_file_set_digest` | 正本文書、review artifact、approval artifact、proxy decision artifact を対象にする判断 |
+| `staged_file_set_digest` | `staged_file_set_digest` | `target_artifact_digest` | commit / push / staged content / git index に束縛される判断 |
+| `both` | `target_artifact_digest` と `staged_file_set_digest` | なし | artifact と staged 内容の両方を対象にする判断 |
+| `none` | なし | `target_artifact_digest`、`staged_file_set_digest` | read-only / wait-only operation のみ。承認済み不可逆操作には使えない |
+
+`decided_by`、`decided_at`、`source_ref`、`source_digest` は常に必須である。`source_digest` は判断根拠として提示・保存した source text または source artifact の SHA-256 hex とし、source が保存不能な場合でも omission reason を持つ source evidence artifact の digest を記録する。actor、timestamp、source、target operation、required_action、binding digest のいずれかが欠落する record は、承認 record ではなく形式不正として扱う。
+
+`decided_by=proxy_model` かつ `decision_scope=human_only` の record は承認として扱わず、`next --json` は対象不可逆操作へ進めない。`decided_by=proxy_model` かつ `decision_scope=proxy_allowed` の record は、finding triage や修正方針判断の証跡としてのみ使える。`decision_scope=advisory_only` は補助的判断であり、対象 operation の `approval_required=true` を満たさない。
+
+human-only decision の初期集合は次とする。
+
+- commit
+- push
+- `spec.json` 更新
+- phase approval
+- reopen finalize
+- `approval_required=true` の不可逆 operation 実行許可
+
+human-only override set は operation contract より強い。ある operation が `approval_required=false` と書かれていても、commit、push、`spec.json` 更新、phase / gate completion、reopen finalize、または approval-required irreversible operation execution に該当する branch では `decision_scope=human_only` とする。
+
+proxy_model は finding triage、同根 cluster の採否案、補助的な整合判断を代行できる。ただし proxy_model decision は human-only decision の承認主体を置換しない。
+
+### 2. side track stack（Req 14 受入 4〜7）
+
+side track は stack frame として `stages/in-progress/side-track-stack.yaml` または後継 runtime state に保持する。初期実装では既存の `process_id: maintenance` 進行中ファイルを互換入力として扱い、Phase 3 以降で stack schema へ寄せる。
+
+frame の最低構造は次とする。
+
+```yaml
+frame_id: string
+kind: maintenance | follow_up | blocker_repair | dependent_issue
+parent_frame_id: string | null
+pushed_by: user | llm | tool
+title: string
+spawned_from:
+  required_action: string
+  active_gate: string | null
+  state_file: string | null
+allowed_scope: string
+allowed_files: [string]
+completion_conditions: [string]
+return_to:
+  required_action: string
+  active_gate: string | null
+  state_refs: [string]
+staged_file_set: [string]
+staged_file_digest: string
+pushed_at: string
+max_depth: integer
+```
+
+push 時、pop 直前、commit / push 直前に `staged_file_set` と `staged_file_digest` を採取して照合する。top frame 以外の pop、`allowed_files` 外の staged 変更、親子 frame の未許可 overlap、push 時点からの予期しない digest 変化、pop 時の digest / set 不一致は、Phase 3 では `WARN` 以上、Phase 5 では `DEVIATION` または `repair_workflow_state` とする。`max_depth` は既定 2 で、Phase 3 は警告、Phase 5 はブロックする。
+
+side track stack の read-only 操作は `current` / `inspect` とし、stack state を書き換えない。mutating 操作は `push` / `pop` / `repair` とし、operation contract の preconditions / postconditions を通す。`push` は新 frame を top に追加し、`pop` は top frame だけを閉じる。pop 後に `return_to` が解決できない、または staged file set が本線復帰条件を満たさない場合、`next --json` は通常作業に戻さず `repair_workflow_state` または同等の停止状態を返す。
+
+### 3. workflow-state snapshot（Req 14 受入 8〜10）
+
+`.reviewcompass/runtime/workflow-state-snapshot.yaml` は `next --json` の副産物であり、正本ではない。正本は常に `next --json` と state refs である。snapshot が古い、手動更新された、または直近 `next --json` と照合できない場合は信頼しない。
+
+snapshot の最低構造は次とする。
+
+```yaml
+schema_version: string
+generated_by: tools/check-workflow-action.py
+generated_at: string
+source_next_action_sha256: string
+current_work:
+  required_action: string
+  title: string
+  outer_node: string | null
+  inner_node: string | null
+  active_gate: string | null
+active_side_tracks: [object]
+git_tree_summary:
+  clean: boolean
+  staged_files: [string]
+  unstaged_files: [string]
+post_write_manifest_summary: object
+workflow_state_summary: object
+```
+
+`current_work.outer_node` は reopen / maintenance / workflow / post-write などの外側の状態、`inner_node` は phase / stage / gate などの内側の単位を表す。UI や人向け報告は snapshot を読んでよいが、操作可否は `next --json` と operation preflight で再確認する。
+
+### 4. read-only / mutating 操作の保存先（Req 14 受入 11〜12）
+
+approval gate record、side track stack、workflow-state snapshot は次の保存先を基線とする。
+
+| 対象 | 保存先 | 正本性 | read-only 操作 | mutating 操作 |
+|---|---|---|---|---|
+| approval gate record | `.reviewcompass/runtime/approvals/` 配下または後継 approval state | 承認判断の正本 | inspect | record / consume / invalidate |
+| side track stack | `stages/in-progress/side-track-stack.yaml` または後継 runtime state | side track 状態の正本 | current / inspect | push / pop / repair |
+| workflow-state snapshot | `.reviewcompass/runtime/workflow-state-snapshot.yaml` | 可視化・監査補助、正本ではない | snapshot / inspect | save snapshot のみ。操作許可は変更しない |
+
+read-only 操作と mutating 操作を同じ operation として扱ってはならない。mutating 操作は Requirement 13 の operation contract に接続し、approval_required、preconditions、postconditions、side effects を明示する。
+
+## Requirement 15 設計モデル：構造化有効プロンプトと監査（Req 15）
+
+Requirement 15 は、有効プロンプトを「LLM が行う言語タスクの仕様」として構造化する。機械タスクは operation contract、preflight、runner、guard が担う。
+
+### 1. structured effective prompt schema（Req 15 受入 1〜4）
+
+既存の `.reviewcompass/runtime/effective-prompts/*.prompt.md` は互換出力として維持する。Phase 4 では、同じ判定点から構造化 YAML または JSON を生成し、Markdown prompt はその人向けレンダリングとして扱う。
+
+```yaml
+schema_version: string
+decision_point:
+  kind: string
+  required_action: string
+  phase: string | null
+  stage: string | null
+  active_gate: string | null
+prompt_length:
+  min_chars: integer
+  max_chars: integer
+  source_ref: string
+  failure_verdict: WARN | DEVIATION
+preconditions_checked:
+  - id: string
+    source: next_json | operation_preflight | schema_validation | manifest_validation
+    machine_checked: true
+    evidence_ref: string
+language_task:
+  document_kind: design | requirements | tasks | review | alignment | approval | report
+  input:
+    required_files: [string]
+    state_refs: [string]
+    source_refs: [string]
+  output_format:
+    kind: markdown | yaml | json
+    required_sections: [string]
+    schema_ref: string | null
+  constraints: [string]
+postconditions:
+  - id: string
+    check_kind: section_exists | schema_valid | target_set_matches | next_action_compatible | manual_review_required
+    source_ref: string
+on_completion:
+  next_required_action: string | null
+  allowed_followups: [string]
+  forbidden_actions: [string]
+```
+
+`preconditions_checked` は機械が確認済みの条件だけを参照する。LLM がこれから確認する事項をここに置いてはならない。`language_task` は生成または判断する文章の範囲を表し、commit、push、spec.json 更新、review-run 実行などの機械操作手順を埋め込まない。
+
+`prompt_length` は、判定点ごとの長さ上下限を構造化 prompt に写した監査用フィールドである。正本は `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml#decision_points` の各判定点に置く `prompt_length_bounds` とし、個別判定点に未設定の場合は同ファイルの `default_prompt_length_bounds` を使う。上下限は `min_chars`、`max_chars`、`failure_verdict` を持ち、`min_chars` と `max_chars` は正の整数かつ `min_chars < max_chars` でなければならない。`failure_verdict` は範囲外 prompt の第1層機械検査 verdict であり、未設定値を runner が推測してはならない。
+
+長さ基準の設定主体は workflow-management の設計・規律マップ更新手続きであり、task 個別の review-run や prompt generator が場当たり的に決めてはならない。上下限の変更は Requirement 13〜15 の責務境界を変えるため、通常の design / tasks / implementation 連鎖で扱う。
+
+### 2. 第1層機械検査（Req 15 受入 5）
+
+有効プロンプト検査は次を確認する。
+
+- 参照先ファイルとアンカーが存在する
+- `decision_point`、`preconditions_checked`、`language_task`、`postconditions`、`on_completion` が存在する
+- `prompt_length` が `WORKFLOW_DISCIPLINE_MAP.yaml` の `prompt_length_bounds` または `default_prompt_length_bounds` と一致し、長さがその上下限内にある。範囲外の場合は当該 bounds の `failure_verdict` を返す
+- DISCIPLINE_MAP または後継 registry に未登録の action kind を使っていない
+- review target manifest と review-run target が一致する
+- `language_task.output_format` と `postconditions` が対応している
+- `preconditions_checked` が機械確認済み条件だけを参照している
+- `on_completion` が operation contract の postconditions と次 action に矛盾しない
+
+staged file set とのコミット混線、side track depth、operation preflight の pending conflict は Requirement 12・14 の責務であり、有効プロンプト検査はその結果を参照するだけにする。
+
+### 3. LLM judge audit（Req 15 受入 6〜7）
+
+Phase 6 では、構造化有効プロンプト、該当する `WORKFLOW_NAVIGATION.md` 節、operation contract を入力として LLM judge audit を実行できるようにする。出力は schema 適合 JSON または同等の構造化形式とし、最低限 `gap_id`、`severity`、`prompt_ref`、`contract_ref`、`finding`、`recommended_action`、`blocks_approval` を持つ。
+
+LLM judge audit は意味的な不足を見つける補助であり、最終承認を自動化しない。既知 gap fixture には、必須構造節欠落、機械タスクの prompt 内残留、preconditions の網羅不足、postconditions の確認不能性を含める。
+
+## Requirement 16 設計モデル：段階的実装計画 Phase 0〜6（Req 16）
+
+Requirement 16 は、選択層と実行層の機械化を一度に混ぜず、既存挙動を壊さない順序で実装するための計画である。
+
+### 1. Phase anchor と順序（Req 16 受入 1〜10）
+
+| Phase | 主対象 | 完了条件 |
+|---|---|---|
+| Phase 0 | D-003 選択層 | 19段階優先順位、`required_action` 唯一化、invariant 検査、mechanical workflow-state repair detection、reopen plan compiler / `reopen-recompile` 相当が TDD で通る |
+| Phase 1 | 語彙・schema | `.reviewcompass/schema/` の required_action / next_action / operation contract / effect_kind / phase_boundary / snapshot / language task schema が meta-schema 検証を通る |
+| Phase 2 | read-only registry | `check-workflow-action.py operation-list --json` または同等が operation contract を読み取り専用で返す |
+| Phase 3 | advisory preflight | `operation-preflight <id> --json` または同等が pending conflict、side track depth、commit mixing、prompt 機械検査を `WARN` 以上で返す |
+| Phase 4 | structured effective prompt | 全判定点で構造化 prompt と既存 Markdown prompt を生成し、互換 path を維持する |
+| Phase 5 | mechanical blocking | Phase 3 の警告対象のうち serial_only 違反、承認欠落、side track depth 超過、commit mixing を `DEVIATION` で止める |
+| Phase 6 | LLM judge audit | 構造化 prompt と運用文書を入力に gap を構造化出力する。承認自動化はしない |
+
+Phase 0 の安定 anchor は `docs/notes/working/2026-06-16-next-json-unique-state-redesign.md` の D-003 とする。ただし Phase 0 完了条件は working note の節番号に依存させず、本設計の次の 6 失敗テストを tasks / implementation の受入単位へ写す。
+
+1. `commit_stop_point=true` の reopen state では、`pending_gates` が残っていても `required_action=commit_stop_point`、`active_gate=null`、`phase=null`、`stage=null` を返す。
+2. `current_blocker` がある reopen state では、`pending_gates` が残っていても `required_action=wait_for_human_decision`、`active_gate=null` を返す。
+3. 正本変更済み phase が `canonical_update_phases` にあるのに `future_gates` / `pending_gates` が full gate を含まない場合、`verdict=DEVIATION`、`required_action=repair_workflow_state` を返す。
+4. 第3過程で active gate がある場合だけ、`phase` / `stage` が非 null になる。
+5. commit stop point commit 後、worktree clean で HEAD が当該 stop point を含む場合、`required_action=advance_reopen_after_commit_stop_point` を返し、同じ commit stop point を再提示しない。
+6. `required_action` ごとの JSON 相互排他 schema を fixture で検証する。
+
+mechanical workflow-state repair detection は Phase 0 の完了条件である。`next --json` は、reopen state の `active_reopen_scope` / `active_impact_review_scope`、`pending_gates`、`completed_gates`、`drafting_completed_gates`、`downstream_impact_decisions`、commit stop point、`current_blocker`、`spec.json` workflow_state の間に矛盾を検出した場合、通常 action へ進まず `required_action=repair_workflow_state` と `verdict=DEVIATION` を返す。Phase 0 は、この repair detection が少なくとも上記 6 失敗テストの 3 番と active scope 欠落・矛盾ケースで TDD 検証されるまで完了扱いにしない。
+
+Phase 1 のうち `required_action.schema.json` と `next_action_response.schema.json` は Phase 0 開始をブロックする最小前提として先行済みである。他の operation contract 系 schema は Phase 0 と並行可能だが、Phase 2 へ進む前にはそろえる。
+
+各 Phase の終了時は、`next --json` が通常作業へ戻れる状態、または明示された停止状態を返すことを確認する。Phase をまたいだ途中状態を単一 commit に混在させない。
+
+### 2. reopen scope と impact review scope（Req 16 受入 11〜12）
+
+本改訂の active reopen scope は `workflow-management` の requirements から design / tasks / implementation への連鎖再実施である。active scope の正本は `stages/in-progress/reopen-procedure-*.yaml` の `active_reopen_scope` と `active_impact_review_scope` である。`spec.json.reopened` は過去に上流を reopen した履歴フラグとして保持され得るため、現在の active reopen scope と同一視しない。
+
+`active_reopen_scope` は正本を再オープンして workflow_state flag を false に戻した feature / phase / gate 範囲を持つ。`active_impact_review_scope` は、正本変更の有無を確認する consumer / derivative feature / phase / gate 範囲を持つが、当該 feature の workflow_state flag を自動で false に戻す根拠ではない。`next --json` は reopen 中にこの in-progress record を必ず読み、scope が欠落・不整合・stale の場合は `repair_workflow_state` を返す。
+
+初期化は reopen 第1過程で行う。trigger_map と分類根拠から両 scope を生成し、利用者承認後に in-progress record へ固定する。更新は gate 完了記録と downstream impact decision の追加に限定し、scope の拡張・縮小は新しい利用者判断または `repair_workflow_state` を必要とする。終了は reopen 第4過程で行い、全 pending gate が解消し、active scope 全件が completed gate または downstream impact decision で覆われた場合だけ in-progress record を `stages/completed/` へ移す。
+
+operation contract、構造化有効プロンプト、状態スナップショット、proxy_model triage decision の機械処理化は、他 feature が consumer / derivative として参照し得る。正本 reopen 対象を `workflow-management` に限定する場合でも、review-wave では foundation、runtime、evaluation、analysis、self-improvement、conformance-evaluation への正本変更要否と consumer 契約影響を確認し、reopen scope と impact review scope を混同せず記録する。
+
+### 3. proxy_model triage decision の機械処理化
+
+proxy_model triage decision は、review-run 後の重要件判断を一括化しても、finding ごとの traceability と承認 scope を失わないための operation family として扱う。対象 operation は次を初期集合とする。
+
+- `proxy_triage_prepare_input`：raw response、parsed finding、同根 cluster、候補案を読み、proxy_model 入力 bundle を作る。
+- `proxy_triage_record_cluster_decision`：cluster 単位の proxy raw response と decision を保存する。
+- `proxy_triage_expand_findings`：cluster-level decision を finding-level decision へ展開する。
+- `proxy_triage_validate_coverage`：triage 対象 finding ID が decision file で過不足なく覆われているか検査する。
+- `proxy_triage_apply_batch`：coverage validation が通った finding-level decision だけを `triage.yaml` へ batch 適用する。
+
+proxy_model triage decision の適用前には、human-required predicate を必ず評価する。predicate は provider / model 名を見ず、次の証跡だけを読む。
+
+1. proxy 適用対象 finding / cluster coverage と raw / parsed / prompt 証跡
+2. approval gate record の `decision_scope`、`decision`、`decided_by`、`target_operation_id`、`target_required_action`、`binding_kind`、digest 束縛
+3. operation contract の `approval_required`、`phase_boundary`、`effect_kind`、`actor.kind`、human-only override set
+4. review-wave impact evidence の未解決状態
+5. downstream impact decisions と active reopen scope / impact review scope の整合
+
+triage item の `decision_status`、`final_label`、`decision_actor_type` は適用対象の状態確認と二重適用防止には使ってよいが、human-required predicate の正本にはしない。human-required predicate の正本は approval gate record と operation contract、および review-wave / downstream impact evidence である。
+
+human-required predicate は `proxy_triage_evaluate_human_required` という read-only internal check として扱う。入力は、対象 finding / cluster IDs、finding-to-operation mapping、関連 approval gate record、対象 operation contract、review-wave impact evidence、active reopen scope / impact review scope とする。出力は最低限、`verdict`、`blocks_proxy_apply`、`blocking_reasons[]`、`checked_records[]`、`checked_contracts[]`、`source_refs[]` を持つ。`blocks_proxy_apply=true` の場合、後続の `proxy_triage_apply_batch` は `DEVIATION` とし、`triage.yaml` を更新しない。
+
+`未解決 approval gate` は、対象 finding / cluster または対象 operation に紐づく approval gate record のうち、`decision` が `approved` ではない、`consumed=false` のまま対象 operation に未反映、`decision_scope=human_only`、binding digest 不一致、または `next_action_expectation` が `proceed` 以外のものを指す。record が欠落していて、対象 operation contract が `approval_required=true`、human-only override set、phase / gate completion、commit、push、`spec.json` 更新、reopen finalize、または approval-required irreversible operation execution に該当する場合も、未解決 approval gate と同等に扱う。
+
+`approval_required=true の対象 operation` は、finding-to-operation mapping から得た `target_operation_id` / `target_required_action` を `stages/operation-contracts.yaml` の operation contract に解決し、その contract の `approval_required=true`、または branch 内部 step の approval aggregation が true になるものを指す。mapping が欠落、複数候補で一意に解決不能、contract 参照欠落、contract digest / schema_version drift の場合は、proxy が安全に適用可能とは扱わず `blocks_proxy_apply=true` とする。
+
+predicate の評価順序は次の固定順とする。
+
+1. coverage と証跡存在を検査し、対象 finding / cluster、raw、parsed、prompt、proxy raw、decision file、mapping が過不足なくそろわない場合は `DEVIATION`。
+2. finding-to-operation mapping から対象 operation contract を解決し、一意に解決できない場合は `DEVIATION`。
+3. 対象 operation contract と human-only override set から `approval_required`、`phase_boundary`、`effect_kind`、`actor.kind`、approval aggregation を評価する。
+4. 関連 approval gate record の `decision_scope`、`decision`、`decided_by`、`binding_kind`、digest、`consumed`、`next_action_expectation` を検査する。
+5. review-wave impact evidence、downstream impact decisions、active reopen scope / impact review scope の未解決・矛盾を検査する。
+6. 3〜5 のいずれかが human-required を示す場合は、triage item の `decision_status`、`final_label`、`decision_actor_type`、proxy decision の selected option に関係なく `blocks_proxy_apply=true` とする。
+
+優先順位は次のとおりとする。
+
+1. `decision_scope=human_only`、未解決 approval gate、`approval_required=true` の対象 operation、未解決 review-wave impact evidence は、proxy_model の判断より常に優先し、proxy apply を止める。
+2. 必須証跡が欠落、競合、または対象 finding / cluster coverage を満たさない場合は `DEVIATION` とする。
+3. triage 上の `leave-as-is`、`proxy_approved`、または proxy_model の selected decision は、1 の human-required 証跡を打ち消さない。
+4. 1〜3 を通過し、かつ finding / cluster coverage が完全な場合だけ、proxy decision を finding-level decision へ展開できる。
+
+`proxy_triage_apply_batch` の operation contract は、preconditions に次を持つ。
+
+- `proxy_triage_validate_coverage` が成功している
+- `proxy_triage_evaluate_human_required` が成功し、`blocks_proxy_apply=false` を返している
+- すべての対象 finding に raw response、parsed finding、decision prompt、proxy raw response、cluster/finding mapping が存在する
+- 対象 finding / cluster に紐づく approval gate record が存在する場合、その `decision_scope` は `proxy_allowed` または `advisory_only` であり、`human_only` ではない
+- 対象 operation contract の `approval_required` が true、または human-only override set に該当する場合、proxy apply を停止する
+- review-wave impact evidence、downstream impact decisions、active reopen scope / impact review scope に未解決または矛盾がない
+
+これらの preconditions のいずれかが満たされない場合、`proxy_triage_apply_batch` は `DEVIATION` とし、triage.yaml を更新しない。
+
+cluster-level decision は保存してよいが、実装修正や manifest 作成の承認単位は finding-level decision とする。`proxy_triage_expand_findings` は、cluster ID、含まれる finding IDs、採用案、棄却案理由、final label、source raw paths、decision prompt path、proxy raw path を finding ごとに複製し、各 finding decision に `cluster_decision_id` を保持する。
+
+coverage validation は次を fail-closed にする。
+
+- triage 対象 finding ID が decision file に存在しない
+- decision file に triage 対象外 finding ID が混入している
+- cluster decision の finding set と展開後 finding decisions が一致しない
+- `final_label`、採用案、判断理由、source raw paths、decision prompt path、proxy raw path のいずれかが欠落している
+- `review_triage_decide` approval と apply-fixes approval の scope が一致しない
+
+approval scope は `approval_record.scope` で区別する。`review_triage_decide` は triage label の採否だけを許可し、仕様文書・実装・spec.json・workflow_state の変更は許可しない。apply-fixes は対象 finding IDs、対象ファイル、期待する変更種別を別 record として持つ。batch 適用は triage decision の一括反映に限り、修正実装を同時に行わない。
+
+## 主要な設計判断（Interface Decisions）
+
+### 判断 1：段集合は静的列挙、Markdown からの動的解析はしない
+
+理由：素材設計（節ハッシュ・独立再導出パーサ・通過マーカー）は実装コストが高く、フェーズ 1 では維持できない。YAML 静的列挙に置き換えることで実装コストを 1／10 に抑え、Markdown 側との整合は人手で取る前提とする（§5.4 受け入れリスク）。
+
+### 判断 2：検査スクリプトは中身を判定しない
+
+理由：中身の妥当性判定を始めると検査スクリプトの規模が爆発し、第 1 層の本来の責務（証跡＋必須節の機械判定）が薄まる。中身判定は第 3 層（利用者監査）と第 4 層（定期事後監査）に委ね、第 1 層は「形式が揃っているか」のみに絞る。
+
+### 判断 3：fail-closed を全面採用
+
+理由：誤って不可逆操作を許可することによる被害は、検査が pass しないことで作業が止まる不便さを大きく上回る。曖昧なときは止める方針を全段に適用する。
+
+### 判断 4：直前ゲートは最小集合に絞る
+
+理由：機械ゲートをすべての段遷移に置くと、検査スクリプトを呼ぶ頻度が上がり、LLM が「検査を回避する」「結果を読み飛ばす」失敗モードを誘発する。不可逆操作の直前のみに絞ることで、検査の存在感を維持し、回避のコストを上げる。
+
+### 判断 5：reopen 連鎖は actor=human で必ず停止
+
+理由：「LLM が intent を勝手に書き換えて承認なしで進む」リスクは構造的に止めなければならない。trigger_map の連鎖を `actor=human` の段で必ず停止させ、人間承認なしには次に進めない設計とする。
+
+### 判断 6：機能依存マップは 1 ファイル所有
+
+理由：各フェーズの YAML に依存関係を分散させると、新機能追加時の整合漏れが避けられない。1 ファイル所有・他機能は参照のみ、の構造で整合漏れを構造的に防ぐ。
+
+### 判断 7：規律変更は本機能が所定手続き経由で実体変更（A-007 案 2、A-012 対処で時系列契約・完了通知形式を詳細化）
+
+理由：規律ファイル本体の変更権を `self-improvement`（提案権）と本機能（実体変更権）に分散させ、自己承認の空洞化を防ぐ。`self-improvement` が直接ファイル書き換えを行うことを禁じ、必ず本機能の所定手続き（drafting → review → approval）を通す。
+
+**self-improvement との時系列契約・完了通知形式（A-012 対処、2026-05-26 セッション 28 確定、self-improvement design §13.5 の合意点を受け入れ）**：
+
+self-improvement design §13.5 で本機能との接合面の詳細が定義されており、本機能はこの合意点を受け入れる。
+
+- **時系列契約**：
+  - `approved` ＝ self-improvement の提案レビュー承認時点
+  - `materialized_at` ＝ 本機能の所定手続き完了時点（self-improvement の status は `approved` のまま、本フィールドのみ追記）
+- **入力経路**：self-improvement が承認済み提案 YAML を `git mv` で `learning/workflow/approved-updates/` に配置、本機能はこのディレクトリを所定手続きの input として読む
+- **完了通知形式**：本機能が所定手続き完了時に `approved-updates/<日付>-<id>.yaml` に次のフィールドを追記：
+  - `materialized_at`：ISO 8601 形式の完了時点
+  - `materialization_commit_hash`：規律ファイルの実体変更コミットのハッシュ
+- **ロールバック責務**：`approved` だが未 `materialized` の状態でロールバックが必要になった場合、self-improvement が `superseded` に遷移させ、本機能に通知する（本機能側で能動的なロールバック実行は不要、状態は self-improvement が管理）
+- **整合性検査タイミング**：本機能の `materialized_at` 記録後、self-improvement の遵守検査再実行のトリガーとなる（self-improvement §11.6 と整合）
+
+### 判断 8：補助層 C の段階 2 を本機能が所有
+
+理由：補助層 C 段階 2 の検査スクリプト（`check-workflow-action.py`）は本機能の Req 2 検査スクリプトと実体が同一であり、別経路で同じ機能を実装すると保守コストが二重化する。段階 2 は本機能が単独所有し、段階 1（LLM 規律）と段階 3（Claude Code フック）は段階 2 を呼ぶだけの薄い層とする。
+
+## 要件と設計の対応（Requirements Traceability）
+
+| 要件 | 受入基準 | 対応する設計節 |
+|---|---|---|
+| Requirement 1：段集合の静的列挙 | 受入 1（YAML 静的列挙、動的解析しない） | §段集合の静的列挙モデル §1〜§2 |
+| | 受入 2（9 ファイル体制） | §段集合の静的列挙モデル §1 |
+| | 受入 3（段名／actor／証跡パス／必須節／完了判定） | §段集合の静的列挙モデル §2 |
+| | 受入 4（feature_order 参照） | §段集合の静的列挙モデル §3、§機能依存マップモデル §3 |
+| | 受入 5（YAML 1 箇所修正、Markdown 整合は人手） | §段集合の静的列挙モデル §4 |
+| Requirement 2：検査スクリプト | 受入 1（Python 実装） | §軽量版検査スクリプトモデル §1 |
+| | 受入 2（証跡＋必須節のみ判定） | §軽量版検査スクリプトモデル §1〜§3 |
+| | 受入 3（中身の妥当性判定しない） | §軽量版検査スクリプトモデル §4、§主要な設計判断 判断 2 |
+| | 受入 4（結論不能は fail） | §軽量版検査スクリプトモデル §1、§不可逆操作の直前ゲートモデル §3、§主要な設計判断 判断 3 |
+| | 受入 5（in-progress 警告） | §軽量版検査スクリプトモデル §2、§session 跨ぎ状態管理モデル §4 |
+| | 受入 8（WORKFLOW_DISCIPLINE_MAP.yaml と required_disciplines／required_inputs） | §軽量版検査スクリプトモデル §2 |
+| Requirement 3：起草者と判定者の分離 | 受入 1（author／reviewer 必須） | §起草者と判定者の分離モデル §1 |
+| | 受入 2（identity 同一を許容しない） | §起草者と判定者の分離モデル §1、§3 |
+| | 受入 3（subagent_mediated の判定役は別エンティティ） | §起草者と判定者の分離モデル §2 |
+| | 受入 4（front-matter 検査、別モデル／別 session は第 1 層対象外） | §起草者と判定者の分離モデル §3 |
+| Requirement 4：不可逆操作の直前ゲート | 受入 1（4 種類の不可逆操作） | §不可逆操作の直前ゲートモデル §1 |
+| | 受入 2（pass ＋ in-progress 空、毎回独立走行） | §不可逆操作の直前ゲートモデル §2 |
+| | 受入 3（fail-closed） | §不可逆操作の直前ゲートモデル §3、§主要な設計判断 判断 3 |
+| | 受入 4（最小集合方針） | §不可逆操作の直前ゲートモデル §1、§主要な設計判断 判断 4 |
+| | 受入 5（commit 承認レコード・target_sha256） | §不可逆操作の直前ゲートモデル §2 |
+| | 受入 6（nonce challenge・target digest・consume） | §不可逆操作の直前ゲートモデル §2.1 |
+| | 受入 7（LLM 非依存・保証範囲） | §不可逆操作の直前ゲートモデル §2.1 |
+| | 受入 8（LLM commit 実行代行承認の正式 CLI） | §不可逆操作の直前ゲートモデル §2.2 |
+| Requirement 5：reopen 機械強制 | 受入 1（二次元表記） | §reopen 機械強制モデル §1 |
+| | 受入 2（trigger_map） | §reopen 機械強制モデル §2 |
+| | 受入 3（actor=human で停止） | §reopen 機械強制モデル §3、§主要な設計判断 判断 5 |
+| | 受入 4（人間承認なしに進まない） | §reopen 機械強制モデル §3 |
+| | 受入 5（種別判定根拠の保存） | §reopen 機械強制モデル §4 |
+| Requirement 6：session 跨ぎ状態管理 | 受入 1（in-progress ファイル） | §session 跨ぎ状態管理モデル §1 |
+| | 受入 2（必須フィールド） | §session 跨ぎ状態管理モデル §1 |
+| | 受入 3（標準フロー） | §session 跨ぎ状態管理モデル §2 |
+| | 受入 4（完了時の移動） | §session 跨ぎ状態管理モデル §3 |
+| | 受入 5（in-progress ある状態での遮断） | §session 跨ぎ状態管理モデル §4、§不可逆操作の直前ゲートモデル §2 |
+| Requirement 7：多層防御 | 受入 1（第 1 層の限界の明文化） | §多層防御の位置付けモデル §1 |
+| | 受入 2（第 2〜5 層を宿題として参照） | §多層防御の位置付けモデル §2 |
+| | 受入 3（第 5 層運用ルールの反映） | §多層防御の位置付けモデル §4 |
+| | 受入 4（第 1 層の限界の運用文書への明示） | §多層防御の位置付けモデル §5 |
+| Requirement 8：機能依存マップの一元化 | 受入 1（feature-dependency.yaml が一元保管先） | §機能依存マップモデル §1 |
+| | 受入 2（features ＋ feature_order、2 形式の depends_on） | §機能依存マップモデル §2 |
+| | 受入 3（feature_order 参照） | §機能依存マップモデル §3 |
+| | 受入 4（1 箇所修正で完結） | §機能依存マップモデル §4、§主要な設計判断 判断 6 |
+| | 受入 5（所有者は本機能、他機能は参照のみ） | §機能依存マップモデル §5、§主要な設計判断 判断 6 |
+| Requirement 9：既存システムへの後追い intent 追加時の下流再展開 | 受入 1（受け皿判定） | §reopen 機械強制モデル §6 |
+| | 受入 2（既存 requirements で早期終了しない） | §reopen 機械強制モデル §6 |
+| | 受入 3（既存設計・実装との衝突確認） | §reopen 機械強制モデル §6、§session 跨ぎ状態管理モデル §1 |
+| | 受入 4（conformance-evaluation の候補を入力として扱う） | §reopen 機械強制モデル §6、§下流仕様への影響 |
+| | 受入 5（下流 phase の判断記録） | §reopen 機械強制モデル §6、§session 跨ぎ状態管理モデル §1 |
+| | 受入 6（dogfooding 中の side track 管理） | §reopen 機械強制モデル §6、§session 跨ぎ状態管理モデル §1 |
+| Requirement 10：review-wave 横断確認の要約コマンド | 受入 1（要約サブコマンド・読み取り元） | §review-wave 要約コマンドモデル §1〜§2 |
+| | 受入 2（出力項目） | §review-wave 要約コマンドモデル §2〜§3 |
+| | 受入 3（Markdown／JSON 両方・安定スキーマ・情報同等） | §review-wave 要約コマンドモデル §3 |
+| | 受入 4（結論不能は fail-closed・機械可読シグナル） | §review-wave 要約コマンドモデル §4、§軽量版検査スクリプトモデル §4 |
+| | 受入 5（読み取り専用・自身の出力のみ保存） | §review-wave 要約コマンドモデル §1・§5、§不可逆操作の直前ゲートモデル §1 |
+| Requirement 11：重要決定の出典検査 | 受入 1（記録スキーマ） | §Req 11 設計モデル §1 |
+| | 受入 2（束ね検出 fail-closed・例外の人承認） | §Req 11 設計モデル §2 |
+| | 受入 3（逐語照合・正規化・保留管理） | §Req 11 設計モデル §3 |
+| | 受入 4（内容なし語リスト） | §Req 11 設計モデル §4 |
+| | 受入 5（読み取り専用・fail-closed） | §Req 11 設計モデル §5、§軽量版検査スクリプトモデル §4 |
+| | 受入 6（意味一致は人/判定役） | §Req 11 設計モデル §3（保留管理）、§主要な設計判断 判断 2 |
+| | 受入 7（サブコマンド必須・commit ゲート組み込み） | §Req 11 設計モデル §5 |
+| Requirement 12：operation registry / preflight | 受入 1（operation registry） | §Req 12 設計モデル §1 |
+| | 受入 2（read-only preflight） | §Req 12 設計モデル §2、§13 |
+| | 受入 3（共通 response・verdict） | §Req 12 設計モデル §2〜§3 |
+| | 受入 4（command validation） | §Req 12 設計モデル §4 |
+| | 受入 5（worktree / pending / integrity conflict） | §Req 12 設計モデル §5 |
+| | 受入 6（review artifact preflight） | §Req 12 設計モデル §6 |
+| | 受入 7（serial_only・commit approval chain） | §Req 12 設計モデル §7 |
+| | 受入 8（current-session formal record guard） | §Req 12 設計モデル §8 |
+| | 受入 9（nested issue handling） | §Req 12 設計モデル §9 |
+| | 受入 10（deployment / export preflight） | §Req 12 設計モデル §10 |
+| | 受入 11（all feature impact review scope） | §Req 12 設計モデル §11 |
+| | 受入 12（LLM / provider / model 非依存） | §Req 12 設計モデル §12 |
+| | 受入 13（next state uniqueness） | §Req 12 設計モデル §11、§軽量版検査スクリプトモデル §2 |
+| Requirement 13：operation contract 語彙と required_action 対応 | 受入 1（共通語彙） | §Req 13 設計モデル §1 |
+| | 受入 2（Phase 1 schema） | §Req 13 設計モデル §1、§全体構造 |
+| | 受入 3（19 required_action 対応） | §Req 13 設計モデル §3 |
+| | 受入 4（対応表の最低フィールド） | §Req 13 設計モデル §2〜§3 |
+| | 受入 5（承認必須の単純操作） | §Req 13 設計モデル §3 |
+| | 受入 6（record_human_decision） | §Req 13 設計モデル §4、§Req 14 設計モデル §1（`decision_scope` / `binding_kind` による承認対象束縛） |
+| | 受入 7（run_reopen_pending_gate 分岐） | §Req 13 設計モデル §3 |
+| | 受入 8（run_maintenance / run_workflow_stage 複合操作） | §Req 13 設計モデル §3〜§4 |
+| | 受入 9（複合操作 schema 表現） | §Req 13 設計モデル §4 |
+| | 受入 10（preconditions / postconditions） | §Req 13 設計モデル §2 |
+| | 受入 11（registry / contract 単一正本境界） | §Req 13 設計モデル §3、§5 |
+| | 受入 12（contract 参照 drift / 重複検出） | §Req 13 設計モデル §3、§5 |
+| Requirement 14：承認ゲート、側道スタック、状態スナップショット | 受入 1（wait_for_human_decision / record_human_decision） | §Req 14 設計モデル §1 |
+| | 受入 2（承認／拒否／保留／修正要求） | §Req 14 設計モデル §1 |
+| | 受入 3（判断 record の対象束縛） | §Req 14 設計モデル §1（`decision_scope` / `binding_kind` / digest 束縛）、§Req 13 設計モデル §4 |
+| | 受入 4（side track frame schema） | §Req 14 設計モデル §2 |
+| | 受入 5（staged file set / digest 照合） | §Req 14 設計モデル §2 |
+| | 受入 6（top frame pop と return_to） | §Req 14 設計モデル §2 |
+| | 受入 7（max_depth） | §Req 14 設計モデル §2 |
+| | 受入 8（workflow-state snapshot） | §Req 14 設計モデル §3 |
+| | 受入 9（snapshot 最低フィールド） | §Req 14 設計モデル §3 |
+| | 受入 10（snapshot は補助で正本ではない） | §Req 14 設計モデル §3 |
+| | 受入 11（proxy / human decision 境界） | §Req 14 設計モデル §1 |
+| | 受入 12（read-only / mutating 操作境界） | §Req 14 設計モデル §2、§4 |
+| Requirement 15：構造化有効プロンプトと監査 | 受入 1（prompt 構造） | §Req 15 設計モデル §1 |
+| | 受入 2（language_task） | §Req 15 設計モデル §1 |
+| | 受入 3（機械タスクの分離） | §Req 15 設計モデル §1〜§2 |
+| | 受入 4（Phase 4 生成と互換） | §Req 15 設計モデル §1 |
+| | 受入 5（第1層機械検査） | §Req 15 設計モデル §2 |
+| | 受入 6（LLM judge audit） | §Req 15 設計モデル §3 |
+| | 受入 7（監査出力 schema と既知 gap） | §Req 15 設計モデル §3 |
+| Requirement 16：段階的実装計画 Phase 0〜6 | 受入 1（Phase 0 D-003） | §Req 16 設計モデル §1 |
+| | 受入 2（Phase 0 開始前提） | §Req 16 設計モデル §1 |
+| | 受入 3（Phase 0 完了条件） | §Req 16 設計モデル §1 |
+| | 受入 4（Phase 1） | §Req 16 設計モデル §1、§Req 13 設計モデル §1 |
+| | 受入 5（Phase 2） | §Req 16 設計モデル §1 |
+| | 受入 6（Phase 3） | §Req 16 設計モデル §1 |
+| | 受入 7（Phase 4） | §Req 16 設計モデル §1、§Req 15 設計モデル §1 |
+| | 受入 8（Phase 5） | §Req 16 設計モデル §1 |
+| | 受入 9（Phase 6） | §Req 16 設計モデル §1、§Req 15 設計モデル §3 |
+| | 受入 10（Phase 終了時の next 確認） | §Req 16 設計モデル §1 |
+| | 受入 11（reopened と active reopen scope の区別） | §Req 16 設計モデル §2 |
+| | 受入 12（consumer / derivative impact review） | §Req 16 設計モデル §2、§下流仕様への影響 |
+| | 受入 13（proxy decision の evidence / human-required predicate） | §Req 16 設計モデル §3、§Req 14 設計モデル §1 |
+| | 受入 14（human-required 優先順位と競合解決） | §Req 16 設計モデル §3 |
+
+## 下流仕様への影響（Impact on Downstream Specs）
+
+本設計は次の下流仕様に影響を与える：
+
+- **`self-improvement`**：規律変更の提案権と実体変更権の分離（判断 7、A-007 案 2）。`self-improvement` の design.md／tasks.md で「規律ファイルを直接書き換える」記述があれば、本機能の所定手続き経由に変更する必要がある。**時系列契約・完了通知形式は self-improvement design §13.5 と本機能 判断 7 で相互参照（A-012 対処、2026-05-26 セッション 28 確定）**
+- **`conformance-evaluation`**：機能依存マップの依存種別（`hard`／`review`）を仕様内で明示する必要（A-005 の conformance-evaluation 側対処、`feature-dependency.yaml` の連想配列構造を Req 7 で参照）
+- **`conformance-evaluation`**：後追い intent 追加時のコード由来差分候補を生成し、本機能へ渡す必要（Req 9）。本機能は候補を作らず、候補の検証・記録・reopen 順序化を担う
+- **全 7 機能の design 段以降**：レビュー記録の front-matter に `author.identity` ／ `reviewer.identity` ／ `separation_from_author` を必須化（Req 3 受入 1）。既存のレビュー記録 7 件（requirements の各機能）はフェーズ 2 の検査スクリプト導入時に遡及検査の対象に含めるか、grandfathering（移行期免除）として扱うかを別途決定する
+- **全 7 機能の運用・実装段**：operation contract、structured effective prompt、workflow-state snapshot、side track stack は `workflow-management` が正本を持つが、foundation／runtime／evaluation／analysis／self-improvement／conformance-evaluation が consumer / derivative として参照し得る。正本変更要否は review-wave で確認し、reopen scope と impact review scope を分けて記録する
+- **`evaluation`**：LLM judge audit の意味評価ロジックそのものは `evaluation` の責務と接続し得る。ただし本機能は監査対象の prompt / contract / state refs と出力 schema を所有し、評価ロジックの妥当性判定は自機能内へ取り込まない
+
+`evaluation` の既存評価ロジック本体への正本変更要否は review-wave で確認する。本 design drafting 時点では、operation contract と prompt audit の contract consumer としての確認対象に置く。
+
+## 先送り論点（Open Issues Deferred to Later Specs）
+
+本設計で確定せず、後続フェーズで決定する論点：
+
+1. **段集合の変更そのものを不可逆操作の対象とするか**：第 5 層（処理表面積の抑制）導入時に検討（フェーズ 4 以降）
+2. **第 2 層 git フックの具体配線**：フェーズ 4 で `pre-commit` ／ `pre-push` のフック実装、本機能の検査スクリプトを再利用する形を想定
+3. **第 3 層 利用者監査の具体手順**：フェーズ境目（要件→設計、設計→タスク等）での確認チェックリストを `docs/operations/PHASE_BOUNDARY_AUDIT.md` として別途整備
+4. **既存レビュー記録の遡及検査**：Req 3 の front-matter 必須化を既存 7 件（requirements の各機能）に遡及適用するか、grandfathering で免除するか
+5. **段階 3 の Claude Code フック実装**：補助層 C 段階 3 はフェーズ 2 以降の宿題、本機能の検査スクリプトとの結合方式を別途設計
+6. **規律変更の所定手続きの段集合**：規律変更を `drafting → review → approval` の 3 段で扱うか、`triad-review` を含めるかを A-007 案 2 対応の細部として後続セッションで確定
+7. **`stages/cross-spec-alignment.yaml` の段集合**：機能横断整合手続きの段集合は別途確定、本設計では枠のみ確保
+8. **規律変更の所定手続きの実装と参照層 5 件の扱い**：A-007 対処で active 必読 12 件は `docs/disciplines/` に移管済み（2026-05-25 セッション 26）。本機能の所定手続きが `docs/disciplines/` 内の規律変更を扱う実装はフェーズ 2 以降。参照層 5 件（feedback_dominant_dominated_options 等）の memory → repo 移管要否は別途判断
+9. **運営ガイド等の現行規律本体の改廃手続き**：`docs/operations/SESSION_WORKFLOW_GUIDE.md` 等の運営文書を本機能の所定手続きの対象に含めるかは別論点。フェーズ 2 で `docs/disciplines/` 配置構造との整合とともに整理
+
+## テスト戦略（Test Strategy）
+
+本機能の検証境界を設計段で次のとおり明示する。詳細ケース分解は tasks 段で行う。
+
+- **単体テスト**：
+  - 段集合 YAML のパース（壊れた YAML、必須フィールド欠落のケース）
+  - 完了述語の判定（`artifact_exists`、`artifact_exists_and_sections_present` 等の各述語）
+  - `author.identity` ≠ `reviewer.identity` の文字列比較
+  - 手戻り種別の解析（`D-1` → `trigger_map[D-1]` の再実施対象リスト）
+  - 進行中状態ファイルの読み書き（必須フィールド欠落の検出）
+  - 依存マップの解析（`depends_on` の単純リスト構造と連想配列構造の両方）
+  - operation contract schema、`effect_kind`、`phase_boundary`、snapshot、language task I/O の meta-schema 検証
+  - required_action 19語彙と operation contract 対応表の網羅性検査
+  - side track stack frame の depth、top frame pop、staged file set digest の検査
+  - structured effective prompt の必須構造、参照 anchor、output_format / postconditions 対応検査
+
+- **統合テスト**：
+  - 不可逆操作（spec.json 書き込み、commit、push）の直前ゲートが実際に遮断すること
+  - reopen 連鎖が `actor=human` 段で停止し、`stages/in-progress/` にファイルが残ること
+  - `stages/in-progress/` ある状態での不可逆操作が遮断されること
+  - 機能依存マップの 1 箇所修正が各フェーズ YAML の解釈に正しく反映されること
+  - operation preflight が `next --json` の active state dimensions と operation contract を照合すること
+  - Phase 3 advisory では WARN 以上を返し、Phase 5 では同じ条件を DEVIATION に昇格すること
+  - workflow-state snapshot が `next --json` と照合できる場合だけ監査補助として使えること
+  - LLM judge audit が既知 gap fixture を構造化 finding として返し、承認を自動化しないこと
+
+- **異常系 fixture**：
+  - YAML パースエラー（壊れた構文）
+  - 証跡ファイル不在
+  - 必須節欠落
+  - `author.identity` ＝ `reviewer.identity` の同一
+  - `feature-dependency.yaml` 不在または依存循環
+  - 検査スクリプト実行失敗（Python 例外）
+  - operation contract 対応表の 19語彙欠落
+  - 複合 operation の branch 欠落または最大副作用欠落
+  - side track stack の depth 超過、allowed_files 外 staged 変更、digest 不一致
+  - structured prompt の機械タスク混入、preconditions の未確認条件参照、postconditions 確認不能
+  - いずれも fail-closed となることを検証
+
+- **境界条件**：
+  - `depends_on: []`（依存先なし）の foundation の扱い
+  - `depends_on` の連想配列構造で未知の依存種別（`hard`／`review` 以外）の扱い
+  - 進行中状態ファイルが複数存在する場合（複数の `reopen-procedure-*.yaml` 並存）の扱い
+
+- **対象外**：
+  - 中身の妥当性判定（判断 2 で明示的に除外）
+  - 別モデル・別 session の機械判定（Req 3 受入 4 で除外）
+  - LLM judge audit による最終承認の自動化（Req 15 で除外）
+  - 第 2〜5 層のうち本設計で Phase 0〜6 に含めていない外部 hook / CI 強制
+
+## 完成判定基準（Completion Criteria）
+
+本設計に基づく実装が完成したとみなす条件：
+
+1. `stages/` 配下に 9 ファイル（`intent.yaml`／`feature-partitioning.yaml`／`feature-dependency.yaml`／`requirements.yaml`／`design.yaml`／`tasks.yaml`／`implementation.yaml`／`reopen-procedure.yaml`／`cross-spec-alignment.yaml`）がすべて配置されている
+2. `tools/check-workflow-action.py` が通常 workflow と reopen の選択層入口（少なくとも `next`、`spec-set`、`commit`、`push`、`reopen-start`、commit / push 直前 gate）を提供し、各サブコマンドが exit code 0／1／2 を正しく返す
+3. 機能単位 spec.json 7 件（全 7 機能）が `workflow_state` を計画書 §5.24 の正本スキーマで持つ
+4. レビュー記録の front-matter 検査が機能横断段（review-wave／alignment）の前提として組み込まれている
+5. 進行中状態ファイル（`stages/in-progress/*.yaml`）の有無検査が `git commit`／`git push` の直前ゲートに統合されている
+6. 手戻り種別判定の根拠ファイル（`docs/reviews/reopen-classification-*.md`）の雛形が `templates/review/reopen_classification_template.md` として配置されている
+7. 運用文書（`docs/operations/WORKFLOW_PRECHECK.md`）にワークフロー事前検査の限界が明示されている
+8. `.reviewcompass/schema/` に operation contract、`effect_kind`、`phase_boundary`、workflow-state snapshot、language task I/O の schema が配置され、operation registry / structured effective prompt / side track stack と相互参照できる
+9. Phase 0〜6 の各完了条件が tasks 段で TDD 可能な単位に分解され、Phase をまたいだ途中状態を単一 commit に混在させない順序が明示されている
+10. decision-source-lint、review-wave summary、operation registry / preflight、structured effective prompt、workflow-state snapshot、proxy_model triage decision 機械処理化など、Requirement 11〜16 で追加された operation surface が、該当 Phase の tasks / implementation で実装・検査されている
+
+本 design drafting 時点では、条件 1〜3 の一部と `required_action.schema.json` / `next_action_response.schema.json` の先行実装が存在するが、Requirement 13〜16 の operation contract、side track stack、structured effective prompt、workflow-state snapshot、proxy_model triage decision 機械処理化は今後の tasks / implementation 段で TDD 対象として分解・実装する。したがって本節は完成判定の目標条件であり、現時点の実装完了主張ではない。
+
+## 先行実装・運用由来契約の設計入力（Implementation-Derived Contract Inputs）
+
+本節は、dogfooding、先行実装、運用文書、conformance check で観測された契約を、design drafting の入力として整理する。ここでいう「取り込む」「設計境界とする」は、本 design に契約候補を明文化する意味であり、review-wave、alignment、approval、または Requirement 13〜16 の tasks / implementation 完了を主張しない。実装済みの証跡に触れる場合も、既存状態の説明に限り、本 reopen の後続 gate 完了とは区別する。
+
+### XDI-WM-001：post-write・承認・監査・自律台帳契約
+
+2026-06-08 の機能横断 conformance check で、workflow-management の post-write verification、commit approval、audit trail、autonomous ledger に関する契約が、運用文書・規律・ゲート実装・テストにまたがって具体化されていることを確認した。本設計はその差分を先行実装・運用由来の設計入力として取り込む。
+
+- post-write verification は、対象ファイルと検証結果の対応を commit 前に確認し、必要な検証記録がない変更を不可逆操作へ進ませないための境界である
+- commit approval は、利用者の明示指示、対象ファイル、ハッシュ、rationale を `.reviewcompass/runtime/approvals/commit-approval.json` に固定し、ガード付き commit の入力として扱う（旧 `.reviewcompass/approvals/` からの変更は 2026-06-12 配置規約 PLC-DEC-004・009〜011 反映。凍結・読み取り互換は §実行時生成物の凍結期（P3 まで）の扱いを正本とする）
+- audit trail は `check-workflow-action.py` と `guarded-git-commit.py` の verdict、理由、staged files、承認レコード状態を観測可能な証跡として残す
+- autonomous ledger は、進行中状態・未消化所見・承認済み不可逆操作を workflow の状態判断に反映し、自律進行と人間承認境界を混同しない
+
+### XDI-WM-002：後追い intent 下流再展開契約
+
+2026-06-09 の dogfooding で、既存システムに intent を後から追加した場合、既存 requirements が受け止められるかだけで処理を終えず、該当 feature の requirements／design／tasks／implementation を上流から再展開する必要が確認された。本設計はその差分を先行運用由来の設計入力として取り込む。
+
+- 受け皿 feature がある場合は既存 feature を reopen し、ない場合は feature-partitioning に戻る
+- `conformance-evaluation` はコード由来差分候補を生成し、本機能はその候補を reopen 手続きへ取り込む
+- `pending_gates` が triad-review を指していても、drafting 証跡がなければ `next` は `run_reopen_drafting` を返す
+- side track は `process_id: maintenance` で本線と分離し、開始と終了を明示する
+
+### XDI-WM-003：配布側複数 LLM 入口の配布契約（2026-06-12 反映）
+
+2026-06-10〜12 の配布側複数 LLM 入口整備（設計記録 `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md`、conformance 評価 `2026-06-12-completed-followup-conformance.md` の MLE-C-005・C-006）で確立した配布契約を、本機能の設計入力として取り込み、後続 tasks / implementation で検査可能な境界へ分解する。
+
+- **対象アプリ入口規律**：`templates/entry/AGENT_ENTRY.template.md` を配布し、対象アプリの `.reviewcompass/AGENT_ENTRY.md` として実体化する。LLM 別差分（入口ファイル・記憶の扱い・設定の置き場）は §10 に 1 ファイル同居とし、別ファイル化しない。既存入口（CLAUDE.md／AGENTS.md）への合流条件（設計記録 2026-06-10 §3.4、方式 A、利用者承認済み）：追記前に書き込み先・挿入行・挿入位置（末尾）を利用者へ提示して承認を得る。同じ行が既にあれば何もしない。ファイルが存在しなければ承認のうえその 1 行のみで新規作成する。既存記述は変更しない。追記する 1 行の正本は `AGENT_ENTRY.template.md` §11 の定型文（Claude 用は取り込み行 `@.reviewcompass/AGENT_ENTRY.md`、Codex 用は AGENT_ENTRY を最初に読む旨の指示文）とする。
+- **hook 配布**：`templates/hooks/pre-bash-precheck.sh.template` を 1 本だけ配布する。プレースホルダは `{{REVIEWCOMPASS_PYTHON}}`・`{{REVIEWCOMPASS_DIR}}` の 2 つで、いずれも絶対パス必須。初期設定時に LLM が実パスへ置換し、`.claude/hooks/` と `.codex/hooks/` の両方へ同一内容で複製する。**自己診断の契約**：診断の主体は hook スクリプト自身、実行タイミングは hook 起動時（検査ツール呼び出しの前）。未置換トークンの残存、検査ツール（`tools/check-workflow-action.py`）の不在、Python 実行系の実行不能を検出した場合、「hook 設定不備」という明確な理由を出力して当該 commit／push を拒否する（fail-closed、非 0 終了）。復旧手順（プレースホルダの再置換）は初期設定ガイドに記載する。置換が正しく完了したことの検証は、hook 起動時の自己診断（最初の commit／push 時）に加え、初期設定完了時の有効化確認手順（正本＝`docs/operations/INITIAL_SETUP_LLM_GUIDE.md`）で初期設定の時点でも行う。動作仕様の実体正本はテンプレート本体（`pre-bash-precheck.sh.template` の deny 関数と診断部）とする。
+- **登録雛形**：`.claude/settings.json` の hook 登録断片（`templates/hooks/claude-settings.json.template`）と `.codex/hooks.json` 雛形（`templates/hooks/codex-hooks.json.template`）を配布する。実体化先は対象アプリの `.claude/settings.json`（既存設定があれば断片を統合）と `.codex/hooks.json`。導入は強推奨であり、有効化確認（hook が commit／push 時に起動すること）の手順と検証責務は `docs/operations/INITIAL_SETUP_LLM_GUIDE.md` を正本とする。導入を見送る場合は利用者の明示判断とし、見送った事実を初期設定の完了報告に記録する。hook が未登録または見送られた間は、機械ガード第 1 層（hook による commit／push 直前の事前検査）が存在しない状態であり、この保護境界の不在は利用者明示判断による受容リスクとして扱う。その間の運用は AGENT_ENTRY の規律（検査ツールの手動実行）に委ねる。
+- **配布 allowlist**：`deploy-manifest.yaml` に entry／hooks／feature-dependency の各テンプレートを含める。
+- 運用手順の正本は `docs/operations/INITIAL_SETUP_LLM_GUIDE.md`・`INITIAL_DEPLOYMENT_USER_GUIDE.md`・`DEPLOYMENT.md` §4 とし、本設計は配布物の契約境界（何を配布し、何を対象アプリ側で実体化するか）を定める。
+
+### XDI-WM-004：operation registry / preflight 契約（2026-06-16 反映）
+
+2026-06-16 の workflow recovery smell inventory と operation registry / preflight reopen R-0 で確認した、推測コマンド、誤 entrypoint、review artifact drift、approval record gap、staged / unstaged 対象誤り、current-session formal record 作成、nested issue scope drift を、本機能の設計入力として取り込み、Requirement 12〜13 の境界へ接続する。
+
+- operation registry は `stages/operation-registry.yaml` を正本とし、operation id、kind、canonical invocation、workflow binding、required inputs、target identity、planned outputs の参照・投影・binding hint、sequence mode、worktree / pending / artifact policy、operation contract 参照を定義する。`effect_kind`、承認要否、phase boundary、preconditions / postconditions、side effects、branch / internal step semantics、approval aggregation、出力・副作用 contract field は registry で定義しない。
+- preflight は read-only を Phase 1 とし、review-run directory、manifest、approval record、session record、commit、deployment / export output を作成しない。
+- `next --json` の reopen 状態は Requirement 2 の契約を拡張し、reopen scope、impact review scope、direct / indirect features、flag policy、pending / completed / superseded gate、参照 state files を一意に返す。
+- approval chain、review artifacts、bundle、manifest、criteria、document-type、target digest、session record、deployment / export は operation preflight の初期対象とする。
+- 判定は LLM / provider / model 名に依存しない。
+
+### XDI-WM-005：選択層／実行層接続と構造化プロンプト契約（2026-06-19 反映）
+
+2026-06-18〜19 の統合設計メモ反映で確認した、`next --json` の唯一 action selector と operation contract / structured effective prompt / side track stack / workflow-state snapshot の接続を、本機能の設計入力として取り込み、Requirement 13〜16 の段階的実装計画へ接続する。
+
+- `required_action` 19語彙は operation contract に接続し、`effect_kind`、承認要否、phase boundary、sequence、preconditions / postconditions を機械可読に持つ。
+- 複合 operation は単一代表値へ丸めず、branch / internal step / max effect / approval aggregation を operation contract 上で表す。registry はそれらを再定義せず、contract 参照・投影・binding に限定する。
+- 承認ゲートは判断記録 operation と対象 operation の承認を分離し、`record_human_decision` の完了だけで不可逆操作を許可しない。
+- side track は stack frame として管理し、`return_to`、allowed files、staged file set digest、max depth を機械検査対象にする。
+- workflow-state snapshot は `next --json` の副産物であり、正本ではなく可視化・監査補助である。
+- structured effective prompt は LLM の言語タスク仕様であり、機械タスクは operation contract / preflight / runner / guard の責務とする。
+- Phase 0〜6 は選択層、schema、read-only registry、advisory preflight、structured prompt、mechanical blocking、LLM judge audit の順に分け、TDD 実装時に混在させない。
+
+## 変更意図（Change Intent）
+
+本設計は先行プロジェクトの `dual-reviewer-implementation-governance/design.md`（466 行、節ハッシュ・独立再導出パーサ・supersedes リンク・通過マーカーの後続確認等を含む大規模機構）を、ReviewCompass の方針（計画書 §5.4〜§5.8）に基づき **思想は継承、実装は 1／10** で再設計した。
+
+### 継承した思想
+
+- 不可逆操作の直前にしか機械ゲートを置かない（fail-closed の最小集合）
+- 証跡 artifact の存在＋構造適合で完了を判定する（主張ではなく証拠）
+- 起草者と判定者を分ける（自己承認の禁止）
+- 検査が結論不能なら遮断（fail-closed の既定）
+- 完了判定述語と独立性 marker の分離（素材の小節 2 と小節 3 を §軽量版検査スクリプトモデル §3 と §起草者と判定者の分離モデル §1 に縮約継承）
+
+### 削減・除去した機構（素材から継承しない、§5.4 確定）
+
+- 節ハッシュ（`section_content_hash`）と陳腐化／改竄検知（素材の小節 1.3、§5.4 で削除確定）
+- supersedes リンクによる旧台帳保全（素材の小節 1.1、§5.4 で削除確定）
+- grandfathering と format-migration の機構（素材の小節 10、§5.4 で削除確定。本設計でも先送り論点 4 として grandfathering の判断は別途）
+- 権威マップ（authority-map）と独立再導出パーサ（素材の小節 1.2、§5.4 で削除確定）
+- 通過マーカーの後続確認（素材の小節 4 後段、§5.4 で削除確定、二次防御は補助層 C 段階 3 と第 2 層に分離）
+- 実行台帳（workflow-execution-ledger）の機構全体（素材の §Workflow Execution Ledger and Enforcement Model、§5.4 で削除確定）
+- 上位文書同期（C-1／C-2／C-3 取り込み、素材の小節 6）：人手の整合に置き換え
+
+### ReviewCompass 固有の追加
+
+- 補助層 C 段階 2 として `tools/check-workflow-action.py` を本機能に組み込む（§5.8 補助層 C、計画書 §5.8 採用承認 2026-05-25 セッション 24）
+- サブエージェント方式（`mode: subagent_mediated`）への対応を §起草者と判定者の分離モデル §2 に明示（計画書 §5.23.12 由来）
+- 規律変更の提案権と実体変更権の分離を §責務境界の明確化と §主要な設計判断 判断 7 に明示（A-007 案 2、2026-05-23 利用者承認）
+- 機能依存マップの依存種別（`hard`／`review`）の連想配列構造を §機能依存マップモデル §2 に明示（A-005 対処由来、計画書 §5.5 行 368〜373）
+- 検査スクリプトの 3 サブコマンド構成（`spec-set`／`commit`／`push`）と verdict 3 値（OK／WARN／DEVIATION）を §軽量版検査スクリプトモデル §2 に明示（運用契約 `docs/operations/WORKFLOW_PRECHECK.md` と詳細仕様 `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` 由来）
+- proxy_model は approval 段の代行主体ではなく、triad-review 段内の review-run 後の修正方針判断だけを代行できることを §段集合の静的列挙モデル §2 に明示（計画書 §5.12.4 由来の旧構想を human-only approval 境界へ修正）
+- 規律ファイル本体を `~/.claude/projects/.../memory/feedback_*.md`（Claude Code auto memory 機構の領域）から `docs/disciplines/discipline_*.md`（リポジトリ内 git 追跡対象）へ軽量手続きで移管、12 件（active 必読相当）を移管、memory 側は短い参照索引に置換（2026-05-25 セッション 26、計画書 §5.21 前倒し実施、利用者明示承認）
+- 2026-06-08 の requirements 再確認への対応として、intent の「レビュー収集処理を事前設定の写像にしない」意図は §軽量版検査スクリプトモデルの `next`、§不可逆操作の直前ゲートモデル、§session 跨ぎ状態管理モデル、§機能依存マップモデルで受けられるため、設計構造の追加は不要と確認
+- 2026-06-08 の reopen 判定修正として、完了済み workflow で上流正本が後続成果物より新しい場合、`next` は `upstream_recheck` ではなく `reopen_classification_required` を返す。意味変更の有無と reopen 種別は分類根拠を保存して `reopen-start` に渡す。
+- 2026-06-09 の後追い intent 追加への対応として、既存システムで intent が後から追加された場合は、受け皿 feature 判定、requirements 以降の下流再展開、CE 候補受け取り、drafting 漏れ防止、side track 分離を §reopen 機械強制モデル §6 と §session 跨ぎ状態管理モデル §1 に反映した。
+- 2026-06-12 の reopen R-0（conformance 評価 `2026-06-12-completed-followup-conformance.md` の gap 反映）として、feature 一覧の解決と立ち上げ案内を §機能依存マップモデル §7 に、機能順キー名の `feature_order` 統一（旧称 `phase_order`、案 A、MLE-DEC-001）を §機能依存マップモデル §1〜3 に、配布側複数 LLM 入口の配布契約を §XDI-WM-003 に反映した。コミット cde1f5c・c2903df は先行実装証跡として参照するが、本 design drafting はその契約を設計入力として再記述する段階であり、本 reopen の review-wave / alignment / approval / implementation 完了を意味しない。
+- 2026-06-12 の reopen R-0（parse-error-failclosed、MLE-DEC-005）として、パース不能ファイルの扱いを立ち上げ案内（OK）から遮断（DEVIATION）へ改めた（§機能依存マップモデル §7「パース不能の遮断」）。本改訂は仕様確定後に TDD で実装する正順の手続きである。
+- 2026-06-15 の reopen R-0（decision-source-lint）として、Requirement 11（重要決定の出典検査）の設計節（§Req 11 設計モデル）を追加し、記録スキーマ・ロケータ表現・正規化規則・保留管理・内容なし語リスト・サブコマンドと接続点（commit ゲート組み込み）の 6 事項を確定した。本改訂は仕様確定後に TDD で実装する正順の手続きである。
+- 2026-06-15 の reopen R-0（commit-approval-nonce）として、Requirement 4 受入 6〜7 の設計を §不可逆操作の直前ゲートモデル §2.1 に追加し、commit 承認を staged 内容に束縛する nonce challenge、承認レコードとの照合、consume、LLM／provider／model 非依存、機微情報除去後の出典保存方針を確定した。本改訂は仕様確定後に TDD で実装する正順の手続きである。
+- 2026-06-16 の reopen R-0（commit-execution-delegation-formal-cli）として、Requirement 4 受入 8 の設計を §不可逆操作の直前ゲートモデル §2.2 に追加し、`commit-approval delegate-execution`、`execution_delegation` record、staged 内容承認との順序制約、nonce / target digest / expiry 束縛、許可文言の正規化と完全一致、secret 検出時の fail-closed、LLM／provider／model 非依存を確定した。後続の配布可能 UX 改善として、`guarded-git-commit.py --approval-nonce <nonce> --approval-source-text-line-stdin` が承認 1 行から staged 内容承認 record、execution delegation、直前 gate、commit までを連続実行する wrapper を §2.2 に追記した。本改訂は仕様確定後に TDD で実装する正順の手続きである。
+- 2026-06-16 の reopen R-0（operation-registry-preflight-unified-design）として、Requirement 12 の設計を §Req 12 設計モデルに追加し、operation registry schema、read-only preflight response、command validation、worktree / pending / integrity conflict、review artifact / bundle preflight、serial_only approval chain、current-session guard、nested issue handling、deployment / export preflight、reopen scope / impact review scope、`next` state uniqueness、LLM／provider／model 非依存、Phase 1 / Phase 2 境界を確定した。本改訂は requirements approval r2 後に design へ連鎖した正順の手続きである。
+- 2026-06-17 の maintenance（next-json-unique-state）として、D-003 rollback 退避資料 `/private/tmp/reviewcompass-d003-rollback-20260617/files/docs/notes/2026-06-16-next-json-unique-state-redesign.md` を根拠に、§軽量版検査スクリプトモデルへ `next --json unique action selector` を追加した。maintenance action と `required_action` の分離、reopen blocker / commit stop point / pending gate の相互排他、`active_gate` / `blocked_by` の JSON 契約は先行 maintenance 証跡を設計入力として再記述したものであり、後続 Phase 0 tasks / implementation の完了条件とは別に扱う。
+- 2026-06-18 の reopen R-0（phase1-schema-definitions）として、§軽量版検査スクリプトモデル §5 に `required_action.schema.json`・`next_action_response.schema.json` のスキーマ定義節を追加し、ファイル配置（`.reviewcompass/schema/`）・`$schema`・`$id`・`enum` 19語彙順・`next_action` 必須フィールド 10 個・条件付き必須フィールド（`repair_reasons`・`action_parameters`）・`$ref` による語彙参照・後方互換フィールド整合規則を確定した。§全体構造のリポジトリ配置図にも 2 ファイルを追記した。本改訂は仕様確定後に TDD で実装する正順の手続きである（失敗テスト `tests/tools/test_phase1_schema_definitions.py` は作成済み）。
+- 2026-06-19 の reopen R-0（integrated-design-requirements-followup）として、Requirement 13〜16 の設計を §Req 13〜§Req 16 設計モデルに追加した。operation contract 語彙、required_action 19語彙対応、承認ゲート、side track stack、workflow-state snapshot、structured effective prompt、第1層 prompt 検査、LLM judge audit、Phase 0〜6 の段階的実装順序を確定した。これは 2026-06-18 セッション 77e272a2 の「統合設計メモ全体を requirements に書き込む」依頼から漏れていた設計層への連鎖反映であり、requirements approval 後の reopen 第3過程 design drafting として実施した。
+
+### 機能横断レビューで対処された所見の反映状況
+
+- **A-005**（feature-dependency 依存記述の連想配列構造）：§機能依存マップモデル §2 で対処済み
+- **A-007**（self-improvement との権限分散調停、案 2 採用＋規律ファイルの配置先移管）：§責務境界の明確化、§主要な設計判断 判断 7、ReviewCompass 固有の追加で対処済み。本セッション 26 で軽量手続きにより `docs/disciplines/` への移管も完了（精査により memory ファイルが規律本体であることが判明、技術機構（Claude Code）と内容（ReviewCompass 規律）の二重性を移管で解消）
+- **A-011**（analysis／design の 3 役差分集約ファイル、未消化）：本機能の責務範囲外、`analysis`／`evaluation` の design レビュー波段で消化予定（本設計の対処事項に含めない）
+
+### must-fix 所見の対処状況（本セッション 26 triad-review）
+
+主役 19 件＋敵対役独立発見 12 件＝計 31 件の所見のうち、判定役が must-fix と判定した 10 件への対処：
+
+- **F-003**（verdict 語彙 BLOCK → DEVIATION 統一）：機能内対処済み、§全体構造／§軽量版検査スクリプトモデル §2／§変更意図 の 4 箇所
+- **F-006**（テンプレート変数の展開規則明示）：機能内対処済み、§段集合の静的列挙モデル §2 末尾に新節追加
+- **F-009 ＋ F-010**（commit／push の `--rationale` 必須引数と参照節番号修正）：機能内対処済み、§軽量版検査スクリプトモデル §2 の表と出力形式説明
+- **F-016**（「fook」→「フック」タイポ修正）：機能内対処済み、§多層防御の位置付けモデル §3
+- **A-001 ＋ A-009**（`phase_order` 7 機能採用の根拠注記、「全 N 機能」を `feature-dependency.yaml#phase_order` 参照に変更）：機能内対処済み、§機能依存マップモデル §2 と §不可逆操作の直前ゲートモデル §1
+- **A-002**（trigger_map の `actor` 値域を動的解決に修正）：機能内対処済み、§reopen 機械強制モデル §2
+- **A-004**（`depends_on` の連想配列構造のパース仕様と判定述語追加）：機能内対処済み、§軽量版検査スクリプトモデル §3 の述語集合と §機能依存マップモデル §6 新節
+- **A-007**（規律ファイル所有先パスと実体配置の不一致）：軽量手続き経由で `docs/disciplines/` への移管実施により解消（本節と §責務境界の明確化に反映）
+
+### triad-review 段への引き継ぎ事項
+
+- 主要な設計判断 8 件（特に判断 1〜4 の fail-closed と最小集合方針、判断 7 の権限分散）の合理性を 3 役レビューで検証
+- 先送り論点 7 件（特に論点 4 の grandfathering、論点 6 の規律変更の段集合）の妥当性と漏れの確認
+- 素材設計から削減した機構（節ハッシュ・supersedes リンク等）の削減判断が ReviewCompass のリスク受容範囲内であるかの再確認
+
+
+## .reviewcompass/specs/workflow-management/tasks.md
+
+---
+spec: workflow-management
+phase: tasks
+stage: drafting
+author:
+  identity: claude-opus-4-7
+  role: drafter
+created_at: 2026-05-28
+updated_at: 2026-06-19
+language: ja
+---
+
+# Tasks Document：workflow-management
+
+## 概要（Overview）
+
+本文書は `workflow-management`（所定手続きの定義と機械強制を担う機能）の実装タスクを列挙する。本機能は、所定手続きの段集合定義、軽量版検査スクリプト、起草者と判定者の分離機械検査、不可逆操作の直前ゲート、reopen 機械強制、session 跨ぎ状態管理、多層防御の第 1 層位置付け、機能依存マップの一元化、既存システムへの後追い intent 追加時の下流再展開、operation contract 語彙、承認ゲート／side track stack／workflow-state snapshot、構造化有効プロンプト、proxy_model triage decision 機械処理化を担う。計画書 §5.4「軽量化方針」に従い、思想は継承、実装は 1／10 を目標として再設計する。
+
+タスクは設計文書（design.md）の所有モデル単位でまとめ、各タスクは「起草・実装・テスト・コミット」まで一気通貫で完結できる粒度とする。タスクの依存順は design.md §全体構造（リポジトリ内配置の 3 層構造）と各 Requirement 対応モデル節に従う。
+
+## タスク粒度と方針（Granularity and Policy）
+
+- **粒度**：1 タスク ＝ 1 つの所有モデル領域。design.md の節と必ずしも 1 対 1 でなく、密接に関連する節は同じタスクにまとめる。tasks.md は implementation drafting へ直接入れる粒度で書く。各タスクには、実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を含める
+- **一気通貫**：1 タスクは「起草・実装・テスト・コミット」まで止めず連続で進められる単位
+- **依存順**：前提タスクが完了してから後続タスクに進む
+- **自律進行**：実装段で per-task 承認は取らず、コミット・プッシュ・spec.json 更新・フェーズ移行のみ明示承認（規律 [[implementation-autonomy]] 準拠）
+- **テスト要件**：成果物は静的検証（YAML スキーマ整合、述語値域、必須節充足、front-matter 異名）と動的検証（fail-closed の遮断、reopen 連鎖の actor=human 停止、後追い intent の下流再展開、drafting-before-review 防止）で機械的に判定可能とする
+- **contract consumer 原則**：foundation が所有する語彙正本を再定義せず参照のみで使用。本機能が実際に参照するのは `review_mode`（レビューモード語彙、front-matter 検査 T-005 で使用）であり、所見系（`counter_status`／`severity`／`final_label`／`confidence_label`）・状態軸系（`run_status`／`validator_status`／`human_signoff_status`／`evidence_class`）は本機能の責務外で参照しない（A-003 対処 2026-05-28）。本機能所有の正本（`completion_predicate` 述語集合 7 値 ／ `verdict` 3 値 OK／WARN／DEVIATION ／ 手戻り種別記号 5 値 N／R／D／A／I ／ 依存種別 2 値 `hard`／`review`）は本機能で確定
+- **fail-closed の徹底**：結論不能（YAML パースエラー、必須フィールド欠落、未知の値）の場合は合格判定を出さず必ず fail を返す（判断 3 全面採用）
+- **implementation-drafting.md 非採用**：implementation-drafting.md は正本成果物として採用しない。implementation drafting は、tasks.md に従って実際のテストと実装コードを生成する段である。実装前の手順整理が必要な場合も、正本は tasks.md のタスク記述粒度で担保し、別の implementation plan 文書を完了条件にしない
+
+`workflow-management` 全体で 19 タスク（T-012 は 2026-06-14 reopen R-0、T-013 は 2026-06-15 reopen R-0 decision-source-lint、T-014 は 2026-06-16 reopen R-0 operation registry / preflight、T-015 は 2026-06-18 reopen R-0 phase1-schema-definitions、T-016〜T-019 は 2026-06-19 reopen R-0 integrated design Requirement 13〜16 で追加）。2026-06-15 reopen R-0 commit-approval-nonce と 2026-06-16 reopen R-0 commit-execution-delegation-formal-cli は新タスクを増やさず、既存の commit 直前ゲート領域である T-004／T-006／T-011 へ展開する。
+
+2026-06-16 reopen R-0 の design triad-review で利用者が選択した案A（commit 実行代行承認を別ファイル化する案）は、保存先と検証対象を分離する設計変更であり、所有領域は既存の commit gate 領域に収まる。したがって T-004 が CLI 入口、T-006 が runtime record と gate 判定、T-011 が統合・回帰テストを担う。
+
+## タスク一覧（Task List）
+
+### T-001：成果物配置の準備
+
+- **対応設計節**：design.md §全体構造、§段集合の静的列挙モデル §1
+- **対応要件**：Requirement 1 受入 1（段集合の静的列挙）、Requirement 6 受入 1（進行中状態ファイル配置）
+- **責務**：リポジトリ内に `stages/` ディレクトリと配下の 9 ファイル骨格、`stages/in-progress/` と `stages/completed/` の 2 サブディレクトリ、検査スクリプト配置先 `tools/`、ログ書き出し先 `docs/logs/`、reopen 種別判定根拠ファイル配置先 `docs/reviews/`、種別判定根拠ファイル雛形配置先 `templates/review/` を新設し、各ディレクトリに配置目的を記す README を置く。`stages/in-progress/.gitkeep` と `stages/completed/.gitkeep` で空ディレクトリを Git 追跡可能にする（foundation T-001 ／ runtime T-001 ／ evaluation T-001 ／ analysis T-001 の方針継承）
+- **前提タスク**：なし（起点）
+- **成果物**：
+  - `stages/README.md`
+  - `stages/in-progress/.gitkeep`
+  - `stages/in-progress/README.md`
+  - `stages/completed/.gitkeep`
+  - `stages/completed/README.md`
+  - `docs/logs/README.md`（`workflow-precheck.log` の所在説明、初版は空ログ。ログの現行書き出し先は `.reviewcompass/runtime/logs/`、2026-06-12 配置規約 PLC-DEC-004〜005 反映。既存配置は凍結保全）
+  - `docs/reviews/README.md`（`reopen-classification-<日付>.md` の所在説明）
+  - `templates/review/reopen_classification_template.md`（reopen 種別判定根拠ファイルの雛形＝空の骨格を配置。内容の確定は T-007 が担い、本ファイルの成果物所有は T-001 単独、A-010 対処 案 2 2026-05-28）
+  - `docs/operations/WORKFLOW_MANAGEMENT.md`（アプリ側規約節を追記、計画書 §5.4〜§5.8 由来）
+  - `tools/README.md`（検査スクリプト配置先 `tools/` の説明、実体 `.py` は T-004 で配置。`tests/` との対称化、F-017 対処 2026-05-28）
+  - `tests/workflow-management/.gitkeep`
+- **完了条件**：
+  1. `stages/` 配下のディレクトリ構造（直下 9 ファイル骨格 ＋ `in-progress/` ＋ `completed/`）と各 README が存在し、`docs/operations/WORKFLOW_MANAGEMENT.md` に配置規約が記述されている。`tools/` ディレクトリに README が存在し Git 追跡可能である（F-017 対処 2026-05-28）
+  2. `templates/review/reopen_classification_template.md` が design.md §reopen 機械強制モデル §4 の最低限の構造（front-matter ＋分類根拠節）を満たす
+  3. `tests/workflow-management/.gitkeep` が Git に追跡可能な状態である
+- **テスト要件**：ディレクトリ存在検査、README 存在検査、`reopen_classification_template.md` 必須節検査、`.gitkeep` 存在検査
+
+### T-002：機能依存マップ（feature-dependency.yaml）
+
+- **対応設計節**：design.md §機能依存マップモデル §1〜§6、§主要な設計判断 判断 6
+- **対応要件**：Requirement 8 受入 1〜5
+- **責務**：`stages/feature-dependency.yaml` を作成、7 機能（foundation／runtime／evaluation／analysis／workflow-management／self-improvement／conformance-evaluation）の `features.<機能>.depends_on` と `feature_order`（機能間処理順。旧称 phase_order、requirements.md Requirement 8 受入 2 の由来注記参照）を一元保管。`depends_on` の 2 形式（単純リスト構造 ／ 連想配列構造）を許容し、`conformance-evaluation` のみ連想配列構造（`hard` ／ `review` 併記）。`feature_order` は 7 機能を依存マップ順で列挙。本機能が単独所有・他機能は再定義せず参照のみ、を運用文書に明示
+- **前提タスク**：T-001
+- **成果物**：
+  - `stages/feature-dependency.yaml`（features ＋ feature_order）
+  - パース仕様の正本：`tools/check-workflow-action.py` の解決・整合検査の実装（`resolve_feature_order`・`validate_feature_order_consistency`・`depends_on` 解釈）とそのテスト（単純リスト構造 ／ 連想配列構造の許容、値域 `hard` ／ `review` の 2 値、それ以外は結論不能）。独立した JSON Schema ファイルは作成しない（MLE-DEC-002、2026-06-12 利用者決定。当初計画の `stages/feature-dependency.schema.json` を実装検査で代替）
+  - `docs/operations/WORKFLOW_MANAGEMENT.md` の §機能依存マップ節（所有者明示、改廃ルール）
+- **完了条件**：
+  1. `feature-dependency.yaml` の `features` に 7 機能すべてが列挙、`feature_order` が 7 機能を依存マップ順で列挙
+  2. `conformance-evaluation` の `depends_on` が連想配列構造で `foundation: hard ／ runtime: review ／ evaluation: review ／ workflow-management: review` を保持
+  3. `hard` ／ `review` 以外の値が結論不能になることが、検査ツールの実装とテストで機械検証される（MLE-DEC-002）
+  4. 単純リスト構造と連想配列構造の両方が検査ツールでパース可能であることが機械検証される
+- **テスト要件**：パース仕様の実装検査テスト、7 機能列挙テスト、依存マップ順テスト、連想配列構造の値域テスト（`hard` ／ `review` ／ 不正値 `weak` ／ 空文字 ／ null の 5 ケース）、依存循環検出テスト
+
+### T-003：段集合 YAML 8 ファイル（9 ファイル体制のうち feature-dependency.yaml を除く）
+
+- **対応設計節**：design.md §段集合の静的列挙モデル §1〜§4、§テンプレート変数の展開規則
+- **対応要件**：Requirement 1 受入 1〜5、Requirement 5 受入 1〜5（reopen-procedure.yaml の構造）
+- **責務**：`stages/` 配下に 8 ファイル（`intent.yaml` ／ `feature-partitioning.yaml` ／ `requirements.yaml` ／ `design.yaml` ／ `tasks.yaml` ／ `implementation.yaml` ／ `reopen-procedure.yaml` ／ `cross-spec-alignment.yaml`）を作成。各 YAML は段集合（段名・`actor`・`artifact_paths`・`required_sections`・`completion_predicate`）を静的列挙、機能横断段は `feature_order: feature-dependency.yaml#feature_order` を参照。テンプレート変数（`{feature}` ／ `{phase}` ／ `{日付}`）の展開規則は設計書 §テンプレート変数の展開規則に従う。`reopen-procedure.yaml` に `trigger_map` を持たせ（第3過程で参照）、種別記号 N／R／D／A／I × 深さの二次元表記から再実施対象を機械的に決定。`cross-spec-alignment.yaml` は段集合本体を後続フェーズで確定する旨を YAML コメントに明記、枠のみ確保
+- **前提タスク**：T-001、T-002（`feature_order` 参照先）
+- **成果物**：
+  - `stages/intent.yaml`（drafting／review／approval の 3 段、actor=human／llm／human）
+  - `stages/feature-partitioning.yaml`（candidate-proposal／approval の 2 段、actor=llm／human）
+  - `stages/requirements.yaml`（drafting／triad-review／review-wave／alignment／approval の 5 段、機能横断段 3 段は `feature_order` 参照）
+  - `stages/design.yaml`（同 5 段）
+  - `stages/tasks.yaml`（同 5 段）
+  - `stages/implementation.yaml`（同 5 段）
+  - `stages/reopen-procedure.yaml`（4 過程構成、`trigger_map` ＋ `actor_resolution: per_target_stage` を第3過程で参照）
+  - `stages/cross-spec-alignment.yaml`（枠のみ、段集合は後続フェーズで確定）
+  - `stages/stage_schema.json`（段集合 YAML 共通スキーマ：段名・actor・artifact_paths・required_sections・completion_predicate・feature_order・front_matter_required）
+- **完了条件**：
+  1. 8 ファイルすべてが配置、各 YAML が `stage_schema.json` で構造検証を通る。`stage_schema.json` は `completion_predicate` を 7 値（design §軽量版検査スクリプトモデル §3 確定）に、`actor` を 3 値（`human` ／ `llm` ／ `proxy_model`、design §段集合 §1／§3 確定）に enum で値域制限し、いずれも未知の値が DEVIATION（fail-closed）になることが機械検証される（F-015／A-004 対処 2026-05-28）
+  2. 機能横断段（review-wave／alignment／approval）が `feature_order: feature-dependency.yaml#feature_order` を参照、機能単位段（drafting／triad-review）は `feature_order` を持たない
+  3. `reopen-procedure.yaml` の `trigger_map` が手戻り種別 N-0 ／ R-0〜1 ／ D-0〜2 ／ A-0〜3 ／ I-0〜4 の全 15 種について再実施対象段リストを保持
+  4. `trigger_map` 各エントリの参照先段（`<YAML ファイル>#<段名>` 形式）が、`actor_resolution: per_target_stage` により段定義から動的解決可能であることが機械検証される
+  5. テンプレート変数 `{feature}` ／ `{phase}` ／ `{日付}` の展開元と解決規則が `stage_schema.json` の構造化フィールド（各変数の展開元を列挙する `template_vars` 等）に格納され、フィールドの存在が機械検証される（自由記述コメントの grep ではなく構造化、F-010 対処 案 2 2026-05-28）
+- **テスト要件**：8 ファイルすべての構造検証、`feature_order` 参照解決テスト、`trigger_map` 全 15 種テスト、テンプレート変数展開テスト（3 種それぞれ）、`cross-spec-alignment.yaml` の枠のみ確保テスト、`completion_predicate` 値域 7 値テスト（7 値 OK ＋ 未知値 DEVIATION）、`actor` 値域 3 値テスト（human ／ llm ／ proxy_model OK ＋ 未知値 DEVIATION、F-015／A-004 対処 2026-05-28）
+
+### T-004：軽量版検査スクリプト本体（補助層 C 段階 2）
+
+- **対応設計節**：design.md §軽量版検査スクリプトモデル §1〜§4、§主要な設計判断 判断 2 ／ 判断 3 ／ 判断 8
+- **対応要件**：Requirement 2 受入 1〜5、Requirement 4 受入 2 ／ 3 ／ 6 ／ 7 ／ 8（fail-closed、独立走行、commit approval nonce challenge、LLM 非依存判定、commit execution delegation formal CLI）、Requirement 8 受入 6〜8（feature 一覧解決・整合検査・立ち上げ案内）、Requirement 9 受入 2 ／ 5（drafting-before-review と下流再展開判定）
+- **責務**：`tools/check-workflow-action.py` を Python で実装。3 サブコマンド（`spec-set <feature> <phase> <stage> <new_value> [--rationale "..."]` ／ `commit --rationale "..."` ／ `push --rationale "..."`）と next サブコマンド、`--json` 出力オプションを提供。next サブコマンドは標準のワークフロー遷移入口として `workflow_state`、`stages/in-progress/`、reopen pending、post-write-verification pending、上流成果物が下流成果物より新しい状態を読み、次作業を返す。完了済み workflow でも、intent → feature-partitioning、feature-partitioning → requirements、requirements → design、design → tasks、tasks → implementation の順で上流更新後の再展開漏れを `upstream_recheck` として返す。`docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml` を読み、判定点ごとの `required_disciplines` と `required_inputs` を `next_action` に含める。このマップは判定点ごとの `effective prompt` 生成に使う元資料の正本である。`next` は判定点ごとの元資料を 1 本の prompt に束ね、`.reviewcompass/runtime/effective-prompts/` に保存し（旧 `.reviewcompass/effective-prompts/` からの変更は 2026-06-12 配置規約 PLC-DEC-004・009〜011 反映、旧パス読み取り互換は P3 まで維持）、`next_action.effective_prompt` の `effective_prompt_path`、`effective_prompt_sha256`、`effective_prompt_loaded` として返す。元資料を読めない場合は `effective_prompt_loaded: false` とし、`DEVIATION` で fail-closed する。`tools/api_providers/run_role.py` と `tools/api_providers/run_review.py` は review-run の `rounds.yaml` に `effective_prompt_path` と `effective_prompt_sha256` を記録する。後追い intent を既存システムへ適用する reopen では、pending_gates が triad-review を指していても、対応 phase の `drafting_completed_gates` または `completed_gates` に `stages/<phase>.yaml#drafting` がなければ、next は triad-review ではなく `run_reopen_drafting` を返す。verdict 3 値（OK／WARN／DEVIATION）と exit code（0 ／ 1 ／ 2）の対応。`completion_predicate` 述語集合 7 値（`artifact_exists` ／ `artifact_exists_and_sections_present` ／ `artifact_exists_and_sections_present_and_author_reviewer_distinct` ／ `all_features_drafting_and_triad_review_completed` ／ `cross_spec_alignment_passed` ／ `explicit_human_approval_recorded` ／ `depends_on_resolves_correctly`）の判定ロジックを符号化。post-write target detection と manifest verification を実装契約として扱い、completed manifest の `target_files`、`target_sha256`、`required_verifiers`、`verifications[]`、`unresolved_substantive_findings` を検査する。feature 一覧と機能順は `feature-dependency.yaml` の `feature_order` キーから解決する（ツール実行時のカレントディレクトリ基準で `.reviewcompass/feature-dependency.yaml` → `stages/feature-dependency.yaml` → `feature-dependency.yaml` の順、最初に存在した 1 ファイルのみ、遡上探索なし。`resolve_feature_order`。design §機能依存マップモデル §7、2026-06-12 反映）。ファイル不在・`feature_order` 未定義は `next_action.kind: feature_definition_required`（verdict OK、exit 0）で intent／feature-partitioning の実施を案内し、探索で選ばれた 1 ファイルが読めない場合（パース不能・空・最上位が連想配列でない場合を含む。値の整合検査より先に判定）と `feature_order` と `depends_on` の整合違反（依存先行違反・循環、`validate_feature_order_consistency`）は `next_action.kind: unknown`・`reasons` 列挙・DEVIATION（exit 2）で遮断する（パース不能は破損ファイルのパスと内容確認を促す理由、空の場合は `feature_order` の記録を促す理由を含める）。fail-closed の既定（YAML パースエラー（段集合・feature-dependency とも） ／ 証跡欠落 ／ 必須フィールド欠落 ／ `feature_order` 整合違反で遮断。feature-dependency.yaml の不在・未定義のみ立ち上げ案内として OK）を全面採用（パース不能の遮断分離は MLE-DEC-005 により本契約へ反映、FUP-2026-06-12-001 解消、2026-06-12）。`.reviewcompass/runtime/logs/workflow-precheck.log` への追記（旧 `docs/logs/workflow-precheck.log` からの変更は同配置規約反映。commit 承認記録も同様に `.reviewcompass/runtime/approvals/commit-approval.json` へ〔旧 `.reviewcompass/approvals/commit-approval.json`〕）、出力形式は `[VERDICT]` ／ `[ACTION]` ／ `[REASON]` ／ `[CURRENT STATE]` の 4 ブロック大括弧付きラベル形式。**凍結期（P3 まで）の責務（2026-06-12 配置規約反映、正本は design §実行時生成物の凍結期（P3 まで）の扱い）**：実行時生成物 3 パス（検査ログ・effective prompt・commit 承認記録）の書き込みは常に新配置とし、旧配置（`docs/logs/workflow-precheck.log`・`.reviewcompass/effective-prompts/`・`.reviewcompass/approvals/commit-approval.json`）への新規書き込みを行わない（凍結契約。効力発生は P1 実装反映コミット＝書き込み先切替と同時。互換の終了は P3 の専用 reopen における設計改訂として扱い、暗黙の終了はない）。読み取りは新配置優先・旧配置フォールバック（**新→旧の順**、3 パスとも P3 まで）。新旧いずれにも記録がない場合は各ツールの既存挙動（検査ログの初回新規作成、effective prompt 元資料欠落の DEVIATION fail-closed、commit 承認記録不在のガード遮断）に従い、本配置変更はそれらの挙動を変えない
+- **next unique action selector 補足責務**：`next --json` は状態投影ではなく唯一 action selector として `required_action`、`active_gate`、`blocked_by`、`action_parameters` を返す。maintenance は `required_action=run_maintenance` に固定し、個別 action 名は `maintenance_action` へ分離する。reopen では `current_blocker` を `wait_for_human_decision`、`commit_stop_point: true` を `commit_stop_point` として pending gate より優先し、第3過程で停止点がない場合だけ `run_reopen_drafting` / `run_reopen_pending_gate` を active gate とする。
+- **commit 承認 nonce 補足責務**：`tools/check-workflow-action.py` に `commit-approval prepare --json`、`commit-approval record --nonce <nonce> --source-text-stdin --json`、`commit-approval record --nonce <nonce> --no-source-text --json`、`commit-approval invalidate --json` を追加する。承認本文を argv で受け取る経路は提供しない。`--json` 指定時の正常系出力は機械可読 JSON に限定し、happy path で自由文を混在させない。これらのサブコマンドは T-006 の `commit_approval.py` を呼び、challenge／承認レコードの生成・検証・invalidate・consume を行う。承認本文を保存する場合は `tools.session_record_extractor.redact.redact_text` と `find_residual_secrets` を通し、保存不能時は T-006 の `source_omission_reason` enum に従う。
+- **commit 実行代行承認補足責務**：`tools/check-workflow-action.py` に `commit-approval delegate-execution --nonce <nonce> --source-text-stdin --json` を追加する。承認文を argv で受け取る経路は提供しない。`--json` 指定時の正常系出力は機械可読 JSON に限定し、happy path で自由文を混在させない。このサブコマンドは T-006 の `commit_approval.py` を呼び、同じ nonce の challenge と staged 内容承認 record が有効で、現在の index と target digest が一致する場合だけ `.reviewcompass/runtime/approvals/commit-execution-delegation.json` を作成する。承認文は UTF-8 stdin、末尾 POSIX LF 1 個のみ許容、CR／CRLF／内部改行／NUL／空白のみ／256 bytes 超過を fail-closed とし、許可文言の完全一致を T-006 の正規化規則に委譲する。
+- **配布可能 commit UX 補足責務**：`tools/guarded-git-commit.py` に `--approval-nonce <nonce>` と `--approval-source-text-line-stdin` を追加する。この wrapper は stdin から承認文を 1 行だけ読み、EOF を待たずに staged 内容承認 record と commit 実行代行 delegation record を順序作成してから commit 直前ゲートを実行する。低レベル `record`／`delegate-execution` はデバッグ・検査用に残すが、第三者向け通常手順には露出させない。`commit-approval prepare` は古い壊れた runtime approval / delegation record を invalidated へ寄せ、新しい challenge 準備の邪魔にしない。commit 直前ゲート通過後、`git commit` 呼び出し直前に `index.lock` の排他作成可否を preflight し、permission / sandbox 系の作成失敗を `sandbox_git_write_denied`、`required_action=rerun_commit_with_escalation` として表示して停止する。この停止では `git commit` を呼ばず、approval / challenge / delegation を consumed または invalidated にしない。`git commit` 実行後に `.git/index.lock` / permission 系エラーが返った場合も同じ分類表示を行い、承認保持・staged 内容不変なら再承認不要・sandbox 外 guarded commit 再実行が必要、の 3 点に絞って利用者へ示す。
+- **前提タスク**：T-001、T-002、T-003
+- **成果物**：
+  - `tools/check-workflow-action.py`（argparse 定義 ＋ 3 サブコマンド ＋ `--json` ＋ ログ追記）
+  - `tools/check_workflow_action/predicates.py`（`completion_predicate` 述語集合 7 値の判定ロジック）
+  - `tools/check_workflow_action/yaml_loader.py`（YAML 読み込み ＋ パースエラー fail-closed）
+  - `tools/check_workflow_action/output_formatter.py`（4 ブロック大括弧付きラベル形式 ／ JSON 形式）
+  - `docs/operations/WORKFLOW_DISCIPLINE_MAP.yaml`（判定点ごとの `required_disciplines`、`required_inputs`、effective prompt 元資料マップ）
+  - `docs/operations/WORKFLOW_PRECHECK.md`（ワークフロー事前検査の運用契約）
+  - `docs/operations/WORKFLOW_PRECHECK_DETAILS.md`（サブコマンド引数 ／ 出力形式 ／ ログの詳細仕様）
+- **完了条件**：
+  1. 3 サブコマンドと `next` サブコマンドが exit code 0 ／ 1 ／ 2 を正しく返す
+  2. 述語 7 値すべてが正常系で OK、異常系（証跡欠落 ／ 必須節欠落 ／ 異名不成立 等）で DEVIATION を返す
+  3. YAML パースエラー時に DEVIATION（exit 2）を返す（fail-closed）
+  4. `--rationale` が `commit` ／ `push` で必須引数として強制される（省略時はエラー）。`spec-set` の `--rationale`（任意）を省略した場合もログ記録が正しく行われる（F-013 対処 2026-05-28）
+  5. ログ追記が `.reviewcompass/runtime/logs/workflow-precheck.log` に発生し、4 ブロックラベル形式と JSON 形式の両方が正しく出力される。実行時生成物 3 パス（検査ログ・effective prompt・commit 承認記録）それぞれについて、(1) 新配置への書き込み、(2) 旧配置への新規書き込みが発生しないこと、(3) 旧パスにしか記録がない場合の新→旧フォールバック読み取り、(4) 新旧両方に記録がある競合時に新配置が採用されること（design 契約「新→旧の順」の直接検証）、(5) 凍結済み旧成果物の不変性（P1 実装反映コミット以降に旧既存ファイルが変更・削除されていないこと）、の凍結期挙動が機械検証される（2026-06-12 配置規約反映、観点 4・5 は triad-review round-3 所見の適用）
+  6. `explicit_human_approval_recorded` 述語は `actor=proxy_model` の場合 `reviewcompass.yaml#human_proxy.proxy_allowed` を参照して代行可否を機械判定する（条件を満たさなければ DEVIATION）。`depends_on_resolves_correctly` 述語は値域チェック（依存先の解決可能性）のみを担い、依存先の変更検知と recheck 更新発火は別機構（フェーズ 2 宿題、DVT-W007）であることを境界テストで明示する（A-004／A-006 対処 2026-05-28）
+  7. review-run の proxy_model 判断代行ゲートは、`proxy-approval.yaml`、`proxy-decisions/<finding-id>.decision.yaml`、decision prompt、元 review raw、raw response、候補案、採用案、判断理由、最終ラベルを検査し、欠落または triage との不一致があれば DEVIATION にする。proxy_model 代行は実装方針判断に限定し、コミット・プッシュ・spec.json 更新・フェーズ移行には使わない
+  8. post-write-verification pending の検出、completed manifest の sha 一致、verifier ごとの全対象 coverage、未解決本質的指摘 0 件が機械検証される
+  9. triad-review が pending でも drafting が未完了なら、next が `run_reopen_drafting` を返し、review を先に実施しない
+  10. `WORKFLOW_DISCIPLINE_MAP.yaml` から判定点ごとの `required_disciplines` と `required_inputs` を返せる
+  11. `next` は `effective_prompt_path`、`effective_prompt_sha256`、`effective_prompt_loaded` を返し、元資料欠落時は `DEVIATION` で fail-closed する
+  12. review-run は `rounds.yaml` に `effective_prompt_path` と `effective_prompt_sha256` を記録できる
+- **テスト要件**：3 サブコマンド × 各 verdict 3 値 = 9 ケース、`next` サブコマンドの通常 workflow／reopen pending／post-write-verification pending／upstream_recheck ケース、述語 7 値の正常系 ／ 異常系テスト、YAML パースエラーの fail-closed テスト、`--rationale` 必須化テスト（commit／push）＋ `spec-set` 省略時ログ記録テスト（F-013）、ログ追記テスト、4 ブロックラベル形式 ／ JSON 出力テスト、`explicit_human_approval_recorded` の proxy_model 代行可否テスト（proxy_allowed 満たす／満たさないの 2 ケース、A-004）、`depends_on_resolves_correctly` の境界テスト（値域チェックのみで変更検知しないことの確認、A-006）、post-write target detection と manifest verification の正常系／sha 不一致／coverage 不足／未解決本質的指摘ありテスト、proxy_model 判断代行ゲートの正常系／raw 欠落／候補案欠落／採用案欠落／判断理由欠落／triage 不一致の fail-closed テスト、intent 更新後に feature-partitioning 確認を返すテスト、requirements 更新後に design 再確認を返すテスト、tasks 更新後に implementation 再確認を返すテスト、triad-review pending かつ drafting 未完了なら `run_reopen_drafting` を返すテスト、reopen `commit_stop_point: true` が pending gate より優先されるテスト、reopen blocker が `wait_for_human_decision` と `blocked_by` を返すテスト、maintenance が `required_action=run_maintenance` と `maintenance_action` を分離するテスト、active gate がある時だけ `active_gate` / `phase` / `stage` が非 null になるテスト、`WORKFLOW_DISCIPLINE_MAP.yaml` の `required_disciplines`／`required_inputs` 反映テスト、`effective_prompt_path`／`effective_prompt_sha256`／`effective_prompt_loaded` の JSON 出力テスト、effective prompt 元資料欠落時の fail-closed テスト、`rounds.yaml` への effective prompt 記録テスト、**凍結期挙動テスト（実行時生成物 3 パス × 5 観点＝計 15 観点：新配置への書き込み／旧配置への新規書き込みが発生しないこと／旧パスにしか記録がない場合の新→旧フォールバック読み取り／新旧両方に記録がある競合時に新配置が採用されること〔新旧に異なる内容を置き、新配置の内容が採用されることを 3 パスそれぞれで検証。design 契約「新→旧の順」の直接検証〕／凍結済み旧成果物の不変性〔P1 実装反映コミット以降に旧 3 パスの既存ファイルが変更・削除されていないことを git 追跡履歴で検出。conformance-evaluation の凍結違反検出と同一判定規則〕。境界条件として、観点 2 が凍結の効力発生時点〔P1 実装反映コミット以後の旧書き込み不在〕の検証を兼ねること、観点 3 のフォールバックが設定・条件分岐等で暗黙に無効化されないことを検証対象に含める。2026-06-12 配置規約反映、観点 4・5 は triad-review round-3 所見の適用、TDD 先行）**、feature_order 外出し・探索順・立ち上げ案内（feature_definition_required）・整合検査・対象アプリ独自 feature 構成での next 動作テスト（2026-06-12 反映、cde1f5c で実装済み）、feature-dependency.yaml パース不能・空・非連想配列の遮断テスト（`next_action.kind: unknown`・verdict DEVIATION・exit 2 を検証し、`reasons` に対象ファイルパスと、パース不能・非連想配列では内容確認を促す文言、空では `feature_order` の記録を促す文言が含まれることを検証）と、不在・未定義の案内維持テスト（`next_action.kind: feature_definition_required`・verdict OK・exit 0 を検証）（MLE-DEC-005、仕様確定後に TDD で実装。検証粒度の明記は triad-review 同根所見対処）
+
+### T-005：起草者と判定者の分離 機械検査
+
+- **対応設計節**：design.md §起草者と判定者の分離モデル §1〜§3
+- **対応要件**：Requirement 3 受入 1〜4
+- **責務**：レビュー記録の front-matter 検査機能を `tools/check_workflow_action/front_matter_checker.py` として実装、`completion_predicate=artifact_exists_and_sections_present_and_author_reviewer_distinct` から呼び出される。判定 3 点：(1) `author.identity` ／ `reviewer.identity` フィールドの存在、(2) `author.identity` ≠ `reviewer.identity`（文字列比較）、(3) `reviewer.separation_from_author=true`。`mode: subagent_mediated` の場合の `role` フィールド複合役（`drafter_and_primary_reviewer` 等）を許容する暫定特例を符号化。別モデル ／ 別 session の機械判定は範囲外（第 3 層利用者監査に委ねる、Req 3 受入 4）であることを運用文書に明示
+- **前提タスク**：T-004
+- **成果物**：
+  - `tools/check_workflow_action/front_matter_checker.py`（3 点判定ロジック）
+  - `tools/check_workflow_action/front_matter_schema.json`（必須フィールド：type ／ target ／ target_commit ／ target_content_hash ／ date ／ mode ／ author ／ reviewer、author/reviewer の必須サブフィールド：identity ／ model ／ role、reviewer.separation_from_author=true 必須）
+  - `docs/operations/WORKFLOW_PRECHECK_DETAILS.md`（関連する判定詳細を必要に応じて更新）
+- **完了条件**：
+  1. 3 点判定が機械検証で確実に発火する（異名のみ／同名／separation_from_author=false の 3 ケース）
+  2. `subagent_mediated` の複合役（`drafter_and_primary_reviewer`）が許容される
+  3. 既存レビュー記録 7 件以上（各機能の requirements ／ design ／ tasks）への本検査の遡及適用は、grandfathering（遡及検査の免除）判断（DVT-W002、利用者承認事項）が確定するまで検査対象から除外する（未確定のまま走らせて既存記録が DEVIATION を返し本機能のゲートが自己ロックするのを回避）。本完了条件としては「DVT-W002 のエントリが DVT 表に存在すること」を grep で機械検証する（実装作業と人手判断を分離、F-009／A-007 対処 2026-05-28）
+- **テスト要件**：3 点判定テスト（異名 ／ 同名 ／ separation_from_author=false の 3 ケース）、`mode` の各値（foundation 正本が定める）の複合役許容テスト（複合役の許容は `subagent_mediated` 特例のみ、他の値は不許容）、必須フィールド欠落テスト、fail-closed テスト
+
+### T-006：不可逆操作の直前ゲート機構
+
+- **対応設計節**：design.md §不可逆操作の直前ゲートモデル §1〜§4、§主要な設計判断 判断 4
+- **対応要件**：Requirement 4 受入 1〜8
+- **責務**：4 種類の不可逆操作（`spec.json` の `approval` 段書き込み ／ `git commit` ／ `git push` ／ フェーズ移行）の直前ゲート判定ロジックを `tools/check_workflow_action/gate_predicates.py` として実装、T-004 のサブコマンドから呼ばれる。ゲート発火条件：(1) Requirement 2 検査スクリプトが pass を返す、(2) `stages/in-progress/` が空。毎回独立走行（session 開始時のキャッシュを使わない、状態変化を直前で再検出）。fail-closed の既定（検査結論不能で必ず遮断）。`git commit` では commit 承認 challenge と承認レコードを読み、nonce 一致、UTC ISO-8601 の `created_at`／`expires_at`、TTL 10 分、`now_utc` 注入可能な時刻判定、clock rollback fail-closed、未期限切れ、未消費、staged ファイル集合一致、staged 内容一致、approval と challenge の全体 target digest 一致、実際に commit される exact index との一致を検査する。承認レコード単体の `target_sha256` 検査は互換入力として維持するが、nonce challenge がある場合は challenge と承認レコードの両方を必須とする。canonical target digest は `commit-approval-v1` の固定形式で計算し、path 順非依存、削除 staged、git index mode、staged object id を覆う。challenge／承認レコードが JSON として読めない、object でない、必須フィールド欠落、型不正、path 重複、不正 path、未知 path、file set 不一致などの場合は、部分推測せず fail-closed とする。schema に `llm`、`provider`、`model`、`model_id`、`proxy_model_id` を受け入れず、承認レコードは `attestation_type=staged_content_nonce_binding` と `guarantee_scope=staged_content_binding_not_ui_utterance_proof` を必須とする。承認本文は stdin または no-store mode のみで扱い、保存する場合は `tools.session_record_extractor.redact.redact_text` と `find_residual_secrets` を通す。`source_omission_reason` は `source_not_provided`、`unsafe_source_omitted`、`redaction_failed`、`residual_secret_detected` の 4 値に限定する。`--execution-actor llm` の commit gate では、challenge と staged 内容承認 record に加えて `.reviewcompass/runtime/approvals/commit-execution-delegation.json` を必須とし、strict schema、`approved_action=commit_execution_delegation`、`delegated_action=commit`、`delegated_to=llm`、`approved_by=user`、nonce／target digest／staged file set digest／staged 内容承認 digest／expiry 一致、未期限切れ、未消費、未 invalidated、禁止 LLM/provider/model 系 field 不在、許可文言完全一致、`attestation_type=commit_execution_delegation_nonce_binding`、`guarantee_scope=stdin_text_instruction_bound_to_commit_approval_not_ui_utterance_proof` を検査する。`--execution-actor human` では execution delegation を不要とする。delegation record の作成は保存直前再検証と atomic write を必須にし、既存未期限切れ delegation、形式不正、unknown field、外部変更、保存直前の期限切れは fail-closed とする。`commit-approval invalidate --json` は challenge／staged 内容承認 record／delegation record を一括 invalidated にする。validation failure は security failure として challenge／承認レコード／delegation record を invalidated にし、commit 成功後は consumed にする。consume 永続化失敗後は later gate で再利用を拒否する。通常の git execution failure は index と approval 状態が validation 時と同一の場合だけ再試行可能とする。フェーズ移行検査は `feature-dependency.yaml#feature_order` の全機能で approval=true を要求。最小集合方針の徹底（中間段の遷移には機械ゲートを置かない）
+- **前提タスク**：T-002、T-003、T-004
+- **成果物**：
+  - `tools/check_workflow_action/gate_predicates.py`（4 種類のゲート判定）
+  - `tools/check_workflow_action/commit_approval.py`（nonce challenge、承認レコード、canonical digest、redaction、validation、invalidate／consume）
+  - `tools/check_workflow_action/state_resolver.py`（spec.json ／ in-progress ／ pending 所見の状態解決、毎回独立走行）
+- **完了条件**：
+  1. 4 種類のゲートそれぞれが正常系で OK、異常系（前段未完了 ／ in-progress あり ／ 未消化所見あり ／ 全機能 approval 未完了）で DEVIATION を返す
+  2. session 開始時のキャッシュを使わず、毎回 spec.json と `stages/in-progress/` を読み直すことが機械検証される
+  3. 最小集合方針（中間段の遷移には機械ゲートが発火しない）が機械検証される
+  4. commit 承認レコードの `target_sha256` 欠落、形式不正、staged 内容との不一致が DEVIATION になる
+  5. nonce challenge の prepare／record／invalidate／commit validation／consume が機械検証され、欠落・形式不正・期限切れ・消費済み・staged 内容不一致・approval/challenge target digest 不一致・exact index 不一致・clock rollback が DEVIATION になる
+  6. 承認 schema に `llm`、`provider`、`model`、`model_id`、`proxy_model_id` が混入した場合は形式不正で DEVIATION になる
+  7. `attestation_type=staged_content_nonce_binding`、`guarantee_scope=staged_content_binding_not_ui_utterance_proof` が機械検証される
+  8. 承認本文の stdin 入力、no-store mode、4096 bytes 上限、redaction 失敗時の source omission が機械検証される
+  9. LLM commit 実行代行承認は staged 内容承認と別 record として `.reviewcompass/runtime/approvals/commit-execution-delegation.json` に保存され、`commit-approval.json` は staged 内容承認のみを保持することが機械検証される
+  10. delegation record の全必須 field（`approved_action`、`delegated_action`、`delegated_to`、`approved_by`、`nonce`、`target_digest`、`staged_file_set_digest`、`staged_content_approval_digest`、`challenge_path`、`approval_record_path`、`created_at`、`expires_at`、`explicit_instruction`、`instruction_sha256`、`attestation_type`、`guarantee_scope`、`consumed`、`invalidated`）の生成・検証・欠落時 fail-closed が機械検証される
+  11. delegation record の strict schema、禁止 LLM/provider/model 系 field、staged 内容 binding、stdin 正規化、許可文言完全一致、secret redaction、保存直前再検証、atomic write、invalidate／consume／再利用拒否が機械検証される
+  12. `--execution-actor llm` では challenge／staged 内容承認 record／delegation record／現在 index を commit gate 直前に再検証し、`--execution-actor human` では delegation を不要とすることが機械検証される
+  13. precheck OK 後に `git commit` 本体が commit 未作成のまま失敗した場合、approval／challenge／delegation を consumed または invalidated にせず、同じ staged exact index と nonce の wrapper 再実行で既存 active transaction を再利用できることが機械検証される
+  14. `guarded-git-commit.py` が `git commit` 呼び出し直前に `index.lock` 作成可否を preflight し、permission / sandbox 系の作成失敗では `git commit` を呼ばず、approval／challenge／delegation を consumed または invalidated にせず、`sandbox_git_write_denied` と `required_action=rerun_commit_with_escalation` を表示することが機械検証される
+  15. `git commit` 実行後に `.git/index.lock` / permission 系エラーが返った場合も、approval／challenge／delegation を consumed または invalidated にせず、同じ `sandbox_git_write_denied` 分類表示を行うことが機械検証される
+- **テスト要件**：4 種類ゲート × 正常系 ／ 異常系 = 8 ケース、独立走行テスト（同 session 内で状態変化させて再検査が異なる結果を返す）、最小集合テスト（drafting ／ triad-review の遷移ではゲート発火しない）、commit 承認レコードの `target_sha256` 正常系／欠落／不一致テスト、nonce challenge 正常系（prepare→record→commit validation→consume）、期限切れ、UTC ISO-8601 不正、TTL 10 分以外、`now_utc` 注入、clock rollback、未消費 challenge あり prepare、明示 invalidate、canonical digest `commit-approval-v1`、canonical digest のパス順非依存、削除 staged、approval/challenge target digest 不一致、exact index 不一致、malformed challenge／approval record の no partial inference、schema 禁止フィールド混入、`attestation_type`／`guarantee_scope` 欠落・不正、stdin source text、no-store mode、UTF-8 不正、4096 bytes 超過、`source_not_provided`、`unsafe_source_omitted`、`redaction_failed`、`residual_secret_detected` の 4 値、`redact_text` 呼び出し、`find_residual_secrets` 呼び出し、residual secret 検出、validation failure 後の再利用拒否、consume 永続化失敗後の再利用拒否、git execution failure 後の条件付き retry、`commit-approval * --json` の parseable JSON 出力テスト、`delegate-execution` 正常系（prepare→record→delegate-execution→commit validation→consume）、staged 内容承認前の delegation 拒否、既存未期限切れ delegation 拒否、delegation record の全必須 field の生成／欠落／型不正、delegation の nonce／target digest／staged file set digest／staged 内容承認 digest／challenge path／approval record path／expiry／instruction hash 不一致、malformed delegation record、unknown field、禁止 LLM/provider/model 系 field、`attestation_type=commit_execution_delegation_nonce_binding`、`guarantee_scope=stdin_text_instruction_bound_to_commit_approval_not_ui_utterance_proof`、両 field の欠落・不正、末尾 POSIX LF 1 個だけ許容、CR／CRLF／内部改行／2 個以上の末尾 LF／NUL／空／空白のみ／256 bytes 超過／全角 Latin 拒否、ASCII 英字のみ小文字化、末尾日本語句点 1 個だけ除去、許可文言 `コミット`／`コミットして`／`コミットを実行`／`承認`／`commit`／`commitして` の完全一致、secret redaction failure／residual secret 検出時の delegation 作成拒否、保存直前再検証、atomic write 失敗、保存直前 expiry race、`--execution-actor llm` で challenge／staged 内容承認 record／delegation record／現在 index の全再検証と delegation 必須、`--execution-actor human` で delegation 不要、invalidate が challenge／staged 内容承認 record／delegation record を一括 invalidated にすること、`guarded-git-commit.py --approval-nonce --approval-source-text-line-stdin` が承認 1 行で record／delegate-execution／commit／consume まで完了すること、同 wrapper が precheck OK 後の git execution failure で commit 未作成の場合に record を消費・無効化せず、同一 nonce 再実行で既存 approval／delegation を再利用すること、`index.lock` preflight 失敗時に commit を呼ばず承認を保持して `sandbox_git_write_denied` / `required_action=rerun_commit_with_escalation` を表示すること、`git commit` 実行後の `.git/index.lock` / permission 系失敗も同じ分類で表示し承認を保持すること、壊れた古い delegation が `prepare` 後の新規承認フローを妨げないこと
+
+### T-007：reopen 機械強制
+
+- **対応設計節**：design.md §reopen 機械強制モデル §1〜§4、§主要な設計判断 判断 5
+- **対応要件**：Requirement 5 受入 1〜5、Requirement 9 受入 1〜4
+- **責務**：reopen 手続きの 4 過程構成を T-003 の `stages/reopen-procedure.yaml` で静的列挙、第3過程の `trigger_map` 解決ロジックを `tools/check_workflow_action/reopen_resolver.py` として実装。手戻り種別の二次元表記（N／R／D／A／I × 深さ）から再実施対象段リストを取得、各段の `actor` を当該段定義から動的解決（`actor_resolution: per_target_stage`）。`actor=human` 段に到達した時点で作業を停止し、`stages/in-progress/reopen-procedure-<日付>.yaml` に「人間承認待ち」を記録して待機。種別判定根拠ファイル（`docs/reviews/reopen-classification-<日付>.md`）の保存・読み込み機構を実装。後追い intent の downstream impact では、conformance-evaluation から受け取った候補を直接の実行命令にせず、既存 feature の受け皿ありなら `reopen_existing_feature`、受け皿なしなら `new_feature_required`、根拠不足なら `human_decision_required` として分類する。CE から渡される `downstream_impact_candidate` や `implementation_change_candidate` が tasks phase を指す場合も、候補 ID、対象 feature、対象 phase、根拠参照を読み、T-007 が受け皿判定を行って `pending_gates` に反映する。`reopen_existing_feature` は既存 feature の該当 phase を reopen し、`new_feature_required` は feature-partitioning へ戻し、`human_decision_required` は blocker として停止する。fail-closed の既定（人間承認なしに次段への進行を許さない）
+- **前提タスク**：T-003、T-004、T-005、T-006（T-005 を追加：reopen 解決器が triad-review 段の述語 `artifact_exists_and_sections_present_and_author_reviewer_distinct` 経由で `front_matter_checker` を呼ぶため、T-005 完了前の着手を防ぐ。F-006 対処 2026-05-28）
+- **成果物**：
+  - `tools/check_workflow_action/reopen_resolver.py`（`trigger_map` 解決 ＋ `actor` 動的解決 ＋ actor=human 自動停止）
+  - `tools/check_workflow_action/classification_loader.py`（種別判定根拠ファイルの読み込み）
+  - （`templates/review/reopen_classification_template.md` の成果物所有は T-001 単独。本タスクは内容確定のみで成果物に再列挙しない、A-010 対処 案 2 2026-05-28）
+- **完了条件**：
+  1. 全 15 種の手戻り種別（N-0 ／ R-0〜1 ／ D-0〜2 ／ A-0〜3 ／ I-0〜4）に対する `trigger_map` 解決が機械検証される
+  2. `actor=human` 段で自動停止し、`stages/in-progress/reopen-procedure-<日付>.yaml` に `current_blocker` フィールドが書き込まれる
+  3. 種別判定根拠ファイル不在の場合は結論不能（DEVIATION）で遮断
+  4. 人間承認なしに次段への進行が機械的に許可されない（fail-closed）
+  5. T-001 が配置した `reopen_classification_template.md` の内容（front-matter ＋ 分類根拠節）が確定している（成果物所有は T-001、本タスクは内容確定のみ、A-010 対処 案 2 2026-05-28）
+  6. 後追い intent の受け皿判定が `reopen_existing_feature` ／ `new_feature_required` ／ `human_decision_required` の 3 値で記録される
+  7. CE から渡された tasks phase の `downstream_impact_candidate` を、直接実装せず reopen pending gate へ変換できる
+- **テスト要件**：15 種類の `trigger_map` 解決テスト、`actor=human` 自動停止テスト、種別判定根拠ファイル欠落の fail-closed テスト、人間承認なし進行禁止テスト、後追い intent の受け皿判定 3 値の分岐テスト、CE 由来 tasks phase 候補の reopen pending gate 変換テスト
+
+### T-008：session 跨ぎ状態管理
+
+- **対応設計節**：design.md §session 跨ぎ状態管理モデル §1〜§5
+- **対応要件**：Requirement 6 受入 1〜7、Requirement 9 受入 3 ／ 5 ／ 6
+- **責務**：進行中状態ファイル（`stages/in-progress/<process_id>-<日付>.yaml`）の発行 ／ 読み込み ／ 完了時移動（`stages/completed/` への移動）の機構を `tools/check_workflow_action/in_progress_manager.py` として実装。最低限のフィールド 6 件（`process_id` ／ `started_at` ／ `trigger` ／ `completed_steps` ／ `next_step` ／ `pending_gates`）を必須化、任意フィールド（`classification_basis` ／ `current_blocker` ／ `escalation_status`）を許容。後追い intent の reopen では `completed_gates`、`drafting_completed_gates`、`downstream_impact_decisions` を保持できる。`downstream_impact_decisions` は `gate`、`feature_scope`、`decision`、`rationale`、`evidence`、`decision_actor`、`decision_source` を最低フィールドとする。これらの進行中状態フィールドは workflow-management が所有する `stages/in-progress.schema.json` を正本とし、foundation の共有スキーマへ昇格するまでは foundation tasks.md に追加タスクを作らない。通常の `next_action` と異なる side track、または `next` 判定自体の欠陥修復に入る場合は、`process_id: maintenance` と `mainline_blocked_by`、`allowed_scope`、`allowed_files`、`completion_conditions` を持つ進行中ファイルを先に作成する。session 開始時の標準フロー 7 ステップ（TODO 確認 ／ 直近 session 記録確認 ／ git log ／ 検査スクリプト全件 ／ in-progress 有無 ／ 進行中優先 ／ 次作業決定）と、session record 作成手順（重要な判断・承認・レビュー結果・修正経緯を `docs/sessions/session-<N>-<YYYY-MM-DD>.md` に残す）を運用文書に明示、`tools/check-workflow-action.py session-start` サブコマンドとして実装可能か別途判断（任意拡張）。fail-closed：`stages/in-progress/` に何かファイルがある状態での不可逆操作実行を遮断（T-006 と整合）。reopen 固有フィールド（`current_blocker` 等）の意味解釈は T-007 の責務とし、T-008 は進行中ファイルの一般管理（発行 ／ 読み込み ／ 移動 ／ 遮断）に徹して reopen 連動を内包しない（前提タスクに T-007 を加えず独立性を保つ、F-007 対処 案 2 2026-05-28）
+- **前提タスク**：T-001、T-004、T-006
+- **成果物**：
+  - `tools/check_workflow_action/in_progress_manager.py`（発行 ／ 読み込み ／ 完了時移動）
+  - `stages/in-progress.schema.json`（必須 6 フィールド ＋ 任意フィールド。命名をディレクトリ名 `in-progress/` に合わせハイフン統一、design 配置ツリーにも追記、F-018 対処 案 1 2026-05-28）
+  - `docs/operations/WORKFLOW_PRECHECK.md`（段階 1・段階 3 との接続）
+  - `docs/operations/SESSION_WORKFLOW_GUIDE.md` §セッション記録の作成規律
+- **完了条件**：
+  1. `in-progress.schema.json` が JSON Schema として meta-schema 検証を通る、必須 6 フィールドが確定（F-018 対処 命名統一）
+  2. 進行中状態ファイルの発行 ／ 読み込み ／ 完了時移動が機械検証される
+  3. `stages/in-progress/` に何かある状態での不可逆操作実行が遮断される（T-006 連動）
+  4. 進行中状態ファイル自体の更新（次ステップ進行 ／ 人間承認の記録）は遮断対象外であることが機械検証される
+  5. `SESSION_WORKFLOW_GUIDE.md` と workflow-management 仕様が session record 作成手順を持つことが機械検証される
+  6. maintenance 進行中ファイルが `mainline_blocked_by`、`allowed_scope`、`allowed_files`、`completion_conditions` を保持できる
+  7. `completed_gates`、`drafting_completed_gates`、`downstream_impact_decisions` の最低フィールドを保持できる
+- **テスト要件**：スキーマ検証、必須 6 フィールド検査、発行 ／ 読み込み ／ 移動の 3 機能テスト、in-progress あり状態での不可逆操作遮断テスト、自己更新の許容テスト、maintenance side track の読み込みテスト、複数 in-progress 並存テスト（複数 reopen-procedure-*.yaml が正常系として並ぶ場合の優先完了対象と解決順。design §テスト戦略 境界条件 L840、reopen やり直し時の証跡保全 L505 由来、A-008 対処 案 1 2026-05-28）、`downstream_impact_decisions` の gate coverage テスト、`drafting_completed_gates` による再開位置判定テスト
+
+### T-009：多層防御の位置付けと運用文書
+
+- **対応設計節**：design.md §多層防御の位置付けモデル §1〜§5、§主要な設計判断（全般）
+- **対応要件**：Requirement 7 受入 1〜4
+- **責務**：ワークフロー事前検査の呼び出し責務、対象操作、判定結果の扱いを `docs/operations/WORKFLOW_PRECHECK.md` に置き、サブコマンド引数、判定条件、出力形式、ログ、テスト観点の詳細を `docs/operations/WORKFLOW_PRECHECK_DETAILS.md` に置く。自律・並列実行の安全契約として自律 plan と履歴 ledger を運用文書に明示し、依存順、recheck 対象、許可パス、期待テスト、統合判断、未解決 blocker を追跡できるようにする。本タスクは実装ではなく運用文書の整備が主、機械検査の対象ではない。
+- **前提タスク**：T-004、T-005、T-006、T-007、T-008
+- **成果物**：
+  - `docs/operations/WORKFLOW_PRECHECK.md`（ワークフロー事前検査の運用契約）
+  - `docs/operations/WORKFLOW_PRECHECK_DETAILS.md`（ワークフロー事前検査の詳細仕様）
+  - `docs/operations/WORKFLOW_MANAGEMENT.md` の §多層防御位置付け節
+- **完了条件**：
+  1. 運用契約と詳細仕様の分離が明示される
+  2. 自律 plan と履歴 ledger の必須目的が運用文書に明示される
+- **テスト要件**：本タスクの「実装ではなく運用文書の整備が主、機械検査の対象ではない」位置づけ（責務記述）と整合させ、文書内容の grep キーワード検査は完了条件・テスト要件から外す
+
+### T-010：規律変更の所定手続き経由実体変更（A-007 案 2、A-012 連動）
+
+- **対応設計節**：design.md §責務境界の明確化、§主要な設計判断 判断 7
+- **対応要件**：Requirement 4 受入 1（規律変更は不可逆操作）、Boundary Context 隣接期待（self-improvement との接合面）
+- **責務**：`learning/workflow/approved-updates/` ディレクトリを新設、`self-improvement` から承認済み提案 YAML が `git mv` で配置される入力経路を確立。本機能の所定手続き（drafting → review → approval）を経て規律ファイル（`docs/disciplines/discipline_*.md`）の実体変更を実施。完了時に `approved-updates/<日付>-<id>.yaml` に `materialized_at`（ISO 8601 完了時点）と `materialization_commit_hash`（規律変更コミットのハッシュ）を追記。`self-improvement` design §13.5 と本機能 判断 7 の相互参照、時系列契約（`approved` ＝ self-improvement 承認時点 ／ `materialized_at` ＝ 本機能完了時点）の符号化。ロールバック責務は `self-improvement` 側、本機能は受動的に状態通知を受ける
+- **前提タスク**：T-003（段集合 YAML 群の配置）、T-004。**規律変更段集合の方針（F-008 対処 案 1 2026-05-28）**：規律変更専用の段集合は機能横断整合用 `cross-spec-alignment.yaml` への相乗り（責務混在）を避け、独立ファイル `stages/discipline-update.yaml` とする方針に一意化。ただし段集合本体（`drafting → review → approval` の 3 段か `triad-review` を含むか）は未確定のため **DVT-W003 として後続セッションに延期**し、本ファイルは T-003 の成果物には含めず DVT-W003 解除時に静的列挙する（tasks 段 2 軸整合性監査 #5 で「T-003 が枠を新設」との誤記述を訂正、2026-05-29）
+- **成果物**：
+  - `learning/workflow/approved-updates/.gitkeep`
+  - `learning/workflow/approved-updates/README.md`（入力経路の説明、`git mv` 配置の規約）
+  - （入力 YAML のスキーマは本機能で独自定義しない。self-improvement design §8.4 の正本スキーマを唯一の定義元として参照し、項目名は §8.4（`target_discipline_path` ／ `status` ／ `materialized_at` ／ `materialization_commit_hash` 等）に従う。受け手側の検証は §8.4 由来の共有フィクスチャで行う。**A-019 対処（案1、2026-05-29 セッション40）**：独自 `approved_update.schema.json` の新設と独自項目名 `approved_at` ／ `target_discipline` を廃止し、二重管理を解消）
+  - `tools/check_workflow_action/discipline_update_processor.py`（規律変更の所定手続き実施 ＋ 完了通知の追記）
+  - （`learning/workflow/approved-updates/` の配置は本機能 design 配置ツリー外だが、self-improvement design §13.5 に正本記述があり機能横断では整合済み。tasks.md 側は出典注記で吸収し design 遡及はしない、F-020 対処 案 1 2026-05-28）
+- **完了条件**：
+  1. `approved-updates/` ディレクトリが配置され、入力 YAML が self-improvement §8.4 正本スキーマに適合することを検証する（本機能は独自スキーマを定義しない、A-019 対処 案1）
+  2. `self-improvement` から `git mv` で配置された YAML を本機能が読み、所定手続きを経て規律ファイル実体変更を完了
+  3. 完了時に `materialized_at` ／ `materialization_commit_hash` が追記される
+  4. `self-improvement` design §13.5 との時系列契約の整合が機械検証される（DVT-W003）。さらに **§13.5 の変更が機能依存マップ（feature-dependency.yaml）に記録されたとき、DVT-W003 を自動的に open（未解決）へ差し戻し、事前検査スクリプトが再評価完了を確認するまで本タスクを完了扱いにしない**（依存マップ駆動の追従強制、本機能の自己適用、F-016 対処 案 3 2026-05-28）。**【実装時の調停】** A-006 で「`depends_on_resolves_correctly` の汎用的な変更検知はフェーズ 2 の宿題（DVT-W007）」と確定したため、本条件では §13.5（self-improvement 接合面）の変更検知のみを先行実装し、機能依存マップ全般の汎用変更検知はフェーズ 2 に据え置く
+- **テスト要件**：スキーマ検証、所定手続きの 3 段（drafting → review → approval）が走るテスト、完了通知の追記テスト、時系列契約の整合テスト、self-improvement の `git mv` 外部依存をモック／スタブ化した consumer 側統合テスト（`approved-updates/` への YAML 配置を擬似再現、実 git mv は呼ばない。擬似 YAML は self-improvement §8.4 正本スキーマ準拠の共有フィクスチャとする（A-019 解消＝案1 採用 2026-05-29 により §8.4 を唯一の定義元として参照）。producer/consumer 境界の契約確認は T-011 に集約、F-012 対処 別案 2026-05-28）
+
+### T-011：テスト戦略全体の整備
+
+- **対応設計節**：design.md §テスト戦略 §1〜§5、§完成判定基準
+- **対応要件**：本機能全要件の機械的合否判定、foundation 語彙正本（本機能が参照する `review_mode`）の参照のみ使用の機械検証、要件追跡表の双方向整合、DVT 解除確認、Requirement 9 の統合検証
+- **責務**：design.md §テスト戦略で定義された 4 検証類（単体テスト ／ 統合テスト ／ 異常系 fixture ／ 境界条件）をすべて Python テストとして整備。pytest で一括実行可能。foundation 語彙正本（本機能が参照する `review_mode`）の参照のみ使用の機械検証、および所見系・状態軸系語彙を参照していないことの機械検証、本機能所有正本（`completion_predicate` 述語 7 値 ／ `verdict` 3 値 ／ 手戻り種別記号 5 値 ／ 依存種別 2 値）が T-002 ／ T-003 ／ T-004 ／ T-007 の成果物で正本確定されていることの機械検証。要件追跡表と各タスク本文の対応要件欄の双方向整合チェック（foundation T-010 ／ runtime T-011 ／ evaluation T-011 ／ analysis T-011 の方針継承）。Requirement 4 受入 8 については、T-004 の `delegate-execution` CLI、T-006 の delegation record 生成・validation・`--execution-actor llm` gate、staged 内容承認との分離、LLM/provider/model 非依存、secret handling、invalidate／consume の一連の統合・回帰テストを T-011 が覆う。XDI-WM-002 として、後追い intent の下流再展開、conformance-evaluation 候補の受け取り、drafting-before-review 防止、side track 分離、`downstream_impact_decisions` の証跡保持を統合検証する。**遅延確認事項テーブル（DVT）内の未解除項目がない、または延期理由が明記されている**ことを完了条件にゲート化（evaluation T-011 ／ analysis T-011 の方針継承）
+- **前提タスク**：T-001 ／ T-002 ／ T-003 ／ T-004 ／ T-005 ／ T-006 ／ T-007 ／ T-008 ／ T-009 ／ T-010
+- **成果物**：`tests/workflow-management/` 配下のテストファイル群（`test_feature_dependency.py` ／ `test_stages_yaml.py` ／ `test_check_workflow_action.py` ／ `test_front_matter.py` ／ `test_gate_predicates.py` ／ `test_reopen.py` ／ `test_in_progress.py` ／ `test_discipline_update.py` ／ `test_operations_docs.py` ／ `test_traceability.py` の 10 ファイル相当）
+- **完了条件**：すべての pytest が pass、4 検証類を網羅、foundation 語彙正本（本機能が参照する `review_mode`）の参照のみ使用が機械検証される（所見系・状態軸系の不参照を含む）、workflow-management 所有正本（`completion_predicate` 述語 7 値 ／ `verdict` 3 値 ／ 手戻り種別記号 5 値 ／ 依存種別 2 値）が正本確定されている、要件追跡表の双方向整合が機械チェックされる、DVT 内の未解除項目がない（または延期理由が明記されている）
+- **テスト要件**：すべての pytest が pass、回帰なし、要件追跡表の双方向整合チェック、DVT ゲート化、self-improvement との接合面の producer/consumer 境界の契約確認（T-010 の consumer 側統合テストと対をなす境界テスト、`git mv` 経由の `approved-updates/` 取り込みの整合確認を集約、F-012 対処 別案 2026-05-28）、Requirement 4 受入 8 の一気通貫統合テスト（prepare→record→delegate-execution→`--execution-actor llm` commit gate→consume、human actor 免除、staged 内容承認と execution delegation の分離、LLM/provider/model 非依存、secret handling、invalidate／再利用拒否）、XDI-WM-002 の後追い intent 下流再展開テスト、CE 候補受け取りテスト、drafting-before-review 防止テスト、side track 分離テスト、`downstream_impact_decisions` 証跡保持テスト
+
+### T-012：review-wave 横断確認の要約コマンド（Req 10、reopen R-0 2026-06-14）
+
+- **対応設計節**：design.md §review-wave 要約コマンドモデル §1〜§6
+- **対応要件**：Requirement 10 受入 1〜5
+- **責務**：`tools/check-workflow-action.py` に `review-wave-summary` サブコマンドを追加（`next`／`spec-set`／`commit` と同じ CLI 体系）。design §2 の読み取り元（各 feature の spec.json の `workflow_state`・`recheck`、`stages/in-progress/`、feature-dependency.yaml の `feature_order`、review-run の `triage.yaml` 群〔`evidence/review-runs/` 優先・旧 `_cross_feature/reviews/` 互換、`run_id` 単位で重複排除〕、carry-forward register）から design §2 の算出定義で指標を集計する。出力は Markdown（既定）と JSON（`--json`、design §3 の安定スキーマ）で情報同等。fail-closed（design §4：必須記録〔spec.json・feature-dependency.yaml〕の欠落・解析不能、および任意記録の解析不能で `status: insufficient`＋非ゼロ終了コード 2。任意記録〔triage.yaml 群・carry-forward register〕の非在は 0 件として `ok`）。読み取りに徹し spec.json・triage・phase を書き換えない。保存は `--out`／`--save` で自身の要約出力のみ（design §5）。既存関数（`load_all_feature_specs`・`feature_order` 解決・`collect_recheck_items`・`review_triage` 集計）を再利用し二重定義を避ける。
+- **前提タスク**：T-002（feature-dependency）、T-003（段集合 YAML）、T-004（検査スクリプト本体）
+- **成果物**：`tools/check-workflow-action.py` の `review-wave-summary` サブコマンド（必要に応じ `tools/check_workflow_action/` 配下の helper モジュール）、`tests/tools/`（または `tests/workflow-management/`）のテストファイル
+- **完了条件**：design §1〜§6 を満たす。Markdown と JSON が情報同等で JSON が安定スキーマ（キー名・型固定）。必須記録の欠落・解析不能で `status: insufficient`＋終了コード 2、任意記録の非在は `ok`（0 件）。spec.json・triage・phase を書き換えない。TDD（赤→緑→全テスト通過、回帰なし）。
+- **テスト要件（TDD：先に失敗テストを書く）**：(1) 各指標の集計（feature coverage・phase/stage 状態・triage の unresolved/draft/human_required・recheck・依存状況・carry-forward 未消化）、(2) JSON 安定スキーマの**キー名・型を固定値として表明検証**（design §3 のトップレベル・ネスト構造と一致）と `status` 判定基準、(3) Markdown と JSON の情報同等、(4) fail-closed：必須記録（spec.json・feature-dependency.yaml）の**欠落**と**解析不能（パースエラー・非連想配列）**で `status: insufficient`＋**exit 2**、任意記録（triage.yaml 群・carry-forward register・stages/in-progress/）の**非在は `ok`・0 件**だが**存在して解析不能なら `status: insufficient`＋exit 2**、(5) 読み取り専用（実行後に spec.json・triage が不変）、(6) draft は run 単位・unresolved/human_required は item 単位の集計軸の区別、(7) **`--out`／`--save` の保存正常系**（指定パス／既定保存先 `_cross_feature/reviews/` へ自身の要約出力が書かれ、spec.json・triage・phase は不変）。全 pytest が pass、回帰なし。
+
+### T-013：重要決定の出典検査（decision-source-lint サブコマンド、Req 11、reopen R-0 2026-06-15）
+
+- **対応設計節**：design.md §Req 11 設計モデル §1〜§6
+- **対応要件**：Requirement 11 受入 1〜7
+- **責務**：`tools/check-workflow-action.py` に `decision-source-lint` サブコマンドを追加し、`.reviewcompass/decisions/` 直下の重要決定記録 YAML を逐語照合・束ね検出・内容性検査する。①`stages/decision-source-lint-config.yaml` の生成（内容なし語リスト初期値 11 件）。②決定記録スキーマの機械検査（必須フィールド・category 3 値 enum・multiplicity 制約・verification_status 3 値 enum）。③逐語照合：source.locator のパス部分に対応する転写ファイル全文に対して NFC 正規化・連続空白→単一スペース・前後除去の正規化を両辺に適用し `source.excerpt` が含まれるかを検索（ターン番号は絞り込みに使わない）。④束ね例外の 3 条件確認（承認レコードが存在し・当該 decision_id が covered_decision_ids に含まれ・multiplicity が single）。⑤内容なし語リスト判定（句読点除去→スペース区切りトークン化→全トークンがリスト一致で fail-closed）。⑥commit 直前ゲートへの統合（`cmd_commit` から `decision-source-lint --all` を呼び出し、pending=WARN・unverifiable=DEVIATION・multiplicity:bundled かつ承認なし=DEVIATION）。⑦`--verify-pending` フラグ（verification_status: pending の決定を再照合し合格なら verified に更新・verified_at に現在日時を記録。書き換えるのは verification_status・verified_at の 2 フィールドのみ。照合不合格時はファイル不変・差分表示・非ゼロ終了）。
+- **前提タスク**：T-001（配置）、T-004（検査スクリプト本体）
+- **成果物**：`tools/check-workflow-action.py` の `decision-source-lint` サブコマンド、`stages/decision-source-lint-config.yaml`（初期内容なし語リスト）、`tests/tools/` のテストファイル
+- **完了条件**：design §1〜§6 を満たす。TDD（赤→緑→全テスト通過、回帰なし）。commit 直前ゲートへの統合済み（`pending=WARN`・`unverifiable=DEVIATION`）。`--all` が `bundle-exceptions/` サブディレクトリを除外する。`--verify-pending` が `verification_status`・`verified_at` の 2 フィールドのみを更新し他フィールドを書き換えない。design §6 の実装委譲 4 事項（`--verify-pending` 安全性保証・`bundle_exception_id` 採番規則・逐語不一致時の差分表示形式・既存関数との統合方法）が implementation で確定されていること。
+- **テスト要件（TDD：先に失敗テストを書く）**：(1) 必須フィールドと category 3 値 enum の検査（欠落・不正値・空文字列・非文字列型で DEVIATION）、(2) multiplicity: bundled → fail-closed（承認レコードなし）、束ね例外 3 条件の**部分満足も fail-closed**（承認レコードあり＋covered_decision_ids 含むが multiplicity=bundled で DEVIATION・承認レコードなし＋multiplicity=single で DEVIATION）、全 3 条件充足（承認レコード有＋covered_decision_ids 含む＋multiplicity=single）で通過、(3) 逐語照合正常系（正規化後 excerpt が転写ファイル全文に含まれる → verified 判定）、(4) 逐語照合不合格系（転写ファイルに excerpt なし → pending 維持・差分表示・非ゼロ終了）、(5) verification_status: pending → WARN（commit 遮断しない）、verification_status: unverifiable → DEVIATION、(6) 内容なし語リスト正常系（全トークンが empty_content_words に一致 → fail-closed）と不合格系（一部不一致 → 通過）、(7) `--all` で `decisions/` 直下のみ（`bundle-exceptions/` YAML は検査対象外）、(8) `--verify-pending` 正常系（pending → verified・verified_at 記録・他フィールド不変）、(9) `--verify-pending` 不合格系（ファイル内容不変・差分表示・非ゼロ終了）、(10) commit ゲート統合（`python3 check-workflow-action.py commit` の end-to-end テストで decision-source-lint の DEVIATION/WARN 判定が commit 結果に反映されること）、(11) 設定ファイル `stages/decision-source-lint-config.yaml` の読み取り（リストの内容が正しく反映される）。全 pytest が pass、回帰なし。
+
+### T-014：operation registry / read-only preflight（Req 12、reopen R-0 2026-06-16）
+
+- **対応設計節**：design.md §Requirement 12 設計モデル §1〜§13、§XDI-WM-004
+- **対応要件**：Requirement 12 受入 1〜13
+- **責務**：`stages/operation-registry.yaml` と read-only preflight を追加し、review-run、post-write verification、triage、reopen、commit approval chain、session-record、deployment / export などの操作を、記憶・前例・短縮名ではなく operation contract から開始できるようにする。Phase 1 は成果物を作らない preflight のみとし、review-run directory、manifest、approval record、session record、commit、deployment / export output を作成・更新しない。実際に artifact を作る runner は Phase 2 として分離する。
+- **前提タスク**：T-002（feature-dependency）、T-003（段集合 YAML）、T-004（`next`／workflow CLI／parser 接続）、T-006（commit gate）、T-007（reopen 解決）、T-008（in-progress 管理）、T-012（review-wave summary）、T-013（decision-source-lint）。T-011 は T-014 の前提ではなく、T-014 の個別テストを後段で統合・回帰検証する集約タスクとして扱う。
+- **成果物**：
+  - `stages/operation-registry.yaml`（operation_id、kind、operation_family、canonical_invocation、workflow_binding、required_inputs、target_identity、planned_outputs、sequence_mode、worktree_policy、pending_conflict_policy、artifact_policy、family_required_checks、vocabulary_refs）
+  - `tools/check_workflow_action/operation_registry.py`（registry 読み込み、schema 検査、operation family 必須 check 検査）
+  - `tools/check_workflow_action/operation_preflight.py`（read-only preflight 判定、state_refs、conflict、planned_outputs、canonical_commands、verdict 生成）
+  - `tools/check-workflow-action.py operation-preflight --operation-id <id> --json` サブコマンド
+  - `tests/workflow-management/test_operation_registry.py`
+  - `tests/workflow-management/test_operation_preflight_response.py`
+  - `tests/workflow-management/test_operation_preflight_next_state.py`
+  - `tests/workflow-management/test_operation_preflight_review_artifacts.py`
+  - `tests/workflow-management/test_operation_preflight_approval_chain.py`
+  - `tests/workflow-management/test_operation_preflight_session_record.py`
+  - `tests/workflow-management/test_operation_preflight_nested_issue.py`
+  - `tests/workflow-management/test_operation_preflight_deployment_export.py`
+- **完了条件**：
+  1. registry が `operation_id`、`kind`、`operation_family`、canonical invocation、workflow binding、required inputs、target identity、planned outputs、sequence mode、各 policy、family required checks、`vocabulary_refs` を機械検査できる。
+  2. preflight response が `schema_version`、`operation_id`、`verdict`、`allowed_verdicts`、`sequence_mode`、`allowed_sequence_modes`、`state_refs`、`required_inputs`、`missing_inputs`、`template_available`、`target_identity`、`worktree_state`、`pending_conflicts`、`integrity_conflicts`、`checks`、`planned_outputs`、`canonical_commands`、`next_step` を返す。
+  3. workflow state に依存する operation では、Requirement 2 が所有する `next --json` の active state dimensions（current mainline、required action、phase、stage、reopen scope、impact review scope、direct / indirect features、flag policy、next pending gate、next drafting gate、pending / completed / superseded gates、state files）を `state_refs.next_action` に返す。Requirement 12 は `next` 正本を複製せず、preflight が参照・照合する側として実装する。
+  4. command validation は help 文字列ではなく parser / parser adapter と registry の `canonical_invocation` を照合し、存在しない entrypoint、subcommand、option、未登録 alias、誤 script path を成果物作成前に DEVIATION または確認不能 WARN として返す。
+  5. worktree conflict と integrity conflict を分け、post-write pending、reopen in-progress、staged / unstaged 混在、承認 record / delegation record / manifest / bundle / target digest の欠落・stale・不一致・消費済み・対象外を検出できる。
+  6. `operation_family=review_artifact` は target / manifest / bundle / criteria / document-type / approval record / existing review-run artifact の対象集合一致、approval.yaml の finding id / final_label、bundle 非空、staged / unstaged 対象選択、上書き・stale・drift を必須 check として作成前に検査できる。
+  7. `serial_only` operation は `prepare -> record -> delegate-execution -> guarded commit` の内部順序、または配布可能 UX の `prepare -> guarded commit --approval-nonce --approval-source-text-line-stdin` の wrapper 順序、nonce、target digest、staged file set digest、staged content approval digest、expiry、consume、invalidated、target を検査し、並列・順序外実行を DEVIATION にする。
+  8. current-session formal record guard は `session_record_mode`、`current_session_id`、`target_session_id` を返し、formal 出力で current と target が同一または不明なら DEVIATION にする。
+  9. nested issue handling は parent task、discovered issue、relation、allowed files、return condition、nesting depth を検査し、記録なしの scope drift を DEVIATION にする。
+  10. deployment / export preflight は planned outputs、既存成果物、上書き禁止 policy、外部 app root、既存 bundle / smoke-run / app file 衝突を作成前に返す。観測範囲は registry または明示入力で与えられた repo-relative output、許可済み external output root、target app root に限定し、未指定の外部探索はしない。観測範囲が不明な場合は OK にせず WARN 以上、runner-enabled operation では DEVIATION とする。
+  11. `reopen_scope` と `impact_review_scope` を区別し、direct / indirect feature sets、flag policy、判断理由、証跡を `next --json` と整合させる。不整合は WARN または DEVIATION として通常進行を止める。
+  12. 判定は LLM、provider、model 名に依存しない。registry / response schema に `llm`、`provider`、`model`、`model_id`、`proxy_model_id` を合否条件として持たせない。
+  13. read-only preflight は正本 artifact を作らず、runner-enabled operation は本タスクの範囲外として明示されている。
+- **operation_family 初期必須 check**：
+  - `review_artifact`：target / manifest / bundle / criteria / document-type / approval record / existing artifact drift / staged-vs-unstaged target selection。
+  - `workflow_cli`：parser / parser adapter invocation、workflow binding、`next --json` active state dimensions、scope consistency。
+  - `commit_approval_chain`：nonce、target digest、staged file set digest、staged content approval digest、expiry、consume、invalidated、target。
+  - `session_record_capture`：session_record_mode、current_session_id、target_session_id、formal output の current-session 禁止。
+  - `deployment_export`：planned outputs、overwrite policy、external output root、target app root、existing bundle / smoke-run / app file。
+  - `nested_issue_control`：parent task、discovered issue、relation、allowed files、return condition、nesting depth。
+- **テスト要件（TDD：先に失敗テストを書く）**：(1) registry schema 正常系と必須 field 欠落・未知 kind・未知 operation_family・family_required_checks / vocabulary_refs 欠落の fail-closed、(2) parser / parser adapter との invocation 照合正常系・存在しない subcommand / option / entrypoint / alias の DEVIATION、(3) preflight response JSON のキー名・型固定、`allowed_verdicts` と `verdict` 整合、DEVIATION hard-stop の WARN downgrading 拒否、(4) `state_refs.next_action` の必須キー固定検証（current mainline、required_action、phase、stage、reopen_scope、impact_review_scope、direct / indirect features、flag policy、next_pending_gate、next_drafting_gate、pending_gates、completed_gates、superseded_gates、state_files）、(5) Requirement 2 所有の `next --json` 出力を参照し、別正本を作らないことの検証、(6) `feature_impact_decisions` / `spec.json` / `pending_gates` / `drafting_completed_gates` / `downstream_impact_decisions` 不整合の検出、(7) worktree conflict と integrity conflict の分離、(8) review artifact preflight の target / manifest / bundle / criteria / document-type / approval.yaml / existing artifact drift / staged-vs-unstaged target selection 検査、(9) serial_only approval chain の順序外・期限切れ・消費済み・invalidated・digest 不一致検査、(10) current-session formal record guard、(11) nested issue scope drift、(12) deployment / export planned output / overwrite policy / explicit external root / target app root 衝突、および未指定外部探索をしないこと、(13) read-only 不変性（preflight 実行前後で registry 以外の正本 artifact が変化しない）、(14) LLM/provider/model 系 field 非依存・禁止 field 検査。全 pytest が pass、回帰なし。
+
+### T-015：Phase 1 最小スキーマ定義ファイルの作成（Req 2 受入 10・11、reopen R-0 2026-06-18）
+
+- **対応設計節**：design.md §軽量版検査スクリプトモデル §5（§5.1 required_action.schema.json・§5.2 next_action_response.schema.json）
+- **対応要件**：Requirement 2 受入 10・11
+- **責務**：`.reviewcompass/schema/required_action.schema.json` と `.reviewcompass/schema/next_action_response.schema.json` の 2 ファイルを TDD で作成する。スキーマ形式は JSON Schema Draft 2020-12。テストファイル `tests/tools/test_phase1_schema_definitions.py` の 17 テストを通過させることで実装の正しさを担保する。スキーマの設計仕様は design.md §5 を正本とし、コード内に語彙を直書きしない。
+- **前提タスク**：T-004（`check-workflow-action.py` が参照するスキーマの実体）、T-011（回帰テスト統合）
+- **成果物**：
+  - `.reviewcompass/schema/required_action.schema.json`（Req 2 受入 10）
+  - `.reviewcompass/schema/next_action_response.schema.json`（Req 2 受入 11）
+- **完了条件**：
+  1. `required_action.schema.json` が design §5.1 の設計（`$schema: https://json-schema.org/draft/2020-12/schema`・`$id: urn:reviewcompass:schema:required_action`・`type: string`・`enum` 19語彙）を満たし、かつ `enum` の配列が D-003 §6 の優先順位順に並んでいること（テストは順序を確認しないため手動確認）
+  2. `next_action_response.schema.json` が design §5.2 の設計を満たすこと：最上位5フィールド必須（`verdict`・`exit_code`・`next_action`・`reasons`・`current_state`）、`next_action` 10フィールド必須（`kind`・`required_action`・`active_gate`・`feature`・`phase`・`stage`・`required_feature_scope`・`blocked_by`・`future_gates`・`state_refs`）、`next_action` 内で `properties: { "verdict": false }` による verdict 禁止（手動確認）、`next_action.required_action` が `$ref: "urn:reviewcompass:schema:required_action"` を参照（手動確認、テストは $ref 値を検証しない）、`kind` が 14 値インライン enum であること（手動確認）、条件付き必須フィールドが `if/then` 構文で定義されていること：`repair_reasons`（`required_action = "repair_workflow_state"` のとき必須）・`action_parameters`（`required_action = "run_maintenance"` のとき必須）（手動確認）
+  3. `python3 -m pytest tests/tools/test_phase1_schema_definitions.py -v` の 17 テストが全て pass する（exit 0）。ただし17テスト全通過は必要条件であり、完了条件1の enum 順序、完了条件2の手動確認項目（verdict 禁止・kind 14 値の具体値・$ref 具体値・条件付き必須フィールド）の充足は別途手動で確認する
+- **テスト要件（TDD：テストは作成済み、失敗状態）**：テストは `tests/tools/test_phase1_schema_definitions.py` に作成済みで commit 済み（失敗状態）。実装でテストを通過させる。テストの変更は禁止。
+
+### T-016：operation contract 語彙と required_action 対応（Req 13、reopen R-0 2026-06-19）
+
+- **対応設計節**：design.md §Requirement 13 設計モデル、§D-003、§XDI-WM-005
+- **対応要件**：Requirement 13 受入 1〜12
+- **責務**：operation contract を、operation registry / preflight の補助情報ではなく、`next --json` の `required_action` と実行前検査を束ねる正本契約として定義する。`effect_kind`、`phase_boundary`、operation contract response、precondition／postcondition、side effect 宣言、commit boundary 宣言、required_action mapping を構造化し、各 `required_action` が必ず 1 つ以上の operation contract に接続されることを機械検査する。T-014 の registry / read-only preflight は参照側として残し、T-016 が operation contract 語彙・schema・対応表の所有タスクとなる。
+- **上流意図継承**：Requirement 13 の目的は「`next --json` が選んだ唯一 action を、記憶や前例ではなく operation contract に基づいて実行できるようにする」ことである。design.md §Requirement 13 は、`stages/operation-contracts.yaml` を operation contract 正本、`stages/operation-registry.yaml` を registry / preflight binding 正本として確定した。T-016 はこの設計に従い、contract 側に副作用・承認要否・順序・前提・事後条件・side effects・承認要否集約規則を置き、registry 側は canonical invocation / workflow binding / policies / contract ID / digest / schema_version 参照だけを持つようにする。preflight は contract を読み取って確認する read-only confirmation であり、contract 更新、operation 実行、approval consume、workflow state 更新を行わない。
+- **前提タスク**：T-004（`next --json`）、T-014（operation registry / preflight）、T-015（required_action schema）
+- **実装対象ファイル**：
+  - `.reviewcompass/schema/effect_kind.schema.json`
+  - `.reviewcompass/schema/phase_boundary.schema.json`
+  - `.reviewcompass/schema/operation_contract.schema.json`
+  - `stages/operation-contracts.yaml`
+  - `tools/check_workflow_action/operation_contracts.py`
+  - `tools/check-workflow-action.py`（`operation-contract-check --json` サブコマンド追加）
+  - `tests/workflow-management/test_operation_contract_schema.py`
+  - `tests/workflow-management/test_required_action_contract_mapping.py`
+  - `tests/workflow-management/test_operation_contract_cli.py`
+- **最初に書く失敗テスト**：
+  1. `test_required_action_contract_mapping_covers_required_action_enum`：`required_action.schema.json` の enum 全値が `stages/operation-contracts.yaml` に 1 件以上接続されていなければ失敗する。
+  2. `test_operation_contract_check_reports_unmapped_required_action`：一時 fixture で `required_action` を 1 つ未接続にし、`operation-contract-check --json` が `verdict=DEVIATION` を返すことを期待して失敗させる。
+  3. `test_commit_boundary_blocks_bypass_for_irreversible_actions`：`commit_stop_point`、`advance_reopen_after_commit_stop_point`、`finalize_reopen` など commit 境界必須 operation が `commit_boundary.required=true` でない場合に失敗する。
+  4. `test_registry_references_contract_without_duplicating_contract_fields`：`stages/operation-registry.yaml` が contract の正本 field（`effect_kind`、`approval_required`、`approval_contract_refs`、`phase_boundary`、preconditions / postconditions、side effects、承認要否の集約規則、branch / internal step semantics、max effect、出力・副作用 contract field）を複製した場合、または参照 contract ID / digest が不一致の場合に失敗する。
+  5. `test_record_human_decision_does_not_satisfy_target_approval_required`：`record_human_decision` の完了だけで対象 operation の `approval_required=true` が満たされた扱いになる場合に失敗する。
+  6. `test_preflight_reads_contract_without_mutating_state_or_approval`：operation preflight が contract / workflow state / approval record / side track stack / snapshot / review-run artifact を作成・更新・consume した場合に失敗する。
+  7. `test_branchy_operations_require_branch_and_internal_step_contracts`：`run_maintenance`、`run_reopen_pending_gate`、`run_workflow_stage` の contract が `branching.branches[]`、branch ごとの `internal_steps[]`、`max_effect_kind`、`approval_aggregation`、`human_only_override_applies` を持たない場合、または design.md の branch / step 基線より弱い場合に失敗する。
+  8. `test_branch_internal_steps_preserve_approval_contract_refs_and_phase_boundaries`：branch 内 step が `step_id`、`effect_kind`、`approval_required`、`approval_contract_ref`、`phase_boundary`、`source_ref` を欠く場合、または `approval_contract_ref` / `phase_boundary` が design.md の基線と矛盾する場合に失敗する。
+- **実装順序**：
+  1. JSON Schema 3 件を追加し、enum 値は design.md の語彙をそのまま写す。
+  2. `operation_contract.schema.json` に `approval_required`、`approval_contract_refs`、`sequence.internal_steps`、`branching.branches[]`、`max_effect_kind` を含める。`branching.branches[]` の最低構造は `branch_id`、`condition`、`internal_steps[]`、`max_effect_kind`、`approval_aggregation`、`human_only_override_applies`、`precondition_ids[]`、`postcondition_ids[]` とし、`internal_steps[]` の各要素は `step_id`、`effect_kind`、`approval_required`、`approval_contract_ref`、`phase_boundary`、`source_ref` を持つ。
+  3. `stages/operation-contracts.yaml` を新設し、既存 required_action enum 全値を最小契約へ接続する。`run_maintenance`、`run_reopen_pending_gate`、`run_workflow_stage` は代表値だけにせず、design.md の branch / internal step 基線を弱めずに展開する。
+  4. `operation_contracts.py` に読み込み、schema 検証、required_action coverage、commit boundary 検査を実装する。
+  5. registry / contract 境界検査を追加し、registry 側は `operation_contract` ID / digest / schema_version 参照、contract 側は副作用・承認要否・順序・前提・事後条件・side effects・承認要否集約規則、branch / internal step semantics、max effect を持つことを検査する。
+  6. `tools/check-workflow-action.py` に read-only の `operation-contract-check --json` を追加する。
+  7. T-014 の operation registry / preflight とは正本を重複させず、必要な場合は contract id と digest を参照するだけにする。
+- **完了条件**：
+  1. `effect_kind` と `phase_boundary` が JSON Schema Draft 2020-12 で定義され、未知値・空文字・型不一致を fail-closed にできる。
+  2. operation contract が `operation_id`、`required_action`、`effect_kind`、`approval_required`、`approval_contract_refs`、`phase_boundary`、`sequence.internal_steps`、`branching.branches[]`、`max_effect_kind`、preconditions、postconditions、side_effects、commit_boundary、workflow_state_effect、canonical_invocation を構造化して保持する。
+  3. `required_action.schema.json` の enum 全値が operation contract に接続され、未接続・重複矛盾・未知 `required_action` を DEVIATION にする。
+  4. `run_maintenance`、`run_reopen_pending_gate`、`run_workflow_stage` は branchy operation として、branch ごとの条件、internal step、step ごとの `effect_kind`、`approval_required`、`approval_contract_ref`、`phase_boundary`、branch `max_effect_kind`、`approval_aggregation`、`human_only_override_applies` を design.md の基線から弱めずに保持する。
+  5. commit を強制すべき operation と強制しない operation が `commit_boundary` で区別され、停止点消費・approval consumption・phase boundary などの強制 commit 点を bypass できない。`commit_boundary`、`phase_transition`、`reopen_boundary`、`external_boundary` を独自に拡大適用せず、19語彙基線と branch 内 step の `phase_boundary` を検査する。
+  6. T-014 の preflight response が operation contract ID / digest / schema_version を参照でき、別正本の再定義を持たない。registry と contract の不一致、参照先欠落、digest drift、正本 field 重複は DEVIATION になる。
+  7. operation preflight は read-only confirmation に閉じ、contract 更新、operation 実行、approval consume、workflow state 更新、side track stack 更新、snapshot 保存を行わないことが機械検証される。
+- **検証コマンド**：
+  - `.venv/bin/python3 -m pytest tests/workflow-management/test_operation_contract_schema.py tests/workflow-management/test_required_action_contract_mapping.py tests/workflow-management/test_operation_contract_cli.py -q`
+  - `.venv/bin/python3 tools/check-workflow-action.py operation-contract-check --json`
+  - `.venv/bin/python3 -m pytest tests/tools/test_phase1_schema_definitions.py tests/tools/test_operation_registry_preflight.py -q`
+- **禁止事項**：
+  - `required_action` 語彙を schema、YAML、コードへ別々に手書きして不一致を作らない。
+  - T-014 の operation registry を operation contract 正本として上書きしない。
+  - operation contract の副作用・承認要否・前提・事後条件を registry に複製して二重正本を作らない。
+  - commit 境界必須 operation を WARN に格下げしない。
+- **停止条件**：
+  - `required_action.schema.json` と `stages/operation-contracts.yaml` の語彙差分が残る場合。
+  - 既存 preflight と contract の責務境界が衝突し、どちらを正本にするか判断が必要な場合。
+
+### T-017：承認ゲート・side track stack・workflow-state snapshot（Req 14、reopen R-0 2026-06-19）
+
+- **対応設計節**：design.md §Requirement 14 設計モデル、§XDI-WM-005
+- **対応要件**：Requirement 14 受入 1〜12
+- **責務**：承認ゲート、side track stack、workflow-state snapshot を同一の状態防御層として追加する。承認ゲートは human / proxy_model decision の対象・根拠・有効期限・消費状態を構造化し、side track stack は本線作業、maintenance、nested issue、post-write verification などの入れ子状態を LIFO で保持する。workflow-state snapshot は `spec.json`、`stages/in-progress/`、pending gates、drafting completed gates、completed gates、worktree digest、staged file set、operation contract を同時点の証跡として記録し、状態 drift を検出する。
+- **上流意図継承**：Requirement 14 の目的は、承認・側道・状態可視化を LLM の暗黙解釈ではなく機械可読状態として扱うことである。design.md §Requirement 14 は、approval gate record、side track stack、workflow-state snapshot の保存先・正本性・read-only / mutating 操作境界を確定した。T-017 は `decision_scope=human_only|proxy_allowed|advisory_only` により proxy / human decision 境界を実装し、commit、push、`spec.json` 更新、phase approval、reopen finalize、`approval_required=true` の不可逆 operation 実行許可を human-only として扱う。side track stack は `current` / `inspect` を read-only、`push` / `pop` / `repair` を mutating とし、snapshot は正本ではなく `next --json` と state refs の監査補助として扱う。
+- **前提タスク**：T-006（直前ゲート）、T-008（in-progress 管理）、T-014（preflight）、T-016（operation contract）
+- **実装対象ファイル**：
+  - `.reviewcompass/schema/approval_gate.schema.json`
+  - `.reviewcompass/schema/side_track_stack.schema.json`
+  - `.reviewcompass/schema/workflow_state_snapshot.schema.json`
+  - `tools/check_workflow_action/approval_gate.py`
+  - `tools/check_workflow_action/side_track_stack.py`
+  - `tools/check_workflow_action/workflow_state_snapshot.py`
+  - `tools/check-workflow-action.py`（`workflow-snapshot --json`、`side-track-stack --json` を追加）
+  - `tests/workflow-management/test_approval_gate.py`
+  - `tests/workflow-management/test_side_track_stack.py`
+  - `tests/workflow-management/test_workflow_state_snapshot.py`
+  - `tests/workflow-management/test_workflow_snapshot_cli.py`
+- **最初に書く失敗テスト**：
+  1. `test_workflow_snapshot_includes_reopen_and_worktree_digests`：snapshot に `spec.json.workflow_state`、`recheck`、in-progress sha、pending gates、staged file set digest、worktree dirty path digest が欠けると失敗する。
+  2. `test_snapshot_drift_reports_pending_gate_change`：snapshot 後に pending gate を変えた fixture で drift reason が返らなければ失敗する。
+  3. `test_side_track_stack_rejects_non_lifo_pop`：LIFO でない pop を `DEVIATION` にしなければ失敗する。
+  4. `test_side_track_push_pop_are_mutating_but_current_is_read_only`：`side-track-stack current --json` が正本を書き換えず、push / pop だけが stack state を変更することを期待して失敗させる。
+  5. `test_snapshot_is_not_trusted_without_matching_next_action_digest`：`.reviewcompass/runtime/workflow-state-snapshot.yaml` が古い、手動更新された、または `source_next_action_sha256` が直近 `next --json` digest と一致しない場合に通常進行の根拠にできないことを期待して失敗させる。
+  6. `test_approval_record_non_approved_decisions_block_irreversible_operation`：rejected / deferred / changes_requested が対象不可逆操作を許可しないことを期待して失敗させる。
+  7. `test_proxy_model_cannot_approve_human_only_decision_scope`：`decision_scope=human_only` かつ `decided_by=proxy_model` の approval gate record が不可逆操作を許可しないことを期待して失敗させる。
+  8. `test_side_track_pop_unresolved_return_to_routes_to_repair`：pop 後に `return_to` が解決不能、または staged file set が本線復帰条件を満たさない場合に通常作業へ戻らず repair 停止になることを期待して失敗させる。
+  9. `test_approval_gate_record_requires_target_binding_fields`：approval gate record が `decision_id`、`decision`、`decision_scope`、`target_operation_id`、`target_required_action`、`target_artifact`、`target_artifact_digest`、`staged_file_set_digest`、`binding_kind`、`decided_by`、`decided_at`、`source_ref`、`source_digest`、`rationale`、`next_action_expectation`、`consumed` のいずれかを欠く場合に失敗する。
+  10. `test_decision_scope_is_derived_from_operation_contract`：record 内の `decision_scope` が `target_required_action` から解決した operation contract の `approval_required`、`phase_boundary`、`effect_kind`、`actor.kind`、human-only override set から導出した値と一致しない場合に失敗する。
+  11. `test_binding_kind_requires_matching_digest_fields`：`binding_kind=artifact_digest` / `staged_file_set_digest` / `both` で必要 digest が欠落・null・不一致の場合、または承認済み不可逆操作で `binding_kind=none` が使われた場合に失敗する。
+  12. `test_workflow_snapshot_schema_matches_design_minimum_structure`：snapshot が `schema_version`、`generated_by`、`generated_at`、`source_next_action_sha256`、`current_work`、`active_side_tracks`、`git_tree_summary`、`post_write_manifest_summary`、`workflow_state_summary` を欠く場合、または `current_work.required_action/title/outer_node/inner_node/active_gate` を欠く場合に失敗する。
+- **実装順序**：
+  1. approval gate / side track stack / snapshot の schema を追加する。
+  2. approval gate record schema に `decision_id`、`decision`、`decision_scope`、`target_operation_id`、`target_required_action`、`target_artifact`、`target_artifact_digest`、`staged_file_set_digest`、`binding_kind`、`decided_by`、`decided_at`、`source_ref`、`source_digest`、`rationale`、`next_action_expectation`、`consumed` を持たせる。
+  3. `decision_scope` を `target_required_action` から解決した operation contract の `approval_required`、`phase_boundary`、`effect_kind`、`actor.kind`、human-only override set から導出し、record 内の値と不一致なら fail-closed にする。
+  4. `binding_kind` は `artifact_digest`、`staged_file_set_digest`、`both`、`none` の 4 値とし、`artifact_digest` では `target_artifact_digest`、`staged_file_set_digest` では `staged_file_set_digest`、`both` では両 digest を必須にする。`binding_kind=none` は read-only / wait-only operation に限り、`approval_required=true`、human-only override set、phase / gate completion、commit、push、`spec.json` 更新、reopen finalize では禁止する。
+  5. snapshot の読み取り専用 builder を実装し、path と sha256 は repo-relative で安定化する。保存先は `.reviewcompass/runtime/workflow-state-snapshot.yaml` とし、snapshot は正本ではなく `next --json` と state refs の監査補助として扱う。
+  6. snapshot schema は `schema_version`、`generated_by`、`generated_at`、`source_next_action_sha256`、`current_work`、`active_side_tracks`、`git_tree_summary`、`post_write_manifest_summary`、`workflow_state_summary` を持つ。`current_work` は `required_action`、`title`、`outer_node`、`inner_node`、`active_gate` を持つ。
+  7. drift 検査を `workflow_state`、`recheck`、in-progress sha、pending gate、operation contract digest、staged / dirty digest、`source_next_action_sha256` の順で実装する。
+  8. side track stack の `current` を read-only、`push` / `pop` を mutating operation として分け、LIFO、許可ファイル境界、return_to、staged digest を検査する。
+  9. approval gate record の decision 4 値、`decision_scope` 3 値、human-only 初期集合、next 分岐を実装し、approved 以外または proxy_model による human-only approval は不可逆操作を許可しない。
+  10. side track pop 後の `return_to` 解決、staged file set の本線復帰条件、親子 frame overlap 許可境界を検査する。
+  11. CLI は read-only 系と mutating 系を operation contract で分ける。`workflow-snapshot --json` と `side-track-stack current --json` は成果物を書かず、保存が必要な段は別 contract に委ねる。
+- **完了条件**：
+  1. 承認ゲートは `decision_id`、`decision`、`decision_scope`、`target_operation_id`、`target_required_action`、`target_artifact`、`target_artifact_digest`、`staged_file_set_digest`、`binding_kind`、承認 actor、source evidence、expiry、consume / invalidate 状態を保持し、欠落・期限切れ・対象不一致を fail-closed にする。
+  2. proxy_model decision は人間承認を置換しない対象と、代行可能な判断対象を schema / gate で区別する。`decision_scope` は operation contract から機械的に導出し、record 内の値と一致しない場合は DEVIATION にする。
+  3. side track stack は push / pop / current の 3 操作を持ち、親 task、許可ファイル、戻り条件、nesting depth、関連 operation を検査する。
+  4. side track 完了後に本線へ戻る条件が未充足なら通常進行を返さず、必要 action を `next --json` に反映する。
+  5. `binding_kind` は operation contract から導出し、必要 digest の欠落・null・不一致を fail-closed にする。`binding_kind=none` は `wait_for_human_decision`、`collect_required_decisions`、`completed` など read-only / wait-only operation に限り、承認済み不可逆操作には使えない。
+  6. workflow-state snapshot は `.reviewcompass/runtime/workflow-state-snapshot.yaml` に保存され、正本状態と worktree / staged 対象を同時点で固定し、snapshot と現状態の drift を WARN または DEVIATION として検出する。snapshot payload は最低限、`schema_version`、`generated_by`、`generated_at`、`source_next_action_sha256`、`current_work`、`active_side_tracks`、`git_tree_summary`、`post_write_manifest_summary`、`workflow_state_summary` を持つ。
+  7. `current_work` は `required_action`、`title`、`outer_node`、`inner_node`、`active_gate` を持つ。`spec.json.workflow_state`、`spec.json.reopened`、`spec.json.recheck`、`stages/in-progress/` の対象ファイル path / sha256、`pending_gates`、`drafting_completed_gates`、`completed_gates`、参照した operation contract id / sha256、staged file set digest、worktree dirty path digest は `workflow_state_summary` 等の下位構造で保持する。`downstream_impact_decisions` を入れる場合は追加情報であり、design.md の最低構造を置き換えない。
+  8. snapshot は commit / phase transition / approval consumption など T-016 の commit boundary と接続する。
+  9. snapshot drift 判定は、`source_next_action_sha256`、`pending_gates`、`drafting_completed_gates`、`completed_gates`、operation contract digest、staged file set digest、worktree dirty path digest のいずれかが snapshot 時点と異なる場合を個別理由として返す。
+  10. snapshot は正本ではなく、古い snapshot、手動更新 snapshot、`next --json` digest と一致しない snapshot は操作許可の根拠にしない。
+  11. side track stack の保存先、read-only 操作、mutating 操作、return_to 解決、commit / push 直前の digest 照合がそれぞれ機械検査される。
+  12. `decision_scope=human_only` の承認は proxy_model decision で通過できず、human-only 初期集合が機械検査される。
+  13. side track pop 後に `return_to` が解決できない、または staged file set が本線復帰条件を満たさない場合、通常作業へ戻さず `repair_workflow_state` または同等の停止状態を返す。
+- **検証コマンド**：
+  - `.venv/bin/python3 -m pytest tests/workflow-management/test_approval_gate.py tests/workflow-management/test_side_track_stack.py tests/workflow-management/test_workflow_state_snapshot.py tests/workflow-management/test_workflow_snapshot_cli.py -q`
+  - `.venv/bin/python3 tools/check-workflow-action.py workflow-snapshot --json`
+  - `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py -k \"reopen or maintenance or commit_stop_point\" -q`
+- **禁止事項**：
+  - snapshot 作成コマンドで正本ファイルや approval record を書き換えない。
+  - proxy_model decision を commit / push / spec.json 更新の人間承認として扱わない。
+  - proxy_model decision を `decision_scope=human_only` の承認として扱わない。
+  - side track stack の current だけを見て親 task / 戻り条件を省略しない。
+  - read-only CLI と mutating CLI を同じ operation として曖昧に扱わない。
+- **停止条件**：
+  - snapshot digest が実行ごとに不安定で、同じ状態から同じ値を再現できない場合。
+  - proxy_model 代行可否の境界が既存承認規律と衝突する場合。
+  - stack state の保存先または mutation boundary を design.md の意図と一致させられない場合。
+
+### T-018：構造化有効プロンプトと prompt audit（Req 15、reopen R-0 2026-06-19）
+
+- **対応設計節**：design.md §Requirement 15 設計モデル、§XDI-WM-005
+- **対応要件**：Requirement 15 受入 1〜7
+- **責務**：`effective prompt` を単なる連結テキストではなく、language task I/O、入力 artifact、制約、禁止事項、出力 schema、completion routing、監査 anchor を持つ構造化成果物として生成・検査する。LLM に実行させる作業と機械が検査する作業を分け、prompt 内の on_completion 指示が workflow state を暗黙に変更しないようにする。prompt audit は、元資料 digest、schema coverage、禁止指示、機械実行タスク混入、出力 schema 不整合を検出する。
+- **前提タスク**：T-004（effective prompt 生成）、T-014（operation preflight）、T-016（operation contract）、T-017（snapshot）
+- **実装対象ファイル**：
+  - `.reviewcompass/schema/language_task_io.schema.json`
+  - `.reviewcompass/schema/effective_prompt_manifest.schema.json`
+  - `tools/check_workflow_action/effective_prompt_builder.py`
+  - `tools/check_workflow_action/prompt_audit.py`
+  - `tools/check-workflow-action.py`（`prompt-audit --prompt-manifest <path> --json` を追加）
+  - `tests/workflow-management/test_language_task_io_schema.py`
+  - `tests/workflow-management/test_effective_prompt_manifest.py`
+  - `tests/workflow-management/test_prompt_audit.py`
+  - `tests/workflow-management/test_prompt_manifest_rounds_recording.py`
+- **最初に書く失敗テスト**：
+  1. `test_effective_prompt_manifest_covers_source_digests`：manifest の source artifact に path と sha256 がない場合に失敗する。
+  2. `test_prompt_audit_rejects_direct_state_mutation_instruction`：prompt の completion routing に spec.json 直接変更や commit 実行指示が含まれると `DEVIATION` を期待して失敗する。
+  3. `test_rounds_records_prompt_manifest_without_removing_text_prompt_fields`：review-run の `rounds.yaml` が manifest path / sha256 を追加しつつ既存 text field を保持しなければ失敗する。
+  4. `test_prompt_audit_rejects_machine_execution_steps_beyond_state_mutation`：review-run artifact 作成、approval consume、side-track mutation、operation execution などの機械実行手順が prompt の language_task に残ると `DEVIATION` になることを期待して失敗させる。
+  5. `test_prompt_length_bounds_are_resolved_from_discipline_map`：`prompt_length` が `WORKFLOW_DISCIPLINE_MAP.yaml` の `prompt_length_bounds` または `default_prompt_length_bounds` と一致しない場合、範囲外 prompt で当該 bounds の `failure_verdict` を返さない場合、または `failure_verdict` 未設定値を runner が推測する場合に失敗する。
+  6. `test_prompt_audit_rejects_on_completion_not_next_action_compatible`：`postconditions.check_kind=next_action_compatible` で `on_completion.next_required_action` / `allowed_followups` が operation contract の postconditions または次 action と矛盾する場合に `DEVIATION` を期待して失敗させる。
+  7. `test_language_task_io_uses_design_vocabulary`：`language_task` が `document_kind`、`input`、`output_format`、`constraints` を欠く場合、または `input role` / `allowed action` / `forbidden action` など design.md と異なる正本語彙を schema 必須 field として受け入れる場合に失敗する。
+  8. `test_llm_judge_audit_outputs_structured_known_gap_findings`：Phase 6 の LLM judge audit 出力が `gap_id`、`severity`、`prompt_ref`、`contract_ref`、`finding`、`recommended_action`、`blocks_approval` を欠く場合、または既知 gap fixture（必須構造節欠落、機械タスクの prompt 内残留、preconditions 網羅不足、postconditions 確認不能性）を検出できない場合に失敗する。
+- **実装順序**：
+  1. language task I/O と effective prompt manifest の schema を追加する。
+  2. `language_task_io.schema.json` は `document_kind`、`input`、`output_format`、`constraints` を正本語彙とし、`input.required_files`、`input.state_refs`、`input.source_refs`、`output_format.kind`、`output_format.required_sections`、`output_format.schema_ref` を構造化する。
+  3. effective prompt manifest に `prompt_length`、`preconditions_checked`、`postconditions`、`on_completion` を追加する。`prompt_length` は `WORKFLOW_DISCIPLINE_MAP.yaml#decision_points` の `prompt_length_bounds` または `default_prompt_length_bounds` から解決し、`min_chars`、`max_chars`、`source_ref`、`failure_verdict` を保持する。
+  4. 既存 effective prompt 生成は壊さず、manifest builder を横に追加する。
+  5. prompt audit で source digest、禁止 action、output schema、operation contract 参照、機械実行タスク混入、`prompt_length` bounds、`postconditions.check_kind=next_action_compatible`、`on_completion` と次 action の互換性を検査する。
+  6. `run_role.py` / `run_review.py` の rounds 記録へ manifest path / sha256 を追加する。既存 `effective_prompt_path` / `effective_prompt_sha256` は P1 互換として残す。
+  7. `prompt-audit` CLI を read-only として追加し、manifest 欠落時と text-only 互換時の WARN / DEVIATION を固定する。
+  8. Phase 6 の LLM judge audit は Phase 5 までの機械的強制後の後回し可能段階として追加し、構造化有効プロンプト、該当 `WORKFLOW_NAVIGATION.md` 節、operation contract を入力に、gap を構造化出力する。承認自動化には使わない。
+- **完了条件**：
+  1. effective prompt manifest が source artifacts、sha256、required disciplines、operation contract、expected output schema、completion routing を構造化して保持する。
+  2. language task I/O schema が `document_kind`、`input`、`output_format`、`constraints` を定義し、未知 field / 欠落を fail-closed にする。`language_task` は LLM が生成または判断する文章の範囲を表し、commit、push、spec.json 更新、review-run 実行などの機械操作手順を埋め込まない。
+  3. `prompt_length` は `WORKFLOW_DISCIPLINE_MAP.yaml` の `prompt_length_bounds` または `default_prompt_length_bounds` と一致し、`min_chars < max_chars` の正整数 bounds と `failure_verdict` を持つ。範囲外の場合は当該 bounds の `failure_verdict` を返し、runner が未設定値を推測しない。
+  4. prompt に含まれる on_completion / next step 指示は `next --json` または operation contract への参照に限定され、spec.json・phase・commit の直接変更指示を禁止する。
+  5. `postconditions.check_kind` は `section_exists`、`schema_valid`、`target_set_matches`、`next_action_compatible`、`manual_review_required` を扱い、`on_completion` が operation contract の postconditions と次 action に矛盾する場合は DEVIATION にする。
+  6. prompt audit が元資料 digest 不一致、必須 source 欠落、機械実行タスク混入、出力 schema 欠落、禁止事項違反、prompt length bounds 不一致、`on_completion` 矛盾を DEVIATION にする。機械実行タスク混入には、commit / push / spec.json 更新 / phase 移行だけでなく、review-run artifact 作成、approval consume、side-track mutation、operation execution を含める。
+  7. review-run / role-run の `rounds.yaml` は prompt manifest path と sha256 を、既存 T-004 の `effective_prompt_path` / `effective_prompt_sha256` を置換せず拡張 field として記録する。移行中は既存 text-only effective prompt field と structured manifest field の併存を許可し、manifest field がある場合は manifest sha256 と source digest coverage を正本検査対象にする。manifest field がなく text-only field のみの場合は P1 互換として WARN、manifest field があるが text-only field と対象 decision point が不一致の場合は DEVIATION、どちらの field もない場合は DEVIATION とする。
+  8. Phase 6 LLM judge audit は構造化有効プロンプト、該当 `WORKFLOW_NAVIGATION.md` 節、operation contract を入力にし、`gap_id`、`severity`、`prompt_ref`、`contract_ref`、`finding`、`recommended_action`、`blocks_approval` を持つ構造化出力を返す。既知 gap fixture は必須構造節欠落、機械タスクの prompt 内残留、preconditions 網羅不足、postconditions 確認不能性を含む。Phase 6 は Phase 5 後の任意・後回し可能段階であり、意味的な最終承認を自動化しない。
+- **検証コマンド**：
+  - `.venv/bin/python3 -m pytest tests/workflow-management/test_language_task_io_schema.py tests/workflow-management/test_effective_prompt_manifest.py tests/workflow-management/test_prompt_audit.py tests/workflow-management/test_prompt_manifest_rounds_recording.py -q`
+  - `.venv/bin/python3 tools/check-workflow-action.py prompt-audit --prompt-manifest <fixture-or-generated-manifest> --json`
+  - `.venv/bin/python3 -m pytest tests/tools/test_effective_prompt_contract.py tools/api_providers/tests/test_run_review.py -q`
+- **禁止事項**：
+  - 既存 text-only effective prompt path を同時削除しない。
+  - prompt の on_completion に spec.json 更新、commit、push、phase 移行を直接書かない。
+  - prompt audit の WARN / DEVIATION を provider や model 名に依存させない。
+- **停止条件**：
+  - manifest と既存 effective prompt の decision point を一意に対応付けられない場合。
+  - `rounds.yaml` の既存互換フィールド削除が必要になった場合。
+
+### T-019：段階的実装計画 Phase 0〜6 と proxy_model triage decision 機械処理化（Req 16、reopen R-0 2026-06-19）
+
+- **対応設計節**：design.md §Requirement 16 設計モデル、§XDI-WM-005
+- **対応要件**：Requirement 16 受入 1〜14
+- **責務**：Requirement 13〜15 の実装を Phase 0〜6 に分け、各 phase の開始条件・完了条件・禁止事項・成果物・回帰範囲を機械的に確認できるようにする。proxy_model triage decision は review-run の raw response、triage 候補、decision prompt、decision output、採用理由、最終反映先を束ね、human decision と proxy_model decision の境界を operation contract / approval gate / prompt audit に接続する。review-wave への影響は consumer impact として追跡し、未反映のまま完了できないようにする。
+- **上流意図継承**：Requirement 16 の目的は、選択層と実行層の機械化を一度に混ぜず、既存挙動を壊さない順序で TDD 実装できるようにすることである。design.md §Requirement 16 は Phase 0〜6 の順序、active reopen scope と impact review scope の分離、proxy_model triage decision の証跡処理、human-required predicate の優先順位を定義している。実装では phase plan の entry / exit criteria と forbidden operations を正本化し、human-required decision は triage item、approval gate record、operation contract の `approval_required`、review-wave impact evidence、downstream impact decisions / scope 整合から machine-readable に導出する。`decision_scope=human_only`、未解決 approval gate、`approval_required=true`、未解決 review-wave impact evidence は proxy decision より常に優先する。`spec.json.reopened` は履歴であり active scope ではない。
+- **前提タスク**：T-012（review-wave summary）、T-014（operation preflight）、T-016（operation contract）、T-017（approval / snapshot）、T-018（structured prompt）
+- **実装対象ファイル**：
+  - `stages/workflow-management-implementation-phases.yaml`
+  - `.reviewcompass/schema/implementation_phase.schema.json`
+  - `.reviewcompass/schema/proxy_triage_decision.schema.json`
+  - `tools/check_workflow_action/implementation_phases.py`
+  - `tools/check_workflow_action/operation_list.py`
+  - `tools/check_workflow_action/proxy_triage_decisions.py`
+  - `tools/check-workflow-action.py`（`implementation-phase-check --feature workflow-management --json`、`operation-list --json`、`proxy-triage-decision-check --run <path> --json` を追加）
+  - `tests/workflow-management/test_implementation_phase_plan.py`
+  - `tests/workflow-management/test_operation_list_read_only.py`
+  - `tests/workflow-management/test_proxy_triage_decision_machine.py`
+  - `tests/workflow-management/test_review_wave_consumer_impact.py`
+  - `tests/workflow-management/test_implementation_phase_cli.py`
+- **最初に書く失敗テスト**：
+  1. `test_implementation_phase_plan_covers_phase_0_to_6`：Phase 0〜6 の欠落、順序違反、entry / exit criteria 欠落で失敗する。
+  2. `test_proxy_triage_decision_requires_raw_prompt_candidate_selected_reason_target`：proxy decision の raw、prompt、候補、採用、理由、反映先のいずれかが欠けると失敗する。
+  3. `test_reopened_history_flag_is_not_active_scope`：`spec.json.reopened` だけを根拠に active reopen scope と判定すると失敗する。
+  4. `test_human_required_decision_blocks_proxy_application`：triage item / approval gate / operation contract / review-wave impact evidence のいずれかが human-required を示す場合に、proxy decision apply が失敗する。
+  5. `test_phase_checker_uses_entry_exit_and_forbidden_operations`：phase plan が entry criteria 未充足、exit criteria 未充足、または forbidden operation 実行済みの場合に DEVIATION を返すことを期待して失敗させる。
+  6. `test_human_required_priority_overrides_proxy_approved_leave_as_is`：`decision_scope=human_only`、未解決 approval gate、`approval_required=true`、未解決 review-wave impact evidence がある場合、triage の `leave-as-is` や `proxy_approved` があっても proxy apply が失敗する。
+  7. `test_proxy_triage_requires_complete_finding_cluster_coverage`：finding / cluster coverage が不足・過剰・競合する場合に proxy decision 展開が DEVIATION になる。
+  8. `test_phase2_operation_list_returns_read_only_registry_fields_without_changing_next_json`：Phase 2 の `operation-list --json` または同等が各 operation の `canonical_commands`、`effect_kind`、`approval_required`、`sequence`、`pending_conflicts` を返し、既存 `next --json` の出力・状態・副作用を変更しないことを期待して失敗させる。
+  9. `test_proxy_triage_rejects_review_and_apply_scope_mismatch`：`review_triage_decide` approval と apply-fixes approval の対象 finding / cluster scope が一致しない場合に DEVIATION になることを期待して失敗させる。
+  10. `test_human_required_predicate_evaluation_order_is_fixed`：coverage と証跡存在、finding-to-operation mapping、operation contract、approval gate record、review-wave impact evidence の固定順を変えた実装、または順序を検査できない実装で失敗する。
+- **実装順序**：
+  1. implementation phase plan schema と `stages/workflow-management-implementation-phases.yaml` を追加する。
+  2. phase check を read-only で実装し、Phase 0〜6 coverage、順序、entry / exit criteria、禁止 operation を検査する。
+  3. Phase 2 成果物として `operation-list --json` または同等を read-only で実装し、operation contract から `canonical_commands`、`effect_kind`、`approval_required`、`sequence`、`pending_conflicts` を返す。Phase 2 では既存 `next --json` の挙動、出力 schema、状態 mutation を変更しない。
+  4. human-required predicate を、triage item、approval gate record の `decision_scope` / decision / decided_by、operation contract の `approval_required` / `phase_boundary`、review-wave impact evidence、downstream impact decisions / scope 整合から機械的に導出する。
+  5. human-required の優先順位を実装し、human-only / 未解決 approval / `approval_required=true` / 未解決 review-wave impact evidence を proxy apply より優先する。predicate は coverage と証跡存在、finding-to-operation mapping、operation contract、approval gate record、review-wave impact evidence の固定順で評価する。
+  6. proxy triage decision schema と検査器を追加し、provider / model 名ではなく証跡 completeness、対象一致、coverage、human-required predicate で判定する。`review_triage_decide` approval と apply-fixes approval の scope が一致しない場合は DEVIATION にする。
+  7. review-wave consumer impact 検査を、review-wave summary、carry-forward register、downstream impact decisions、spec recheck から組み立てる。
+  8. CLI 3 件を追加し、既存 review triage の生成物を壊さず検査だけを行う。
+- **完了条件**：
+  1. Phase 0〜6 が schema 化され、各 phase の entry criteria、exit criteria、allowed operations、forbidden operations、required tests、commit boundary を検査できる。
+  2. Phase の順序違反、未完了 exit criteria、禁止 operation 実行、必要 snapshot 欠落を DEVIATION にする。
+  3. Phase 2 は read-only registry として、`operation-list --json` または同等が各 operation の `canonical_commands`、`effect_kind`、`approval_required`、`sequence`、`pending_conflicts` を返す。Phase 2 は既存 `next --json` の動作を変更しない。
+  4. proxy_model triage decision が raw response、triage item、decision prompt、candidate decisions、selected decision、reasoning summary、final application target を構造化して保持する。
+  5. proxy_model decision は LLM/provider/model 名ではなく、証跡 completeness、対象一致、decision schema、approval gate 可否で判定する。
+  6. human 承認が必要な decision を proxy_model decision で通過させない。human-required は triage item、approval gate record の `decision_scope` / decision / decided_by、operation contract の `approval_required` / `phase_boundary`、review-wave impact evidence、downstream impact decisions / scope 整合から導出され、判定元が欠ける場合は DEVIATION にする。
+  7. human-required predicate は coverage と証跡存在、finding-to-operation mapping、operation contract、approval gate record、review-wave impact evidence の固定順で評価され、順序変更や対象省略を検出できる。
+  8. proxy triage coverage は対象 finding / cluster の不足・過剰・競合に加え、`review_triage_decide` approval と apply-fixes approval の scope 不一致を DEVIATION にする。
+  9. review-wave summary / carry-forward register / downstream impact decisions への consumer impact が未反映なら完了判定を出さない。必須入力は `review-wave-summary` JSON / Markdown 出力、`learning/workflow/carry-forward-register/reviewcompass-import.yaml`、reopen in-progress / completed YAML の `downstream_impact_decisions`、`spec.json.recheck.impacted_downstream_phases`、履歴参照としての `spec.json.reopened` とする。
+  10. T-019 は `spec.json.reopened` を履歴フラグとして扱い、active reopen scope と同一視しない。active reopen scope は reopen in-progress / completed YAML の `pending_gates`、`completed_gates`、`drafting_completed_gates`、`feature_impact_decisions`、`downstream_impact_decisions` から解決し、impact review scope は review-wave summary と downstream impact decisions から解決する。両 scope が混同・欠落・矛盾した場合は DEVIATION とする。
+  11. `decision_scope=human_only`、未解決 approval gate、`approval_required=true` の対象 operation、未解決 review-wave impact evidence は proxy_model の判断より常に優先し、triage 上の `leave-as-is` や `proxy_approved` で打ち消されない。
+- **検証コマンド**：
+  - `.venv/bin/python3 -m pytest tests/workflow-management/test_implementation_phase_plan.py tests/workflow-management/test_operation_list_read_only.py tests/workflow-management/test_proxy_triage_decision_machine.py tests/workflow-management/test_review_wave_consumer_impact.py tests/workflow-management/test_implementation_phase_cli.py -q`
+  - `.venv/bin/python3 tools/check-workflow-action.py implementation-phase-check --feature workflow-management --json`
+  - `.venv/bin/python3 tools/check-workflow-action.py operation-list --json`
+  - `.venv/bin/python3 tools/check-workflow-action.py proxy-triage-decision-check --run <fixture-or-review-run> --json`
+- **禁止事項**：
+  - `spec.json.reopened` を active reopen scope として扱わない。
+  - proxy_model decision を human-required decision の承認として通過させない。
+  - review-wave consumer impact を carry-forward register なしで完了扱いにしない。
+- **停止条件**：
+  - Phase 0〜6 の順序や境界が design.md と一致しない場合。
+  - proxy decision 証跡の既存形式が複数あり、単一 schema へ写像できない場合。
+
+## 要件追跡（Requirements Traceability）
+
+| 要件 | 対応タスク |
+|------|-----------|
+| Requirement 1 受入 1：YAML 静的列挙、Markdown 動的解析しない | T-003 |
+| Requirement 1 受入 2：9 ファイル体制 | T-001（配置）＋ T-002（feature-dependency）＋ T-003（8 ファイル） |
+| Requirement 1 受入 3：段名／actor／証跡パス／必須節／完了判定 | T-003 |
+| Requirement 1 受入 4：feature_order 参照 | T-002（参照先）＋ T-003（参照側） |
+| Requirement 1 受入 5：YAML 1 箇所修正、Markdown 整合は人手 | T-003 |
+| Requirement 1 受入 6：機能横断段 review-wave の作業内容（7 モデル評価 2 回方式） | T-003（`cross-spec-alignment.yaml` 枠）＋ T-009（運用文書）※ 段集合本体は DVT-W004 で延期、cross-spec-alignment.yaml 確定後に符号化（F-001 対処 2026-05-28） |
+| Requirement 2 受入 1：Python 実装 | T-004 |
+| Requirement 2 受入 2：証跡＋必須節のみ判定 | T-004 |
+| Requirement 2 受入 3：中身の妥当性判定しない | T-004（判定範囲）＋ T-009（運用文書での明示） |
+| Requirement 2 受入 4：結論不能は fail（fail-closed） | T-004（パースエラー）＋ T-006（ゲート） |
+| Requirement 2 受入 5：in-progress 警告 | T-004（警告出力）＋ T-008（in-progress 管理） |
+| Requirement 2 受入 10：required_action 語彙スキーマ定義 | T-015 |
+| Requirement 2 受入 11：next_action_response 応答スキーマ定義 | T-015 |
+| Requirement 3 受入 1：author／reviewer 必須 | T-005 |
+| Requirement 3 受入 2：identity 同一を許容しない | T-005 |
+| Requirement 3 受入 3：subagent_mediated の判定役は別エンティティ | T-005（複合役許容） |
+| Requirement 3 受入 4：front-matter 検査、別モデル／別 session は第 1 層対象外 | T-005（検査範囲）＋ T-009（運用文書での明示） |
+| Requirement 4 受入 1：4 種類の不可逆操作 | T-006 |
+| Requirement 4 受入 2：pass ＋ in-progress 空、毎回独立走行 | T-006（独立走行）＋ T-008（in-progress 連動） |
+| Requirement 4 受入 3：fail-closed | T-004 ／ T-006 ／ T-007 ／ T-008（全体方針） |
+| Requirement 4 受入 4：最小集合方針 | T-006 |
+| Requirement 4 受入 5：commit 承認レコード・staged `target_sha256` | T-006（互換入力検査）＋ T-011（回帰テスト） |
+| Requirement 4 受入 6：nonce challenge・target digest・consume | T-004（commit-approval サブコマンドと `--json` 契約）＋ T-006（prepare／record／validation／invalidate／consume／consume 永続化失敗）＋ T-011（統合テスト） |
+| Requirement 4 受入 7：LLM 非依存・保証範囲 | T-006（schema 禁止フィールド、判定入力限定、`attestation_type`、`guarantee_scope`）＋ T-011（統合テスト） |
+| Requirement 4 受入 8：LLM commit 実行代行承認の正式 CLI | T-004（`commit-approval delegate-execution --source-text-stdin --json`）＋ T-006（delegation record 生成／validation／invalidate／consume／`--execution-actor llm` gate）＋ T-011（統合テスト） |
+| Requirement 5 受入 1：手戻り種別の二次元表記 | T-003（reopen-procedure.yaml）＋ T-007（解決ロジック） |
+| Requirement 5 受入 2：trigger_map | T-003（trigger_map 列挙）＋ T-007（解決） |
+| Requirement 5 受入 3：actor=human で停止 | T-007 |
+| Requirement 5 受入 4：人間承認なしに進まない | T-007 |
+| Requirement 5 受入 5：種別判定根拠の保存 | T-001（雛形配置）＋ T-007（読み込み機構） |
+| Requirement 6 受入 1：in-progress ファイル配置 | T-001（配置）＋ T-008（管理機構） |
+| Requirement 6 受入 2：必須フィールド | T-008 |
+| Requirement 6 受入 3：session 開始時の標準フロー | T-008（実装）＋ T-009（運用文書） |
+| Requirement 6 受入 4：完了時の移動 | T-008 |
+| Requirement 6 受入 5：in-progress ある状態での遮断 | T-006 ／ T-008 連動 |
+| Requirement 7 受入 1：第 1 層の限界の明文化 | T-009 |
+| Requirement 7 受入 2：第 2〜5 層を宿題として参照 | T-009 |
+| Requirement 7 受入 3：第 5 層運用ルールの反映 | T-009 |
+| Requirement 7 受入 4：第 1 層の限界の運用文書への明示 | T-009 |
+| Requirement 8 受入 1：feature-dependency.yaml が一元保管先 | T-002 |
+| Requirement 8 受入 2：features ＋ feature_order、2 形式の depends_on | T-002 |
+| Requirement 8 受入 3：feature_order 参照 | T-003 |
+| Requirement 8 受入 4：1 箇所修正で完結 | T-002（運用文書）※ T-009 は本受入に直接寄与しないため追跡先から除外（F-003 対処 2026-05-28） |
+| Requirement 8 受入 5：所有者は本機能、他機能は参照のみ | T-002（運用文書） |
+| Requirement 9 受入 1：後追い intent を既存システムへ適用する reopen 分類 | T-007 |
+| Requirement 9 受入 2：受け皿あり／なし／人間判断の分岐 | T-004 ＋ T-007 |
+| Requirement 9 受入 3：downstream impact decision の証跡保持 | T-007 ＋ T-008 |
+| Requirement 9 受入 4：conformance-evaluation 候補を実行命令にしない | T-007 ＋ T-008 |
+| Requirement 9 受入 5：drafting-before-review の機械強制 | T-004 ＋ T-008 |
+| Requirement 9 受入 6：side track と本線 reopen の分離 | T-008 ＋ T-009 |
+| Requirement 10 受入 1：要約サブコマンド・読み取り元 | T-012（T-002／T-003／T-004 を前提） |
+| Requirement 10 受入 2：出力項目 | T-012 |
+| Requirement 10 受入 3：Markdown／JSON 両方・安定スキーマ・情報同等 | T-012 |
+| Requirement 10 受入 4：結論不能は fail-closed・機械可読シグナル | T-012（T-004 の fail-closed と整合） |
+| Requirement 10 受入 5：読み取り専用・自身の出力のみ保存 | T-012 |
+| Requirement 11 受入 1：決定記録スキーマ・category 種別判定基準・going-forward 適用 | T-013 |
+| Requirement 11 受入 2：multiplicity:bundled の fail-closed・束ね例外 3 条件 | T-013 |
+| Requirement 11 受入 3：逐語照合・正規化規則・保留管理・照合不合格時 pending 維持 | T-013 |
+| Requirement 11 受入 4：内容なし語リスト・判定ロジック・設定ファイル配置 | T-013 |
+| Requirement 11 受入 5：サブコマンド呼び出し形式・--all（bundle-exceptions/ 除外）・読み取り専用例外（--verify-pending） | T-013 |
+| Requirement 11 受入 6：lint が内部エラー時に unverifiable 判定・人が設定するのは口頭合意等の場合のみ | T-013 |
+| Requirement 11 受入 7：commit 直前ゲート組み込み（pending=WARN・unverifiable=DEVIATION） | T-013 |
+| Requirement 12 受入 1：operation registry | T-014 |
+| Requirement 12 受入 2：read-only preflight | T-014 |
+| Requirement 12 受入 3：共通 response・verdict・fail-closed | T-014 |
+| Requirement 12 受入 4：command validation と parser / parser adapter 照合 | T-014（T-004 の parser 接続を前提） |
+| Requirement 12 受入 5：worktree / pending / integrity conflict 分離 | T-014（T-006／T-008 と連動） |
+| Requirement 12 受入 6：review artifact / bundle / approval 作成前検査 | T-014（T-012／T-013 と連動） |
+| Requirement 12 受入 7：serial_only approval chain | T-014（T-004／T-006／T-011 と連動） |
+| Requirement 12 受入 8：current-session formal record guard | T-014（T-008 と連動） |
+| Requirement 12 受入 9：nested issue handling | T-014（T-008 と連動） |
+| Requirement 12 受入 10：deployment / export preflight | T-014 |
+| Requirement 12 受入 11：reopen scope / impact review scope 分離 | T-014（T-007／T-008 と連動） |
+| Requirement 12 受入 12：LLM / provider / model 非依存 | T-014（T-006 の非依存契約と整合） |
+| Requirement 12 受入 13：`next --json` 状態一意性 | T-014（T-004 の `next` 契約を拡張） |
+| Requirement 13 受入 1〜2：operation contract 語彙・schema | T-016 |
+| Requirement 13 受入 3〜4：required_action と operation contract の対応 | T-016（T-015 と連動） |
+| Requirement 13 受入 5〜7：precondition / postcondition / side effect / phase boundary | T-016（T-014 と連動） |
+| Requirement 13 受入 8〜10：commit boundary 強制・bypass 防止・LLM 非依存 | T-016（T-006／T-014 と連動） |
+| Requirement 13 受入 11〜12：registry / contract 単一正本境界、drift / 重複検出、preflight read-only 境界 | T-016（T-014 と連動） |
+| Requirement 14 受入 1〜3：承認ゲート、proxy_model / human decision 境界、decision 消費状態 | T-017（T-006／T-016 と連動） |
+| Requirement 14 受入 4〜7：side track stack、push / pop / current、本線復帰条件、許可ファイル・nesting depth | T-017（T-008／T-014 と連動） |
+| Requirement 14 受入 8〜10：workflow-state snapshot、staged file set / worktree digest、pending / completed gates drift 検出 | T-017（T-016 と連動） |
+| Requirement 14 受入 11〜12：proxy / human decision_scope、read-only / mutating 操作境界 | T-017（T-006／T-016 と連動） |
+| Requirement 15 受入 1〜2：language task I/O と effective prompt manifest | T-018 |
+| Requirement 15 受入 3〜5：prompt audit、on_completion 制御、機械実行タスク混入防止 | T-018（T-004／T-016 と連動） |
+| Requirement 15 受入 6〜7：Phase 6 LLM judge audit、構造化 gap 出力、既知 gap fixture | T-018（T-014／T-016／T-017 と連動） |
+| Requirement 16 受入 1〜4：Phase 0〜1 実装計画、D-003 anchor、schema 定義 | T-019（T-015〜T-018 と連動） |
+| Requirement 16 受入 5〜9：Phase 2 read-only registry、Phase 3 advisory preflight、Phase 4 structured prompt、Phase 5 blocking、Phase 6 judge audit | T-019（T-016〜T-018 と連動） |
+| Requirement 16 受入 10〜12：phase 終了条件、active reopen scope / impact review scope 分離、review-wave consumer impact | T-019（T-012／T-016〜T-018 と連動） |
+| Requirement 16 受入 13〜14：human-required predicate、proxy decision 優先順位、競合解決 | T-019（T-017／T-018 と連動） |
+| Boundary Context 隣接期待（self-improvement との接合面、A-007 案 2／A-012） | T-010 |
+
+## テスト戦略の継承（Test Strategy Inheritance）
+
+design.md §テスト戦略の 4 検証類を T-011 にまとめて継承する。各検証類の対応タスクは次のとおり：
+
+- 単体テスト → T-002 ／ T-003 ／ T-004 ／ T-005 ／ T-008 ／ T-014 ／ T-015 ／ T-016 ／ T-017 ／ T-018 ／ T-019 個別 ＋ T-011 統合
+- 統合テスト → T-006 ／ T-007 ／ T-010 ／ T-014 ／ T-016 ／ T-017 ／ T-018 ／ T-019 個別 ＋ T-011 統合
+- 異常系 fixture → 各タスクで fail-closed テスト ＋ T-011 統合
+- 境界条件 → T-002（依存マップ境界）／ T-003（テンプレート変数境界）／ T-008（複数 in-progress 並存）／ T-016（commit boundary）／ T-017（side track / snapshot drift）／ T-018（prompt / machine task 境界）／ T-019（proxy_model / human decision 境界）＋ T-011 統合
+
+## 完成判定基準（Completion Criteria）
+
+本タスク文書は次を満たすときに完了とみなす：
+
+- T-001〜T-019 のすべてが起草・実装・テスト・コミット完了
+- tasks.md の各タスクが、実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を持ち、implementation-drafting.md なしで実装に着手できる粒度である
+- design.md §完成判定基準の 7 項目すべてが T-011 の統合テストで pass
+- foundation が所有する語彙正本のうち本機能が参照する `review_mode` を再定義せず参照のみで使用し、所見系（`counter_status`／`severity`／`final_label`／`confidence_label`）・状態軸系（`run_status`／`validator_status`／`human_signoff_status`／`evidence_class`）を参照していないことが、機械検証で確認できる（A-003 対処 2026-05-28）
+- workflow-management 所有の正本（`completion_predicate` 述語集合 7 値 ／ `verdict` 3 値 OK／WARN／DEVIATION ／ 手戻り種別記号 5 値 N／R／D／A／I ／ 依存種別 2 値 `hard`／`review`）が T-002 ／ T-003 ／ T-004 ／ T-007 の成果物で正本として確定されている
+- 各タスクの成果物配置が design.md §全体構造 と一致
+- 各タスクの依存順が守られている（前提タスクなしで後続タスクを開始しない）
+- 遅延確認事項テーブル（DVT）内の未解除項目がない（または延期理由が明記されている）
+
+## 変更意図（Change Intent）
+
+本タスク文書は workflow-management 機能を「思想は継承、実装は 1／10」（計画書 §5.4 軽量化方針）の精神で実装するため、次を採用する：
+
+- **一気通貫粒度**：1 タスク ＝ 1 つの所有モデル領域。foundation T-001〜T-010 ／ runtime T-001〜T-011 ／ evaluation T-001〜T-011 ／ analysis T-001〜T-011 の粒度方針を継承
+- **所有モデル単位の分離**：design.md の所有モデル（段集合 ／ 検査スクリプト ／ 起草者判定者分離 ／ 直前ゲート ／ reopen 機械強制 ／ session 跨ぎ ／ 多層防御 ／ 機能依存マップ ／ review-wave 要約 ／ 重要決定の出典検査 ／ operation registry / preflight）に各タスクを対応付け
+- **依存順の明示**：T-001（配置）→ T-002（依存マップ）→ T-003（段集合 YAML）→ T-004（検査スクリプト本体）→ T-005〜T-008（各機械検査）→ T-009（運用文書）→ T-010（規律変更接合面）→ T-011（統合テスト）の流れを固定
+- **fail-closed の全面採用**：判断 3 を全タスクで徹底、結論不能（YAML パースエラー ／ 証跡欠落 ／ 必須フィールド欠落 ／ 未知の値）は必ず DEVIATION で遮断
+- **最小集合方針**：判断 4 を T-006 で徹底、中間段の遷移には機械ゲートを置かない
+- **contract consumer 原則の徹底**：foundation が所有する語彙正本を再定義せず参照のみで使用（本機能が参照するのは `review_mode` のみ。所見系・状態軸系は責務外で不参照、A-003 対処 2026-05-28）、本機能所有の正本（`completion_predicate` 述語 7 値 ／ `verdict` 3 値 ／ 手戻り種別記号 5 値 ／ 依存種別 2 値）は本機能で確定
+- **2026-06-08 の design 再確認への対応**：intent の「レビュー収集処理を事前設定の写像にしない」意図は、T-004 の `next` による上流更新再展開、T-006 の不可逆操作直前ゲート、T-008 の session 跨ぎ状態管理、T-002 の機能依存マップ一元化で受けられるため、タスク追加は不要と確認
+- **2026-06-08 の reopen 判定修正**：完了済み workflow で上流正本が後続成果物より新しい場合、T-004 の `next` は `reopen_classification_required` を返し、単なる再確認ではなく reopen 分類と `reopen-start` へ進ませる。テストは intent → feature-partitioning、requirements → design、tasks → implementation の代表経路を覆う。
+- **2026-06-09 の後追い intent 追加への対応**：既存システムに intent を後から追加した場合、conformance-evaluation から受け取る差分候補を実行命令にせず、T-007 で既存 feature reopen／新規 feature 必要／人間判断必要に分類する。T-004 は drafting-before-review を機械強制し、T-008 は `downstream_impact_decisions` と `drafting_completed_gates` を保持する。正式な requirements／design／tasks／implementation 更新は reopen 手続きで行う。
+- **テスト戦略の継承**：design.md §テスト戦略の 4 検証類を T-011 で網羅
+- **要件追跡表の双方向整合チェックを T-011 に組み込み**：foundation T-010 ／ runtime T-011 ／ evaluation T-011 ／ analysis T-011 の方針を踏襲
+- **遅延確認事項テーブル（DVT）の活用**：未確定上流仕様（段階 3 Claude Code フック ／ 既存レビュー記録の遡及検査 grandfathering ／ 規律変更の所定手続きの段集合 ／ cross-spec-alignment.yaml の段集合）を DVT で集約管理、T-011 完了条件で未解除項目がないことをゲート化（evaluation T-011 ／ analysis T-011 の方針継承）
+- **自律進行**：実装段で per-task 承認は取らず、コミット・プッシュ・spec.json 更新・フェーズ移行のみ明示承認（規律 [[implementation-autonomy]] 準拠）
+- **計画書 §5.4 軽量化方針との整合**：節ハッシュ・supersedes リンク・通過マーカー後続確認・独立再導出パーサ・実行台帳の機構全体は導入せず、`required_sections` 配列と `completion_predicate` 述語集合、構造化参照、機械検証可能な fail-closed 判定のみで mandatory ／ deferred を符号化
+- **2026-06-15 reopen R-0（decision-source-lint）Req 11 への対応**：重要決定の出典検査・束ね検出・逐語照合・内容性検査と構造化決定記録の新設を T-013 として追加。decision-source-lint サブコマンドを commit 直前ゲートに統合し、pending=WARN・unverifiable=DEVIATION で fail-closed を保証する。
+- **2026-06-15 reopen R-0（commit-approval-nonce）Req 4 受入 6〜7 への対応**：LLM 介在の commit 承認を staged 内容に束縛する nonce challenge は既存の不可逆操作直前ゲート強化であるため新タスク化せず、T-004 に commit-approval サブコマンド、T-006 に validation／consume／redaction／LLM 非依存 schema、T-011 に統合テストとして展開する。
+- **2026-06-16 reopen R-0（commit-execution-delegation-formal-cli）Req 4 受入 8 への対応**：LLM の commit 実行代行承認は staged 内容承認とは別責務だが、既存の commit 直前ゲート領域で受けられるため新タスク化しない。T-004 に `commit-approval delegate-execution` サブコマンド、T-006 に `.reviewcompass/runtime/approvals/commit-execution-delegation.json` の生成／validation／invalidate／consume／`--execution-actor llm` gate、T-011 に統合テストとして展開する。
+- **Req 4 受入 8 と T-013 の責務分離**：T-013 は重要決定の出典検査・束ね検出・逐語照合を担う。Req 4 受入 8 は runtime の commit execution delegation record と commit gate validation を担う。両者はいずれも commit 前の防御に関係するが、T-013 は判断出典の lint、T-004／T-006／T-011 は実行代行承認の CLI・record・gate・統合テストを担当し、互いの責務を置き換えない。
+- **2026-06-16 reopen R-0（operation-registry-preflight-unified-design）Req 12 への対応**：推測コマンド、誤 entrypoint、review artifact drift、approval record gap、staged / unstaged 対象誤り、current-session formal record 作成、nested issue scope drift を個別対処ではなく、operation registry / read-only preflight として T-014 に集約する。Phase 1 は作成前に止める read-only 検査に限定し、runner-enabled operation は後段に分離する。
+- **2026-06-19 reopen R-0（integrated design）Req 13〜16 への対応**：operation contract 語彙と required_action 対応を T-016、承認ゲート・side track stack・workflow-state snapshot を T-017、構造化有効プロンプトと prompt audit を T-018、Phase 0〜6 実装計画と proxy_model triage decision 機械処理化を T-019 として追加する。T-014 の operation registry / preflight は参照側、T-016〜T-019 は新規正本・状態防御・prompt 防御・実装段階防御の所有タスクとして分離する。
+
+---
+
+## 遅延確認事項テーブル（Deferred Verification Table、DVT）
+
+本テーブルは tasks 段で参照される未確定上流仕様または将来確定予定の事項を集約管理する。evaluation T-011 ／ analysis T-011 の DVT 同型運用。
+
+| ID | 関連タスク | 遅延内容 | 解除トリガー | 状態 |
+|---|---|---|---|---|
+| DVT-W001 | T-004 ／ T-006 | 段階 3 Claude Code フックとの結合方式（design.md §先送り論点 5）。検査スクリプトを `pre-commit` ／ `pre-push` フックから呼ぶ経路、および Claude Code の PreToolUse フックから呼ぶ経路の具体配線はフェーズ 2 以降の宿題 | フェーズ 2 で段階 3 フック実装着手時に T-004 ／ T-006 完了条件と整合を再確認 | 未解除（フェーズ 2 以降まで延期） |
+| DVT-W002 | T-005 | 既存レビュー記録の遡及検査（design.md §先送り論点 4）。Req 3 の front-matter 必須化を既存 7 件（requirements の各機能）に遡及適用するか、grandfathering（移行期免除）で扱うかが未確定 | フェーズ 2 で検査スクリプト導入時に grandfathering 判断を確定、または利用者明示承認で遡及適用範囲を確定 | 未解除 |
+| DVT-W003 | T-010 | 規律変更の所定手続きの段集合（design.md §先送り論点 6）。規律変更を `drafting → review → approval` の 3 段で扱うか、`triad-review` を含めるかが未確定。A-007 案 2 対応の細部 | 後続セッションで規律変更の段集合を確定、`stages/discipline-update.yaml` 等として静的列挙 | 未解除 |
+| DVT-W004 | T-003 | `cross-spec-alignment.yaml` の段集合（design.md §先送り論点 7）。機能横断整合手続きの段集合本体が未確定、本タスクでは枠のみ確保 | フェーズ 2 以降で機能横断整合手続きの実体設計時に段集合を確定 | 未解除（フェーズ 2 以降まで延期） |
+| DVT-W005 | T-010 | 規律変更の所定手続き実装と参照層 5 件（memory 配下の現行規律本体）の memory→repo 移管要否（design.md §先送り論点 8）。参照層が repo 未移管なら本機能の機械検査が効かない構造問題 | 参照層の移管方針を利用者明示承認で確定、またはフェーズ 2 で対象範囲を確定 | 未解除（A-005 対処で登録 2026-05-28） |
+| DVT-W006 | T-009 ／ T-010 | 運営ガイド等の現行規律本体の改廃手続きを本機能の規律変更手続きの対象に含めるか（design.md §先送り論点 9） | フェーズ 2 以降で対象範囲を確定 | 未解除（A-005 対処で登録 2026-05-28） |
+| DVT-W007 | T-004 ／ T-010 | `depends_on_resolves_correctly` の汎用的な変更検知と recheck 更新発火（design.md §機能依存マップ §6、フェーズ 2 宿題）。**ただし F-016 案 3 により §13.5（self-improvement 接合面）の変更検知のみ T-010 で先行実装**、機能依存マップ全般の汎用変更検知は本 DVT で据え置き | フェーズ 2 で変更検知機構の実装着手時に T-004／T-010 完了条件と整合を再確認 | 未解除（A-006／F-016 調停で登録 2026-05-28、フェーズ 2 以降まで延期） |
+
+**運用ルール**：
+
+- 本テーブルの「未解除」項目があるとき、関連タスクは完了判定可能だが、解除トリガー発火時に再評価が必須
+- T-011 完了条件は本テーブル内の未解除項目がない（または延期理由が明記されている）ことをゲート化
+- 新規の遅延項目が発生した場合は本テーブルに追記、解除時に「状態」を「解除済（日付、解除根拠）」に更新
+
+---
+
+## 機能横断段への持ち越し事項
+
+本機能の triad-review 段で発見された機能横断波及所見は、carry-forward register 正本 `learning/workflow/carry-forward-register/reviewcompass-import.yaml` に追記し、tasks の機能横断段（review-wave）で消化する。7 モデル評価 2 回目と同根問題集約は本機能では実施せず、機能横断段で一括実施する（(Q2) ／ (ニ) 採用、2 回方式に訂正、計画書 §5.5 ／ §5.9.6 反映済み）。
+
+## 実装由来契約の波及トレース
+
+- `XDI-WM-001`：T-003／T-006／T-009／T-011 の実装・検証範囲で post-write verification、commit approval、audit trail、autonomous ledger の回帰を保持する。commit approval は nonce challenge、canonical target digest、redaction、invalidate／consume、LLM 非依存 schema、commit execution delegation の別 record 化と `--execution-actor llm` gate を含み、判定が LLM／provider／model 名に依存しないことを invariant とする。詳細な設計採用は design.md §実装由来契約の採用を正本とし、本 tasks.md はタスク層から追跡可能であることを示す。
+- `XDI-WM-002`：T-004／T-007／T-008／T-011 の実装・検証範囲で、後追い intent の下流再展開、CE 候補の受け取り、drafting-before-review の強制、`downstream_impact_decisions` の証跡保持、side track と本線 reopen の分離を保持する。詳細な設計採用は design.md §既存システム後追い intent モデルと §実装由来契約の採用を正本とし、本 tasks.md はタスク層から追跡可能であることを示す。
+- `XDI-WM-004`：T-014 の実装・検証範囲で、operation registry / preflight、正本 invocation、parser / parser adapter 照合、worktree / pending / integrity conflict、review artifact / bundle / approval 作成前検査、serial_only approval chain、current-session formal record guard、nested issue handling、deployment / export preflight、reopen scope / impact review scope、`next --json` 状態一意性、LLM／provider／model 非依存を保持する。詳細な設計採用は design.md §XDI-WM-004 と §Requirement 12 設計モデルを正本とし、本 tasks.md はタスク層から追跡可能であることを示す。
+- `XDI-WM-005`：T-016／T-017／T-018／T-019 の実装・検証範囲で、operation contract 語彙、required_action 対応、commit boundary 強制、承認ゲート、side track stack、workflow-state snapshot、構造化有効プロンプト、prompt audit、Phase 0〜6 実装計画、proxy_model triage decision の機械処理化、review-wave consumer impact の完了遮断を保持する。詳細な設計採用は design.md §XDI-WM-005 と §Requirement 13〜16 設計モデルを正本とし、本 tasks.md はタスク層から追跡可能であることを示す。
+
+
+## .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+
+# SESSION_WORKFLOW_GUIDE：セッション運営ガイドライン
+
+最終更新：2026-06-10（現行のセッション運営契約として整理）
+
+本文書は ReviewCompass の開発セッションを確実に回すための運用ガイドラインである。作業開始、レビュー、利用者判断、コミット、完了報告の共通手順を定める。
+
+本文書は運用文書（`docs/operations/` 配下）であり、ReviewCompass の実行時手順を定める。仕様・設計・タスクの正本と矛盾する場合は、該当正本を確認し、必要に応じて reopen 手続きに乗せる。
+
+## 1. セッション開始時の必読フロー（5 分以内）
+
+セッション開始時は **作業着手前に必ず**次を順番に確認する。記憶や前回会話だけを根拠に作業へ入らない。
+
+### 1.1 必読 5 件
+
+順序は重要：
+
+1. **`TODO_NEXT_SESSION.md`**（最新進捗）
+   - 前セッション末尾の到達点、次の作業候補、未消化所見
+   - 「§0 重要事項」「§1 起動手順」「§3 次の作業候補」を最低限読む
+   - 直近の `docs/sessions/session-*.md` も併読し、TODO に圧縮された経緯の詳細を確認する
+
+2. **`.reviewcompass/guidance/WORKFLOW_NAVIGATION.md`**（次 action 判定）
+   - `tools/check-workflow-action.py next --json` の読み方
+   - 判定点ごとの required disciplines / required inputs / effective prompt の扱い
+
+3. **`.reviewcompass/guidance/WORKFLOW_PRECHECK.md`**（機械判定の入口）
+   - `spec-set`、`commit`、`push`、`next`、`reopen-start` の実行前条件
+   - 機械判定で停止した場合の扱い
+
+4. **`learning/workflow/carry-forward-register/reviewcompass-import.yaml`**（持ち越し所見の正本）
+   - 機能横断波及所見の未消化件数と内容を把握
+   - 正本と履歴 source を混同しない
+
+5. **`docs/extraction-mapping.md`**（抽出進捗）
+   - 各機能の状態（未着手／抽出中／抽出済／確認済）
+   - 機能ごとの実施履歴
+
+### 1.2 確認後の git 状態把握
+
+- `git log --oneline -10`：直近のコミット履歴
+- `git status`：未コミット変更の有無
+
+### 1.3 ワークフロー上の現在位置の確認
+
+- 現在どのフェーズか（intent ／ requirements ／ design ／ tasks ／ implementation）
+- 現在どの段か（drafting ／ triad-review ／ review-wave ／ alignment ／ approval の 5 段）
+- 残機能と消化予定所見
+
+## 2. ワークフロー段の役割と順序
+
+### 2.1 全体構造
+
+```
+intent 層（人間担当）
+  ↓
+機能分離
+  ↓
+requirements 段：drafting → triad-review → review-wave → alignment → approval
+  ↓
+design 段：drafting → triad-review → review-wave → alignment → approval
+  ↓
+tasks 段：drafting → triad-review → review-wave → alignment → approval
+  ↓
+implementation 段：drafting → triad-review → review-wave → alignment → approval
+```
+
+各フェーズは drafting／triad-review／review-wave／alignment／approval の 5 段で進める。
+
+### 2.2 各段の役割（責務分離後）
+
+- **drafting**：各機能の草案作成のみ。1 機能ずつ独立に進める。actor=llm（または human）。requirements／design／tasks の drafting は文書起草を意味する。implementation の drafting は文書起草ではなく、tasks.md に従ったテストと実装コードの生成を意味する。
+- **tasks drafting の粒度**：tasks 段の drafting では、対象機能の設計書 §14 要件追跡表（Req 受入単位 × 担当タスク単位）を骨格として tasks.md を作成する。tasks.md は implementation drafting へ直接入れる粒度で書く。各タスクには、実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を含める。implementation-plan.md や implementation-drafting.md のような別の実装前計画文書を正本成果物として要求しない。
+- **triad-review**：機能内の 3 役レビュー（主役・敵対役・判定役）と機能内対処の実施。手動 dogfooding または subagent_mediated（サブエージェント仲介方式）で実施。actor=llm
+- **review-wave**：複数機能を横断する複数ラウンドレビュー。機能横断波及所見と同根所見（異なる機能で同じ性格の所見が独立に発見された組）を集約し、一貫した対処方針で全該当機能の仕様文書に反映する
+- **alignment**：LLM 自動判定による整合確認段（actor=llm）
+- **approval**：人間または別モデルによる承認段（actor=human または proxy_model）
+
+drafting と triad-review を別段にする理由は、誰が何をしたかを段単位で明確に記録し、草案作成者と判定者の分離を機械検査可能にするためである。
+
+<a id="vertical-intent-transfer-review"></a>
+
+### 2.2.1 上流意図伝達の必須検査
+
+各 phase の triad-review／review-wave／alignment では、対象 phase の成果物だけでなく、上流成果物または上流判断材料からの意図伝達を必須検査項目とする。review prompt は、少なくとも「上流の目的・責務境界・受入条件・禁止事項が、対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか」を問わなければならない。
+
+- **requirements review**：`上流判断材料 → requirements.md` を確認し、reopen 分類根拠、利用者判断、計画メモ、設計メモなどの目的・責務境界・受入条件・禁止事項が要件へ欠落なく落ちているかを検査する。design.md / tasks.md は参照資料であり、審査対象ではない
+- **design review**：`requirements.md → design.md` を確認し、要件の目的・境界・受入条件が設計へ欠落なく落ちているかを検査する
+- **tasks review**：`requirements.md → design.md → tasks.md` を確認し、要件と設計の意図が implementation-ready なタスク粒度へ落ちているかを検査する
+- **implementation review**：`requirements.md → design.md → tasks.md → implementation` を確認し、実装がタスクだけでなく上流意図から逸脱していないかを検査する
+
+review prompt は、review target / source materials / out of scope を明示する。審査対象は現在 phase の成果物に限定し、source materials は背景・意図伝達確認のための参照資料として扱う。下流 phase の成果物が source materials に含まれる場合でも、その correctness を現在 phase の review で判定してはならない。
+
+source materials をパス名だけで列挙してはならない。縦方向監査の review prompt には、判断に必要な上流本文または要点抽出を、モデルが推測せず読める形で含める。要点抽出を使う場合は、少なくとも上流の目的、責務境界、受入条件、禁止事項、未確定事項、対象 phase へ引き継ぐべき判断を分けて記録する。上流資料を読んでいない場合は review-run を開始してはならない。prompt 内で上流資料の中身が確認できない場合も review-run を開始してはならない。
+
+tasks review では、単に tasks.md の粒度や項目数を見るだけでは不十分である。たとえば T-016〜T-019 を審査する場合は、Requirement 13〜16 の意図が design.md の設計判断を経由して、欠落・弱体化・勝手な追加なしに implementation-ready な作業単位へ落ちているかを必須で確認する。
+
+### 2.3 段の進め方の規律
+
+- **drafting 段の草案完成** → 当該機能の triad-review 段に進む（機能単位で逐次進行）
+- **triad-review 段で 3 役レビューと機能内対処** を完了 → 当該機能の drafting／triad-review がそろう
+- **全機能で drafting ＋ triad-review を完了** してから review-wave に進む（部分的に review-wave を始めない）
+- **review-wave の所見を消化** してから alignment に進む
+- **alignment で LLM 自動判定** を通過してから approval に進む
+- **approval で利用者または別モデル承認** を得てから次フェーズに進む
+
+### 2.4 「次の機能の drafting に進むべき」状況の判断
+
+triad-review 段で 3 役レビューを行った所見が **機能横断の波及所見**だった場合、当該機能の triad-review で対処せず、carry-forward register に持ち越して **次の機能の drafting に進む**。
+
+## 3. 修正案件の波及種別と処理段
+
+### 3.1 用語の使い分け
+
+両用語は **対象方向が異なる正当な技術用語** であり、優劣はない：
+
+- **遡及（そきゅう）**：**上流フェーズへの影響**。下流段の作業で発見された問題が、上流段（過去フェーズ）の修正を要するもの。例：実装段で発見した不整合が要件段の書き直しを要する
+- **波及（はきゅう）**：**同フェーズ内の他機能（フィーチャー）への影響**。ある機能のレビューが別機能との不整合を露出させるもの。例：foundation 要件の修正が runtime／evaluation 要件にも影響する
+
+所見を分類するときは、上流フェーズへ戻る必要があるか、同フェーズ内の他機能へ広がるかを分けて判断する。
+
+### 3.2 修正案件の 4 種別（＋ 2 補助種別）
+
+レビューで露出する所見は次の種別に分類する：
+
+| 種別 | 内容 | 例 |
+|---|---|---|
+| **機能内対処** | 当該機能の仕様修正のみで完結 | 表現修正、機能内の語彙不統一訂正 |
+| **波及（同フェーズ・横方向）** | 同フェーズ内の他機能の仕様修正も必要 | A-001：foundation 要件と runtime 要件の `not_run` 欠落 |
+| **遡及（上流フェーズ・縦方向）** | 上流フェーズの仕様修正が必要 | 設計段で「要件段の Req 6 受入 8 に矛盾あり」と発見 |
+| **遡及 ＋ 波及（縦 ＋ 横）** | 上流フェーズの複数機能に影響 | 設計段で発見した要件段の不整合が複数機能の要件文書に波及 |
+
+補助種別：
+
+- **leave-as-is（修正不要）**：判定役が「修正不要」と判断したもの、対処せず記録のみ
+- **延期**：「将来フェーズで対処」と判定役が明示したもの（例：F-004 の配置時対処）
+
+### 3.3 種別ごとの処理段と方法
+
+#### (a) 機能内対処
+
+- **発見されるタイミング**：drafting 段（起草者の自己発見）／ triad-review 段（3 役レビュー）
+- **処理する段**：当該機能の **triad-review 段** で対処（drafting に戻して草案修正、または triad-review 段内で直接修正）
+- **方法**：当該機能の仕様文書を直接修正
+- **次段への進行**：当該機能の triad-review 段が `completed` 状態になってから次機能へ
+- **記録先**：レビュー記録（`.reviewcompass/specs/<機能>/reviews/<日付>-<種別>.md`）の §4 統合節に「対処済み」と記録
+
+##### (a-1) must-fix 所見の対処手順
+
+triad-review 段で判定役が must-fix と判定した所見の対処は、起草者（LLM または人間）が独自判断で仕様文書を修正することを禁ずる。利用者と必ず議論し、各所見の対処方針を 1 件ずつ平易な日本語で説明して合意を得てから反映する。
+
+**手順**：
+
+1. must-fix 所見を 1 件ずつ取り上げる。複数所見が論理的に連動する場合は連動単位でまとめる（例：F-001 と F-007 が同一事象を別観点で扱う場合）
+2. 各所見について、対処方針の提案を次の構造で平易に説明する：
+   - その判断が必要になった経緯（要件文書や上流文書からの導出）
+   - 候補案の列挙（必ず複数）
+   - 各候補案の利点と弱点
+   - **後段で発生し得る問題の深掘り**：下流仕様（他機能の design／tasks／implementation）、対象アプリへの配置可能性、機械検証時の挙動、実装フェーズの運用、将来の拡張性
+   - 推奨案とその根拠
+3. 「現状維持」を推奨する場合も、現状維持の弱点を検証してから示す
+4. 一括処理（複数論点を一気に決着）を避け、各論点を個別に深掘りする
+5. 利用者の判断を得てから、仕様文書を 1 件ずつ Edit で修正する
+6. 各修正後に grep または Read で機械的に照合し、反映を確認する
+7. レビュー記録（reviews/...）の §4 統合節に「対処方針・利用者承認の根拠・反映箇所」を記録する
+
+**深掘りの具体内容**（推奨案を提示する際に必ず想定する事項）：
+
+- foundation 機能の場合：対象アプリへの配置可能性、配布対象外資産との分離、リポジトリ内資産の規則との整合
+- 値域・語彙の固定：将来拡張時の改訂コスト、機械検証時の不正値検出
+- 責務境界：foundation と runtime（または他機能）の責務分離、上流が下流の実装方針に踏み込まない原則
+- 不変性：成果物の追記性、生証拠は不変の原則
+- 依存関係：他機能が当該仕様を取り込む際の参照可否
+
+**禁則**：
+
+- 利用者と議論せずに must-fix 所見の対処内容を独自に確定する
+- 「現状維持を推奨」と表層的に提案する（弱点検証を欠く）
+- 候補案を 1 つしか提示しない（代替案との比較を欠く）
+- 後段影響を想定しない推奨
+
+<a id="3.3-a-2"></a>
+
+##### (a-2) review-run 後の proxy_model 判断代行手順
+
+API 経由の review-run 後に、人間の個別判断を proxy_model が代行する場合も、メインセッション LLM が重要件を独自に確定して実装へ進むことを禁ずる。proxy_model 代行は「人間判断を省略する」ものではなく、判断主体を別モデルへ移す運用である。
+
+**proxy_model 判断依頼前の利用者提示ゲート**：
+
+API review-run が完了したら、proxy_model 判断依頼、実装修正、spec.json 更新、フェーズ移行のいずれにも進む前に、メインセッション LLM は次を利用者へ提示して停止する。この提示ゲートを完了する前に proxy_model を呼び出してはいけない。
+
+1. 使用 variant 名
+2. role ごとの path／provider／model（例：primary／adversarial／judgment の割当）
+3. モデル別 raw 結果概要（parse 状態、所見数、severity 内訳、raw path）
+4. 同根所見クラスタの一覧
+5. `must-fix`／`should-fix`／`leave-as-is` の三段階トリアージ案
+6. `must-fix` 候補ごとの平易な説明、候補案、各案の利点と弱点、後段影響、推薦案
+7. proxy_model に判断させる場合の対象 finding／cluster、判断範囲、不可逆操作（commit／push／spec.json 更新／フェーズ移行）を含まないこと
+
+variant が未確定、または role 割当が曖昧な場合は review-run を開始しない。既定 variant が CLI 経路を含む等、実行環境と合わない場合は、設定ファイルを読んで候補 variant と role 割当を利用者へ説明し、選択理由を review-run 記録に残す。
+
+**役割分担**：
+
+1. メインセッション LLM は raw レビューを集約し、三段階トリアージの下書きを作る。parsed YAML だけでなく raw response も読み、同根所見をまとめ、`must-fix` ／ `should-fix` ／ `leave-as-is` の候補を作る
+2. メインセッション LLM は重要件ごとに、平易な問題説明、候補案、各案の利点と弱点、後段影響、推薦案を作る
+3. proxy_model は重要件の採用案・判断理由・最終ラベルを決定する。実装は担当しない
+4. メインセッション LLM は proxy_model の raw response を保存し、`proxy-decisions/<finding-id>.decision.yaml` と `proxy-approval.yaml` に構造化する
+5. 機械ガードは proxy decision の充足を検査する。未判断、raw 欠落、候補案欠落、採用案欠落、判断理由欠落、triage 最終ラベルとの不一致があれば実装へ進まない
+6. メインセッション LLM は機械ガード通過後、採用された修正だけを TDD で実装する
+7. コミット・プッシュ・spec.json 更新・フェーズ移行は人間の明示承認を要求する。proxy_model はこれらの不可逆操作を代行しない
+
+**重要件の判定閾値**：
+
+- `must-fix`、`ERROR`、`CRITICAL` は必ず重要件として扱う
+- `should-fix` でも、上流仕様、データ契約、機械ガード、証跡保持、ワークフロー権限境界、複数モデルの同根指摘に関わるものは重要件として扱う
+- 同根指摘とは、複数モデルの所見が同じ対象ファイル・同じ出力契約・同じ機械ガード・同じ証跡・同じ原因に触れているものをいう。表現が異なっても、対象または原因が一致する場合は同根として扱う
+- 正本削除、機械ガード削除、重要件閾値の引き下げ、承認証跡の削除、検証対象範囲の縮小は、コミット等と同じく人間の明示承認を要する不可逆操作として扱う
+- 判断に迷うものは重要件側に倒し、proxy_model 判断または人間判断へ回す
+
+**proxy_model への入力証跡**：
+
+- proxy_model へ渡す判断材料には、メインセッション LLM の要約だけでなく、元 review raw への参照または抜粋を必ず含める
+- `proxy-decisions/<finding-id>.prompt.md` を作成する前に、[[llm-as-judge-prompting]] の手順（材料揃え → 問い設計 → 選択肢なし分析）でプロンプトを設計する
+- `proxy-decisions/<finding-id>.prompt.md` に、元 review raw 参照、問題説明、候補案セット、推薦案、判断してほしい最終ラベルを保存する
+- `proxy-decisions/<finding-id>.decision.yaml` には、`candidate_options`、`source_raw_paths`、`decision_prompt_path`、採用案、棄却案理由、判断理由、最終ラベルを保存する
+- proxy_model が元 review raw を読めない形の判断材料しか受け取っていない場合、その decision は実装着手の承認証跡として扱わない
+- 現行の軽量ガードは、proxy_model_id の文字列一致、decision file の finding_id 一致、final_label 一致、prompt/raw/候補案証跡の存在を検査する。API 署名や暗号学的な生成元証明は将来課題とする
+
+**証跡配置**：
+
+- `raw/`：各モデルの生応答
+- `triage.yaml`：メインセッション LLM による三段階トリアージ
+- `proxy-decisions/<finding-id>.prompt.md`：proxy_model に渡した判断材料
+- `proxy-decisions/<finding-id>.raw.txt`：proxy_model の生応答
+- `proxy-decisions/<finding-id>.decision.yaml`：採用案、判断理由、最終ラベル、棄却案理由
+- `proxy-approval.yaml`：実装着手を許可する proxy approval record
+
+**並列化可能な単位**：
+
+- proxy_model への判断依頼は、同根所見クラスタ単位で並列化できる
+- TDD 実装は、互いに同じファイルを更新しない実装単位、または入出力契約が独立しているタスク単位で並列化できる
+- 共通スキーマ・共通ビルダー・同一ファイルを触る修正は直列で扱う
+- 生成物、共有 helper、推移的契約、同じ出力 manifest、同じ traceability 出力を共有する修正は直列で扱う
+- 並列実装の統合前に、メインセッション LLM が triage、proxy decision、テスト結果、ファイル差分を再照合する
+- 並列処理で新しい判断問題が出た場合、その単位は停止し、proxy_model 判断または人間判断へ戻す
+- 承認済み finding の実装中に見つけた未承認の便乗リファクタ、隣接挙動変更、対象外 cleanup は実施しない。必要なら新しい判断問題として停止する
+
+**実装サブ担当 LLM の扱い**：
+
+- 実装サブ担当 LLM は、原則として別スレッドかつ分離 worktree で扱う
+- 同じ repo での並列実装は原則禁止し、読み取り調査または差分を残さない確認に限定する
+- メインセッション LLM は、対象 finding、proxy decision、触ってよいファイル、期待テスト、禁止事項、停止条件を実装サブ担当へ渡す
+- 実装サブ担当は、指定範囲外のファイル変更、判断変更、コミット、プッシュ、spec.json 更新、フェーズ移行を行わない
+- 実装サブ担当が新しい判断問題、上流仕様への疑義、許可ファイル外の修正必要性を見つけた場合、その作業単位を停止してメインセッション LLM に戻す
+
+**別スレッド生成物の扱い**：
+
+- 別スレッド・分離 worktree で発生した生成物は、実装差分、検証結果、判断根拠、作業ノイズに分類する
+- 実装差分は、メインセッション LLM が確認したうえで本線 worktree への取り込み候補にする
+- 検証結果と判断根拠は、必要な要約だけを review-run、session record、または docs/notes に保存する
+- 判断に影響した失敗試行、失敗パッチ、途中ログは work_noise から decision_basis へ昇格し、メインセッション LLM が要約または該当箇所を保存する
+- 作業ノイズは本線 repo に取り込まない。作業ログ、一時メモ、途中のテスト出力、失敗パッチ案は原則としてサブ worktree 側に閉じる
+- 本線へ戻す標準単位は、パッチ、テスト結果サマリ、未解決事項の 3 点とする
+
+<a id="3.3-a-3"></a>
+
+##### (a-3) 操縦 LLM 別の API 既定 variant と独立性原則（本節を正本とする）
+
+セッションを操縦（起草・修正）する LLM と、その成果物を検証する LLM の系列を分離する。
+自己レビューによる独立性低下を防ぐための原則であり、利用者承認済み
+（設計記録 `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md` §3.6、2026-06-11 個別承認）。
+本節がこの原則と既定 variant 選択規則の正本である（仕様への昇格は実アプリ pilot 後に再検討、
+MLE-DEC-004、2026-06-12 利用者決定）。
+
+**独立性の原則**：
+
+1. 単独検証役（1 体での post-write 検証など）は、操縦 LLM と別系列を必須とする
+2. 3 役構成の adversarial（反証役）と judgment（判定役）は、操縦 LLM と別系列を必須とする
+3. 3 役構成の primary（検出役）は、操縦 LLM と同系列を許容する（最終判定を持たず、
+   残り 2 役の独立で全体の独立性が保たれるため）
+4. proxy_model（人の判断の代行）は、操縦 LLM と別系列を必須とする
+
+**操縦 LLM 別の既定 variant**（実体は `config/api-settings.yaml`）：
+
+- **Claude Code 操縦時**：接尾辞なしの `*_independent_3way` 系
+  （post_write_verification／yaml_audit／implementation_review の 3 用途。
+  primary=anthropic/claude-sonnet-4-6、adversarial=openai/gpt-5.5、
+  judgment=gemini/gemini-3.1-pro-preview）
+- **Codex CLI 操縦時**：`*_independent_3way_codex_operator` 系
+  （primary=openai/gpt-5.4、adversarial=anthropic/claude-opus-4-8、
+  judgment=gemini/gemini-3.1-pro-preview）
+- judgment（gemini-3.1-pro-preview）と小規模 1 体検証（`post_write_verification_google`）は
+  両操縦で共用し、操縦を切り替えても判定基準の連続性を保つ
+- 既存 variant の改名は行わない（規律文書・過去 run 記録・spec からの参照保全）。
+  別の LLM が操縦する場合（将来）は同じ原則で役を回転して対応する
+
+対象アプリ向けの同内容の案内は `templates/entry/AGENT_ENTRY.template.md` §10 と
+`.reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md` にあり、本節と整合させて保守する。
+
+#### (b) 波及（同フェーズ・他機能への影響）
+
+- **発見されるタイミング**：triad-review 段（3 役が他機能との不整合に気づく）／ review-wave 段（機能横断レビュー）
+- **処理する段**：**review-wave 段**（フェーズ終端の機能横断段、全機能の drafting ＋ triad-review 完了後に開始）
+- **方法**：
+  1. triad-review 段で波及と判定されたら **当該機能では対処せず**、carry-forward register に追記
+  2. 「次の機能の drafting」に進む（個別機能の段では対処しない）
+  3. 全機能の drafting ＋ triad-review が完了したら、review-wave 段で集約消化
+  4. 影響を受ける全機能の仕様文書を一括修正（依存順を守る、例：foundation を先に修正してから runtime）
+- **記録先**：`learning/workflow/carry-forward-register/reviewcompass-import.yaml` の各所見項目、消化後は `status: resolved` と `resolution` を更新
+
+#### (c) 遡及（上流フェーズへの影響）
+
+- **発見されるタイミング**：任意の下流段（triad-review／review-wave／alignment／approval のいずれか）
+- **処理方法**：[REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md) の 4 過程手順を起動。当該段の作業を停止し、上流フェーズに戻る
+- **手戻り種別判定**：N（intent）／R（requirements）／D（design）／A（tasks）／I（implementation）× 深さ 0〜4 の二次元表記で判定
+- **再実施対象決定**：第1過程で trigger_map（再実施対象段の決定表）を参照して決める。actor=human の段（approval 等）に来たら作業を止めて承認待ち
+- **記録先**：種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md` に残す、機能単位 spec.json の `reopened` 履歴と `recheck` フラグを更新
+
+#### (d) 遡及 ＋ 波及の組合せ
+
+- **発見されるタイミング**：任意の下流段
+- **処理方法**：reopen で上流フェーズに戻り、上流フェーズの review-wave 段で波及所見として集約消化、その後下流に伝播
+  1. **第 1 段階**：reopen 手続きで上流フェーズに戻り、影響範囲を特定（trigger_map）
+  2. **第 2 段階**：上流フェーズで carry-forward register に波及所見として追記し、当該フェーズの review-wave 段で消化
+  3. **第 3 段階**：上流フェーズの alignment ＋ approval を再実施
+  4. **第 4 段階**：下流フェーズの alignment ＋ approval を再実施（trigger_map で連鎖再実施対象として決定）
+- **記録先**：reopen 記録 ＋ carry-forward register の両方
+
+#### (e) leave-as-is と延期
+
+- **leave-as-is**：判定役が「修正不要」と判断したもの。対処せず、レビュー記録に判定根拠を残すのみ
+- **延期**：将来のフェーズで対処する判定。レビュー記録に延期理由と対処予定フェーズを残し、当該フェーズ着手時のチェックリストに追記
+
+### 3.4 振り分け判断のフロー（triad-review 段で実施）
+
+triad-review 段の判定役は、各所見について次の振り分けを行う：
+
+```
+所見発見
+  ↓
+当該機能の仕様修正のみで完結するか？
+  ├── YES → 機能内対処（triad-review 段内で対処）
+  └── NO
+      ↓
+  他機能の仕様修正も必要か？
+  ├── YES（同フェーズ内のみ） → carry-forward register に追記、review-wave 段で処理
+  ├── YES（上流フェーズに戻る必要あり、単機能） → reopen 手続きを起動
+  └── YES（上流フェーズに戻る必要あり、複数機能） → reopen ＋ 上流の review-wave で集約処理
+  
+別判定：
+  ├── 修正不要 → leave-as-is（記録のみ）
+  └── 将来フェーズで対処 → 延期（チェックリスト追記）
+```
+
+### 3.5 段ごとの露出と処理段の対応表
+
+| 段 | 主に露出する所見 | 当該段内で処理する所見 | 次段に持ち越す所見 |
+|---|---|---|---|
+| drafting | 起草中の自己発見 | 機能内（草案に直接反映） | なし |
+| triad-review | 機能内 ／ 波及 ／ 遡及 | **機能内** のみ | 波及 → review-wave、遡及 → reopen |
+| review-wave | 波及（横断ラウンド中の追加発見も） | **波及** | 遡及あり → reopen |
+| alignment | 自動判定の不整合検出 | （自動判定が通過するまで前段に戻す） | 遡及あり → reopen |
+| approval | 重大見落とし、利用者または別モデルによる指摘 | （承認しない） | reopen で上流戻し |
+
+### 3.6 機能横断波及所見の管理ルール
+
+- 各機能の triad-review 段で発見されたら、即時 carry-forward register に追記
+- 追記項目：所見 ID（A-XXX 形式）、検出セッション、波及範囲（影響を受ける機能と仕様箇所）、対処方針、依存関係
+- review-wave／alignment／approval の機能横断段着手時、全件を消化対象とする
+- 消化後、各所見に「✅ 対処済み（YYYY-MM-DD、要件 review-wave）」ラベルを追加
+
+## 4. サブエージェント方式の運用条件
+
+### 4.1 位置づけ
+
+- メインセッションは草案作成とレビュー結果の取りまとめを担う
+- 3 役レビューは、メインセッションから分離された reviewer session または外部 API 検証者で実行する
+- review-run の実行形は adapter と provider 設定に従う
+
+### 4.2 モデル割り当て（規律）
+
+3 役（主役・敵対役・判定役）は、メイン LLM から分離した実行主体が担う。メイン LLM は草案作成と三役レビュー結果の取りまとめのみを担い、3 役のいずれにもならない。
+
+各役のモデルは `runtime/config/reviewcompass.yaml` または review-run の provider 設定で指定する。利用者が設定で変更できる。
+
+**モデル能力配分の規律**：
+
+- **主役と敵対役は必ず異なるモデルを使う**（敵対役の独立性確保のため）
+- 判定役は主役または敵対役と同じモデルを使うことを許容する
+- 敵対役と判定役には、反証生成と責務境界判断を担う十分な能力のモデルを割り当てる
+
+### 4.3 サブエージェント呼び出し時の規律
+
+- **プロンプトに自己完結性を持たせる**：サブエージェントは別 session で、メインの作業文脈を共有しない
+- **参照文書の引用は事後検証**：サブエージェントの引用には節番号や参照先の誤りが発生しうる。メインセッションが grep やリンク検査で確認する
+- **ファイル書き込みは原則禁止**：読み取りと分析のみ。例外的にレビュー記録の §2 や carry-forward register への追記提案を許容
+- **モデル指定**：利用中の adapter が提供する model / provider 指定方法に従う。外部 API 経由では provider 設定を参照する
+
+### 4.4 レビュー記録の必須フィールド
+
+レビュー記録の front-matter に次を必須化：
+
+```yaml
+author:
+  identity: <adapter_main_session>
+  model: <model-id>
+  role: drafter
+reviewer:
+  identity: <adapter_reviewer_session>
+  model: <model-id>
+  role: final_judgment
+  separation_from_author: true
+```
+
+`author.identity` と `reviewer.identity` が異名であることを機械検査の対象とする。重要なのは provider 名ではなく、起草者と判定者が分離していることを記録できることである。
+
+### 4.5 mode 値
+
+レビュー記録の `mode` は `subagent_mediated`（正式値）。foundation のレビューモード語彙正本（Requirement 6 受入 6）の 3 値のうちのひとつ。
+
+## 5. 利用者判断が必要な論点の見極め
+
+### 5.1 利用者判断必須の項目
+
+次のいずれかに該当する場合、LLM は単独で確定せず、利用者の明示承認を仰ぐ：
+
+- **正本方針変更**：仕様・設計・タスク・運用規律の意味を変える修正
+- **大規模再設計**：既存の責務境界、機械判定、成果物配置を大きく変更する場合
+- **機能横断の権限分担**：複数機能にまたがる責務分担の決定（例：A-007 の self-improvement と workflow-management の権限調停）
+- **判定境界の判断**：must-fix／should-fix／leave-as-is の境界が曖昧な場合
+- **承認・コミット・push・フェーズ移行**：すべて利用者明示承認必須
+- **作業の打ち切り・先送りの誘導**：利用者の明示承認なく「続きは次セッションで」等と作業を終了・先送りに誘導しない
+
+### 5.2 LLM が自律的に決められる項目
+
+- **抽出時のクリーニング作業の細部**（機能名置換、自己適用前提除去等）
+- **観点 5（検証可能性）の機械判定可能な所見の指摘**
+- **レビュー記録の構造化**（front-matter、節構成）
+
+### 5.3 判断の記録規律
+
+利用者判断の結果は次の場所に記録：
+
+- **正本方針変更**：該当する仕様・設計・タスク・運用規律に決定日付付きで記載
+- **機能横断対処方針**：carry-forward register の該当所見に対処方針として追記
+- **重大論点**：レビュー記録の §1 主役レビュー、§4 統合の「利用者判断履歴」節に記録
+
+### 5.4 セッション記録の作成規律
+
+原則として毎セッション、セッション終了時または重要判断後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md` を作成または更新する。特に、重要な判断・承認・レビュー結果・修正経緯が発生した場合は必須とする。これは会話全文の逐語ログではなく、後で経緯を確認できる要約記録とする。
+
+`<N>` は `docs/sessions/` に存在する既存の最大セッション番号に 1 を加えた番号とする。同日の複数セッションでも番号を進め、同じ番号を再利用しない。
+1 session につき 1 ファイルとし、同一 session 内で重要判断が複数回発生した場合は同じファイルへ追記する。重要判断ごとに別番号を消費しない。
+並行セッションや未コミット作業により採番が衝突した場合、メインセッション LLM は既存記録・git 状態・未コミット差分を確認し、利用者が採番を確定するまで正式な新規セッション記録を作成しない。採番確定前に記録が必要な場合は、`docs/sessions/drafts/session-<YYYY-MM-DD>-<short-topic>.md` に一時草案を置き、正式番号確定後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md` へ移動する。移動後は draft ファイルを残さず、正式ファイルに草案内容が統合済みであることを確認する。
+
+メインセッション LLM はセッション記録の草案作成責任を持つ。利用者判断の引用・承認範囲・未確定事項に曖昧さがある場合は、記録前に利用者へ確認する。
+コンテキスト切れや中断により当該 LLM が記録できない場合、次セッションが草案を引き継ぐ。草案がない場合は、TODO、review-run、approval record、git diff から経緯を再構成して記録する。
+
+最低限、次を記録する：
+
+- このセッションで実施した作業
+- 利用者が承認した判断と、その対象
+- API レビューや独立検証の結果と三段階トリアージ
+- 修正した主要ファイルと検証結果
+- 失敗・見落とし・再発防止に必要な気づき
+- 次セッションへの引き継ぎ
+
+推奨見出しは既存 session 記録と同型とし、最低限次を含める：
+
+1. サマリ（このセッションでやったこと）
+2. 気づき・特筆点
+3. コミット一覧（該当する場合）
+4. 次セッションへの引き継ぎ
+
+`TODO_NEXT_SESSION.md` は次セッション向けの入口メモであり、詳細な経緯記録の正本ではない。詳細経緯は `docs/sessions/` に残し、TODO には必要な参照だけを置く。
+
+## 6. コミット規律
+
+### 6.1 コミット単位
+
+- **正本文書更新 ＋ 基盤整備**：1〜2 コミット（方針確定、運用ファイル整備）
+- **機能ごとに 1 コミット**：仕様文書 ＋ 運用文書 ＋ レビュー記録の 3 ファイル（または schema/template 等の関連ファイル）
+- **機能横断段（review-wave／alignment／approval）**：1 コミット（複数機能の小修正をまとめる）
+
+### 6.2 コミット順序
+
+依存マップ順に従う：
+
+1. foundation
+2. runtime
+3. evaluation
+4. analysis
+5. workflow-management
+6. self-improvement
+7. conformance-evaluation
+
+### 6.3 コミットメッセージ規律
+
+- **平易な日本語**：英語技術用語の連発を避け、完全な日本語の文で書く
+- **題名**：機能名 ＋ 作業種別（例：「foundation 機能の requirements 抽出と 3 役レビュー」）
+- **本文**：作成・更新ファイルの列挙、主な反映内容、機能横断所見の持ち越し有無
+- **Co-Authored-By**：利用中の adapter と利用者方針に従う。自動付与を前提にしない
+
+### 6.4 コミット前確認
+
+- `git status` で対象ファイルを確認
+- `git diff --cached` で内容確認（必要に応じて）
+- `--no-verify` や `--no-gpg-sign` は使わない（規律）
+
+### 6.5 不可逆操作の進行報告最小化
+
+commit、push、spec.json workflow_state 変更、フェーズ移行などの不可逆操作では、利用者が操作を明示指示した後の正常系進行報告を原則として省く。LLM は必要な確認、stage、承認 record、guard、実操作、事後確認を実行してよいが、各内部手順を逐一会話へ説明しない。
+
+途中報告を行うのは、利用者判断または追加承認が必要な場合に限る。例：承認 record の期限切れや対象不一致、precheck failure、post-write / reopen / in-progress による遮断、sandbox escalation が必要な場合、staged 内容が変わり再承認が必要な場合。
+
+commit 中に、staged 内容の確定、承認内容を作り直す、既存 delegation を使い直す、nonce を更新する、といった内部再準備が必要になっても、それ自体を利用者に報告しない。これらは、承認済みの対象範囲内であり利用者判断を要しない通常手順として黙って実行する。コミット対象が増えた、staged 内容が変わった、または再承認が必要になった場合は内部再準備として隠さず、追加判断が必要な停止理由だけを短く報告する。利用者へ報告するのは、作業を続けられない異常、追加判断が必要な WARN / DEVIATION、または成功結果だけとする。
+
+正常完了時の報告は、実行結果だけに絞る。commit なら commit hash、`git status` の clean 性、`next --json` の要点を示す。push なら push 先と結果、`git status` の clean 性を示す。詳細な手順ログ、precheck の全文、stage したファイル一覧、nonce / challenge の値は、利用者が求めた場合または失敗調査に必要な場合だけ示す。
+
+### 6.6 push
+
+push は **利用者明示承認**を仰いでから実行。LLM が自律的に push しない。
+
+## 7. 作業完了時レポート
+
+作業を終えて利用者へ返答するときは、adapter や利用モデルに依存しない会話末尾の運用契約として、最低限次を示す：
+
+- **作業サマリ**：このターンで実施した変更、判断、未変更の範囲
+- **検証結果**：実行したテスト、確認コマンド、`post_write_verification` の要否と結果
+- **現在状態**：`git status` と `next --json` の要点
+- **次タスク**：次に着手すべき具体的な作業、または workflow が要求する次 action
+
+未実施・失敗・承認待ち・保留判断がある場合は、完了扱いにせず明記する。commit、push、workflow_state 更新、spec.json 更新などの不可逆または状態変更を伴う操作は、実際に成功した場合だけ作業サマリに記録する。
+
+`next --json` が `post_write_verification`、`reopen_in_progress`、`resume_in_progress`、`unknown` など `completed` 以外を返している場合、次タスクには任意の改善候補ではなく、その workflow 状態に従う次 action を示す。
+
+### 7.1 進捗説明の平易化
+
+進捗説明では、内部処理名をそのまま主文にせず、利用者が理解しやすい作業状態で述べる。まず次の順で短く示す：
+
+1. 今どの段階か
+2. 何をしたか
+3. 次に何をするか
+
+必要な場合だけ、内部用語を括弧で補足する。
+
+完了報告や途中報告では、翻訳調の名詞句、英語混じりの見出し、内部状態名や英語の道具名を見出しや主語にしない。`next --json`、`commit wrapper`、`required_action`、`workflow_state` などの語は、利用者が判断するために必要な場合だけ、自然な日本語の説明の後ろへ括弧書きで添える。主文では「何を変えたか」「今どこで止まっているか」を自然な日本語で述べ、利用者が次に何をすればよいかを自然な日本語の文で示す。
+
+避ける表現：
+
+- 停止点を消費
+- gate を通過
+- required_action
+- pending_gate
+- workflow_state を更新
+- commit wrapper を開始条件にする
+- next --json は reopen_in_progress
+
+言い換え例：
+
+- 「tasks approval の停止点を消費」ではなく「tasks 段の承認を完了済みとして記録」
+- 「implementation drafting を完了」ではなく「implementation 段のコードとテストを作成」
+- 「次の required_action は run_reopen_pending_gate」ではなく「次は現在の段のレビュー作業」
+- 「commit wrapper を最初から sandbox 外で実行」ではなく「コミット用の検査手順は、最初から許可された実行環境で動かす」
+- 「next --json は reopen_in_progress」ではなく「やり直し手続きの途中で、次は requirements 段の確認を進める状態」
+
+### 7.2 利用者操作が必要な停止点の表示
+
+承認、コミット、push、判断など、利用者の短い返信で次へ進む停止点では、完了報告の末尾に次の 1 行を示す：
+
+```text
+次に必要な操作: <操作語>
+```
+
+`<操作語>` は、利用者がそのまま返信できる短い語にする。
+
+例：
+
+- `次に必要な操作: 承認`
+- `次に必要な操作: コミット`
+- `次に必要な操作: push`
+- `次に必要な操作: 判断`
+
+複数の選択肢が必要な場合だけ、候補を短く並べる。通常は候補を 1 つに絞る。内部用語、長い説明、手順ログをこの行に混ぜない。
+
+このレポートは会話末尾の完了報告であり、workflow_state や `spec.json` の正本を代替しない。
+
+## 8. 用語ガイド
+
+### 8.1 「遡及」と「波及」
+
+両用語は対象方向で使い分ける：
+
+- **遡及（そきゅう）**：上流フェーズへの影響（時間軸＝過去方向）
+- **波及（はきゅう）**：同フェーズ内の他機能への影響（横方向＝機能間）
+
+両方とも正当な技術用語で、避けるべき／推奨という関係ではない。所見の性格を正確に表すために使い分ける。
+
+### 8.2 判定値の使い分け
+
+- **must-fix**：仕様の致命的または重要な欠落、修正必須
+- **should-fix**：仕様の改善余地、修正推奨
+- **leave-as-is**：仕様として問題なし、修正不要
+
+### 8.3 機能内と機能横断
+
+- **機能内対処**：当該機能の drafting 段で本セッション内に修正
+- **機能横断持ち越し**：carry-forward register に集約、review-wave／alignment／approval の機能横断段で対処
+
+### 8.4 サブエージェント関連
+
+- **メインセッション**：作業の入口となる LLM session。草案作成とレビュー結果の取りまとめを担い、3 役レビューの判定者とは分離する
+- **サブエージェント**：敵対役・判定役を実行する別 session または外部 API 検証者。利用中の adapter が利用可能な実行形に従う
+- **mode = `subagent_mediated`**：サブエージェント方式のレビュー記録の mode 値
+
+## 9. 関連文書
+
+- ワークフローナビゲーション：[WORKFLOW_NAVIGATION.md](WORKFLOW_NAVIGATION.md)
+- 事前検査：[WORKFLOW_PRECHECK.md](WORKFLOW_PRECHECK.md)
+- reopen 手順：[REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md)
+- 抽出進捗：[../../docs/extraction-mapping.md](../../docs/extraction-mapping.md)
+- 機能横断波及所見：正本 [../../learning/workflow/carry-forward-register/reviewcompass-import.yaml](../../learning/workflow/carry-forward-register/reviewcompass-import.yaml)、履歴 source [../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md](../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md)
+- レビュー記録雛形：[../../templates/review/manual_dogfooding_review_template.md](../../templates/review/manual_dogfooding_review_template.md)
+- TODO：[../../TODO_NEXT_SESSION.md](../../TODO_NEXT_SESSION.md)
+
+## 10. 本ガイドラインの改訂規律
+
+- 本ガイドラインは運用文書として更新可能
+- セッションの経緯記録は `docs/sessions/` に残し、本文書には現行の運用契約だけを置く
+- 規律変更（§2〜§8）は利用者明示承認後に反映
+- 改訂時は最終更新日付を更新
+

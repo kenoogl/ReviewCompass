@@ -1,0 +1,20 @@
+unit_id: unit-2026-06-24-post-write-variant-default-gap
+kind: blocking
+parent_unit_id: main-completed
+title: post_write_verification の機械的 variant 既定（3者）を operation_defaults に追加
+reason: post_write_verification が operation_defaults に無く機械的 3者既定が効かない穴を塞ぐ。proxy reconciliation
+  の post-write を信頼できる 3者で再検証する前提。
+status: completed
+entered_at: '2026-06-24T07:23:53.495659+00:00'
+return_conditions:
+- post_write_verification の operation_default が追加され resolve_default_variant_name が独立3者
+  variant を返す
+- config_loader テストが green
+- config 変更を guarded commit する
+- parent へ戻り、3者+改善プロンプトで proxy reconciliation の post-write を再検証する残件を明示する
+exited_at: '2026-06-24T07:29:34.771918+00:00'
+completion_summary: 'post_write_verification を operation_defaults に追加し独立3者(post_write_verification_independent_3way)へ機械解決。TDD（test_config_loader）green、回帰なし。config
+  修正を fcb371c8 でコミット（push は親と一緒に後で）。残件: parent の proxy reconciliation で機械判定の3者+改善プロンプトで
+  post-write を再検証。'
+returned_to:
+  unit_id: main-completed

@@ -1,0 +1,20 @@
+approved_action: review_run_triage
+approved_by: user
+approved_at: '2026-06-24T18:18:34+09:00'
+approval_source: 利用者発言「案A。あなたを信頼している。但し、横展開すべき事項は確実に記録する。」
+review_run_id: 2026-06-24-proxy-layout-codecanon-postwrite-3way
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - 2026-06-24-proxy-layout-codecanon-postwrite-3way-gpt-5.5-adversarial-001
+approved_final_labels:
+  2026-06-24-proxy-layout-codecanon-postwrite-3way-gpt-5.5-adversarial-001: leave-as-is
+rationale: >
+  gpt-5.5(反証役)の ERROR は、今回の post-write 検証対象（proxy 裁定レコードの
+  レイアウト整合 guide 206/222-235）ではなく、別機構の既存記述（approval 段
+  guide 76/104）への本質的指摘である。今回の整合自体は 3 者とも問題なし
+  （gemini が 4 観点で正しいと明示確認、claude も否定せず）。本質的指摘は
+  issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch に確実に記録し、
+  design.md の decision_scope 機構と照らして別途精査する。今回のレイアウト整合
+  からはスコープ分離し leave-as-is とする（利用者承認・案A）。これは握りつぶしでは
+  なく、別タスクで必ず精査するスコープ分離である。
