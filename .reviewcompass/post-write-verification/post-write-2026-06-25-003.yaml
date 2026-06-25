@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/notes/2026-06-25-workflow-state-simplification.md
+target_sha256:
+  docs/notes/2026-06-25-workflow-state-simplification.md: 493a9e7aea674767aa8121a02ba32ae0ec81f40be34d692d7d9a7da6a4889cea
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - docs/notes/2026-06-25-workflow-state-simplification.md
+  target_sha256:
+    docs/notes/2026-06-25-workflow-state-simplification.md: 493a9e7aea674767aa8121a02ba32ae0ec81f40be34d692d7d9a7da6a4889cea
+  result: no_substantive_findings
+  checklist:
+  - 利用者との議論（2026-06-25）の内容を正確に反映した。
+  - 結論（4状態への整理・maintenance と blocking の統合根拠）を事実と区別して記録した。
+  - 実装変更の提案ではなく概念整理であることを明記した。
+  - 正本仕様を変えていない（docs/notes/ の俯瞰メモに留めた）。
+  - API review 対象ではなく、軽量自己精査の対象として適切。
+notes: Lightweight self-check for workflow state simplification discussion note.
