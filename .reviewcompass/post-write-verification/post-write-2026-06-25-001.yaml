@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: a4fe6784d132279fe0582224c32820f9297be98bbf625bd6bb6539d366c04e58
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: a4fe6784d132279fe0582224c32820f9297be98bbf625bd6bb6539d366c04e58
+  result: no_substantive_findings
+  checklist:
+  - 利用者の指摘（commit/push 完了・横展開 issue の引き継ぎ）を反映した。
+  - 事実（commit/push 完了）、記録（policy violation の真因と解消）、未着手（issue 3 件）を区別して記録した。
+  - 次セッションが現状と次タスクを追える粒度で記録した。
+  - 作業範囲を超えた仕様化はしていない（経緯・現状記録に留めた）。
+  - 正本仕様でなく次セッションメモであり、API review 対象ではない。
+notes: Lightweight self-check for TODO_NEXT_SESSION.md after proxy layout commit/push completion.
