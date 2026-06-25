@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/notes/2026-06-25-work-mode-taxonomy-related-work-index.md
+target_sha256:
+  docs/notes/2026-06-25-work-mode-taxonomy-related-work-index.md: cfc9b1aa2dc339ed2b4ca28009387b3feadab84a8840fd3460373aefe8046834
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - docs/notes/2026-06-25-work-mode-taxonomy-related-work-index.md
+  target_sha256:
+    docs/notes/2026-06-25-work-mode-taxonomy-related-work-index.md: cfc9b1aa2dc339ed2b4ca28009387b3feadab84a8840fd3460373aefe8046834
+  result: no_substantive_findings
+  checklist:
+  - 利用者の依頼（散在する MWP-0 関連作業を 1 つの索引にまとめる）を反映した。
+  - 事実（実在確認したファイル）、暫定整理（軸対応・関係）、未着手（candidate）を区別して記録した。
+  - 次の着手点（MWP-0 の system_reflection_candidates）を記し、次の判断材料にした。
+  - 作業範囲を超えた仕様化はしていない（俯瞰索引に留め、正本仕様・機構を変えていない）。
+  - 正本仕様でなく俯瞰メモ（docs/notes/）であり、API review 対象ではない。
+notes: Lightweight self-check for work-mode taxonomy related-work index note.
