@@ -1,6 +1,6 @@
 # `next --json` の kind 再設計（議論記録）
 
-最終更新：2026-06-26。
+最終更新：2026-06-26（詳細フィールド設計を追記）。
 
 ## 動機
 
@@ -51,7 +51,15 @@
 | `phase_approval_complete` / `human_decision_recorded` / `record_human_decision_failed` | 元から `next --json` の kind ではなかった（別サブコマンドの出力・入れ子フィールド） |
 | `next_action_template` / `project_state` / `subthread` / `human` / `operation_prompt` / `lightweight_self_check` | 元から `next --json` の kind ではなかった（コード内部のデータ構造） |
 
-## 詳細フィールドの設計（確定分）
+## 詳細フィールドの設計（確定）
+
+### 全 `kind` 共通フィールド
+
+| フィールド | 役割 |
+|-----------|------|
+| `kind` | 現在地のカテゴリ |
+| `required_action` | 次にすべき操作の名前（機械が読む） |
+| `reason` | 状態の説明（人間が読む） |
 
 ### `in_progress`
 
@@ -60,49 +68,55 @@
 | `feature` | 対象機能名（cross_feature_stage では `"all_features"` 固定） |
 | `phase` | 現在のフェーズ |
 | `stage` | 現在のステージ（`commit_stop_point` を含む） |
-| `reason` | 状態の説明 |
 | `upstream_phase` | 上流フェーズ名（upstream_recheck の場合のみ） |
 
 ### `blocking_in_progress`
 
-`blocking_phase` サブフィールドで段階を区別する：
+`blocking_phase` サブフィールドで段階を区別する（3値）：
 
-| `blocking_phase` 値 | 意味 | 旧 `kind` |
-|---------------------|------|-----------|
+| `blocking_phase` | 意味 | 統合された旧 `kind` |
+|-----------------|------|-------------------|
 | `required` | blocking 作業の開始が必要 | `blocking_unit_required` |
-| `in_progress` | blocking 作業中 | `blocking_unit_in_progress` / `maintenance_in_progress` |
+| `in_progress` | blocking 作業中 | `blocking_unit_in_progress` / `maintenance_in_progress` / `resume_in_progress` |
 | `return_pending` | blocking 完了・親への復帰待ち | `parent_resume_pending` |
-| `resuming` | 復帰中（進行中ファイルあり・種別不明） | `resume_in_progress` |
 
-| フィールド | 対象 `blocking_phase` | 説明 |
-|-----------|----------------------|------|
-| `blocking_phase` | 全て | 段階の区別（上記4値） |
-| `title` | 全て | 作業の名前 |
-| `reason` | 全て | 状態の説明 |
-| `unit_id` | required / in_progress | blocking unit の識別子 |
-| `parent_unit_id` | required / in_progress / return_pending | 親への戻り先 |
-| `return_conditions` | required / in_progress | 戻る条件 |
-| `completed_unit_id` | return_pending | 完了した unit の識別子 |
-| `file` | in_progress / resuming | 進行中ファイルのパス（ファイルベース管理の場合） |
-| `allowed_scope` | in_progress | 許可された操作の種類 |
-| `allowed_files` | in_progress | 許可されたファイル |
-| `completion_conditions` | in_progress | 完了条件 |
+`resuming` は廃止。`in_progress`（`unit_id` / `parent_unit_id` が null）として吸収。
 
-廃止するフィールド：`process_id`（`blocking_phase` で代替）/ `maintenance_action`（`required_action` で代替）/ `blocked_normal_workflow`（`blocking_phase: in_progress` で暗示）/ `mainline_blocked_by`（`completed` 開始の maintenance に戻り先はないという整理から不要）/ `action_parameters`（他フィールドの重複コピー）/ `active_gate`（maintenance では常に null）
+| フィールド | `required` | `in_progress` | `return_pending` | 説明 |
+|-----------|:---:|:---:|:---:|------|
+| `blocking_phase` | ✓ | ✓ | ✓ | 段階の区別 |
+| `title` | ✓ | ✓ | — | 作業の名前 |
+| `unit_id` | ✓ | ✓ | — | blocking unit の識別子（種別不明時は null） |
+| `parent_unit_id` | ✓ | ✓ | ✓ | 親への戻り先 |
+| `return_conditions` | ✓ | ✓ | — | 戻る条件（旧 `completion_conditions` と統一） |
+| `allowed_scope` | — | ✓ | — | 許可された操作の種類 |
+| `allowed_files` | — | ✓ | — | 許可されたファイル |
+| `file` | — | ✓ | — | 進行中ファイルのパス（ファイルベース管理の場合） |
+| `completed_unit_id` | — | — | ✓ | 完了した unit の識別子 |
+
+廃止するフィールド：`resuming`（`blocking_phase` 値）/ `completion_conditions`（`return_conditions` に統一）/ `process_id`（`blocking_phase` で代替）/ `maintenance_action`（`required_action` で代替）/ `blocked_normal_workflow`（`blocking_phase: in_progress` で暗示）/ `mainline_blocked_by`（`completed` 開始の maintenance に戻り先はないという整理から不要）/ `action_parameters`（他フィールドの重複コピー）/ `active_gate`（maintenance では常に null）
 
 ### `verification_pending`
 
-| フィールド | 対象 | 説明 |
-|-----------|------|------|
-| `target_files` | 全て | 検証対象ファイル |
-| `manifest` | post_write_verification / post_write_human_decision_required | 封印ファイルのパス |
-| `reason` | 全て | 状態の説明 |
-| `forbidden_files` | post_write_policy_violation のみ | ルール違反のファイル |
-| `codes` | post_write_verification（任意） | 検証コード |
+`verification_type` サブフィールドで種類を区別する：
+
+| `verification_type` | 意味 | 次のアクション |
+|--------------------|------|--------------|
+| `pending` | 検証待ち・未着手 | 検証を実施する |
+| `policy_violation` | 禁止変更が混入 | 違反を解消する |
+| `human_decision_required` | 未解決の重大所見あり | 人間が判断する |
+
+| フィールド | `pending` | `policy_violation` | `human_decision_required` | 説明 |
+|-----------|:---:|:---:|:---:|------|
+| `verification_type` | ✓ | ✓ | ✓ | 種類の区別 |
+| `target_files` | ✓ | ✓ | ✓ | 検証対象ファイル |
+| `manifest` | ✓ | — | ✓ | 封印ファイルのパス |
+| `forbidden_files` | — | ✓ | — | ルール違反のファイル |
+| `codes` | ✓（任意） | — | — | 検証コード |
 
 ### `reopen_in_progress`
 
-廃止するフィールド：`next_drafting_gate`（`active_gate` で代替・ただし手引き改修が必要）/ `feature`（`required_feature_scope` で代替）/ `direct_features` / `indirect_features` / `feature_impact_scope_basis`（手引きに参照なし）
+廃止するフィールド：`next_drafting_gate`（`active_gate` で代替・手引き改修が必要）/ `feature`（`required_feature_scope` で代替）/ `direct_features` / `indirect_features` / `feature_impact_scope_basis`（手引きに参照なし）
 
 残すフィールド：`file` / `next_step` / `step_number` / `completed_steps` / `pending_gates` / `next_pending_gate` / `active_gate` / `current_blocker` / `required_action` / `blocked_by` / `approval_record_path` / `required_feature_scope` / `phase` / `stage` / `reason` / `repair_reasons`（任意）
 

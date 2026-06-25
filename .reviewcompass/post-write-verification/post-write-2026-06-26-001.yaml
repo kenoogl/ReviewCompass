@@ -2,7 +2,7 @@ status: completed
 target_files:
 - docs/notes/2026-06-26-next-json-kind-redesign.md
 target_sha256:
-  docs/notes/2026-06-26-next-json-kind-redesign.md: 42b77fbb6a6d001c6a999a1fef3f279c69ea21bc4612e6bf9ea8cf0f291c4198
+  docs/notes/2026-06-26-next-json-kind-redesign.md: a2539c18675124a968b96a5b1f8792f5f9ad84d20b304556429df9a516096d92
 required_verifiers:
 - lightweight_self_check
 completed_verifiers:
@@ -13,12 +13,12 @@ verifications:
   target_files:
   - docs/notes/2026-06-26-next-json-kind-redesign.md
   target_sha256:
-    docs/notes/2026-06-26-next-json-kind-redesign.md: 42b77fbb6a6d001c6a999a1fef3f279c69ea21bc4612e6bf9ea8cf0f291c4198
+    docs/notes/2026-06-26-next-json-kind-redesign.md: a2539c18675124a968b96a5b1f8792f5f9ad84d20b304556429df9a516096d92
   result: no_substantive_findings
   checklist:
   - 利用者との議論（2026-06-26）の内容を正確に反映した。
-  - commit --preflight への移動決定を追記し、根拠を記録した。
+  - 全 kind 共通フィールドの確定・blocking_in_progress の再整理・verification_pending の verification_type 追加を追記した。
   - 決定済みと残作業を区別して記録した。
   - 正本仕様を変えていない（docs/notes/ の議論記録に留めた）。
   - API review 対象ではなく、軽量自己精査の対象として適切。
-notes: Lightweight self-check for next-json kind redesign discussion note (updated with commit-preflight migration decision).
+notes: Lightweight self-check for next-json kind redesign discussion note (updated with detail field design decisions).
