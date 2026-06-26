@@ -10532,5 +10532,114 @@ class FeatureOrderGeneralizationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "completed")
 
 
+class ActiveSessionsCommitGuardTests(unittest.TestCase):
+  """active-sessions.json によるセッション記録コミット制御（仕様§6.2）"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+    self.pending_file = _init_git_repo(self.tmpdir)
+    self._active_sessions_path = (
+      Path(self.tmpdir) / ".reviewcompass" / "runtime" / "active-sessions.json"
+    )
+    self._active_sessions_path.parent.mkdir(parents=True, exist_ok=True)
+
+  def _make_session_record(self, session_id, layer="evidence"):
+    """セッション記録 md を作成して git add する"""
+    if layer == "evidence":
+      path = (
+        Path(self.tmpdir)
+        / ".reviewcompass"
+        / "evidence"
+        / "sessions"
+        / f"2026-06-26-claude-{session_id}.md"
+      )
+    else:
+      path = (
+        Path(self.tmpdir)
+        / "docs"
+        / "sessions"
+        / f"auto-2026-06-26-claude-{session_id}.md"
+      )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+      f"---\nsession_label: claude-2026-06-26-{session_id}\n---\n内容\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", str(path)], cwd=self.tmpdir, check=True, capture_output=True
+    )
+    return path
+
+  def _write_active_sessions(self, session_ids):
+    self._active_sessions_path.write_text(
+      json.dumps({"active": list(session_ids)}), encoding="utf-8"
+    )
+
+  def test_commit_preflight_blocks_session_record_of_active_session(self):
+    """active-sessions に含まれるセッション ID の記録は staged でも弾く"""
+    session_id = "aaaa1111-0000-0000-0000-000000000001"
+    self._make_session_record(session_id)
+    self._write_active_sessions([session_id])
+
+    result = run_script(
+      ["commit-preflight", "--json"], cwd=self.tmpdir
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    reasons = "\n".join(data["reasons"])
+    self.assertIn("進行中セッション", reasons)
+
+  def test_commit_preflight_allows_session_record_of_inactive_session(self):
+    """active-sessions に含まれないセッション ID の記録はコミット可能"""
+    session_id = "bbbb2222-0000-0000-0000-000000000002"
+    self._make_session_record(session_id)
+    self._write_active_sessions([])
+
+    result = run_script(
+      ["commit-preflight", "--json"], cwd=self.tmpdir
+    )
+    _assert_script_invoked(self, result)
+    data = json.loads(result.stdout)
+    reasons = "\n".join(data.get("reasons", []))
+    self.assertNotIn("進行中セッション", reasons)
+
+  def test_commit_preflight_blocks_when_active_sessions_missing_and_sha256_changed(self):
+    """active-sessions.json が存在しない場合は従来の sha256 判定にフォールバックする"""
+    session_id = "cccc3333-0000-0000-0000-000000000003"
+    fake_jsonl = Path(self.tmpdir) / "fake.jsonl"
+    fake_jsonl.write_bytes(b"old content")
+    path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "evidence"
+      / "sessions"
+      / f"2026-06-26-claude-{session_id}.md"
+    )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    stored_sha = hashlib.sha256(b"different content").hexdigest()
+    path.write_text(
+      f"---\nsession_label: claude-2026-06-26-{session_id}\n"
+      f"source_path: {fake_jsonl}\nsource_sha256: {stored_sha}\n---\n内容\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", str(path)], cwd=self.tmpdir, check=True, capture_output=True
+    )
+    # active-sessions.json は作成しない
+
+    result = run_script(
+      ["commit-preflight", "--json"], cwd=self.tmpdir
+    )
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    reasons = "\n".join(data["reasons"])
+    self.assertIn("進行中セッション", reasons)
+
+
 if __name__ == "__main__":
   unittest.main()

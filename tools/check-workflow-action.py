@@ -3299,13 +3299,61 @@ def _is_session_record_path(path):
   )
 
 
-def _session_record_source_changed(record_text, cwd):
-  """セッション記録の元ログが生成時から変化していれば True（＝まだ進行中）。
+def _load_active_sessions(cwd):
+  """active-sessions.json の active リストを返す。ファイルがなければ None。
 
-  判定は frontmatter の source_sha256（生成時の元ログのハッシュ）と、いまの元ログの
-  ハッシュの一致で行う。判定不能（frontmatter 無し・source 欄欠落・元ログ無し）は
+  None は「管理ファイル不在」を意味し、呼び出し側で sha256 フォールバックを行う。
+  """
+  path = Path(cwd) / ".reviewcompass" / "runtime" / "active-sessions.json"
+  if not path.exists():
+    return None
+  try:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    ids = data.get("active")
+    return list(ids) if isinstance(ids, list) else []
+  except (OSError, json.JSONDecodeError):
+    return None
+
+
+def _session_id_from_record(record_text):
+  """frontmatter の session_label からセッション ID を取り出す。
+
+  session_label の形式は 'claude-<date>-<uuid>' または '<uuid>' を想定する。
+  取り出せなければ None。
+  """
+  fm = _front_matter_from_text(record_text)
+  if not isinstance(fm, dict):
+    return None
+  label = fm.get("session_label", "")
+  if not label:
+    return None
+  # 末尾の UUID 部分（8-4-4-4-12 形式）を抽出する
+  import re
+  m = re.search(
+    r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$",
+    label,
+    re.IGNORECASE,
+  )
+  return m.group(1) if m else None
+
+
+def _session_record_is_active(record_text, cwd):
+  """セッション記録が進行中セッションに属していれば True を返す。
+
+  判定の優先順位：
+  1. active-sessions.json が存在する → session_label の UUID が active リストに含まれるか
+  2. active-sessions.json が存在しない → 従来の sha256 比較にフォールバック
+
+  判定不能（frontmatter 無し・セッション ID 取得失敗・ファイル読み取り失敗）は
   False を返し、過剰遮断しない。
   """
+  active = _load_active_sessions(cwd)
+  if active is not None:
+    session_id = _session_id_from_record(record_text)
+    if session_id is None:
+      return False
+    return session_id in active
+  # フォールバック：sha256 比較
   fm = _front_matter_from_text(record_text)
   if not isinstance(fm, dict):
     return False
@@ -3326,7 +3374,7 @@ def _session_record_source_changed(record_text, cwd):
 
 
 def validate_no_in_progress_session_records(cwd, staged_files):
-  """進行中セッション（元ログが生成時から変化）の記録が staged にあれば弾く。
+  """進行中セッションの記録が staged にあれば弾く。
 
   会話ログの記録は終了済みセッションについてだけコミットする。手作業の除外に頼ると
   守り忘れの温床になるため、コミット前検査で機械的に止める歯止め。
@@ -3338,13 +3386,13 @@ def validate_no_in_progress_session_records(cwd, staged_files):
     text = commit_file_text(cwd, "", path)
     if text is None:
       continue
-    if _session_record_source_changed(text, cwd):
+    if _session_record_is_active(text, cwd):
       offenders.append(path)
   errors = []
   if offenders:
     errors.append(
       "進行中セッションの記録はコミットできません"
-      "（元の会話ログが生成時から変化＝まだ進行中。終了後に取り込み直すと churn）: "
+      "（セッションがまだ active、または終了後に取り込み直す必要あり）: "
       + ", ".join(offenders)
     )
   return {"in_progress_records": offenders}, errors
@@ -3372,7 +3420,7 @@ def _status_line_is_in_progress_record(line, cwd):
     text = target.read_text(encoding="utf-8")
   except OSError:
     return False
-  return _session_record_source_changed(text, cwd)
+  return _session_record_is_active(text, cwd)
 
 
 def _unique_preserving_order(items):
@@ -4478,6 +4526,16 @@ def build_commit_instruction_preflight(cwd):
     allowed_to_delegate_execution = False
     reasons.extend(commit_unit_errors)
 
+  in_progress_record_state, in_progress_record_errors = (
+    validate_no_in_progress_session_records(cwd, staged_files)
+  )
+  if in_progress_record_errors:
+    verdict = "DEVIATION"
+    allowed_to_stage = False
+    allowed_to_prepare_approval = False
+    allowed_to_delegate_execution = False
+    reasons.extend(in_progress_record_errors)
+
   approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
   execution_delegation_errors = validate_commit_execution_delegation(
     cwd,
@@ -4501,6 +4559,7 @@ def build_commit_instruction_preflight(cwd):
     "execution_delegation_errors": execution_delegation_errors,
     "repair_workflow_state": repair_state,
     "commit_unit": commit_unit_state,
+    "in_progress_session_records": in_progress_record_state,
   }
 
   return _build_commit_preflight_response(

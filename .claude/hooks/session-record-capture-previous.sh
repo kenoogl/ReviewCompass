@@ -89,6 +89,26 @@ if [ -f "$DONE_MARKER" ]; then
 fi
 
 cd "$REPO_ROOT" || exit 0
+
+# 現セッション ID を active-sessions.json に登録する
+ACTIVE_SESSIONS_PATH="$REPO_ROOT/.reviewcompass/runtime/active-sessions.json"
+if [ -n "$SESSION_ID" ]; then
+  python3 - "$ACTIVE_SESSIONS_PATH" "$SESSION_ID" <<'PYEOF'
+import json, sys, pathlib
+path, sid = pathlib.Path(sys.argv[1]), sys.argv[2]
+path.parent.mkdir(parents=True, exist_ok=True)
+try:
+  data = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+except (json.JSONDecodeError, OSError):
+  data = {}
+active = data.get("active", [])
+if sid not in active:
+  active.append(sid)
+data["active"] = active
+path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+PYEOF
+fi
+
 python3 tools/session-record-backfill.py \
   --session "$PREV" --source claude \
   --evidence-dir "$EVIDENCE_DIR" --docs-dir "$DOCS_DIR" >/dev/null 2>&1 || true
