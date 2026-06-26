@@ -121,15 +121,24 @@ def _check_sensitive_information(prompt: str, reasons: List[str]) -> None:
 
 
 def _extract_section(prompt: str, section_header: str) -> str:
-  """指定セクションから次のセクションまでの文字列を返す。"""
+  """指定セクションから次のセクションまでの文字列を返す。
+
+  コードブロック（``` ... ```）の内部にある ## 見出しは次セクションとみなさない。
+  """
   start = prompt.find(section_header)
   if start == -1:
     return ""
-  # 次の ## セクションを探す
-  next_section = prompt.find("\n## ", start + len(section_header))
-  if next_section == -1:
-    return prompt[start:]
-  return prompt[start:next_section]
+  pos = start + len(section_header)
+  in_code_block = False
+  while pos < len(prompt):
+    if prompt[pos] == "\n":
+      rest = prompt[pos + 1:]
+      if rest.startswith("```"):
+        in_code_block = not in_code_block
+      if not in_code_block and rest.startswith("## "):
+        return prompt[start:pos]
+    pos += 1
+  return prompt[start:]
 
 
 def _has_content_block(text: str) -> bool:
