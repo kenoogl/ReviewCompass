@@ -4111,6 +4111,133 @@ class NextNavigationTests(unittest.TestCase):
       [".reviewcompass/guidance/discipline_approval_operation.md"],
     )
 
+  def test_next_post_write_policy_violation_includes_file_classification(self):
+    """policy violation 地点では変更ファイルがクラスタ別に分類される"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証対象の正本文書\n", encoding="utf-8")
+    tool_file = cwd / "tools" / "some_helper.py"
+    tool_file.parent.mkdir(parents=True, exist_ok=True)
+    tool_file.write_text("# ツールファイル\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_policy_violation")
+    classification = data["next_action"]["file_classification"]
+    self.assertIsInstance(classification, dict)
+    self.assertIn("tools", classification)
+    self.assertIn("docs_notes_and_disciplines", classification)
+    self.assertIn("tools/some_helper.py", classification["tools"])
+    self.assertIn("docs/disciplines/new-policy.md", classification["docs_notes_and_disciplines"])
+
+  def test_next_post_write_policy_violation_includes_operation_policy(self):
+    """policy violation 地点では許可操作と禁止操作が機械出力に含まれる"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証対象の正本文書\n", encoding="utf-8")
+    tool_file = cwd / "tools" / "some_helper.py"
+    tool_file.parent.mkdir(parents=True, exist_ok=True)
+    tool_file.write_text("# ツールファイル\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "post_write_policy_violation")
+    self.assertIn("allowed_operations", action)
+    self.assertIn("forbidden_operations", action)
+    self.assertIsInstance(action["allowed_operations"], list)
+    self.assertIsInstance(action["forbidden_operations"], list)
+    forbidden = action["forbidden_operations"]
+    self.assertIn("run_post_write_review", forbidden)
+    self.assertIn("create_post_write_manifest", forbidden)
+    self.assertIn("commit", forbidden)
+    self.assertIn("push", forbidden)
+
+  def test_next_post_write_policy_violation_inspect_is_read_only(self):
+    """policy violation の分類処理はファイルを書かない（読み取り専用）"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("検証対象の正本文書\n", encoding="utf-8")
+    tool_file = cwd / "tools" / "some_helper.py"
+    tool_file.parent.mkdir(parents=True, exist_ok=True)
+    tool_file.write_text("# ツールファイル\n", encoding="utf-8")
+    runtime_prefix = str(cwd / ".reviewcompass" / "runtime")
+    files_before = set(
+      str(p) for p in cwd.rglob("*")
+      if p.is_file() and not str(p).startswith(runtime_prefix)
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "post_write_policy_violation")
+    files_after = set(
+      str(p) for p in cwd.rglob("*")
+      if p.is_file() and not str(p).startswith(runtime_prefix)
+    )
+    newly_created = files_after - files_before
+    self.assertEqual(
+      newly_created, set(),
+      f"policy violation inspect が runtime 以外のファイルを新規作成した: {newly_created}",
+    )
+
+  def test_next_post_write_policy_violation_classifies_guidance_files(self):
+    """.reviewcompass/guidance/ 配下は guidance クラスタに分類される"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "operations" / "workflow.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("運用文書\n", encoding="utf-8")
+    guidance = cwd / ".reviewcompass" / "guidance" / "some-rule.md"
+    guidance.parent.mkdir(parents=True, exist_ok=True)
+    guidance.write_text("規律変更\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "post_write_policy_violation")
+    classification = action["file_classification"]
+    self.assertIn(".reviewcompass/guidance/some-rule.md", classification["guidance"])
+
+  def test_next_post_write_policy_violation_classifies_tests_files(self):
+    """tests/ 配下は tests クラスタに分類される"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_specs_for_next(cwd, {})
+    target = cwd / "docs" / "disciplines" / "policy.md"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("規律文書\n", encoding="utf-8")
+    test_file = cwd / "tests" / "tools" / "test_something.py"
+    test_file.parent.mkdir(parents=True, exist_ok=True)
+    test_file.write_text("# テスト\n", encoding="utf-8")
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "post_write_policy_violation")
+    classification = action["file_classification"]
+    self.assertIn("tests", classification)
+    self.assertIn("tests/tools/test_something.py", classification["tests"])
+
   def test_next_allows_discipline_post_write_when_it_is_the_only_target(self):
     """規律ファイル単独の変更は post-write-verification 対象として扱う"""
     cwd = Path(self.tmpdir)
