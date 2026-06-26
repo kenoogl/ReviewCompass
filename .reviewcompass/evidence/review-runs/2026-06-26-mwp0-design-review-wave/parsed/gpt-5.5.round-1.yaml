@@ -1,0 +1,38 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 47.346
+findings:
+- severity: ERROR
+  target_location: §5.2 next_action_response.schema.json（条件付き必須フィールド）
+  description: Req 2 受入 11(6) の required_action 値ごとのフィールド制約が、schema 設計としては一部しか引き継がれていない。
+  rationale: §5.2 の条件付き定義は `repair_reasons` と `run_maintenance` 時の `action_parameters`
+    のみを明示している。一方、上流要件は `commit_stop_point` 時の `active_gate/phase/stage/blocked_by`
+    制約、`run_reopen_pending_gate` 時の `active_gate` 非 null と phase/stage 一致、`run_reopen_drafting`
+    時の `active_gate` 形式、`wait_for_human_decision` 時の `blocked_by.type` による停止理由区別も受入条件としている。本文の周辺節に一部の運用説明はあるが、`next_action_response.schema.json`
+    の設計節として受入 11(6) 全体をどう検証するかが欠落しており、schema 実装時に上流制約が弱体化する恐れがある。
+- severity: ERROR
+  target_location: §5.2 kind フィールドの値域
+  description: '`kind` の値追加・変更が「この表と schema enum 修正で完結する」とされており、Req 2 受入 12 の 7 値限定を弱めている。'
+  rationale: 受入 12 は `next --json` の `kind` を作業の現在地カテゴリ 7 種に限定し、コミット前確認 3 種を除外するという責務境界を定めている。設計文の『値の追加・変更はこの表と
+    schema enum 修正で完結する』は、requirements の受入条件変更なしに値域を拡張できるように読めるため、上流の禁止事項と値域限定を弱体化する。少なくとも
+    `kind` 値域の追加・変更は requirements の受入条件改訂を伴う、と明記する必要がある。
+- severity: WARN
+  target_location: §5.3 blocking_in_progress の廃止フィールド
+  description: '`completion_conditions` の廃止説明が、`run_maintenance` 時の `action_parameters.completion_conditions`
+    必須サブフィールドと混同される余地が残っている。'
+  rationale: §5.3 は `blocking_in_progress` 詳細フィールドとしての `action_parameters` は廃止しない旨を注記しており、受入
+    11(2) の `action_parameters` 自体は概ね保護されている。しかし同じ廃止リスト内で `completion_conditions`
+    を `return_conditions` に統一するとしており、受入 11 の `action_parameters` 必須 6 サブフィールドに含まれる
+    `completion_conditions` まで renamed/deprecated と誤読される可能性がある。`completion_conditions`
+    の廃止も blocking detail レベルに限り、`next_action.action_parameters.completion_conditions`
+    は存続する、と明記するのが安全である。
+- severity: WARN
+  target_location: §5.3 全 kind 共通フィールド
+  description: '`reason` が全 kind 共通フィールドとして追加されているが、Req 2 受入 11 の必須構造では最上位 `reasons`
+    が定義されており、`next_action.reason` の位置付けが未根拠に見える。'
+  rationale: 上流要件の最上位必須フィールドは `reasons` 配列であり、`next_action` の最低限必須 10 フィールドに `reason`
+    は含まれない。`additionalProperties` を開放しているため任意フィールドとしての追加自体は直ちに禁止ではないが、§5.3 で『全 kind
+    共通』とすると、実装者が `next_action.reason` を事実上必須または正本の理由フィールドと解釈する恐れがある。上流の `reasons`
+    との責務差、任意補助フィールドなのか、または削除すべき旧フィールドなのかを明確化すべきである。

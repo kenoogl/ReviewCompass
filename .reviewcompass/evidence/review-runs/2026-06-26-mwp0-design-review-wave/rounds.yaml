@@ -1,0 +1,140 @@
+round_id: round-1
+purpose: design
+invocation_timestamp: '2026-06-26T14:55:27.634850+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: c5fd36c4e1452dd8c13c49fe84bd7b504a845c2423a9187f7222a8f71dc1473f
+criteria: "### 背景と目的\n\nこのレビューは ReviewCompass プロジェクトの `workflow-management` 機能における\
+  \ design フェーズの `review-wave`（全機能横断のまとめレビュー）である。\n\n今回の変更（MWP-0）は `next --json` コマンドの応答フィールド\
+  \ `kind` の値域を旧14値から7値へ整理し、コミット操作前確認用の3値を `commit-preflight` サブコマンドへ移動したことである。この変更に対応して\
+  \ `design.md` の §5.2・§5.3・§5.4 が追記・修正された。\n\n`triad-review`（3役レビュー）は完了しており、所見6件の対処が済んでいる。今回の\
+  \ `review-wave` では、対処後の設計が上流の要件の意図・責務境界・受入条件・禁止事項を欠落・弱体化・逸脱・未根拠追加なく引き継いでいるかを独立した視点で確認する。\n\
+  \n---\n\n### 上流要件（requirements.md 抜粋）\n\n**Requirement 2 受入 11（`next_action_response.schema.json`\
+  \ の定義）の要点**\n\n- 最上位の必須フィールド：`verdict`・`exit_code`・`next_action`・`reasons`・`current_state`\
+  \ の5つ\n- `verdict` は最上位にのみ置き `next_action` 内には含めない\n- `next_action` の最低限の必須フィールド（10個）：`kind`・`required_action`・`active_gate`・`feature`・`phase`・`stage`・`required_feature_scope`・`blocked_by`・`future_gates`・`state_refs`\n\
+  - `action_parameters` は `run_maintenance` のみを対象とする条件付き必須フィールド（6サブフィールド必須）\n- `feature`\
+  \ の取り得る値：単一機能名・`\"all_features\"`・null の3種のみ\n- 進行中の作業単位がない場合、`feature`・`phase`・`stage`・`active_gate`\
+  \ はすべて null\n- `required_action` の値ごとのフィールド制約（受入 11(6)）：\n  - ① `commit_stop_point`\
+  \ 時：`active_gate=null`・`phase=null`・`stage=null`・`blocked_by.type=\"commit_stop_point\"\
+  `\n  - ② `run_reopen_pending_gate` 時：`active_gate` 非 null・`phase`/`stage` は `active_gate`\
+  \ と一致・`blocked_by=null`\n  - ③ `run_reopen_drafting` 時：`active_gate` は `stages/<phase>.yaml#drafting`\
+  \ 形式\n  - ④ `repair_workflow_state` 時：`active_gate=null`・`phase=null`・`stage=null`・`repair_reasons`\
+  \ 非空\n  - ⑤ `wait_for_human_decision` 時：`blocked_by.type` で停止理由を区別\n  - ⑥ `run_maintenance`\
+  \ 時：`action_parameters` に6サブフィールドを含める\n\n**Requirement 2 受入 12（`kind` 値域の限定）**\n\
+  \n`commit_candidate`・`commit_mixing_risk`・`commit_unit_stale` の3種類の判定を `next --json`\
+  \ の `kind` から除外し、`commit-preflight` サブコマンドの出力にのみ含める。\n\nこれらは「作業の現在地カテゴリ」ではなく「コミット操作の前確認」であるため。\n\
+  \n`next --json` の `kind` は作業の現在地を示す7種類に限定する：\n`completed` / `in_progress` / `blocking_in_progress`\
+  \ / `verification_pending` / `reopen_in_progress` / `feature_definition_required`\
+  \ / `unknown`\n\n---\n\n### 審査対象（design.md §5.2〜§5.4 の本文）\n\n**§5.2 `kind` フィールドの値域**\n\
+  \n`kind` は `next_action_response.schema.json` 内にインライン `enum` として定義する（`kind` は `next_action_response`\
+  \ 内でのみ参照されるため別ファイル化しない）。\n\n2026-06-26 MWP-0 反映：旧14値を7値へ整理した。旧値との対応は `docs/notes/2026-06-26-next-json-kind-redesign.md`\
+  \ の新旧対照表を正本とする。\n\n| 優先順位 | 値 | 意味 |\n|---:|---|---|\n| 1 | `reopen_in_progress`\
+  \ | 再開手続き中（サブステップは詳細フィールドで返す） |\n| 2 | `blocking_in_progress` | 本線とは別の作業中（maintenance\
+  \ / side track / resume を統合） |\n| 3 | `verification_pending` | 書き込み後の検証（post-write\
+  \ verification）待ち |\n| 4 | `in_progress` | 通常の作業中（stage / cross_feature_stage /\
+  \ upstream_recheck / commit_stop_point を統合） |\n| 5 | `feature_definition_required`\
+  \ | プロジェクト立ち上げ時の初期設定未完了（特殊ケース・verdict: OK） |\n| 6 | `completed` | 全作業完了 |\n| 7 |\
+  \ `unknown` | 想定外のエラー状態（ファイル破損・整合違反など・verdict: DEVIATION） |\n\n値の追加・変更はこの表と `next_action_response.schema.json`\
+  \ の `enum` 修正で完結する。\n\n**§5.3 `kind` 詳細フィールド設計（MWP-0 反映）**\n\n全 kind 共通フィールド：`kind`（現在地のカテゴリ7値）・`required_action`（次にすべき操作）・`reason`（状態の説明）\n\
+  \n`in_progress` の追加フィールド：旧 stage / cross_feature_stage / upstream_recheck / commit_stop_point\
+  \ の4種類を統合する。ただし commit_stop_point を統合する場合、受入 11(6) の制約に従い `stage` の値は null になる（`stage:\
+  \ \"commit_stop_point\"` という文字列値は取らない）。\n\n| フィールド | 説明 |\n|-----------|------|\n\
+  | `feature` | 対象機能名（cross_feature_stage 相当は `\"all_features\"` 固定、commit_stop_point\
+  \ 時は null） |\n| `phase` | 現在のフェーズ（commit_stop_point 時は null） |\n| `stage` | 現在のステージ（commit_stop_point\
+  \ 時は null・受入 11(6) 参照） |\n| `upstream_phase` | 上流フェーズ名（upstream_recheck 相当の場合のみ）\
+  \ |\n\n`blocking_in_progress` の追加フィールド：`blocking_phase` サブフィールドで段階を区別（`required`\
+  \ / `in_progress` / `return_pending` の3値）\n\n廃止フィールドと理由：`resuming`（`blocking_phase:\
+  \ in_progress` に統合・この時 `unit_id`/`parent_unit_id` は null を許容）/ `completion_conditions`（`return_conditions`\
+  \ に統一）/ `action_parameters`（他フィールドの重複コピー）/ その他。\n\n注：廃止する `action_parameters` は\
+  \ `blocking_in_progress` 詳細フィールドとしての `action_parameters` であり、`next_action` 直下の条件付き必須フィールド（`required_action\
+  \ = \"run_maintenance\"` のとき必須・受入 11(2)）とは配置レベルが異なる別物である。後者は廃止しない。\n\n`verification_pending`\
+  \ の追加フィールド：`verification_type` サブフィールドで種類を区別（`pending` / `policy_violation` / `human_decision_required`\
+  \ の3値）\n\n`reopen_in_progress` の廃止フィールド：`next_drafting_gate`（`active_gate` で代替）/\
+  \ 旧 reopen 独自の意味での `feature`（`required_feature_scope` で代替。`next_action` の必須フィールドとしての\
+  \ `feature` は別物であり存続する）/ `direct_features` / `indirect_features` / `feature_impact_scope_basis`\n\
+  \n**§5.4 `commit-preflight` サブコマンドの kind 設計（MWP-0 反映）**\n\n2026-06-26 MWP-0 の受入\
+  \ 12 により、次の3種類の判定を `next --json` の `kind` から除外し `commit-preflight` サブコマンドの出力にのみ含める。\n\
+  \n| `kind` | 意味 |\n|--------|------|\n| `commit_candidate` | コミット可能状態 |\n| `commit_mixing_risk`\
+  \ | 異なる作業単位が混在したコミット |\n| `commit_unit_stale` | コミット単位の情報が古い |\n\nこれら3値は「コミット操作の前確認」であり「作業の現在地」ではない。`commit-preflight`\
+  \ は既存のコミット手前の必須確認手順（手順：commit-preflight → git add → guarded commit）として確立されており、これらを\
+  \ `commit-preflight` に集約することで `next --json` の `kind` 値域を「作業の現在地カテゴリ」に限定できる。\n\n\
+  `commit-preflight` サブコマンドが返す `kind` の値域はこの3値とし、`next --json` は `commit_candidate`\
+  \ / `commit_mixing_risk` / `commit_unit_stale` を返さない。\n\n---\n\n### `triad-review`\
+  \ で修正済みの所見（参考）\n\n1. §5.2 フィールド型定義表の `kind` 行に「14値」という旧記述が残存 → 「7値インライン定義」に修正済み\n\
+  2. `commit_stop_point` 時に `stage: \"commit_stop_point\"`（文字列値）としていたが受入 11(6)① と矛盾\
+  \ → `stage=null` に修正済み\n3. `blocking_in_progress` 廃止フィールドの `action_parameters` が受入\
+  \ 11(2) の必須フィールドと混同されていた → 配置レベルが別物である旨の注記を追記済み\n4. operation preflight の参照一覧に廃止予定フィールドが廃止注記なく残存\
+  \ → 廃止予定コメントを追記済み\n5. `reopen_in_progress` の `feature` 廃止が `next_action` の必須フィールドとしての\
+  \ `feature` と混同されていた → 別物である旨の注記を追記済み\n6. `resuming` 統合時に `unit_id`/`parent_unit_id`\
+  \ が null を許容することが表から読み取れなかった → 注記を追記済み\n\n---\n\n### レビューの問い\n\n上記の要件（Req 2 受入 11・受入\
+  \ 12）と、設計（§5.2・§5.3・§5.4）を独立して比較し、以下を分析してください。\n\n**主問：** 上流要件の目的・責務境界・受入条件・禁止事項が、`triad-review`\
+  \ 対処後の §5.2〜§5.4 に欠落・弱体化・逸脱・未根拠追加なく引き継がれているか。\n\n具体的に確認してほしい観点（ただし、これ以外の問題を発見した場合も報告してください）：\n\
+  \n1. §5.2 の7値リストが受入 12 の7値リスト（`completed` / `in_progress` / `blocking_in_progress`\
+  \ / `verification_pending` / `reopen_in_progress` / `feature_definition_required`\
+  \ / `unknown`）と完全に一致しているか\n2. §5.4 の commit-preflight への3値移動が、受入 12 の「コミット操作の前確認は\
+  \ next --json の kind から除外する」意図を正確に実現しているか\n3. §5.3 の `in_progress` における `commit_stop_point`\
+  \ 時の `stage=null` 設計が、受入 11(6)① の制約と整合しているか（`docs/notes` の `stage: commit_stop_point`\
+  \ 記述との関係を含む）\n4. §5.3 の `action_parameters` 廃止注記が、受入 11(2)（`run_maintenance` 時の\
+  \ `action_parameters` 条件付き必須）を弱体化していないか\n\n所見は重大度（must-fix / should-fix / consider）と対象節（§5.2\
+  \ / §5.3 / §5.4）を明示してください。\n"
+prompt_sha256: a6019ccf3aebdf9574996d4e0731619fb605bcb1b90861766e8b4ca8e0110e9f
+model_results:
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: 9920de29fcb96cfa9639a675987f44ce7d097d8b8aaec9a8eac0bf3a2e88f8d0
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: d142345da4bd36195b86d842b6bf836c280195372ac7d2f1c024925d80e84efa
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-26T14:51:18.944574+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 24.505
+  prompt_path: prompts/claude-opus-4-8.round-1.prompt.md
+  prompt_sha256: 7e8828de1d0cda0f7686dfa1663e9def7d26399a5218814c872792ec9c7b722a
+- model_id: gpt-5.5
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: 5c6d1763b4cbddd445e075534b0038bf8f31cff410eb8d00e75d237a7638001f
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: 397bd7d68a42c234b42be8974e69aa337480b558e4888d5c1daf74e96262a91a
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-26T14:52:06.359157+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 47.346
+  prompt_path: prompts/gpt-5.5.round-1.prompt.md
+  prompt_sha256: 083456e8168de0939b3b63548cb597bd1f0b388e245fbb2b29846238ecee9015
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 3fa4ef74f0d82a5c683109cea9b4708e17b530abd529fe67daa550122942aa87
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: cae2e118c9b7d0c11cc79cb24b6d733a3c7326836170f90cbcd308c59645da38
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-26T14:55:27.634850+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 132.319
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: a6019ccf3aebdf9574996d4e0731619fb605bcb1b90861766e8b4ca8e0110e9f
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-26-mwp0-design-review-wave/criteria.md
+criteria_source_sha256: 6eeeff461d6c249cf138003563bdcd933479762647c5d044fe11c733ab1eff5c

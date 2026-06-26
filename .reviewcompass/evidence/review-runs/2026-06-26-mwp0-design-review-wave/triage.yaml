@@ -1,0 +1,191 @@
+run_id: 2026-06-26-mwp0-design-review-wave
+triage_status: draft
+generated_at: '2026-06-26T14:55:27.664304+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-26-mwp0-design-review-wave-claude-opus-4-8-primary-001
+  run_id: 2026-06-26-mwp0-design-review-wave
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.3 in_progress の追加フィールド表 / §5.2 値域表
+  plain_language_summary: '§5.3 の `in_progress` 統合説明では「旧 stage / cross_feature_stage
+    / upstream_recheck / commit_stop_point の4種類を統合する」とあり、`commit_stop_point` を統合対象として記載している。
+    一方で受入 11(6)① では `commit_stop_point` 時に active_gate/phase/stage がすべて null で blocked_by.type="commit_stop_point"
+    となり、§5.2 上流の `next --json unique action selector` 設計（本文「§軽量版検査スクリプトモデル §2」および
+    §6 後段）では commit stop point は `required_action=commit_stop_point` を返す独立 selector
+    経路として扱われている。 commit_stop_point が `kind: in_progress` として返るのか、それとも別 kind/別 required_action
+    経路で返るのかが §5.3 と上流 selector 記述の間で曖昧であり、統合の意味が一意に読み取れない。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 受入 11(6)① の制約自体は §5.3 で stage=null として正しく引き継がれている（triad-review
+    所見2 の対処は維持されている）が、「commit_stop_point を in_progress に統合する」という統合方針が 上流 selector
+    の独立経路設計と整合するかが明示されておらず、kind と required_action の対応関係に 読み手が複数解釈を持ち得る。責務境界（どの kind
+    がどの状態を表すか）の一意性が弱まる懸念がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-26-mwp0-design-review-wave-claude-opus-4-8-primary-002
+  run_id: 2026-06-26-mwp0-design-review-wave
+  source_model: claude-opus-4-8
+  source_round: round-1
+  source_raw_path: raw/claude-opus-4-8.round-1.txt
+  source_parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: §5.3 reopen_in_progress の廃止フィールド / Req 12 設計モデル §11・preflight response
+    schema
+  plain_language_summary: §5.3 で `reopen_in_progress` の `next_drafting_gate` と旧 reopen
+    独自の `feature` / `direct_features` / `indirect_features` を廃止し `active_gate` / `required_feature_scope`
+    で代替すると明記している。一方、§Req 12 の preflight response schema および §11 の `reopen_in_progress`
+    の `next_action` 列挙には `direct_features` / `indirect_features` / `next_drafting_gate`
+    が「2026-06-26 MWP-0 廃止予定」コメント付きで残存している。これは triad-review 所見4（廃止予定コメント追記）の対処範囲内で整合しているが、§5.3
+    の「廃止」と §Req 12 の「廃止予定（残存）」という状態表現の差異が、MWP-0 適用後の正本値域として next --json が実際にこれらを返すのか否かを読み手に確認させる必要を残す。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 受入 12 は `next --json` の kind 値域限定を主眼とし、reopen 詳細フィールドの廃止は受入 11/12
+    の直接の禁止事項ではないため逸脱ではない。ただし §5.3（design 本節）と §Req 12（上流参照節）の 間で同一フィールドの状態表現が「廃止」「廃止予定」に分かれており、欠落ではないが追跡上の
+    整合確認が望ましい。値域の二重正本化リスクは現時点では生じていない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-26-mwp0-design-review-wave-gpt-5.5-adversarial-001
+  run_id: 2026-06-26-mwp0-design-review-wave
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.2 next_action_response.schema.json（条件付き必須フィールド）
+  plain_language_summary: Req 2 受入 11(6) の required_action 値ごとのフィールド制約が、schema 設計としては一部しか引き継がれていない。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: §5.2 の条件付き定義は `repair_reasons` と `run_maintenance` 時の `action_parameters`
+    のみを明示している。一方、上流要件は `commit_stop_point` 時の `active_gate/phase/stage/blocked_by`
+    制約、`run_reopen_pending_gate` 時の `active_gate` 非 null と phase/stage 一致、`run_reopen_drafting`
+    時の `active_gate` 形式、`wait_for_human_decision` 時の `blocked_by.type` による停止理由区別も受入条件としている。本文の周辺節に一部の運用説明はあるが、`next_action_response.schema.json`
+    の設計節として受入 11(6) 全体をどう検証するかが欠落しており、schema 実装時に上流制約が弱体化する恐れがある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-26-mwp0-design-review-wave-gpt-5.5-adversarial-002
+  run_id: 2026-06-26-mwp0-design-review-wave
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.2 kind フィールドの値域
+  plain_language_summary: '`kind` の値追加・変更が「この表と schema enum 修正で完結する」とされており、Req 2 受入
+    12 の 7 値限定を弱めている。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 受入 12 は `next --json` の `kind` を作業の現在地カテゴリ 7 種に限定し、コミット前確認 3 種を除外するという責務境界を定めている。設計文の『値の追加・変更はこの表と
+    schema enum 修正で完結する』は、requirements の受入条件変更なしに値域を拡張できるように読めるため、上流の禁止事項と値域限定を弱体化する。少なくとも
+    `kind` 値域の追加・変更は requirements の受入条件改訂を伴う、と明記する必要がある。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-26-mwp0-design-review-wave-gpt-5.5-adversarial-003
+  run_id: 2026-06-26-mwp0-design-review-wave
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.3 blocking_in_progress の廃止フィールド
+  plain_language_summary: '`completion_conditions` の廃止説明が、`run_maintenance` 時の `action_parameters.completion_conditions`
+    必須サブフィールドと混同される余地が残っている。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: §5.3 は `blocking_in_progress` 詳細フィールドとしての `action_parameters` は廃止しない旨を注記しており、受入
+    11(2) の `action_parameters` 自体は概ね保護されている。しかし同じ廃止リスト内で `completion_conditions`
+    を `return_conditions` に統一するとしており、受入 11 の `action_parameters` 必須 6 サブフィールドに含まれる
+    `completion_conditions` まで renamed/deprecated と誤読される可能性がある。`completion_conditions`
+    の廃止も blocking detail レベルに限り、`next_action.action_parameters.completion_conditions`
+    は存続する、と明記するのが安全である。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-26-mwp0-design-review-wave-gpt-5.5-adversarial-004
+  run_id: 2026-06-26-mwp0-design-review-wave
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.3 全 kind 共通フィールド
+  plain_language_summary: '`reason` が全 kind 共通フィールドとして追加されているが、Req 2 受入 11 の必須構造では最上位
+    `reasons` が定義されており、`next_action.reason` の位置付けが未根拠に見える。'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 上流要件の最上位必須フィールドは `reasons` 配列であり、`next_action` の最低限必須 10 フィールドに
+    `reason` は含まれない。`additionalProperties` を開放しているため任意フィールドとしての追加自体は直ちに禁止ではないが、§5.3
+    で『全 kind 共通』とすると、実装者が `next_action.reason` を事実上必須または正本の理由フィールドと解釈する恐れがある。上流の `reasons`
+    との責務差、任意補助フィールドなのか、または削除すべき旧フィールドなのかを明確化すべきである。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-26-mwp0-design-review-wave-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-26-mwp0-design-review-wave
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: §5.2.2 / §5.3
+  plain_language_summary: 受入 11(6) の `required_action` ごとのフィールド制約がスキーマ設計から部分的に欠落している
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 要件 2 受入 11(6) では `next_action_response.schema.json` の定義要点として、6種の
+    `required_action` に対して `active_gate` や `blocked_by` などの厳密な値や null 制約を定めている。しかし、§5.2.2
+    の条件付き必須フィールド（`if/then` 構文）および §5.3 の説明には、`repair_reasons` や `action_parameters`、①の一部の
+    `stage=null` 等は反映されているものの、①の `active_gate=null` および `blocked_by.type="commit_stop_point"`、②③⑤の制約内容、④の各種
+    null 制約が網羅されていない。これにより JSON Schema 上の制約が要件より弱体化する。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-26-mwp0-design-review-wave-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-26-mwp0-design-review-wave
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: §5.2 / §5.3
+  plain_language_summary: '`docs/notes` の新旧対照表の正本スコープが限定されておらず、`stage=null` 制約と競合するリスクがある'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: '§5.3 では受入 11(6)① に従い `commit_stop_point` 時は `stage=null` とし、「`stage:
+    commit_stop_point` という文字列値は取らない」ことを正しく設計している。しかし、§5.2 で `docs/notes/2026-06-26-next-json-kind-redesign.md`
+    の新旧対照表を単に「正本とする」と指定しているため、もしその文書に旧仕様（`stage: commit_stop_point`）が残存していた場合、対照表の正本性が
+    `kind` の値域のみに限定されている旨の記載がないと、仕様が競合すると解釈される余地がある。'
+  applied_files: []
+  superseded_by: null

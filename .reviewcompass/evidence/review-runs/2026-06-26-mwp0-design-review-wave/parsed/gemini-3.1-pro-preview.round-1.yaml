@@ -1,0 +1,21 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 132.319
+findings:
+- severity: ERROR
+  target_location: §5.2.2 / §5.3
+  description: 受入 11(6) の `required_action` ごとのフィールド制約がスキーマ設計から部分的に欠落している
+  rationale: 要件 2 受入 11(6) では `next_action_response.schema.json` の定義要点として、6種の `required_action`
+    に対して `active_gate` や `blocked_by` などの厳密な値や null 制約を定めている。しかし、§5.2.2 の条件付き必須フィールド（`if/then`
+    構文）および §5.3 の説明には、`repair_reasons` や `action_parameters`、①の一部の `stage=null` 等は反映されているものの、①の
+    `active_gate=null` および `blocked_by.type="commit_stop_point"`、②③⑤の制約内容、④の各種 null
+    制約が網羅されていない。これにより JSON Schema 上の制約が要件より弱体化する。
+- severity: WARN
+  target_location: §5.2 / §5.3
+  description: '`docs/notes` の新旧対照表の正本スコープが限定されておらず、`stage=null` 制約と競合するリスクがある'
+  rationale: '§5.3 では受入 11(6)① に従い `commit_stop_point` 時は `stage=null` とし、「`stage:
+    commit_stop_point` という文字列値は取らない」ことを正しく設計している。しかし、§5.2 で `docs/notes/2026-06-26-next-json-kind-redesign.md`
+    の新旧対照表を単に「正本とする」と指定しているため、もしその文書に旧仕様（`stage: commit_stop_point`）が残存していた場合、対照表の正本性が
+    `kind` の値域のみに限定されている旨の記載がないと、仕様が競合すると解釈される余地がある。'

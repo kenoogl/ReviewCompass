@@ -1,0 +1,4 @@
+run_id: 2026-06-26-mwp0-design-review-wave
+target_files:
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: c5fd36c4e1452dd8c13c49fe84bd7b504a845c2423a9187f7222a8f71dc1473f

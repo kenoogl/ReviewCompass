@@ -1,0 +1,33 @@
+findings:
+  - severity: WARN
+    target_location: "§5.3 in_progress の追加フィールド表 / §5.2 値域表"
+    description: >-
+      §5.3 の `in_progress` 統合説明では「旧 stage / cross_feature_stage / upstream_recheck /
+      commit_stop_point の4種類を統合する」とあり、`commit_stop_point` を統合対象として記載している。
+      一方で受入 11(6)① では `commit_stop_point` 時に active_gate/phase/stage がすべて null で
+      blocked_by.type="commit_stop_point" となり、§5.2 上流の `next --json unique action selector`
+      設計（本文「§軽量版検査スクリプトモデル §2」および §6 後段）では commit stop point は
+      `required_action=commit_stop_point` を返す独立 selector 経路として扱われている。
+      commit_stop_point が `kind: in_progress` として返るのか、それとも別 kind/別 required_action
+      経路で返るのかが §5.3 と上流 selector 記述の間で曖昧であり、統合の意味が一意に読み取れない。
+    rationale: >-
+      受入 11(6)① の制約自体は §5.3 で stage=null として正しく引き継がれている（triad-review 所見2
+      の対処は維持されている）が、「commit_stop_point を in_progress に統合する」という統合方針が
+      上流 selector の独立経路設計と整合するかが明示されておらず、kind と required_action の対応関係に
+      読み手が複数解釈を持ち得る。責務境界（どの kind がどの状態を表すか）の一意性が弱まる懸念がある。
+  - severity: INFO
+    target_location: "§5.3 reopen_in_progress の廃止フィールド / Req 12 設計モデル §11・preflight response schema"
+    description: >-
+      §5.3 で `reopen_in_progress` の `next_drafting_gate` と旧 reopen 独自の `feature` /
+      `direct_features` / `indirect_features` を廃止し `active_gate` / `required_feature_scope`
+      で代替すると明記している。一方、§Req 12 の preflight response schema および §11 の
+      `reopen_in_progress` の `next_action` 列挙には `direct_features` / `indirect_features` /
+      `next_drafting_gate` が「2026-06-26 MWP-0 廃止予定」コメント付きで残存している。これは
+      triad-review 所見4（廃止予定コメント追記）の対処範囲内で整合しているが、§5.3 の「廃止」と
+      §Req 12 の「廃止予定（残存）」という状態表現の差異が、MWP-0 適用後の正本値域として
+      next --json が実際にこれらを返すのか否かを読み手に確認させる必要を残す。
+    rationale: >-
+      受入 12 は `next --json` の kind 値域限定を主眼とし、reopen 詳細フィールドの廃止は受入 11/12
+      の直接の禁止事項ではないため逸脱ではない。ただし §5.3（design 本節）と §Req 12（上流参照節）の
+      間で同一フィールドの状態表現が「廃止」「廃止予定」に分かれており、欠落ではないが追跡上の
+      整合確認が望ましい。値域の二重正本化リスクは現時点では生じていない。
