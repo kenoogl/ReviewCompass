@@ -1,49 +1,49 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-26 セッション5（Mac ローカル）。最新状態は必ず `git log --oneline -5`、`git status`、`.venv/bin/python3 tools/check-workflow-action.py next --json` で確認する。
+最終更新：2026-06-26 セッション6（Mac ローカル）。最新状態は必ず `git log --oneline -5`、`git status`、`.venv/bin/python3 tools/check-workflow-action.py next --json` で確認する。
 
-## 1. 今回（2026-06-26 セッション5）の完了作業
+## 1. 今回（2026-06-26 セッション6）の完了作業
 
-- **前セッション残作業のコミット**
-  - `todo-2026-06-26-ppwm1-canonical-effective-prompt-fixation.yaml` 完了決定記録（コミット git:ad0a8299）
-  - `tests/tools/test_check_workflow_action.py` 空行整理（同コミット）
-- **セッション記録の進行中判定を根本対策**（コミット git:29be0d51）
-  - 原因：sha256 比較はセッション終了後の Claude Code 追記で永遠に一致しない
-  - 修正：`active-sessions.json` で進行中セッションを明示管理
-    - SessionStart フック：現セッション ID を登録
-    - SessionEnd フック：現セッション ID を削除
-    - `commit-preflight` / `commit` 検査：active リスト参照（ファイル不在時のみ sha256 フォールバック）
-  - テスト3件追加、748件全通過
-- **`fb8b24ee` セッション記録を再生成・コミット**（コミット git:c9c0bf86）
-  - sha256 を最新化してからコミット
+- **MWP-0 reopen R-0 requirements フェーズ完了**（コミット git:1d30959d, 7e29bb05）
+  - requirements triad-review（3件所見、ERROR-B 対処済み）
+  - post-write-verification 2件完了
+  - requirements alignment/approval ゲート通過
+  - spec.json に alignment=true を反映
+  - reopen 完了ファイルを `stages/completed/` に移動
+- **bug fix: step4 approval_complete のフェーズ制限を修正**（コミット git:d8bf262c）
+  - `_is_structured_reopen_commit_stop_point` でステップ4 approval_complete が implementation のみを許可していた
+  - requirements/design/tasks も許可するよう修正・テスト追加（286件全通過）
 
-現時点のテスト状況：748件全通過（tools/ + hooks/）。
+現時点のテスト状況：286件全通過（tools/）。
 
 ## 2. 次セッションの最初にやること
 
 ### セッション記録のコミット
 
-現セッション（`8a181b69`）の記録が untracked のまま。SessionEnd フックが発火して `active-sessions.json` から削除されれば、次セッションの SessionStart フックが自動取り込み・コミット可能になる。
+現セッション（`76b4149b`）の記録が untracked のまま。次セッションの SessionStart フックが自動取り込み・コミット可能になる。
 
-取り込み済みでも sha256 一致確認後にコミットすること。
+### MWP-0 design フェーズへ進む
 
-### `active-sessions.json` の動作確認
+`next --json` が `design.alignment` を次のアクションとして示している。
 
-今セッションで仕組みを導入したが、実際に SessionStart / SessionEnd フックが `active-sessions.json` を正しく更新するかは次セッション開始時に初めて確認できる。動作に問題があれば修正する。
+MWP-0 の design フェーズでやること（`docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md` 参照）：
+- design.md の更新：7 種類の kind 定義・サブフィールド設計・廃止フィールド・`commit-preflight` 集約の設計を更新する
+- design triad-review → review-wave → alignment → approval の各ゲートを通過する
+- 通過後 tasks フェーズへ（kind 変更に対応するテスト要件と実装作業を追記）
+- 最終的に implementation フェーズ（TDD で失敗テストを先に作成し、kind 整理を実装）
+
+ワークフロー上は通常ワークフローとして進める（reopen は完了済み）。next --json が design.alignment を示しているが、まず design.drafting（正本修正）→ design triad-review → review-wave → alignment → approval の順に進める。
 
 ## 3. 横展開の課題（issue 記録済み・未着手）
 
 - `issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch`：guide の approval 段の承認主体記述が human-only 境界と矛盾の疑い。
 - `issue-2026-06-24-sandbox-guarded-commit-blocked`：WEB サンドボックスでは guarded commit が全方法で拒否される。
 
-## 4. MWP-0：next --json kind 再設計（検討完了・実装未着手）
-
-kind を41種類から7種類に整理する設計が確定済み。詳細は `docs/notes/2026-06-26-next-json-kind-redesign.md`。スコープは commit-preflight への移動・手引き改修も含む。ReviewCompass ワークフロー（reopen）に乗せて実施予定。
-
-## 5. 参照
+## 4. 参照
 
 - commit 手順：`.reviewcompass/guidance/COMMIT_OPERATION_CARD.md`
 - backlog 操作カード：`.reviewcompass/guidance/WORKFLOW_NAVIGATION.md`
 - kind 再設計メモ：`docs/notes/2026-06-26-next-json-kind-redesign.md`
+- reopen 分類根拠：`docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md`
 
 過去の詳細は git log、`docs/notes/`、`docs/sessions/` を正本とする。
