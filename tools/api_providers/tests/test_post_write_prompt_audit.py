@@ -207,8 +207,10 @@ class TestAuditRequiredSections:
 
   def test_rejects_prompt_missing_required_section(self, tmp_path):
     """必須セクションが1つでも欠けると拒否"""
-    for section in self.REQUIRED_SECTIONS:
-      prompt = _build_valid_prompt(tmp_path)
+    for i, section in enumerate(self.REQUIRED_SECTIONS):
+      sub = tmp_path / str(i)
+      sub.mkdir()
+      prompt = _build_valid_prompt(sub)
       broken = prompt.replace(section, "## 削除済みセクション")
 
       result = audit_post_write_prompt(broken)
@@ -220,10 +222,10 @@ class TestAuditOutputContract:
   """Output Contract の形式チェック"""
 
   def test_rejects_prompt_without_pass_fail_verdict(self, tmp_path):
-    """Output Contract に PASS/FAIL が含まれないプロンプトは拒否"""
+    """Output Contract に 'verdict: PASS | FAIL' 形式がないプロンプトは拒否"""
     prompt = _build_valid_prompt(tmp_path)
-    # PASS/FAIL を削除
-    broken = prompt.replace("verdict: PASS | FAIL", "verdict: 要確認")
+    # PASS | FAIL パターンを崩す
+    broken = prompt.replace("verdict: PASS | FAIL", "verdict: 要確認または不要確認")
 
     result = audit_post_write_prompt(broken)
 
