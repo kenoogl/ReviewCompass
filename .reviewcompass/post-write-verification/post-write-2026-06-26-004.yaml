@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 67530ab000f0ec95387035800066ef38f32e40c29f167baf2d5d89c0023ce488
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 67530ab000f0ec95387035800066ef38f32e40c29f167baf2d5d89c0023ce488
+  result: no_substantive_findings
+  checklist:
+  - 今回の完了作業（WORKFLOW_NAVIGATION.md 修正・review_triage.py バグ修正）を記録した。
+  - 次の最優先課題（post-write 手順の機械化）を根拠とともに記録した。
+  - テスト20件失敗・MWP-0・横展開課題を整理した。
+  - 決定済みと未着手を区別した。
+  - 正本仕様を変えていない。
+notes: Lightweight self-check for TODO_NEXT_SESSION.md update.

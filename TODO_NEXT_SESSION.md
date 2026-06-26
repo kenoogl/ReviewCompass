@@ -1,28 +1,44 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-25（Mac ローカル）。前回（2026-06-24 WEB セッション）の proxy レイアウト整合は **commit/push 完了済み**。最新状態は必ず `git log --oneline -4`、`git status`、`python3 tools/check-workflow-action.py next --json` で確認する。
+最終更新：2026-06-26（Mac ローカル）。最新状態は必ず `git log --oneline -4`、`git status`、`python3 tools/check-workflow-action.py next --json` で確認する。
 
-## 1. 前回の最重要課題（commit/push 未完）は解決済み
+## 1. 今回（2026-06-26）の完了作業
 
-- proxy 整合本体 64 ファイルを commit（`758db17c`）し、`origin/main` へ push（`c8932457..758db17c`）。前回ローカルに残っていた config の機械的3者既定（`fcb371c8`）も同時に push 済み。
-- `next --json` は `completed`（全 workflow 完了・検証待ちなし）。
+- `WORKFLOW_NAVIGATION.md` の `run_reopen_drafting` 説明で `next_drafting_gate` → `active_gate` に1行変更。3社 API レビュー済み（run: `2026-06-26-workflow-navigation-active-gate-postwrite`）。commit `01e4986a`。
+- `review_triage.py` のバグ修正：`docs/sessions/auto-*` を post-write 対象から誤判定していた問題を解消。テスト4件追加。同 commit に同梱。
+- `next --json` は `completed`・push 済み（`3d1d653c..8ec30a29`）。
 
-## 2. policy violation の真因と解消（記録）
+## 2. 最優先：post-write 手順の機械化（根本原因）
 
-- 症状：`next --json` が `post_write_policy_violation` を返し、`SESSION_WORKFLOW_GUIDE.md` が forbidden 判定だった。
-- 真因：`TODO_NEXT_SESSION.md` が strict 検証対象へ格上げされ（同一未コミット差分に guide が含まれるため）、guide から見て「ガイダンス以外の対象（＝TODO）」が混在する状態になり、`is_forbidden_post_write_pending_change`（`tools/check-workflow-action.py:5738-5751`）が発火していた。guide 自体は封印 005 と指紋一致で検証済み・無改変。
-- 解消：TODO を一時退避（`git stash`）→ 検証対象が guide 単独 → 封印 005（指紋一致）で検証済み判定 → `commit-preflight` OK → guarded commit（PTY relay で承認1行を中継）→ push。退避した TODO は本コミットで復元・更新。
+**`plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml`** の実装が追いついていない。
 
-## 3. 横展開の課題（issue 記録済み・コミット済み・未着手）
+今回のセッションで同じ問題が再発した：
+- post_write_verification 状態になった際に `run_review.py` の代わりに Agent ツールで Claude モデルのみに投げた（プロトコル違反）
+- main preanalysis（事前検討）を省略してレビューを投げた
 
-- `issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch`：guide の approval 段の承認主体記述が human-only 境界と矛盾の疑い（gpt-5.5 所見）。decision_scope 機構と照合して精査する。
-- `issue-2026-06-24-post-write-target-judgment-mismatch`：`review_triage.py` と `check-workflow-action.py` の post-write 対象判定の不整合（specs／機械生成記録を誤って対象化する懸念）。
-- `issue-2026-06-24-sandbox-guarded-commit-blocked`：WEB サンドボックスでは classifier がエージェントの commit を全方法で拒否（PTY relay 含む）。Mac ローカルでは通る（本セッションで実証）。
+根本原因：LLM が「どのツールをどう使うか」を判断する余地が残っている。手順選択・材料選定・コマンド実行を機械処理に寄せることで防げる。同じ問題が 2026-06-12・2026-06-21 にも記録されている。
 
-## 4. 参照
+## 3. テスト20件失敗（未対処）
 
-- 経緯ノート：`docs/notes/2026-06-24-proxy-layout-codecanon-session.md`
-- 3者検証 run：`.reviewcompass/evidence/review-runs/2026-06-24-proxy-layout-codecanon-postwrite-3way/`
+`tests/tools/test_check_workflow_action.py` の post-write 関連テストが20件失敗している。詳細は `docs/notes/2026-06-26-test-check-workflow-action-post-write-failures.md`。
+
+原因：テストが `docs/notes/` を post_write_verification 対象と期待しているが、現実装では `lightweight_self_check` に分類される。テスト側のパスを `docs/disciplines/` 等に変更するか、実装側を見直すかを判断する。
+
+## 4. MWP-0：next --json kind 再設計（検討完了・実装未着手）
+
+kind を41種類から7種類に整理する設計が確定済み。詳細は `docs/notes/2026-06-26-next-json-kind-redesign.md`。実装の優先順位・着手時期は未決定。
+
+## 5. 横展開の課題（issue 記録済み・未着手）
+
+- `issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch`：guide の approval 段の承認主体記述が human-only 境界と矛盾の疑い。
+- `issue-2026-06-24-sandbox-guarded-commit-blocked`：WEB サンドボックスでは classifier がエージェントの commit を全方法で拒否。
+
+（`issue-2026-06-24-post-write-target-judgment-mismatch` は今回の `review_triage.py` 修正で一部対処済み）
+
+## 6. 参照
+
+- 機械化計画：`docs/notes/2026-06-21-llm-boundary-and-postwrite-prompt-mechanization-plan.md`
+- kind 再設計：`docs/notes/2026-06-26-next-json-kind-redesign.md`
 - commit 手順：`.reviewcompass/guidance/COMMIT_OPERATION_CARD.md`
 
 過去の詳細は git log、`docs/notes/`、`docs/sessions/` を正本とする。
