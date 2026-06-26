@@ -1,0 +1,103 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-26-post-write-test-fixture-strict-path-realignment
+kind: todo
+title: Realign post-write test fixtures from docs/notes to strict verification paths
+status: completed
+source_unit_id: main-completed
+created_at: '2026-06-26T01:51:27.317713+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: docs/notes/2026-06-26-test-check-workflow-action-post-write-failures.md
+  reason: 機械化計画 PPWM-1 の前提整備。docs/notes 見本(軽量審査)を厳格点検対象パスへ付け替え、post-write 関連テスト20件の赤を解消する。実装(docs/notes=軽量審査)は変更しない。
+decisions:
+- decided_at: '2026-06-26'
+  decision: 付け替えで18件を緑化し、残り2件は実装課題として issue へ分離する
+  rationale: '20件のうち18件は見本パスの付け替えで緑化したが、canonical effective prompt と review-runs 分類の2件は実装本体が未完のため付け替えだけでは緑にならない。
+    テスト修正(本todo)と機械化実装を分離して管理する。
+
+    '
+  separated_to: issue-2026-06-26-post-write-tests-need-mechanization-not-fixture-rename
+tasks:
+- id: T-1
+  title: 付け替え先 docs/disciplines/ が review_triage など他の分類判定に干渉しないことを確認する
+  status: done
+- id: T-2
+  title: 単純付け替え群(new-policy.md / codex-maintenance.md / policy-a.md / policy-b.md
+    / policy.md)の見本パスを docs/notes/ から docs/disciplines/ へ付け替える
+  status: done
+- id: T-3
+  title: review_run 経由4件のヘルパー _write_review_run の見本 review-target.md を厳格点検対象パスへ付け替える(review-runs/
+    は除外維持)
+  status: done
+- id: T-4
+  title: post-write 関連20件のテストが緑になることを確認する
+  status: done
+- id: T-5
+  title: docs/notes は軽量審査と主張するテストを含め、全体テストに回帰がないことを確認する
+  status: done
+- id: T-6
+  title: check-workflow-action.py の分類ルール(実装)を変更していないことを確認する
+  status: done
+summary: 'tests/tools/test_check_workflow_action.py の post-write 関連で失敗している 20件を、見本ファイルパスの付け替えにより解消する。失敗の原因は、テストが
+  docs/notes 配下の見本を「厳格点検(post_write_verification)対象」として 扱っているが、現実装では docs/notes 配下は軽量審査(lightweight_self_check)
+  に分類されることである。方針は「docs/notes は軽量審査のまま」とし、テスト側の 見本パスを厳格点検対象パスへ付け替える。実装(分類ルール)は変更しない。
+
+  '
+decision_basis:
+  policy: docs/notes は軽量審査のまま維持する（実装を変えない）。
+  fix_side: テスト側の見本パスのみを付け替える。
+  replacement_target_path_default: docs/disciplines/
+  replacement_target_note: 'docs/disciplines/ は POST_WRITE_VERIFICATION_DIR_PREFIXES
+    に含まれ、 LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES には含まれないため厳格点検対象になる。 付け替え先が review_triage
+    など他判定に干渉しないことは実装段階で確認する。
+
+    '
+do_not_touch:
+- tests/tools/test_check_workflow_action.py 内の「docs/notes は軽量審査」を 主張するテスト（3569行・3612行付近）は現実装と一致しているため変更しない。
+target_tests_simple:
+  count: 16
+  note: docs/notes/* の見本パスを docs/disciplines/* へ付け替えるだけで緑化する想定。
+  tests:
+  - NextNavigationTests::test_next_post_write_verification_returns_canonical_effective_prompt
+  - NextNavigationTests::test_next_does_not_complete_manifest_after_target_content_changes
+  - NextNavigationTests::test_next_does_not_complete_manifest_with_empty_required_verifiers
+  - NextNavigationTests::test_next_deviation_when_new_runner_created_during_post_write_verification
+  - NextNavigationTests::test_next_post_write_policy_violation_returns_canonical_effective_prompt
+  - NextNavigationTests::test_next_prioritizes_post_write_over_maintenance
+  - NextNavigationTests::test_next_prioritizes_post_write_verification_for_target_doc_changes
+  - NextNavigationTests::test_next_rejects_manifest_when_unit_binding_mismatches_commit_unit
+  - NextNavigationTests::test_next_requires_human_decision_for_unresolved_substantive_findings
+  - NextNavigationTests::test_next_uses_latest_post_write_manifest_when_multiple_exist
+  - PostWriteCoverageMatrixTests::test_next_rejects_manifest_when_verifications_lack_per_entry_sha256
+  - PostWriteCoverageMatrixTests::test_next_rejects_manifest_when_verifier_covers_only_partial_files
+  - PostWriteCoverageMatrixTests::test_next_rejects_manifest_when_verifier_entry_sha256_mismatches_master
+  - CommitExitCodeTests::test_commit_with_post_write_target_without_manifest_returns_two
+  - AuditCommitTests::test_audit_commit_detects_post_write_target_without_manifest
+  - AuditCommitTests::test_audit_commit_detects_root_commit_post_write_target_without_manifest
+target_tests_review_run:
+  count: 4
+  note: '共通ヘルパー _write_review_run（284行付近）経由で docs/notes/review-target.md と docs/notes/review-runs/
+    を併用する。review-runs/ は元々除外対象なので、付け替えは review-target.md 側に限定し、ヘルパー共通改変の影響範囲を確認してから行う。
+
+    '
+  tests:
+  - PostWriteReviewRunTraceabilityTests::test_next_rejects_manifest_when_review_summary_is_missing
+  - PostWriteReviewRunTraceabilityTests::test_next_rejects_manifest_when_required_model_raw_is_missing
+  - PostWriteReviewRunTraceabilityTests::test_next_rejects_manifest_when_model_is_absent_from_triage
+  - PostWriteReviewRunEndToEndTests::test_next_accepts_manifest_generated_from_review_triage_helper
+acceptance:
+- 失敗していた20件のうち18件が緑になる。
+- 残り2件(canonical effective prompt / review-runs 分類)は付け替えで緑化しないため issue-2026-06-26-post-write-tests-need-mechanization-not-fixture-rename
+  へ分離した。
+- 「docs/notes は軽量審査」を主張する既存テストが緑のまま（回帰なし）。
+- check-workflow-action.py の分類ルール（実装）は変更していない。
+related:
+- .reviewcompass/backlog/plans/plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml
+- docs/notes/2026-06-26-test-check-workflow-action-post-write-failures.md
+execution_history:
+- checklist_id: checklist-todo-2026-06-26-post-write-test-fixture-strict-path-realignment
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-26-post-write-test-fixture-strict-path-realignment.yaml
+  completion_summary: checklist-todo-2026-06-26-post-write-test-fixture-strict-path-realignment
+    completed 6/6 items
+  completed_at: '2026-06-26T02:22:45.664526+00:00'

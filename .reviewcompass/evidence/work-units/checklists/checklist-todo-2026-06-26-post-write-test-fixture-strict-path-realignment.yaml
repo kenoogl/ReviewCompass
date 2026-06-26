@@ -1,0 +1,56 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-26-post-write-test-fixture-strict-path-realignment
+unit_id: main-completed
+title: Realign post-write test fixtures from docs/notes to strict verification paths
+status: completed
+created_at: '2026-06-26T01:52:27.325276+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-26-post-write-test-fixture-strict-path-realignment.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: T-1
+  title: 付け替え先 docs/disciplines/ が review_triage など他の分類判定に干渉しないことを確認する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: T-2
+  title: 単純付け替え群(new-policy.md / codex-maintenance.md / policy-a.md / policy-b.md
+    / policy.md)の見本パスを docs/notes/ から docs/disciplines/ へ付け替える
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: T-3
+  title: review_run 経由4件のヘルパー _write_review_run の見本 review-target.md を厳格点検対象パスへ付け替える(review-runs/
+    は除外維持)
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: T-4
+  title: post-write 関連20件のテストが緑になることを確認する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: T-5
+  title: docs/notes は軽量審査と主張するテストを含め、全体テストに回帰がないことを確認する
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: T-6
+  title: check-workflow-action.py の分類ルール(実装)を変更していないことを確認する
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-26-post-write-test-fixture-strict-path-realignment
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-26-post-write-test-fixture-strict-path-realignment.yaml
+progress:
+  total: 6
+  done: 6
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-26T02:22:45.664526+00:00'
+completion_summary: checklist-todo-2026-06-26-post-write-test-fixture-strict-path-realignment
+  completed 6/6 items

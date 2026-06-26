@@ -287,7 +287,7 @@ def _write_review_run(cwd, run_id, models, omit_summary=False, omit_triage_model
   raw_dir = run_dir / "raw"
   raw_dir.mkdir(parents=True, exist_ok=True)
 
-  target = Path(cwd) / "docs" / "notes" / "review-target.md"
+  target = Path(cwd) / "docs" / "disciplines" / "review-target.md"
   target.parent.mkdir(parents=True, exist_ok=True)
   if not target.exists():
     target.write_text("レビュー対象\n", encoding="utf-8")
@@ -323,7 +323,7 @@ def _write_review_run(cwd, run_id, models, omit_summary=False, omit_triage_model
         "severity_normalized": "INFO",
         "final_label": "leave-as-is",
         "decision_status": "decided",
-        "target_location": "docs/notes/review-target.md",
+        "target_location": "docs/disciplines/review-target.md",
         "plain_language_summary": "問題なし。",
         "decision_reason": "テスト用の完了記録。",
         "applied_files": [],
@@ -347,7 +347,7 @@ def _write_review_run(cwd, run_id, models, omit_summary=False, omit_triage_model
         "run_id": run_id,
         "target_files": [
           {
-            "path": "docs/notes/review-target.md",
+            "path": "docs/disciplines/review-target.md",
             "sha256": _sha256_file(target),
           },
         ],
@@ -364,7 +364,7 @@ def _write_review_run(cwd, run_id, models, omit_summary=False, omit_triage_model
         "purpose": "post_write_verification",
         "target_files": [
           {
-            "path": "docs/notes/review-target.md",
+            "path": "docs/disciplines/review-target.md",
             "sha256": _sha256_file(target),
           },
         ],
@@ -3164,7 +3164,7 @@ class NextNavigationTests(unittest.TestCase):
       "required_action: inspect_remaining_claude_assumptions\n",
       encoding="utf-8",
     )
-    target = cwd / "docs" / "notes" / "codex-maintenance.md"
+    target = cwd / "docs" / "disciplines" / "codex-maintenance.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("maintenance 中の検証対象文書\n", encoding="utf-8")
 
@@ -3176,7 +3176,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
     self.assertEqual(
       data["next_action"]["target_files"],
-      ["docs/notes/codex-maintenance.md"],
+      ["docs/disciplines/codex-maintenance.md"],
     )
     self.assertIn(
       ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification",
@@ -3524,7 +3524,7 @@ class NextNavigationTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "new-policy.md"
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("検証対象の正本文書\n", encoding="utf-8")
 
@@ -3535,14 +3535,14 @@ class NextNavigationTests(unittest.TestCase):
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
     self.assertEqual(data["next_action"]["kind"], "post_write_verification")
-    self.assertEqual(data["next_action"]["target_files"], ["docs/notes/new-policy.md"])
+    self.assertEqual(data["next_action"]["target_files"], ["docs/disciplines/new-policy.md"])
 
   def test_next_post_write_verification_returns_canonical_effective_prompt(self):
     """post-write-verification 地点では runtime 合成ではなく canonical prompt を返す"""
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "new-policy.md"
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("検証対象の正本文書\n", encoding="utf-8")
 
@@ -3751,7 +3751,7 @@ class NextNavigationTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "new-policy.md"
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("検証済みの正本文書\n", encoding="utf-8")
     _write_post_write_manifest(
@@ -3759,9 +3759,9 @@ class NextNavigationTests(unittest.TestCase):
       "post-write-2026-06-02-001.yaml",
       {
         "status": "completed",
-        "target_files": ["docs/notes/new-policy.md"],
+        "target_files": ["docs/disciplines/new-policy.md"],
         "target_sha256": {
-          "docs/notes/new-policy.md": _sha256_file(target),
+          "docs/disciplines/new-policy.md": _sha256_file(target),
         },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
@@ -3783,7 +3783,7 @@ class NextNavigationTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "new-policy.md"
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("検証済みの正本文書\n", encoding="utf-8")
     runner = cwd / "tools" / "post_write_verify_new_policy.py"
@@ -3794,9 +3794,9 @@ class NextNavigationTests(unittest.TestCase):
       "post-write-2026-06-02-001.yaml",
       {
         "status": "completed",
-        "target_files": ["docs/notes/new-policy.md"],
+        "target_files": ["docs/disciplines/new-policy.md"],
         "target_sha256": {
-          "docs/notes/new-policy.md": _sha256_file(target),
+          "docs/disciplines/new-policy.md": _sha256_file(target),
         },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
@@ -3817,7 +3817,7 @@ class NextNavigationTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "new-policy.md"
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("検証済みの正本文書\n", encoding="utf-8")
     _write_post_write_manifest(
@@ -3825,9 +3825,9 @@ class NextNavigationTests(unittest.TestCase):
       "post-write-2026-06-02-001.yaml",
       {
         "status": "completed",
-        "target_files": ["docs/notes/new-policy.md"],
+        "target_files": ["docs/disciplines/new-policy.md"],
         "target_sha256": {
-          "docs/notes/new-policy.md": _sha256_file(target),
+          "docs/disciplines/new-policy.md": _sha256_file(target),
         },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
@@ -3848,7 +3848,7 @@ class NextNavigationTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "new-policy.md"
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("検証済みの正本文書\n", encoding="utf-8")
     commit_unit_path = cwd / ".reviewcompass" / "runtime" / "work-units" / "commit-unit.json"
@@ -3875,9 +3875,9 @@ class NextNavigationTests(unittest.TestCase):
       "post-write-2026-06-02-001.yaml",
       {
         "status": "completed",
-        "target_files": ["docs/notes/new-policy.md"],
+        "target_files": ["docs/disciplines/new-policy.md"],
         "target_sha256": {
-          "docs/notes/new-policy.md": _sha256_file(target),
+          "docs/disciplines/new-policy.md": _sha256_file(target),
         },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
@@ -3909,7 +3909,7 @@ class NextNavigationTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "new-policy.md"
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("検証者未指定の正本文書\n", encoding="utf-8")
     _write_post_write_manifest(
@@ -3917,7 +3917,7 @@ class NextNavigationTests(unittest.TestCase):
       "post-write-2026-06-02-001.yaml",
       {
         "status": "completed",
-        "target_files": ["docs/notes/new-policy.md"],
+        "target_files": ["docs/disciplines/new-policy.md"],
         "required_verifiers": [],
         "completed_verifiers": [],
         "unresolved_substantive_findings": 0,
@@ -3936,7 +3936,7 @@ class NextNavigationTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "new-policy.md"
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("本質的指摘ありの正本文書\n", encoding="utf-8")
     _write_post_write_manifest(
@@ -3944,9 +3944,9 @@ class NextNavigationTests(unittest.TestCase):
       "post-write-2026-06-02-001.yaml",
       {
         "status": "pending_human",
-        "target_files": ["docs/notes/new-policy.md"],
+        "target_files": ["docs/disciplines/new-policy.md"],
         "target_sha256": {
-          "docs/notes/new-policy.md": _sha256_file(target),
+          "docs/disciplines/new-policy.md": _sha256_file(target),
         },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
@@ -3960,14 +3960,14 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["next_action"]["kind"], "post_write_human_decision_required")
-    self.assertEqual(data["next_action"]["target_files"], ["docs/notes/new-policy.md"])
+    self.assertEqual(data["next_action"]["target_files"], ["docs/disciplines/new-policy.md"])
 
   def test_next_uses_latest_post_write_manifest_when_multiple_exist(self):
     """同一対象の manifest が複数ある場合はファイル名が新しいものを優先する"""
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "new-policy.md"
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("複数 manifest の正本文書\n", encoding="utf-8")
     _write_post_write_manifest(
@@ -3975,9 +3975,9 @@ class NextNavigationTests(unittest.TestCase):
       "post-write-2026-06-02-001.yaml",
       {
         "status": "completed",
-        "target_files": ["docs/notes/new-policy.md"],
+        "target_files": ["docs/disciplines/new-policy.md"],
         "target_sha256": {
-          "docs/notes/new-policy.md": _sha256_file(target),
+          "docs/disciplines/new-policy.md": _sha256_file(target),
         },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
@@ -3989,9 +3989,9 @@ class NextNavigationTests(unittest.TestCase):
       "post-write-2026-06-02-002.yaml",
       {
         "status": "pending_human",
-        "target_files": ["docs/notes/new-policy.md"],
+        "target_files": ["docs/disciplines/new-policy.md"],
         "target_sha256": {
-          "docs/notes/new-policy.md": _sha256_file(target),
+          "docs/disciplines/new-policy.md": _sha256_file(target),
         },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
@@ -4015,7 +4015,7 @@ class NextNavigationTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "new-policy.md"
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("検証対象の正本文書\n", encoding="utf-8")
     runner = cwd / "tools" / "post_write_verify_new_policy.py"
@@ -4039,7 +4039,7 @@ class NextNavigationTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target = cwd / "docs" / "notes" / "new-policy.md"
+    target = cwd / "docs" / "disciplines" / "new-policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("検証対象の正本文書\n", encoding="utf-8")
     runner = cwd / "tools" / "post_write_verify_new_policy.py"
@@ -4160,8 +4160,8 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target_a = cwd / "docs" / "notes" / "policy-a.md"
-    target_b = cwd / "docs" / "notes" / "policy-b.md"
+    target_a = cwd / "docs" / "disciplines" / "policy-a.md"
+    target_b = cwd / "docs" / "disciplines" / "policy-b.md"
     target_a.parent.mkdir(parents=True, exist_ok=True)
     target_a.write_text("ポリシーA\n", encoding="utf-8")
     target_b.write_text("ポリシーB\n", encoding="utf-8")
@@ -4172,10 +4172,10 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
       "post-write-2026-06-02-001.yaml",
       {
         "status": "completed",
-        "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+        "target_files": ["docs/disciplines/policy-a.md", "docs/disciplines/policy-b.md"],
         "target_sha256": {
-          "docs/notes/policy-a.md": sha_a,
-          "docs/notes/policy-b.md": sha_b,
+          "docs/disciplines/policy-a.md": sha_a,
+          "docs/disciplines/policy-b.md": sha_b,
         },
         "required_verifiers": ["google", "openai-55"],
         "completed_verifiers": ["google", "openai-55"],
@@ -4183,18 +4183,18 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
         "verifications": [
           {
             "verifier": "google",
-            "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+            "target_files": ["docs/disciplines/policy-a.md", "docs/disciplines/policy-b.md"],
             "target_sha256": {
-              "docs/notes/policy-a.md": sha_a,
-              "docs/notes/policy-b.md": sha_b,
+              "docs/disciplines/policy-a.md": sha_a,
+              "docs/disciplines/policy-b.md": sha_b,
             },
           },
           {
             "verifier": "openai-55",
-            "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+            "target_files": ["docs/disciplines/policy-a.md", "docs/disciplines/policy-b.md"],
             "target_sha256": {
-              "docs/notes/policy-a.md": sha_a,
-              "docs/notes/policy-b.md": sha_b,
+              "docs/disciplines/policy-a.md": sha_a,
+              "docs/disciplines/policy-b.md": sha_b,
             },
           },
         ],
@@ -4217,8 +4217,8 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target_a = cwd / "docs" / "notes" / "policy-a.md"
-    target_b = cwd / "docs" / "notes" / "policy-b.md"
+    target_a = cwd / "docs" / "disciplines" / "policy-a.md"
+    target_b = cwd / "docs" / "disciplines" / "policy-b.md"
     target_a.parent.mkdir(parents=True, exist_ok=True)
     target_a.write_text("ポリシーA\n", encoding="utf-8")
     target_b.write_text("ポリシーB\n", encoding="utf-8")
@@ -4229,10 +4229,10 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
       "post-write-2026-06-02-001.yaml",
       {
         "status": "completed",
-        "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+        "target_files": ["docs/disciplines/policy-a.md", "docs/disciplines/policy-b.md"],
         "target_sha256": {
-          "docs/notes/policy-a.md": sha_a,
-          "docs/notes/policy-b.md": sha_b,
+          "docs/disciplines/policy-a.md": sha_a,
+          "docs/disciplines/policy-b.md": sha_b,
         },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
@@ -4240,7 +4240,7 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
         "verifications": [
           {
             "verifier": "google",
-            "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+            "target_files": ["docs/disciplines/policy-a.md", "docs/disciplines/policy-b.md"],
             # target_sha256 が意図的に欠落
           },
         ],
@@ -4265,7 +4265,7 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target_a = cwd / "docs" / "notes" / "policy-a.md"
+    target_a = cwd / "docs" / "disciplines" / "policy-a.md"
     target_a.parent.mkdir(parents=True, exist_ok=True)
     target_a.write_text("ポリシーA\n", encoding="utf-8")
     sha_a = _sha256_file(target_a)
@@ -4274,9 +4274,9 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
       "post-write-2026-06-02-001.yaml",
       {
         "status": "completed",
-        "target_files": ["docs/notes/policy-a.md"],
+        "target_files": ["docs/disciplines/policy-a.md"],
         "target_sha256": {
-          "docs/notes/policy-a.md": sha_a,
+          "docs/disciplines/policy-a.md": sha_a,
         },
         "required_verifiers": ["google"],
         "completed_verifiers": ["google"],
@@ -4284,9 +4284,9 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
         "verifications": [
           {
             "verifier": "google",
-            "target_files": ["docs/notes/policy-a.md"],
+            "target_files": ["docs/disciplines/policy-a.md"],
             "target_sha256": {
-              "docs/notes/policy-a.md": "deadbeef" * 8,  # 不正な sha256
+              "docs/disciplines/policy-a.md": "deadbeef" * 8,  # 不正な sha256
             },
           },
         ],
@@ -4311,8 +4311,8 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
     cwd = Path(self.tmpdir)
     _init_git_repo(cwd)
     _write_specs_for_next(cwd, {})
-    target_a = cwd / "docs" / "notes" / "policy-a.md"
-    target_b = cwd / "docs" / "notes" / "policy-b.md"
+    target_a = cwd / "docs" / "disciplines" / "policy-a.md"
+    target_b = cwd / "docs" / "disciplines" / "policy-b.md"
     target_a.parent.mkdir(parents=True, exist_ok=True)
     target_a.write_text("ポリシーA\n", encoding="utf-8")
     target_b.write_text("ポリシーB\n", encoding="utf-8")
@@ -4323,10 +4323,10 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
       "post-write-2026-06-02-001.yaml",
       {
         "status": "completed",
-        "target_files": ["docs/notes/policy-a.md", "docs/notes/policy-b.md"],
+        "target_files": ["docs/disciplines/policy-a.md", "docs/disciplines/policy-b.md"],
         "target_sha256": {
-          "docs/notes/policy-a.md": sha_a,
-          "docs/notes/policy-b.md": sha_b,
+          "docs/disciplines/policy-a.md": sha_a,
+          "docs/disciplines/policy-b.md": sha_b,
         },
         "required_verifiers": ["google", "openai-55"],
         "completed_verifiers": ["google", "openai-55"],
@@ -4334,11 +4334,11 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
         "verifications": [
           {
             "verifier": "google",
-            "target_files": ["docs/notes/policy-a.md"],
+            "target_files": ["docs/disciplines/policy-a.md"],
           },
           {
             "verifier": "openai-55",
-            "target_files": ["docs/notes/policy-b.md"],
+            "target_files": ["docs/disciplines/policy-b.md"],
           },
         ],
       },
@@ -4401,7 +4401,7 @@ class PostWriteReviewRunTraceabilityTests(unittest.TestCase):
     self.addCleanup(shutil.rmtree, self.tmpdir)
 
   def _write_manifest_for_review_run(self, cwd, run_id):
-    changed_targets = ["docs/notes/review-target.md"]
+    changed_targets = ["docs/disciplines/review-target.md"]
     run_dir = Path(cwd) / "docs" / "notes" / "review-runs" / run_id
     for path in sorted(run_dir.rglob("*")):
       if path.is_file():
@@ -9587,8 +9587,8 @@ class CommitExitCodeTests(unittest.TestCase):
   def test_commit_with_post_write_target_without_manifest_returns_two(self):
     """post-write 対象文書が staged され、完了 manifest がなければ exit 2"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
-    _stage_file(self.tmpdir, "docs/notes/policy.md", "# 運用メモ")
-    _write_commit_approval(self.tmpdir, ["docs/notes/policy.md"])
+    _stage_file(self.tmpdir, "docs/disciplines/policy.md", "# 運用メモ")
+    _write_commit_approval(self.tmpdir, ["docs/disciplines/policy.md"])
     result = run_script(
       ["commit", "--rationale", "post-write 未検証の遮断テスト"],
       cwd=self.tmpdir,
@@ -9600,9 +9600,9 @@ class CommitExitCodeTests(unittest.TestCase):
   def test_commit_with_post_write_target_and_completed_manifest_returns_zero(self):
     """post-write 対象文書が staged されても完了 manifest があれば exit 0"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
-    _stage_file(self.tmpdir, "docs/notes/policy.md", "# 運用メモ")
-    _write_completed_post_write_manifest(self.tmpdir, ["docs/notes/policy.md"])
-    _write_commit_approval(self.tmpdir, ["docs/notes/policy.md"])
+    _stage_file(self.tmpdir, "docs/disciplines/policy.md", "# 運用メモ")
+    _write_completed_post_write_manifest(self.tmpdir, ["docs/disciplines/policy.md"])
+    _write_commit_approval(self.tmpdir, ["docs/disciplines/policy.md"])
     result = run_script(
       ["commit", "--rationale", "post-write 検証済み commit のテスト"],
       cwd=self.tmpdir,
@@ -9994,13 +9994,13 @@ class AuditCommitTests(unittest.TestCase):
 
   def test_audit_commit_detects_post_write_target_without_manifest(self):
     """指定 commit に post-write 対象があり manifest がなければ exit 2"""
-    self._commit_file("docs/notes/policy.md", "# 運用メモ", "add policy note")
+    self._commit_file("docs/disciplines/policy.md", "# 運用メモ", "add policy note")
     result = run_script(["audit-commit", "HEAD", "--json"], cwd=self.tmpdir)
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "DEVIATION")
-    self.assertIn("docs/notes/policy.md", data["current_state"]["post_write_targets"])
+    self.assertIn("docs/disciplines/policy.md", data["current_state"]["post_write_targets"])
 
   def test_audit_commit_detects_root_commit_post_write_target_without_manifest(self):
     """root commit の post-write 対象追加も監査対象に含める"""
@@ -10013,7 +10013,7 @@ class AuditCommitTests(unittest.TestCase):
       ["git", "config", "commit.gpgsign", "false"],
     ]:
       subprocess.run(cmd, cwd=str(tmpdir), check=True, capture_output=True)
-    _stage_file(tmpdir, "docs/notes/policy.md", "# root policy")
+    _stage_file(tmpdir, "docs/disciplines/policy.md", "# root policy")
     subprocess.run(
       ["git", "commit", "-qm", "root todo"],
       cwd=str(tmpdir),
@@ -10026,12 +10026,12 @@ class AuditCommitTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2)
     data = json.loads(result.stdout)
-    self.assertIn("docs/notes/policy.md", data["current_state"]["post_write_targets"])
+    self.assertIn("docs/disciplines/policy.md", data["current_state"]["post_write_targets"])
 
   def test_audit_commit_accepts_post_write_target_with_matching_manifest(self):
     """指定 commit の post-write 対象を覆う manifest があれば exit 0"""
-    self._commit_file("docs/notes/policy.md", "# 運用メモ", "add policy note")
-    _write_completed_post_write_manifest(self.tmpdir, ["docs/notes/policy.md"])
+    self._commit_file("docs/disciplines/policy.md", "# 運用メモ", "add policy note")
+    _write_completed_post_write_manifest(self.tmpdir, ["docs/disciplines/policy.md"])
     result = run_script(["audit-commit", "HEAD", "--json"], cwd=self.tmpdir)
     _assert_script_invoked(self, result)
     self.assertEqual(

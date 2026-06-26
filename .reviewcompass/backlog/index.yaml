@@ -414,3 +414,18 @@ items:
   path: .reviewcompass/backlog/issues/issue-2026-06-24-post-write-target-judgment-mismatch.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-24T10:17:22.811221+00:00'
+- id: todo-2026-06-26-post-write-test-fixture-strict-path-realignment
+  kind: todo
+  title: Realign post-write test fixtures from docs/notes to strict verification paths
+  status: completed
+  path: .reviewcompass/backlog/todos/todo-2026-06-26-post-write-test-fixture-strict-path-realignment.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-26T01:51:27.317713+00:00'
+- id: issue-2026-06-26-post-write-tests-need-mechanization-not-fixture-rename
+  kind: issue
+  title: Two post-write tests need mechanization (canonical prompt / review-runs classification),
+    not fixture rename
+  status: candidate
+  path: .reviewcompass/backlog/issues/issue-2026-06-26-post-write-tests-need-mechanization-not-fixture-rename.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-26T02:21:34.915493+00:00'
