@@ -19,7 +19,7 @@
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": false,
+      "alignment": true,
       "approval": true
     },
     "design": {
@@ -53,11 +53,7 @@
     "implementation": true
   },
   "recheck": {
-    "upstream_change_pending": true,
-    "impacted_downstream_phases": [
-      "design",
-      "tasks",
-      "implementation"
-    ]
+    "upstream_change_pending": false,
+    "impacted_downstream_phases": []
   }
 }
