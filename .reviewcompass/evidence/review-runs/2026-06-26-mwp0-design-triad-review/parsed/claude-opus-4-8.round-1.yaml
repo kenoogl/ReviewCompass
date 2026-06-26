@@ -1,0 +1,63 @@
+role: primary
+provider: anthropic-api
+model: claude-opus-4-8
+attempts: 1
+duration_seconds: 46.892
+findings:
+- severity: CRITICAL
+  target_location: §5.2 next_action オブジェクトの設計確定事項 / §5.2 kind フィールドの値域
+  description: 受入 11（2）は next_action の必須フィールドを 10 個と定め、§5.2 の「必須フィールド（10つ）」もこれに一致している。しかし同じ
+    §5.2 の「kind フィールドの値域」表は kind を 7 値と正しく列挙する一方、直前の「フィールド型定義」表で kind を「string enum（14値インライン定義、下記参照）」と記述している。14
+    値は MWP-0 以前の旧値域であり、受入 12 が確定した 7 値および §5.2 値域表の 7 値と矛盾する。実装者は型定義表の「14値」と値域表の「7値」のどちらを
+    enum に書くか一意に決定できない。
+  rationale: 観点 2・観点 5。kind の値域は本変更（MWP-0）の中核であり、スキーマファイルの enum 定義に直結する。14 という旧数値が残存していると、実装者が誤って旧
+    14 値を enum 化する、または矛盾を解消できず実装が止まる。受入 12 と §5.2 値域表は 7 値で一致しているため、型定義表の「14値」が誤りであることは明白で、修正対象は型定義表側。
+- severity: ERROR
+  target_location: §5.3 blocking_in_progress の追加フィールド表 / blocking_phase 値の統合表
+  description: 受入 11（2）は action_parameters を required_action = \"run_maintenance\"
+    のとき必須（6 フィールドすべて required）と定め、§5.2 の条件付き必須フィールド節もこれを正しく再掲している。一方 §5.3 の blocking_in_progress
+    節は「廃止するフィールド」に action_parameters を列挙し、その理由を「他フィールドの重複コピー」としている。設計メモ line 97 もこれを確定内容としている。受入
+    11（2）の action_parameters は next_action 直下の条件付き必須フィールド、§5.3/設計メモが廃止対象とする action_parameters
+    は kind=blocking_in_progress の詳細フィールドであり、両者は配置レベルが異なるため論理的には共存し得る。しかし design.md
+    本文はこの「配置レベルの違いにより矛盾しない」旨を §5.3 でも §5.2 でも明示しておらず、読み手が同名フィールドの二重定義として矛盾と受け取る。
+  rationale: 観点 1・観点 3。受入 11 と設計メモはどちらも確定要件であり、どちらかを優先・破棄する選択肢はない。実体としては「next_action.action_parameters（run_maintenance
+    専用・必須）」と「blocking_in_progress 詳細の action_parameters（廃止）」が別物として整合可能だが、その整合根拠が design.md
+    に書かれていないため、実装者は同名フィールドの扱いを一意に決定できない。§5.3 廃止理由欄または §5.2 条件付き必須欄に「廃止対象は kind 詳細フィールドの
+    action_parameters であり、run_maintenance の next_action.action_parameters とは配置が異なる」旨の注記が必要。
+- severity: ERROR
+  target_location: §5.3 reopen_in_progress の廃止フィールド / Req 12 設計モデル §11 reopen_in_progress
+    の next_action フィールド一覧
+  description: §5.3 は reopen_in_progress について feature を「required_feature_scope で代替」として廃止し、direct_features
+    / indirect_features / feature_impact_scope_basis も廃止すると定める（設計メモ line 119 と一致）。しかし
+    §Req 12 設計モデル §11 の reopen_in_progress の next_action フィールド一覧は「direct / indirect
+    features」「next_drafting_gate」を依然として含めて列挙している（next_drafting_gate には MWP-0 廃止予定の注記があるが、direct/indirect
+    features には廃止注記がない）。同一文書内で reopen_in_progress が返すフィールド集合の定義が §5.3 と §Req 12 §11
+    で食い違う。
+  rationale: 観点 3・観点 5。設計メモ line 119 は direct_features / indirect_features を廃止と確定しているが、§Req
+    12 §11 では存続フィールドとして残っている。実装者が §Req 12 §11 を参照すると廃止すべきフィールドを実装してしまう。MWP-0 の波及として
+    §Req 12 §11 の reopen_in_progress フィールド一覧から direct/indirect features を除くか、廃止予定注記を付す追従が必要。
+- severity: WARN
+  target_location: §5.4 commit-preflight サブコマンドの kind 設計 / §5.2 サブコマンド構成表（軽量版検査スクリプトモデル
+    §2）
+  description: §5.4 は commit-preflight サブコマンドが commit_candidate / commit_mixing_risk
+    / commit_unit_stale の 3 値の kind を返すと定め、「commit-preflight は既存のコミット手前の必須確認手順として確立されており」と既存実装の存在を前提としている。しかし
+    design.md の §軽量版検査スクリプトモデル §2 のサブコマンド構成表は spec-set / commit / push / next の 4
+    サブコマンドのみを列挙し、commit-preflight サブコマンドが構成表に存在しない。§5.4 が参照する commit-preflight の既存実装・出力スキーマ・引数契約が
+    design.md 内で定義された箇所が見当たらず、commit-preflight の kind 値域（3 値）以外の応答構造（最上位フィールド・JSON
+    スキーマ・exit code 規約）が未確定である。
+  rationale: 観点 4・観点 5。受入 12 は 3 値を commit-preflight の「出力にのみ含める」と定めるが、その出力がどの応答スキーマ（next_action_response
+    形式か独自形式か）に載るか、commit-preflight の最上位構造・exit code が design.md のどこで確定されるかが §5.4 だけでは一意に決まらない。既存実装と矛盾しないかの確認（観点
+    4 後段）も、design.md 内に commit-preflight の構成定義がないため検証できない。commit-preflight サブコマンドの設計位置づけ（既存実装の参照先か新規定義か）を
+    §5.4 または §2 サブコマンド構成表で明示する必要がある。
+- severity: WARN
+  target_location: §5.2 kind フィールドの値域表（優先順位）/ 受入 12 の 7 値列挙
+  description: 受入 12 は 7 値を completed / in_progress / blocking_in_progress / verification_pending
+    / reopen_in_progress / feature_definition_required / unknown の順で列挙する（意味上の並び、優先順位の指定なし）。§5.2
+    値域表は同じ 7 値を選択子としての優先順位順（1:reopen_in_progress 〜 7:unknown）で並べ替えて定義している。値の集合は完全一致しており問題ないが、§5.2
+    表の優先順位 7:unknown は verdict DEVIATION の異常状態である一方、§軽量版検査スクリプトモデル §2 の selector 優先順位（「workflow
+    state / reopen plan の破損」を最優先で repair_workflow_state を返す）との関係が表中で明示されていない。kind
+    の優先順位（reopen_in_progress が 1 位）と required_action の selector 優先順位（破損検出が最優先）が別軸であることは読み取れるが、両者の対応関係が表内注記として無いため、kind
+    値の選択順と required_action 選択順の関係を実装者が再構成する必要がある。
+  rationale: 観点 2・観点 4。値の集合・意味は受入 12 と一致しており致命的問題はない。ただし §5.2 値域表が付与した優先順位（受入 12 にない情報）が、既存の
+    required_action selector 優先順位（§2）とどう対応するかが文書化されていないため、unknown（DEVIATION）と repair_workflow_state（破損時最優先
+    required_action）の関係など、kind と required_action の組み合わせ整合を実装者が独自判断する余地が残る。

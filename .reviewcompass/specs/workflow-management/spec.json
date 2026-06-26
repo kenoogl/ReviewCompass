@@ -25,7 +25,7 @@
     "design": {
       "drafting": true,
       "triad-review": true,
-      "review-wave": true,
+      "review-wave": false,
       "alignment": false,
       "approval": false
     },

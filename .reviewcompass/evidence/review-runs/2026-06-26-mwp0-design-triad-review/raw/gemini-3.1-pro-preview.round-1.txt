@@ -1,0 +1,29 @@
+findings:
+  - severity: CRITICAL
+    target_location: "§5.2 next_action_response.schema.json / next_action フィールド型定義"
+    description: "型定義表の `kind` フィールドに「string enum（14値インライン定義）」という旧仕様の記述が残存している。直後の値域表および受入12では7値に限定されており、同一節内で値域の数が矛盾している。"
+    rationale: "本変更（MWP-0）の核心である「kind値域の7種類への整理」と直接矛盾する。実装者がJSON Schemaのenumを定義する際、14値と7値のどちらを採用すべきか一意に決定できず、スキーマの実装が停止する原因となるため致命的である。"
+  - severity: ERROR
+    target_location: "§5.3 blocking_in_progress の追加フィールド / §5.2 条件付き必須フィールド"
+    description: "§5.3では `action_parameters` を「廃止するフィールド」としているが、§5.2（および受入11）では `required_action = \"run_maintenance\"` の際の「必須フィールド」として定義している。これらは「kind詳細フィールド」としての廃止と「next_action直下フィールド」としての必須化という配置レベルの違いにより共存可能であるが、その旨の注記がないため文書内で矛盾して見える。"
+    rationale: "受入要件11と設計メモの両方を満たす仕様だが、配置レベルの違いが明示されていないため、実装者が `run_maintenance` 実行時に `action_parameters` を追加すべきか廃止すべきか判断できず、不整合なスキーマ実装を招く恐れがある。"
+  - severity: ERROR
+    target_location: "§5.3 reopen_in_progress の廃止フィールド / Requirement 12 設計モデル §11"
+    description: "§5.3において `direct_features`、`indirect_features`、`next_drafting_gate` を廃止する（設計メモと一致）と定めているが、同一文書内の「Requirement 12 設計モデル §11」の `state_refs.next_action` の一覧にはこれらのフィールドが依然として存続している。"
+    rationale: "MWP-0によって廃止されるフィールドが下流のoperation preflightの参照先（Req 12）に残っていると、preflightがスキーマに存在しないフィールドを要求することになり、システムが正常に動作しなくなる。文書間の完全な同期が必要。"
+  - severity: ERROR
+    target_location: "§5.3 in_progress の追加フィールド / 受入 11（6）"
+    description: "§5.3の `in_progress` の表において `stage` フィールドが「`commit_stop_point` を含む」と記述されているが、確定要件である受入11(6)では `commit_stop_point` の際は `stage=null` と定められている。"
+    rationale: "要件（Req 11）では `commit_stop_point` はアクティブなワークフロー単位を持たない状態（stage=null）とされているにもかかわらず、設計（§5.3）では `stage` に値を入れる仕様となっており、schema制約とkind詳細設計が完全に矛盾している。"
+  - severity: ERROR
+    target_location: "§5.2 条件付き必須フィールド / 受入 11（6）"
+    description: "受入11(6)で要求されている `commit_stop_point`、`run_reopen_pending_gate`、`run_reopen_drafting` 等の `required_action` 値ごとのフィールド制約（null制約や形式制約）が、§5.2のスキーマ設計（条件付き必須フィールドなど）に反映されていない。"
+    rationale: "JSON Schemaとして定義すべき制約事項が設計ドキュメント上に網羅されていないため、実装者が要件を満たすスキーマ（if/then構文など）を正しく構築できなくなる。"
+  - severity: WARN
+    target_location: "§5.4 commit-preflight サブコマンドの kind 設計 / §軽量版検査スクリプトモデル §2"
+    description: "§5.4では `commit_candidate` 等の3値を `commit-preflight` サブコマンドの出力へ移動すると規定しているが、§2の「サブコマンド構成表」には `spec-set`、`commit`、`push`、`next` しか定義されておらず、`commit-preflight` 自体の構成定義が存在しない。"
+    rationale: "移行先となるサブコマンドの呼び出し仕様や応答スキーマ（JSON Schemaか否か、最上位構造、exit code）が設計書内で未定義であるため、受入12の「commit-preflightの出力にのみ含める」という要求を実装可能なレベルに落とし込めていない。"
+  - severity: WARN
+    target_location: "§5.3 blocking_in_progress の追加フィールド"
+    description: "設計メモでは旧 `resuming` を `blocking_phase: in_progress` に吸収した場合、`parent_unit_id` 等を null にすると確定しているが、§5.3の表では✓（必須）となっており、null許容などの条件が明記されていない。"
+    rationale: "表の記載だけではフィールドが「null許容の必須フィールド」なのか「非nullの必須フィールド」なのかが判別できず、スキーマの型定義（type: [string, null] 等）が一意に決定できない。"

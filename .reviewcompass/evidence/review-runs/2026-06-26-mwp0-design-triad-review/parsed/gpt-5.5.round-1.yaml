@@ -1,0 +1,89 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 71.738
+findings:
+- severity: CRITICAL
+  target_location: §5.2 next_action フィールド型定義 / §5.2 kind フィールドの値域
+  description: '`kind` の型定義表が「string enum（14値インライン定義）」と記述している一方、直後の値域表と受入 12 は 7 値に限定している。'
+  rationale: MWP-0 の中核は `next --json` の `kind` 値域を 7 種類へ整理することなので、同じ §5.2 内に旧 14 値の記述が残ると、実装者が
+    JSON Schema の enum を 14 値で実装するか 7 値で実装するか一意に決められない。修正対象は型定義表側であり、受入 12 と §5.2
+    値域表に合わせて 7 値と明記する必要がある。
+- severity: ERROR
+  target_location: §5.2 条件付き必須フィールド / 受入 11（6）
+  description: 受入 11 が要求する `required_action` 値ごとのフィールド制約のうち、§5.2 の schema 設計に明示されているのは
+    `repair_workflow_state` と `run_maintenance` の一部だけで、`commit_stop_point`、`run_reopen_pending_gate`、`run_reopen_drafting`、`wait_for_human_decision`
+    などの制約が schema 設計として確定されていない。
+  rationale: '受入 11（6）は `commit_stop_point: active_gate=null, phase=null, stage=null,
+    blocked_by.type="commit_stop_point"`、`run_reopen_pending_gate: active_gate 非 null`、`run_reopen_drafting:
+    active_gate は stages/<phase>.yaml#drafting 形式` などを確定要件として列挙している。§5.2 がこれらを JSON
+    Schema の `if/then` 等でどう表すかを定義しないと、実装者は受入 11 の制約を schema に入れるべきか、実装コードだけで保証すべきか判断できない。'
+- severity: ERROR
+  target_location: §5.2 action_parameters 条件付き必須フィールド
+  description: '`required_action = "run_maintenance"` の `action_parameters` について、受入
+    11 が design で決めるとしている追加フィールドの許可・禁止方針が §5.2 で確定されていない。'
+  rationale: 受入 11 は `action_parameters` の 6 フィールドを required としつつ、追加フィールドの許可・禁止は design
+    で確定するとしている。§5.2 は 6 フィールドの required だけを述べ、`action_parameters.additionalProperties`
+    を許可するのか禁止するのか、または特定フィールドだけ許可するのかを定めていないため、JSON Schema 実装が一意にならない。
+- severity: ERROR
+  target_location: §5.3 blocking_in_progress の廃止フィールド / §5.2 run_maintenance の action_parameters
+  description: §5.3 は `blocking_in_progress` で `action_parameters`、`maintenance_action`、`completion_conditions`
+    を廃止するとしているが、§5.2 は `required_action = "run_maintenance"` のとき `next_action.action_parameters`
+    を必須とし、その中に `maintenance_action` と `completion_conditions` を required としている。
+  rationale: 受入 11 と設計メモの両方を満たすには、§5.3 の廃止対象が旧 `blocking_in_progress` 詳細フィールドであり、§5.2
+    の `next_action.action_parameters` とは別の配置・意味であることを明示する必要がある。現状の文面では同じ `next_action`
+    上の同名フィールドとして読めるため、`run_maintenance` 時に `action_parameters` を出すべきか廃止すべきか実装者が判断できない。
+- severity: ERROR
+  target_location: §5.3 in_progress の追加フィールド / 受入 11（6）commit_stop_point 制約
+  description: §5.3 は `in_progress` が `commit_stop_point` を統合し、`stage` に `commit_stop_point`
+    を含むと記述しているが、受入 11 は `required_action = "commit_stop_point"` のとき `phase=null`、`stage=null`、`active_gate=null`
+    と定めている。
+  rationale: '`commit_stop_point` を旧 kind から除外して `kind: in_progress` などへ統合すること自体は可能だが、受入
+    11 の制約上、commit stop point は active workflow unit を持たず `stage` に `commit_stop_point`
+    を入れてはならない。§5.3 の記述のままでは、schema 制約と kind 詳細フィールド設計が矛盾する。'
+- severity: ERROR
+  target_location: §5.3 reopen_in_progress の廃止フィールド / §5.2 next_action 必須フィールド / §軽量版検査スクリプトモデル
+    §2 unique action selector
+  description: §5.3 は `reopen_in_progress` の `feature` を `required_feature_scope`
+    で代替して廃止するとしているが、§5.2 は `feature` を `next_action` の必須フィールドとして定義し、前段の unique action
+    selector も reopen 第3過程の active workflow unit では `feature` を非 null にすると述べている。
+  rationale: 受入 11 では `feature` は必須フィールドであり、値は単一フィーチャー名・`all_features`・null のいずれかに限られる。設計メモの
+    `feature` 廃止が旧 reopen 詳細フィールドの廃止を意味するなら、必須の共通 `feature` フィールドは残すが reopen では null
+    にするのか、active gate 時は単一 feature を入れるのかを明示する必要がある。現状では `feature` を schema で required
+    にする設計と、reopen 詳細で廃止する設計が同一階層で衝突している。
+- severity: ERROR
+  target_location: §5.3 reopen_in_progress の廃止フィールド / Requirement 12 設計モデル §2・§11
+  description: §5.3 は `next_drafting_gate`、`direct_features`、`indirect_features`、`feature_impact_scope_basis`
+    を廃止するとしているが、Requirement 12 設計モデルの preflight response と reopen state uniqueness
+    節には `direct_features`、`indirect_features`、`next_drafting_gate` が残っている。
+  rationale: MWP-0 後に `next --json` がこれらのフィールドを返さないなら、operation preflight が `state_refs.next_action`
+    にそれらを要求する設計は成立しない。preflight が `next --json` の写しを使うという Requirement 12 の前提とも矛盾するため、Requirement
+    12 側のフィールド一覧を `required_feature_scope`、`active_gate`、`future_gates` 等へ追従させる必要がある。
+- severity: WARN
+  target_location: §5.3 blocking_in_progress の blocking_phase 表
+  description: '設計メモは旧 `resuming` を `blocking_phase: in_progress` に吸収し、その場合 `unit_id`
+    / `parent_unit_id` は null とする確定内容を持つが、§5.3 の表では `in_progress` で `unit_id` と `parent_unit_id`
+    が必須扱いになっており、null 条件が明示されていない。'
+  rationale: 表の ✓ が「フィールド必須」を意味するなら、旧 `resuming` 吸収ケースで `parent_unit_id` が null になる設計メモと読み手が矛盾として受け取る。フィールド自体は存在必須だが値は
+    null 許容なのか、旧 `resuming` 吸収ケースだけ例外なのかを明記しないと、schema の `type` と required 条件を決められない。
+- severity: WARN
+  target_location: §5.3 全 kind 共通フィールド / §5.2 next_action_response.schema.json
+  description: §5.3 は全 kind 共通フィールドとして `reason` を挙げているが、§5.2 の最上位必須フィールドは `reasons`
+    配列であり、`next_action` の必須フィールドにも `reason` は含まれていない。
+  rationale: '`reason` を `next_action` 内の追加フィールドとして常に返すのか、最上位 `reasons` が正本で `reason`
+    は旧フィールドなのかが不明確である。`additionalProperties` が開放されているため schema 上は出せてしまうが、共通フィールドと必須フィールドの記述がずれており、実装者が出力形式を一意に決めにくい。'
+- severity: ERROR
+  target_location: §5.4 commit-preflight サブコマンドの kind 設計 / §軽量版検査スクリプトモデル §2 サブコマンド構成
+  description: §5.4 は `commit-preflight` サブコマンドを既存の必須確認手順として扱い、3 種類の `kind` を返すと定めているが、サブコマンド構成表には
+    `commit-preflight` が存在せず、既存設計では `commit`、`commit-approval prepare/record/delegate-execution`、`guarded-git-commit.py`
+    が commit 前確認の入口として記述されている。
+  rationale: '`commit-preflight` が新規サブコマンドなのか、既存 `commit` サブコマンドまたは commit approval
+    chain の別名なのか、既存実装とどう接続するのかが不明である。また、`commit-preflight` の JSON 応答スキーマ、最上位フィールド、exit
+    code、既存 `commit` gate との責務分担も定義されていないため、受入 12 の「commit-preflight の出力にのみ含める」を実装可能な契約に落とせていない。'
+- severity: ERROR
+  target_location: 変更意図 ReviewCompass 固有の追加 / §5.2 kind フィールドの値域
+  description: 変更意図の履歴記述に、`next` が `reopen_classification_required` を返すという旧 kind らしき値が残っており、§5.2
+    の 7 値 enum に存在しない。
+  rationale: 履歴節であっても同じ design.md 内に `next` が返す kind として 7 値外の値が残ると、MWP-0 後の正本値域と矛盾する。旧挙動の説明として残すなら「旧
+    kind」または「現在は `reopen_in_progress` / `unknown` 等に統合済み」と注記し、実装対象の kind ではないことを明確にする必要がある。

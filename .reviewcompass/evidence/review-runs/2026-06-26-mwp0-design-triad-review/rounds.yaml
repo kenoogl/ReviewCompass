@@ -1,0 +1,115 @@
+round_id: round-1
+purpose: design_triad_review
+invocation_timestamp: '2026-06-26T14:00:46.346840+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: 748df515297476f2973c8f676992b92d751737e11b54c5e81cd9c35abf153c33
+criteria: "# Design Triad-Review: MWP-0（next --json kind 再設計）\n\n## 背景\n\nReviewCompass\
+  \ は `next --json` コマンドでワークフロー作業の現在地と次の操作を JSON で返すツールである。今回の変更（MWP-0）は `kind` フィールドの値域を整理する。\n\
+  \n**変更の動機：**\n現状の `kind` 値は 41 種類あり、「作業の現在地カテゴリ」「手続きの内部サブステップ」「コミット操作の前確認」が同一フィールドに混在している。この混在によって機械的な次アクション決定が困難になっている。\n\
+  \n**変更の内容：**\n1. `next --json` の `kind` 値域を 7 種類に整理する\n2. `commit_candidate` / `commit_mixing_risk`\
+  \ / `commit_unit_stale` の 3 種類を `next --json` から除外し、`commit-preflight` サブコマンドの出力へ移動する\n\
+  \n今回の審査は、`design.md` に追記・更新した §5.2〜5.4 の内容が、確定した要件（requirements.md 受入 11・受入 12）および設計メモ（`docs/notes/2026-06-26-next-json-kind-redesign.md`）と整合しているかを確認する。\n\
+  \n---\n\n## 確定要件（requirements.md より抜粋）\n\n**受入 11（Requirement 2 の一部）：**\n```\n11.\
+  \ 本機能は `next --json` の目標応答スキーマを\n`.reviewcompass/schema/next_action_response.schema.json`\
+  \ として JSON Schema 形式で定義する。\n\n（1）最上位の必須フィールドは `verdict`・`exit_code`・`next_action`・`reasons`・`current_state`\
+  \ の 5 つ。\n（2）`next_action` の最低限の必須フィールドは `kind`（文字列・値域は受入 12 で確定）・\n`required_action`・`active_gate`・`feature`・`phase`・`stage`・\n\
+  `required_feature_scope`・`blocked_by`・`future_gates`・`state_refs` の 10 フィールド。\n\
+  これに加え、\n- `repair_reasons`（配列）は `required_action = \"repair_workflow_state\"` のとき必須（非空配列）\n\
+  - `action_parameters`（オブジェクト）は `required_action = \"run_maintenance\"` のとき必須。\n\
+  \  6 フィールド（`maintenance_action`・`allowed_scope`・`allowed_files`・`completion_conditions`・\n\
+  \  `active_stack_frame_id`・`parent_frame_id`）はすべて required とする。\n  追加フィールドの許可・禁止は\
+  \ design で確定する。\n（3）`feature` は「単一フィーチャー名」・`\"all_features\"`・null の 3 種類に限る。\n\
+  （4）進行中の作業単位がない場合、`feature`・`phase`・`stage`・`active_gate` はすべて null。\n（5）後方互換のため\
+  \ `pending_gates`・`next_pending_gate` をオプションフィールドとして定義。\n    正本フィールドは `future_gates`・`active_gate`。\n\
+  （6）`required_action` 値ごとのフィールド制約（D-003 §4.2 の確定内容）：\n    ① commit_stop_point: active_gate=null,\
+  \ phase=null, stage=null, blocked_by.type=\"commit_stop_point\"\n    ② run_reopen_pending_gate:\
+  \ active_gate 非 null\n    ③ run_reopen_drafting: active_gate は stages/<phase>.yaml#drafting\
+  \ 形式\n    ④ repair_workflow_state: active_gate=null, repair_reasons に理由を含める\n  \
+  \  ⑤ wait_for_human_decision: blocked_by.type で停止理由を区別\n    ⑥ run_maintenance: action_parameters\
+  \ に上記 6 フィールドを含める\n```\n\n**受入 12（Requirement 2 に新設）：**\n```\n12. 本機能は `commit_candidate`、`commit_mixing_risk`、`commit_unit_stale`\
+  \ の 3 種類の判定を\n`next --json` の `kind` から除外し、`commit-preflight` サブコマンドの出力にのみ含める。\n\
+  これらの判定は「コミット操作の前確認」であり「作業の現在地カテゴリ」ではない。\n`next --json` の `kind` は作業の現在地のみを示す 7 種類\n\
+  （`completed` / `in_progress` / `blocking_in_progress` / `verification_pending` /\n\
+  `reopen_in_progress` / `feature_definition_required` / `unknown`）に限定する。\n設計の詳細は\
+  \ `docs/notes/2026-06-26-next-json-kind-redesign.md` を正本とする。\n```\n\n---\n\n## 確定設計メモ（docs/notes/2026-06-26-next-json-kind-redesign.md\
+  \ より抜粋）\n\n**`blocking_in_progress` の廃止フィールド（設計メモ line 97 の確定内容）：**\n```\n廃止するフィールド：\n\
+  resuming（blocking_phase 値）/ completion_conditions（return_conditions に統一）/\nprocess_id（blocking_phase\
+  \ で代替）/ maintenance_action（required_action で代替）/\nblocked_normal_workflow（blocking_phase:\
+  \ in_progress で暗示）/\nmainline_blocked_by（completed 開始の maintenance に戻り先はなく不要）/\n\
+  action_parameters（他フィールドの重複コピー）/\nactive_gate（maintenance では常に null）\n```\n\n**`blocking_in_progress`\
+  \ の blocking_phase 値（設計メモ line 83 の確定内容）：**\n```\nresuming は廃止。in_progress（unit_id\
+  \ / parent_unit_id が null）として吸収。\n```\n\n**`reopen_in_progress` の廃止フィールド（設計メモ line\
+  \ 119 の確定内容）：**\n```\n廃止するフィールド：\nnext_drafting_gate（active_gate で代替・手引き改修が必要）/\n\
+  feature（required_feature_scope で代替）/\ndirect_features / indirect_features / feature_impact_scope_basis（手引きに参照なし）\n\
+  ```\n\n---\n\n## 審査の観点\n\ndesign.md の §5.2・§5.3・§5.4 を読み、以下の観点で独立して分析してほしい。\n\n\
+  **観点 1：受入 11 と §5.3 設計の整合性**\n\n受入 11 は `action_parameters` を `required_action =\
+  \ \"run_maintenance\"` のときの必須フィールドと定義している。§5.3 の `blocking_in_progress` 節は `action_parameters`\
+  \ を「廃止するフィールド」に列挙している。\nこの 2 つの記述は矛盾しているか。矛盾している場合、どちらが優先されるべきか、あるいはどのように整合を取るべきか分析してほしい。\n\
+  \n**観点 2：受入 12 の 7 値と §5.2 値域表の整合性**\n\n受入 12 が列挙する 7 種類の kind 値と、§5.2 の値域表が定義する\
+  \ 7 種類の kind 値を比較してほしい。値の集合・意味・選択子としての優先順位付けに問題があれば指摘してほしい。\n\n**観点 3：設計メモと §5.3\
+  \ の整合性**\n\n上記「確定設計メモ」の内容と design.md §5.3 の記述を比較してほしい。フィールドの欠落、余剰、意味の不一致があれば指摘してほしい。\n\
+  \n**観点 4：設計の完結性**\n\n§5.2〜5.4 を読んだ実装者が、 実装内容を一意に決定できるか。決定できない事項や曖昧な点があれば指摘してほしい。特に\
+  \ `commit-preflight` サブコマンドの設計（§5.4）が `commit-preflight` の既存実装と矛盾しないか確認してほしい。\n\n\
+  **観点 5：design.md 内の内部整合性**\n\n§5.2〜5.4 の間、および §5.2〜5.4 と design.md の他の箇所との間に矛盾や不整合はないか。\n"
+prompt_sha256: 6da43863ca0fce33165465eb752fae1bd9f1f683574bf98302f461a590e81826
+model_results:
+- model_id: claude-opus-4-8
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-opus-4-8.round-1.txt
+  raw_sha256: 62e35930c8beb07a0ac4edf8130625e6c15f740d90a25da4d2184e42e11b0e94
+  parsed_path: parsed/claude-opus-4-8.round-1.yaml
+  parsed_sha256: 2ae96aa1c735b6030c2ac50b1e0f9ff89b4e8220d874ef890c6dd64eb71dda95
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-26T13:58:57.092751+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 46.892
+  prompt_path: prompts/claude-opus-4-8.round-1.prompt.md
+  prompt_sha256: 396e60b4ba58cdd336bf48d763fe04f1d841839eb4e605df9fd47b11701a9be7
+- model_id: gpt-5.5
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: d35801501b8735c7680fd07ab8356b4ba302fb10bd1963a2bef7b5ef074a2486
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: 5b0735a68fd181ac331be2826e041cedac29f32f18adc601e405a431c1a70c47
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-26T14:00:13.385768+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 71.738
+  prompt_path: prompts/gpt-5.5.round-1.prompt.md
+  prompt_sha256: 44a95da222237813e7e48ac32eee9138ebadcbeeda2cbdd75cb6b217a5bc7720
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 5e7a35f0e347ba4f64042d39828e2f953daf34cd75c70d92d7492cd37ea3426d
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 5de35db3f609d05890fce866896c70d044eb81ac7a64695df86f70b34564fb1b
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-26T14:00:46.346840+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 28.108
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: 6da43863ca0fce33165465eb752fae1bd9f1f683574bf98302f461a590e81826
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-06-26-mwp0-design-triad-review/review-target.md
+criteria_source_sha256: ae9b9537fba1d15a565186788365bde958d94ee3cf93ae9069f3392fa8dfa20d

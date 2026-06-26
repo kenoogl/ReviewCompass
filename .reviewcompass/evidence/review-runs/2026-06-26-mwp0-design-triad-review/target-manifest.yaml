@@ -1,0 +1,4 @@
+run_id: 2026-06-26-mwp0-design-triad-review
+target_files:
+- path: .reviewcompass/specs/workflow-management/design.md
+  sha256: 748df515297476f2973c8f676992b92d751737e11b54c5e81cd9c35abf153c33
