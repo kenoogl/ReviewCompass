@@ -105,6 +105,65 @@ class CapturePreviousTests(unittest.TestCase):
     _assert_invoked(self, r)
     self.assertEqual(r.returncode, 0, f"stderr={r.stderr}")
 
+  def test_rebackfills_stale_record_even_when_marker_exists(self):
+    """DONE_MARKER があっても source_sha256 が古ければ再取り込みして sha256 を更新する。
+
+    Claude Code アプリはセッション終了後も last-prompt / mode 行を jsonl に追記する。
+    これにより取り込み済みの md の source_sha256 が変化し、コミット前検査で
+    「進行中セッション」として誤ってブロックされる。
+
+    再発火時に sha256 が stale であれば再取り込みし、md の source_sha256 を
+    最新の jsonl に合わせる。
+    """
+    import hashlib
+
+    _claude_fixture(self.proj / "sessA.jsonl", mtime=2000)
+    _claude_fixture(self.proj / "sessB.jsonl", mtime=3000)
+    payload = {"hook_event_name": "SessionStart",
+               "session_id": "sessB", "cwd": self.cwd, "source": "startup"}
+
+    # 1回目: 初回取り込み（DONE_MARKER を作成）
+    r1 = _run_hook(payload, self.evidence, self.docs, self.home, self.done)
+    _assert_invoked(self, r1)
+    self.assertEqual(r1.returncode, 0, f"1回目取り込み失敗。stderr={r1.stderr}")
+    md_path = self.evidence / "2026-06-14-claude-sessA.md"
+    self.assertTrue(md_path.exists(), "初回取り込みで md が作られるはず")
+
+    # jsonl に Claude Code アプリ模擬のメタデータ行を追記して sha256 を変化させる
+    jsonl_path = self.proj / "sessA.jsonl"
+    with open(jsonl_path, "a", encoding="utf-8") as f:
+      f.write(json.dumps({"type": "last-prompt", "lastPrompt": "test",
+                          "sessionId": "sessA"}) + "\n")
+      f.write(json.dumps({"type": "mode", "mode": "normal",
+                          "sessionId": "sessA"}) + "\n")
+
+    # sha256 が stale になっていることを確認
+    stored = None
+    for line in md_path.read_text(encoding="utf-8").splitlines():
+      if line.startswith("source_sha256:"):
+        stored = line.split(":", 1)[1].strip()
+        break
+    current_hash = hashlib.sha256(jsonl_path.read_bytes()).hexdigest()
+    self.assertNotEqual(stored, current_hash, "前提: jsonl 追記後は sha256 が stale なはず")
+
+    # 2回目: DONE_MARKER があるが sha256 が stale → 再取り込みすべき
+    r2 = _run_hook(payload, self.evidence, self.docs, self.home, self.done)
+    _assert_invoked(self, r2)
+    self.assertEqual(r2.returncode, 0, f"2回目取り込み失敗。stderr={r2.stderr}")
+
+    # md の source_sha256 が最新 jsonl のハッシュに更新されているはず
+    updated_stored = None
+    for line in md_path.read_text(encoding="utf-8").splitlines():
+      if line.startswith("source_sha256:"):
+        updated_stored = line.split(":", 1)[1].strip()
+        break
+    self.assertEqual(
+      updated_stored,
+      current_hash,
+      f"再取り込み後の source_sha256 は最新 jsonl のハッシュに一致すべき。"
+      f"stored={updated_stored}, current={current_hash}",
+    )
+
 
 if __name__ == "__main__":
   unittest.main()

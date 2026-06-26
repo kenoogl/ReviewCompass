@@ -58,11 +58,35 @@ PREV_ID=$(basename "$PREV" .jsonl)
 DONE_DIR="${RC_SESSION_BACKFILL_DONE_DIR:-$REPO_ROOT/.reviewcompass/runtime/session-backfill-done}"
 DONE_MARKER="$DONE_DIR/$PREV_ID"
 
-# 取り込み済みマーカーがあればスキップ（コンテキスト圧縮による再発火対策）
-[ -f "$DONE_MARKER" ] && exit 0
-
 EVIDENCE_DIR="${RC_SESSION_EVIDENCE_DIR:-$REPO_ROOT/.reviewcompass/evidence/sessions}"
 DOCS_DIR="${RC_SESSION_DOCS_DIR:-$REPO_ROOT/docs/sessions}"
+
+# 取り込み済みマーカーがある場合でも、source_sha256 が現在の jsonl と一致しなければ再取り込みする。
+# Claude Code アプリはセッション終了後も last-prompt / mode 行を jsonl に追記するため、
+# 初回取り込み後に sha256 が変化し、コミット前検査で「進行中セッション」と誤判定される。
+if [ -f "$DONE_MARKER" ]; then
+  # 対応する md ファイルを探す（層1 の evidence ディレクトリ）
+  MD_FILE=$(ls "$EVIDENCE_DIR"/*-claude-"$PREV_ID".md 2>/dev/null | head -1)
+  if [ -n "$MD_FILE" ] && [ -f "$MD_FILE" ]; then
+    STORED_SHA=$(grep "^source_sha256:" "$MD_FILE" 2>/dev/null | awk '{print $2}')
+    if [ -n "$STORED_SHA" ]; then
+      if command -v shasum >/dev/null 2>&1; then
+        CURRENT_SHA=$(shasum -a 256 "$PREV" 2>/dev/null | awk '{print $1}')
+      else
+        CURRENT_SHA=$(sha256sum "$PREV" 2>/dev/null | awk '{print $1}')
+      fi
+      # sha256 が一致していれば再取り込み不要
+      [ "$STORED_SHA" = "$CURRENT_SHA" ] && exit 0
+      # 不一致（stale）の場合は再取り込みへ続く
+    else
+      # sha256 が読めない場合は安全のためスキップ
+      exit 0
+    fi
+  else
+    # md がない（取り込み済みでない）場合は通常取り込みへ続く
+    :
+  fi
+fi
 
 cd "$REPO_ROOT" || exit 0
 python3 tools/session-record-backfill.py \
