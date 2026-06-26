@@ -2175,7 +2175,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     action = data["next_action"]
-    self.assertEqual(action["kind"], "commit_stop_point")
+    self.assertEqual(action["kind"], "in_progress")
     self.assertEqual(action["required_action"], "commit_stop_point")
     self.assertEqual(action["blocked_by"]["type"], "workflow_phase_end")
     self.assertEqual(action["blocked_by"]["phase"], "intent")
@@ -2207,7 +2207,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     action = data["next_action"]
-    self.assertEqual(action["kind"], "commit_stop_point")
+    self.assertEqual(action["kind"], "in_progress")
     self.assertEqual(action["required_action"], "commit_stop_point")
     self.assertEqual(action["blocked_by"]["type"], "workflow_phase_end")
     self.assertEqual(action["blocked_by"]["phase"], "feature-partitioning")
@@ -2235,7 +2235,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "cross_feature_stage")
+    self.assertEqual(data["next_action"]["kind"], "in_progress")
     self.assertEqual(data["next_action"]["phase"], "feature-partitioning")
     self.assertEqual(data["next_action"]["stage"], "candidate-proposal")
 
@@ -2264,7 +2264,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
-    self.assertEqual(data["next_action"]["kind"], "stage")
+    self.assertEqual(data["next_action"]["kind"], "in_progress")
     self.assertEqual(data["next_action"]["feature"], "evaluation")
     self.assertEqual(data["next_action"]["phase"], "implementation")
     self.assertEqual(data["next_action"]["stage"], "drafting")
@@ -2328,7 +2328,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "reopen_classification_required")
+    self.assertEqual(data["next_action"]["kind"], "reopen_in_progress")
     self.assertEqual(data["next_action"]["phase"], "feature-partitioning")
     self.assertEqual(data["next_action"]["stage"], "candidate-proposal")
     self.assertEqual(data["next_action"]["upstream_phase"], "intent")
@@ -2362,7 +2362,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "reopen_classification_required")
+    self.assertEqual(data["next_action"]["kind"], "reopen_in_progress")
     self.assertEqual(data["next_action"]["feature"], "foundation")
     self.assertEqual(data["next_action"]["phase"], "design")
     self.assertEqual(data["next_action"]["stage"], "drafting")
@@ -2447,7 +2447,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "reopen_classification_required")
+    self.assertEqual(data["next_action"]["kind"], "reopen_in_progress")
     self.assertEqual(data["next_action"]["feature"], "foundation")
     self.assertEqual(data["next_action"]["phase"], "implementation")
     self.assertEqual(data["next_action"]["stage"], "drafting")
@@ -2475,7 +2475,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "stage")
+    self.assertEqual(data["next_action"]["kind"], "in_progress")
     self.assertEqual(data["next_action"]["stage"], "triad-review")
     self.assertIn(
       ".reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#3.3-a-2",
@@ -2486,7 +2486,7 @@ class NextNavigationTests(unittest.TestCase):
       "one_effective_prompt_per_decision_point",
     )
     self.assertIn(
-      {"group": "next_action_kind", "id": "stage"},
+      {"group": "next_action_kind", "id": "in_progress"},
       data["next_action"]["effective_prompt"]["decision_point_refs"],
     )
     self.assertIn(
@@ -2523,7 +2523,7 @@ class NextNavigationTests(unittest.TestCase):
           "decision_points": {
             "next_action_kind": [
               {
-                "id": "stage",
+                "id": "in_progress",
                 "prompt_source_refs": ["docs/missing-effective-prompt-source.md"],
                 "effective_prompt_policy": "one_effective_prompt_per_decision_point",
               }
@@ -2554,37 +2554,22 @@ class NextNavigationTests(unittest.TestCase):
     """next --json が返し得る現在地 kind は effective prompt 判定点を持つ"""
     module = _load_check_workflow_action_module()
     expected_kinds = [
-      "stage",
-      "cross_feature_stage",
-      "commit_stop_point",
-      "upstream_recheck",
-      "reopen_classification_required",
+      "in_progress",
+      "blocking_in_progress",
+      "verification_pending",
+      "reopen_in_progress",
       "completed",
       "unknown",
       "feature_definition_required",
-      "post_write_verification",
-      "lightweight_self_check",
-      "post_write_policy_violation",
-      "post_write_human_decision_required",
-      "reopen_in_progress",
-      "maintenance_in_progress",
-      "resume_in_progress",
-      "blocking_unit_in_progress",
-      "parent_resume_pending",
-      "blocking_unit_required",
-      "commit_mixing_risk",
-      "commit_unit_stale",
     ]
     sample_overrides = {
-      "stage": {
+      "in_progress": {
         "feature": "workflow-management",
         "phase": "tasks",
         "stage": "triad-review",
       },
-      "cross_feature_stage": {
-        "feature": "all_features",
-        "phase": "tasks",
-        "stage": "review-wave",
+      "verification_pending": {
+        "verification_type": "post_write_verification",
       },
       "reopen_in_progress": {
         "required_action": "run_reopen_pending_gate",
@@ -2908,7 +2893,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "stage")
+    self.assertEqual(data["next_action"]["kind"], "in_progress")
     self.assertEqual(data["next_action"]["feature"], "foundation")
     self.assertEqual(data["next_action"]["phase"], "implementation")
     self.assertEqual(data["next_action"]["stage"], "triad-review")
@@ -3015,7 +3000,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "cross_feature_stage")
+    self.assertEqual(data["next_action"]["kind"], "in_progress")
     self.assertEqual(data["next_action"]["phase"], "implementation")
     self.assertEqual(data["next_action"]["stage"], "review-wave")
     self.assertEqual(
@@ -3081,7 +3066,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
-    self.assertEqual(data["next_action"]["kind"], "resume_in_progress")
+    self.assertEqual(data["next_action"]["kind"], "blocking_in_progress")
     self.assertEqual(
       data["next_action"]["file"],
       "stages/in-progress/manual-process-2026-06-02.yaml",
@@ -3117,7 +3102,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
-    self.assertEqual(data["next_action"]["kind"], "maintenance_in_progress")
+    self.assertEqual(data["next_action"]["kind"], "blocking_in_progress")
     self.assertEqual(
       data["next_action"]["file"],
       "stages/in-progress/maintenance-2026-06-03-codex-adapter.yaml",
@@ -3173,7 +3158,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(
       data["next_action"]["target_files"],
       ["docs/disciplines/codex-maintenance.md"],
@@ -3534,7 +3519,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
-    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(data["next_action"]["target_files"], ["docs/disciplines/new-policy.md"])
 
   def test_next_post_write_verification_returns_canonical_effective_prompt(self):
@@ -3552,7 +3537,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     action = data["next_action"]
-    self.assertEqual(action["kind"], "post_write_verification")
+    self.assertEqual(action["kind"], "verification_pending")
     effective_prompt = action["effective_prompt"]
     self.assertEqual(
       effective_prompt["effective_prompt_path"],
@@ -3580,7 +3565,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
-    self.assertEqual(data["next_action"]["kind"], "lightweight_self_check")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(data["next_action"]["target_files"], ["docs/notes/memo.md"])
     self.assertEqual(
       data["next_action"]["required_action"],
@@ -3601,7 +3586,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
-    self.assertEqual(data["next_action"]["kind"], "lightweight_self_check")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(data["next_action"]["target_files"], ["TODO_NEXT_SESSION.md"])
     self.assertEqual(
       data["next_action"]["required_action"],
@@ -3622,7 +3607,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "lightweight_self_check")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(data["next_action"]["target_files"], ["docs/notes/memo.md"])
     effective_prompt_path = cwd / data["next_action"]["effective_prompt"]["effective_prompt_path"]
     effective_prompt_text = effective_prompt_path.read_text(encoding="utf-8")
@@ -3645,7 +3630,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(
       data["next_action"]["target_files"],
       ["TODO_NEXT_SESSION.md", "docs/operations/policy.md"],
@@ -3668,7 +3653,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(data["next_action"]["target_files"], ["docs/operations/policy.md"])
     self.assertEqual(
       data["current_state"]["lightweight_self_check_targets"],
@@ -3710,7 +3695,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(data["next_action"]["target_files"], sorted(target_paths))
 
   def test_next_excludes_own_precheck_log_from_post_write_targets(self):
@@ -3728,7 +3713,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(data["next_action"]["target_files"], ["docs/operations/foo.md"])
 
   def test_next_with_only_precheck_log_change_skips_post_write(self):
@@ -3744,7 +3729,7 @@ class NextNavigationTests(unittest.TestCase):
 
     _assert_script_invoked(self, result)
     data = json.loads(result.stdout)
-    self.assertNotEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertNotEqual(data["next_action"]["kind"], "verification_pending")
 
   def test_next_uses_completed_post_write_manifest_to_return_to_workflow(self):
     """完了 manifest が対象ファイルを覆う場合は通常 workflow に戻る"""
@@ -3775,7 +3760,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
-    self.assertEqual(data["next_action"]["kind"], "stage")
+    self.assertEqual(data["next_action"]["kind"], "in_progress")
     self.assertEqual(data["next_action"]["feature"], "foundation")
 
   def test_next_does_not_report_policy_violation_after_manifest_completion(self):
@@ -3810,7 +3795,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
-    self.assertEqual(data["next_action"]["kind"], "stage")
+    self.assertEqual(data["next_action"]["kind"], "in_progress")
 
   def test_next_does_not_complete_manifest_after_target_content_changes(self):
     """manifest 作成後に対象ファイルが変わった場合は完了扱いしない"""
@@ -3841,7 +3826,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
 
   def test_next_rejects_manifest_when_unit_binding_mismatches_commit_unit(self):
     """manifest の unit binding が現在の commit unit と違えば完了扱いしない"""
@@ -3898,7 +3883,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertIn(
       "EVIDENCE_UNIT_MISMATCH",
       data["next_action"]["codes"],
@@ -3929,7 +3914,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
 
   def test_next_requires_human_decision_for_unresolved_substantive_findings(self):
     """manifest に未解決の本質的指摘があれば人間判断待ちを返す"""
@@ -3959,7 +3944,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_human_decision_required")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(data["next_action"]["target_files"], ["docs/disciplines/new-policy.md"])
 
   def test_next_uses_latest_post_write_manifest_when_multiple_exist(self):
@@ -4004,7 +3989,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_human_decision_required")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(
       data["next_action"]["manifest"],
       ".reviewcompass/post-write-verification/post-write-2026-06-02-002.yaml",
@@ -4028,7 +4013,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "DEVIATION")
-    self.assertEqual(data["next_action"]["kind"], "post_write_policy_violation")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(
       data["next_action"]["forbidden_files"],
       ["tools/post_write_verify_new_policy.py"],
@@ -4052,7 +4037,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 2, result.stderr)
     data = json.loads(result.stdout)
     action = data["next_action"]
-    self.assertEqual(action["kind"], "post_write_policy_violation")
+    self.assertEqual(action["kind"], "verification_pending")
     effective_prompt = action["effective_prompt"]
     self.assertEqual(
       effective_prompt["effective_prompt_path"],
@@ -4082,7 +4067,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_policy_violation")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(
       data["next_action"]["forbidden_files"],
       ["templates/todo/TODO_NEXT_SESSION.template.md"],
@@ -4105,7 +4090,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_policy_violation")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(
       data["next_action"]["forbidden_files"],
       [".reviewcompass/guidance/discipline_approval_operation.md"],
@@ -4127,7 +4112,7 @@ class NextNavigationTests(unittest.TestCase):
 
     _assert_script_invoked(self, result)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_policy_violation")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     classification = data["next_action"]["file_classification"]
     self.assertIsInstance(classification, dict)
     self.assertIn("tools", classification)
@@ -4152,7 +4137,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     data = json.loads(result.stdout)
     action = data["next_action"]
-    self.assertEqual(action["kind"], "post_write_policy_violation")
+    self.assertEqual(action["kind"], "verification_pending")
     self.assertIn("allowed_operations", action)
     self.assertIn("forbidden_operations", action)
     self.assertIsInstance(action["allowed_operations"], list)
@@ -4184,7 +4169,7 @@ class NextNavigationTests(unittest.TestCase):
 
     _assert_script_invoked(self, result)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_policy_violation")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     files_after = set(
       str(p) for p in cwd.rglob("*")
       if p.is_file() and not str(p).startswith(runtime_prefix)
@@ -4212,7 +4197,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     data = json.loads(result.stdout)
     action = data["next_action"]
-    self.assertEqual(action["kind"], "post_write_policy_violation")
+    self.assertEqual(action["kind"], "verification_pending")
     classification = action["file_classification"]
     self.assertIn(".reviewcompass/guidance/some-rule.md", classification["guidance"])
 
@@ -4236,7 +4221,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     data = json.loads(result.stdout)
     action = data["next_action"]
-    self.assertEqual(action["kind"], "post_write_policy_violation")
+    self.assertEqual(action["kind"], "verification_pending")
     classification = action["file_classification"]
     self.assertIn("tests", classification)
     self.assertIn("tests/tools/test_something.py", classification["tests"])
@@ -4255,7 +4240,7 @@ class NextNavigationTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertEqual(data["next_action"]["kind"], "verification_pending")
     self.assertEqual(
       data["next_action"]["target_files"],
       [".reviewcompass/guidance/discipline_approval_operation.md"],
@@ -4275,7 +4260,7 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
-    self.assertNotEqual(data["next_action"]["kind"], "post_write_verification")
+    self.assertNotEqual(data["next_action"]["kind"], "verification_pending")
 
 
 class PostWriteCoverageMatrixTests(unittest.TestCase):
@@ -4337,7 +4322,7 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(
-      data["next_action"]["kind"], "stage",
+      data["next_action"]["kind"], "in_progress",
       f"全検証者が全ファイルを見て sha256 一致の manifest は通常ワークフローに戻るべき。"
       f"next_action: {data['next_action']}",
     )
@@ -4383,11 +4368,11 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertNotEqual(
-      data["next_action"]["kind"], "stage",
+      data["next_action"]["kind"], "in_progress",
       "verifications[] 内の per-entry target_sha256 が欠落した manifest は完了扱いしてはいけない",
     )
     self.assertEqual(
-      data["next_action"]["kind"], "post_write_verification",
+      data["next_action"]["kind"], "verification_pending",
     )
 
   def test_next_rejects_manifest_when_verifier_entry_sha256_mismatches_master(self):
@@ -4429,11 +4414,11 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertNotEqual(
-      data["next_action"]["kind"], "stage",
+      data["next_action"]["kind"], "in_progress",
       "verifications[] エントリの sha256 がマスターと不一致の manifest は完了扱いしてはいけない",
     )
     self.assertEqual(
-      data["next_action"]["kind"], "post_write_verification",
+      data["next_action"]["kind"], "verification_pending",
     )
 
   def test_next_rejects_manifest_when_verifier_covers_only_partial_files(self):
@@ -4480,11 +4465,11 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertNotEqual(
-      data["next_action"]["kind"], "stage",
+      data["next_action"]["kind"], "in_progress",
       "分業（各検証者が全ファイルを見ていない）は完了扱いしてはいけない",
     )
     self.assertEqual(
-      data["next_action"]["kind"], "post_write_verification",
+      data["next_action"]["kind"], "verification_pending",
       f"分業の manifest は post_write_verification を継続すべき。"
       f"next_action: {data['next_action']}",
     )
@@ -4518,7 +4503,7 @@ class PostWriteCoverageMatrixTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(
-      data["next_action"]["kind"], "stage",
+      data["next_action"]["kind"], "in_progress",
       "verifications[] なし旧形式は completed_verifiers で完了判定し通常ワークフローに戻るべき",
     )
 
@@ -4576,7 +4561,7 @@ class PostWriteReviewRunTraceabilityTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(
-      data["next_action"]["kind"], "stage",
+      data["next_action"]["kind"], "in_progress",
       f"review_run の raw/rounds/triage/summary がそろう manifest は完了すべき。"
       f"next_action: {data['next_action']}",
     )
@@ -4601,7 +4586,7 @@ class PostWriteReviewRunTraceabilityTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(
-      data["next_action"]["kind"], "post_write_verification",
+      data["next_action"]["kind"], "verification_pending",
       "モデル別 summary artifact がない review_run は完了扱いしてはいけない",
     )
 
@@ -4625,7 +4610,7 @@ class PostWriteReviewRunTraceabilityTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(
-      data["next_action"]["kind"], "post_write_verification",
+      data["next_action"]["kind"], "verification_pending",
       "required_verifiers の raw ファイルが欠ける review_run は完了扱いしてはいけない",
     )
 
@@ -4649,7 +4634,7 @@ class PostWriteReviewRunTraceabilityTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(
-      data["next_action"]["kind"], "post_write_verification",
+      data["next_action"]["kind"], "verification_pending",
       "rounds にいるモデルが triage に出ていない review_run は完了扱いしてはいけない",
     )
 
@@ -4686,7 +4671,7 @@ class PostWriteReviewRunEndToEndTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(
-      data["next_action"]["kind"], "stage",
+      data["next_action"]["kind"], "in_progress",
       f"review_triage.write_manifest 生成 manifest は next で完了認定されるべき。"
       f"next_action: {data['next_action']}",
     )
@@ -6689,7 +6674,7 @@ class CommitUnitIsolationTests(unittest.TestCase):
     self.assertIn("STALE_COMMIT_UNIT", data["codes"])
 
   def test_commit_preflight_blocks_stale_commit_unit(self):
-    """commit-preflight は frozen commit unit から外れた staged 内容を遮断する"""
+    """commit-preflight は stale commit unit を next_action.kind で通知する（T-020）"""
     target = "tools/check_workflow_action/blocking_unit.py"
     self._write_and_stage(target, "print('x')\n")
     freeze = self._freeze_commit_unit([target])
@@ -6699,10 +6684,10 @@ class CommitUnitIsolationTests(unittest.TestCase):
     result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
 
     _assert_script_invoked(self, result)
-    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["verdict"], "DEVIATION")
-    self.assertFalse(data["allowed_to_stage"])
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "commit_unit_stale")
     self.assertIn(
       "STALE_COMMIT_UNIT",
       data["current_state"]["commit_unit"]["codes"],
@@ -6747,27 +6732,36 @@ class CommitUnitIsolationTests(unittest.TestCase):
     )
 
   def test_next_reports_stale_commit_unit_before_normal_workflow(self):
-    """next は stale commit unit を通常 workflow より先に停止点として返す"""
+    """stale commit unit 状態で next は commit_unit_stale を返さず commit-preflight が返す（T-020）"""
     target = "tools/check_workflow_action/blocking_unit.py"
     self._write_and_stage(target, "print('x')\n")
     freeze = self._freeze_commit_unit([target])
     self.assertEqual(freeze.returncode, 0, freeze.stdout + freeze.stderr)
     self._write_and_stage(target, "print('changed')\n")
 
-    result = run_script(["next", "--json"], cwd=self.tmpdir)
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    preflight_result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
 
-    _assert_script_invoked(self, result)
-    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-    data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "commit_unit_stale")
-    self.assertEqual(data["next_action"]["required_action"], "refresh_commit_unit")
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout + next_result.stderr)
+    next_data = json.loads(next_result.stdout)
+    self.assertNotEqual(
+      next_data["next_action"]["kind"],
+      "commit_unit_stale",
+      "next --json は commit_unit_stale を返してはならない（commit-preflight に移動済み）",
+    )
+
+    _assert_script_invoked(self, preflight_result)
+    self.assertEqual(preflight_result.returncode, 0, preflight_result.stdout + preflight_result.stderr)
+    preflight_data = json.loads(preflight_result.stdout)
+    self.assertEqual(preflight_data["next_action"]["kind"], "commit_unit_stale")
     self.assertIn(
       "STALE_COMMIT_UNIT",
-      data["current_state"]["commit_unit"]["codes"],
+      preflight_data["current_state"]["commit_unit"]["codes"],
     )
 
   def test_next_reports_commit_mixing_risk_before_normal_workflow(self):
-    """next は commit unit 外の staged 混入を通常 workflow より先に返す"""
+    """commit 混入状態で next は commit_mixing_risk を返さず commit-preflight が返す（T-020）"""
     self._write_and_stage("tools/check_workflow_action/blocking_unit.py", "print('x')\n")
     freeze = self._freeze_commit_unit([
       "tools/check_workflow_action/blocking_unit.py",
@@ -6775,19 +6769,28 @@ class CommitUnitIsolationTests(unittest.TestCase):
     self.assertEqual(freeze.returncode, 0, freeze.stdout + freeze.stderr)
     self._write_and_stage("docs/notes/working/other.md", "別作業\n")
 
-    result = run_script(["next", "--json"], cwd=self.tmpdir)
+    next_result = run_script(["next", "--json"], cwd=self.tmpdir)
+    preflight_result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
 
-    _assert_script_invoked(self, result)
-    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-    data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "commit_mixing_risk")
-    self.assertEqual(data["next_action"]["required_action"], "split_or_refresh_commit_unit")
+    _assert_script_invoked(self, next_result)
+    self.assertEqual(next_result.returncode, 0, next_result.stdout + next_result.stderr)
+    next_data = json.loads(next_result.stdout)
+    self.assertNotEqual(
+      next_data["next_action"]["kind"],
+      "commit_mixing_risk",
+      "next --json は commit_mixing_risk を返してはならない（commit-preflight に移動済み）",
+    )
+
+    _assert_script_invoked(self, preflight_result)
+    self.assertEqual(preflight_result.returncode, 0, preflight_result.stdout + preflight_result.stderr)
+    preflight_data = json.loads(preflight_result.stdout)
+    self.assertEqual(preflight_data["next_action"]["kind"], "commit_mixing_risk")
     self.assertIn(
       "COMMIT_MIXING_RISK",
-      data["current_state"]["commit_unit"]["codes"],
+      preflight_data["current_state"]["commit_unit"]["codes"],
     )
     self.assertEqual(
-      data["current_state"]["commit_unit"]["current_state"]["extra_staged_files"],
+      preflight_data["current_state"]["commit_unit"]["current_state"]["extra_staged_files"],
       ["docs/notes/working/other.md"],
     )
 
@@ -7562,7 +7565,7 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertTrue(data["allowed_to_delegate_execution"])
     self.assertFalse(data["allowed_to_run_guarded_commit"])
     self.assertEqual(data["next_required_action"], "commit_stop_point")
-    self.assertEqual(data["current_state"]["next_action"]["kind"], "commit_stop_point")
+    self.assertEqual(data["current_state"]["next_action"]["kind"], "in_progress")
 
   def test_commit_with_no_pending_and_normal_changes_returns_zero(self):
     """未消化所見 0 件 + 通常変更 + ユーザ承認あり → exit 0"""
@@ -10371,7 +10374,7 @@ class FeatureOrderGeneralizationTests(unittest.TestCase):
     result, data = self._next_json()
     self.assertEqual(data["verdict"], "OK")
     self.assertEqual(result.returncode, 0)
-    self.assertEqual(data["next_action"]["kind"], "stage")
+    self.assertEqual(data["next_action"]["kind"], "in_progress")
     self.assertEqual(data["next_action"]["feature"], "appfeat-a")
     self.assertEqual(data["next_action"]["phase"], "requirements")
     self.assertEqual(data["next_action"]["stage"], "drafting")

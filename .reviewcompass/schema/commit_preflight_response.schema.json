@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reviewcompass:schema:commit_preflight_response",
+  "$comment": "commit-preflight サブコマンドの応答スキーマ（MWP-0 T-020）",
+  "type": "object",
+  "required": ["verdict", "exit_code", "next_action"],
+  "properties": {
+    "verdict": { "type": "string" },
+    "exit_code": { "type": "integer" },
+    "next_action": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "commit_candidate",
+            "commit_mixing_risk",
+            "commit_unit_stale"
+          ]
+        }
+      }
+    },
+    "reasons": { "type": "array" },
+    "current_state": { "type": "object" }
+  }
+}

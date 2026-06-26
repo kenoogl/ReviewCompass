@@ -27,17 +27,10 @@
         "kind": {
           "type": "string",
           "enum": [
-            "resume_in_progress",
+            "in_progress",
+            "blocking_in_progress",
+            "verification_pending",
             "reopen_in_progress",
-            "maintenance_in_progress",
-            "reopen_classification_required",
-            "post_write_verification",
-            "lightweight_self_check",
-            "post_write_policy_violation",
-            "post_write_human_decision_required",
-            "stage",
-            "cross_feature_stage",
-            "upstream_recheck",
             "feature_definition_required",
             "completed",
             "unknown"

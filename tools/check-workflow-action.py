@@ -1425,6 +1425,10 @@ def required_disciplines_for_next_action(cwd, next_action):
   if isinstance(by_kind, dict):
     result.extend(by_kind.get(next_action.get("kind")) or [])
 
+  by_verification_type = discipline_map.get("by_verification_type") or {}
+  if isinstance(by_verification_type, dict):
+    result.extend(by_verification_type.get(next_action.get("verification_type")) or [])
+
   by_stage = discipline_map.get("by_stage") or {}
   if isinstance(by_stage, dict):
     result.extend(by_stage.get(next_action.get("stage")) or [])
@@ -1527,6 +1531,10 @@ def _decision_point_refs_for_next_action(next_action):
   kind = next_action.get("kind")
   if isinstance(kind, str) and kind:
     refs.append({"group": "next_action_kind", "id": kind})
+
+  verification_type = next_action.get("verification_type")
+  if isinstance(verification_type, str) and verification_type:
+    refs.append({"group": "next_action_verification_type", "id": verification_type})
 
   stage = next_action.get("stage")
   if isinstance(stage, str) and stage:
@@ -4153,7 +4161,8 @@ def _commit_preflight_next_action(cwd, in_progress_files):
     )
     if manifest_state != "completed":
       action = {
-        "kind": "post_write_verification",
+        "kind": "verification_pending",
+        "verification_type": "post_write_verification",
         "required_action": "run_post_write_verification",
         "target_files": verification_targets,
         "manifest_status": manifest_state,
@@ -4163,6 +4172,36 @@ def _commit_preflight_next_action(cwd, in_progress_files):
       if isinstance(manifest, dict) and manifest.get("codes"):
         action["codes"] = manifest.get("codes")
       return action
+
+  commit_unit_state, _ = validate_commit_unit_record(cwd)
+  commit_unit_codes = commit_unit_state.get("codes") or []
+  if commit_unit_state.get("exists") and "COMMIT_MIXING_RISK" in commit_unit_codes:
+    record = commit_unit_state.get("record") or {}
+    return {
+      "kind": "commit_mixing_risk",
+      "required_action": "split_or_refresh_commit_unit",
+      "target_files": record.get("target_files") or record.get("allowed_files") or [],
+      "extra_staged_files": (
+        commit_unit_state.get("current_state", {}).get("extra_staged_files") or []
+      ),
+      "path": commit_unit_state.get("path"),
+      "feature": None,
+      "phase": None,
+      "stage": None,
+      "reason": "commit unit の allowed files 外の staged file が混入しています",
+    }
+  if commit_unit_state.get("exists") and "STALE_COMMIT_UNIT" in commit_unit_codes:
+    record = commit_unit_state.get("record") or {}
+    return {
+      "kind": "commit_unit_stale",
+      "required_action": "refresh_commit_unit",
+      "target_files": record.get("target_files") or record.get("allowed_files") or [],
+      "path": commit_unit_state.get("path"),
+      "feature": None,
+      "phase": None,
+      "stage": None,
+      "reason": "commit unit が現在の staged 内容と一致しません",
+    }
 
   specs, missing = load_all_feature_specs(cwd)
   if missing:
@@ -4268,6 +4307,7 @@ def _build_commit_preflight_response(
   allowed_to_delegate_execution,
   allowed_to_run_guarded_commit,
   next_required_action,
+  next_action=None,
 ):
   """commit-preflight の共通レスポンスを組み立てる。"""
   staged_files = current_state.get("staged_files") or []
@@ -4292,7 +4332,7 @@ def _build_commit_preflight_response(
     next_required_action,
     commit_operation,
   )
-  return {
+  response = {
     "verdict": verdict,
     "exit_code": exit_code,
     "action": action,
@@ -4306,6 +4346,9 @@ def _build_commit_preflight_response(
     "allowed_to_run_guarded_commit": allowed_to_run_guarded_commit,
     "next_required_action": next_required_action,
   }
+  if next_action is not None:
+    response["next_action"] = next_action
+  return response
 
 
 def build_commit_instruction_preflight(cwd):
@@ -4375,11 +4418,7 @@ def build_commit_instruction_preflight(cwd):
         + ", ".join(in_progress_files)
       )
 
-  if next_action.get("kind") in (
-    "post_write_verification",
-    "post_write_policy_violation",
-    "post_write_human_decision_required",
-  ):
+  if next_action.get("kind") == "verification_pending":
     if repair_state.get("valid") is True:
       next_required_action = "prepare_repair_commit"
     else:
@@ -4392,10 +4431,11 @@ def build_commit_instruction_preflight(cwd):
         reasons.extend(repair_errors)
 
   if commit_unit_errors:
-    verdict = "DEVIATION"
-    allowed_to_stage = False
-    allowed_to_prepare_approval = False
-    allowed_to_delegate_execution = False
+    if next_action.get("kind") not in ("commit_mixing_risk", "commit_unit_stale"):
+      verdict = "DEVIATION"
+      allowed_to_stage = False
+      allowed_to_prepare_approval = False
+      allowed_to_delegate_execution = False
     reasons.extend(commit_unit_errors)
 
   approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
@@ -4434,6 +4474,7 @@ def build_commit_instruction_preflight(cwd):
     allowed_to_delegate_execution,
     allowed_to_run_guarded_commit,
     next_required_action,
+    next_action=next_action,
   )
 
 
@@ -5419,7 +5460,8 @@ def build_in_progress_next_action(cwd, relative_path):
   if process_id == "maintenance":
     maintenance_action = data.get("required_action", "continue_maintenance")
     return {
-      "kind": "maintenance_in_progress",
+      "kind": "blocking_in_progress",
+      "blocking_phase": "maintenance_in_progress",
       "file": relative_path,
       "process_id": process_id,
       "title": data.get("title"),
@@ -5481,7 +5523,8 @@ def build_in_progress_next_action(cwd, relative_path):
       action["repair_reasons"] = action_fields["repair_reasons"]
     return action
   return {
-    "kind": "resume_in_progress",
+    "kind": "blocking_in_progress",
+    "blocking_phase": "resume_in_progress",
     "file": relative_path,
     "feature": None,
     "phase": None,
@@ -5649,7 +5692,8 @@ def build_lightweight_self_check_next_state(cwd, targets):
     return None
   return {
     "next_action": {
-      "kind": "lightweight_self_check",
+      "kind": "verification_pending",
+      "verification_type": "lightweight_self_check",
       "required_action": "review_working_note_without_api",
       "target_files": targets,
       "feature": None,
@@ -6233,7 +6277,7 @@ def _cross_feature_phase_dirty(cwd, dirty_paths, phase):
 def build_commit_stop_point_next_action(phase, dirty_paths):
   """通常 workflow の phase 終端 commit 停止点を返す"""
   return {
-    "kind": "commit_stop_point",
+    "kind": "in_progress",
     "required_action": "commit_stop_point",
     "feature": None,
     "phase": phase,
@@ -6265,7 +6309,7 @@ def resolve_normal_workflow_commit_stop_point_action(cwd, specs):
 def build_stage_next_action(feature, phase, stage, reason):
   """機能単位 stage の next_action を作る"""
   return {
-    "kind": "stage",
+    "kind": "in_progress",
     "feature": feature,
     "phase": phase,
     "stage": stage,
@@ -6276,7 +6320,7 @@ def build_stage_next_action(feature, phase, stage, reason):
 def build_cross_stage_next_action(phase, stage, reason):
   """機能横断 stage の next_action を作る"""
   return {
-    "kind": "cross_feature_stage",
+    "kind": "in_progress",
     "feature": "all_features",
     "phase": phase,
     "stage": stage,
@@ -6339,7 +6383,8 @@ def build_upstream_recheck_next_action(
 ):
   """上流成果物更新に伴う再展開 next_action を作る"""
   return {
-    "kind": "upstream_recheck",
+    "kind": "in_progress",
+    "upstream_recheck": True,
     "feature": feature,
     "phase": downstream_phase,
     "stage": downstream_stage,
@@ -6368,7 +6413,8 @@ def build_reopen_classification_required_next_action(
 ):
   """完了済み workflow の上流正本変更に対する reopen 分類要求を作る"""
   return {
-    "kind": "reopen_classification_required",
+    "kind": "reopen_in_progress",
+    "reopen_substate": "classification_required",
     "feature": feature,
     "phase": downstream_phase,
     "stage": downstream_stage,
@@ -6519,7 +6565,7 @@ def collect_recheck_items(specs, phase):
 
 def augment_cross_feature_next_action(cwd, specs, next_action):
   """機能横断段に必要な確認情報を付加する"""
-  if next_action.get("kind") != "cross_feature_stage":
+  if next_action.get("feature") != "all_features":
     return next_action
 
   phase = next_action.get("phase")
@@ -6620,7 +6666,8 @@ def cmd_next(args):
   active_work_unit = active_work_unit_state.get("current")
   if isinstance(active_work_unit, dict):
     next_action = {
-      "kind": "blocking_unit_in_progress",
+      "kind": "blocking_in_progress",
+      "blocking_phase": "blocking_unit_in_progress",
       "required_action": "continue_or_exit_blocking_unit",
       "unit_id": active_work_unit.get("unit_id"),
       "parent_unit_id": active_work_unit.get("parent_unit_id"),
@@ -6652,7 +6699,8 @@ def cmd_next(args):
   parent_resume = parent_resume_state.get("current")
   if isinstance(parent_resume, dict):
     next_action = {
-      "kind": "parent_resume_pending",
+      "kind": "blocking_in_progress",
+      "blocking_phase": "parent_resume_pending",
       "required_action": "resume_parent_unit",
       "parent_unit_id": parent_resume.get("parent_unit_id"),
       "completed_unit_id": parent_resume.get("completed_unit_id"),
@@ -6686,7 +6734,8 @@ def cmd_next(args):
     if not isinstance(proposed_unit, dict):
       proposed_unit = {}
     next_action = {
-      "kind": "blocking_unit_required",
+      "kind": "blocking_in_progress",
+      "blocking_phase": "blocking_unit_required",
       "required_action": "enter_blocking_unit",
       "unit_id": proposed_unit.get("unit_id"),
       "parent_unit_id": proposed_unit.get("parent_unit_id"),
@@ -6715,96 +6764,6 @@ def cmd_next(args):
     except OSError as e:
       print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
     return exit_code
-  commit_unit_state, commit_unit_errors = validate_commit_unit_record(cwd)
-  commit_unit_codes = commit_unit_state.get("codes") or []
-  post_write_targets_for_commit_unit = list_post_write_verification_targets(cwd)
-  post_write_state_for_commit_unit = None
-  if post_write_targets_for_commit_unit:
-    post_write_state_for_commit_unit, _ = evaluate_post_write_manifest_state(
-      cwd,
-      post_write_targets_for_commit_unit,
-    )
-  if (
-    commit_unit_state.get("exists")
-    and "COMMIT_MIXING_RISK" in commit_unit_codes
-    and (
-      not post_write_targets_for_commit_unit
-      or post_write_state_for_commit_unit == "completed"
-    )
-  ):
-    record = commit_unit_state.get("record")
-    if not isinstance(record, dict):
-      record = {}
-    next_action = {
-      "kind": "commit_mixing_risk",
-      "required_action": "split_or_refresh_commit_unit",
-      "target_files": record.get("target_files") or record.get("allowed_files") or [],
-      "extra_staged_files": (
-        commit_unit_state.get("current_state", {}).get("extra_staged_files") or []
-      ),
-      "path": commit_unit_state.get("path"),
-      "feature": None,
-      "phase": None,
-      "stage": None,
-      "reason": "commit unit の allowed files 外の staged file が混入しています",
-    }
-    current_state = {
-      "active_work_units": active_work_units,
-      "commit_unit": commit_unit_state,
-    }
-    reasons = commit_unit_errors
-    verdict, exit_code = "OK", 0
-    next_action = attach_required_context(cwd, next_action)
-    if args.json:
-      print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
-    else:
-      print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
-    action_dict = {"subcommand": "next", "args": {}}
-    log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
-    try:
-      append_log(log_path, action_dict, verdict, exit_code, reasons, current_state)
-    except OSError as e:
-      print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
-    return exit_code
-  if (
-    commit_unit_state.get("exists")
-    and "STALE_COMMIT_UNIT" in commit_unit_codes
-    and (
-      not post_write_targets_for_commit_unit
-      or post_write_state_for_commit_unit == "completed"
-    )
-  ):
-    record = commit_unit_state.get("record")
-    if not isinstance(record, dict):
-      record = {}
-    next_action = {
-      "kind": "commit_unit_stale",
-      "required_action": "refresh_commit_unit",
-      "target_files": record.get("target_files") or record.get("allowed_files") or [],
-      "path": commit_unit_state.get("path"),
-      "feature": None,
-      "phase": None,
-      "stage": None,
-      "reason": "commit unit が現在の staged 内容と一致しません",
-    }
-    current_state = {
-      "active_work_units": active_work_units,
-      "commit_unit": commit_unit_state,
-    }
-    reasons = commit_unit_errors
-    verdict, exit_code = "OK", 0
-    next_action = attach_required_context(cwd, next_action)
-    if args.json:
-      print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
-    else:
-      print(format_next_human_output(verdict, exit_code, next_action, reasons, current_state))
-    action_dict = {"subcommand": "next", "args": {}}
-    log_path = args.log_path if args.log_path else DEFAULT_LOG_PATH
-    try:
-      append_log(log_path, action_dict, verdict, exit_code, reasons, current_state)
-    except OSError as e:
-      print(f"warning: ログ書き込みに失敗しました（処理は続行）: {e}", file=sys.stderr)
-    return exit_code
   feature_resolution = resolve_feature_order(cwd)
   if feature_resolution["feature_order"] is not None:
     FEATURE_ORDER = feature_resolution["feature_order"]
@@ -6813,7 +6772,7 @@ def cmd_next(args):
 
   if in_progress_files:
     in_progress_action = build_in_progress_next_action(cwd, in_progress_files[0])
-    if in_progress_action.get("kind") != "maintenance_in_progress":
+    if not (in_progress_action.get("kind") == "blocking_in_progress" and in_progress_action.get("blocking_phase") == "maintenance_in_progress"):
       next_action = in_progress_action
       current_state = {"in_progress_files": in_progress_files}
       reasons = []
@@ -6886,7 +6845,8 @@ def cmd_next(args):
         if forbidden_files:
           all_changed = list_changed_files(cwd)
           next_action = {
-            "kind": "post_write_policy_violation",
+            "kind": "verification_pending",
+            "verification_type": "policy_violation",
             "target_files": verification_targets,
             "forbidden_files": forbidden_files,
             "file_classification": classify_changed_files_for_policy_violation(all_changed),
@@ -6912,7 +6872,8 @@ def cmd_next(args):
           verdict, exit_code = "DEVIATION", 2
         elif manifest_state == "human_required":
           next_action = {
-            "kind": "post_write_human_decision_required",
+            "kind": "verification_pending",
+            "verification_type": "human_decision_required",
             "target_files": verification_targets,
             "manifest": manifest.get("_path"),
             "feature": None,
@@ -6932,7 +6893,8 @@ def cmd_next(args):
           verdict, exit_code = "OK", 0
         else:
           next_action = {
-            "kind": "post_write_verification",
+            "kind": "verification_pending",
+            "verification_type": "post_write_verification",
             "target_files": verification_targets,
             "manifest": manifest.get("_path") if isinstance(manifest, dict) else None,
             "feature": None,
