@@ -69,11 +69,10 @@ class CapturePreviousTests(unittest.TestCase):
     enc = self.cwd.replace("/", "-")
     self.proj = self.home / ".claude" / "projects" / enc
 
-  def test_captures_previous_not_current_not_older(self):
-    """前セッション（現セッション以外で最新）だけを取り込む。現セッションと
-    それより古いセッションは取り込まない。"""
+  def test_captures_all_previous_not_current(self):
+    """現セッション以外の未記録セッションを全件取り込む。現セッションは取り込まない。"""
     _claude_fixture(self.proj / "sessC.jsonl", mtime=1000)   # 古い別セッション
-    _claude_fixture(self.proj / "sessA.jsonl", mtime=2000)   # 前セッション（最新の別）
+    _claude_fixture(self.proj / "sessA.jsonl", mtime=2000)   # 別セッション
     _claude_fixture(self.proj / "sessB.jsonl", mtime=3000)   # 現セッション
     payload = {"hook_event_name": "SessionStart",
                "session_id": "sessB", "cwd": self.cwd, "source": "startup"}
@@ -81,11 +80,11 @@ class CapturePreviousTests(unittest.TestCase):
     _assert_invoked(self, r)
     self.assertEqual(r.returncode, 0, f"stdout={r.stdout}\nstderr={r.stderr}")
     self.assertTrue((self.evidence / "2026-06-14-claude-sessA.md").exists(),
-                    f"前セッション sessA を取り込むべき。stdout={r.stdout} stderr={r.stderr}")
+                    f"sessA を取り込むべき。stdout={r.stdout} stderr={r.stderr}")
     self.assertFalse((self.evidence / "2026-06-14-claude-sessB.md").exists(),
                      "現セッション sessB は取り込まない")
-    self.assertFalse((self.evidence / "2026-06-14-claude-sessC.md").exists(),
-                     "前より古い sessC は取り込まない（最新の別 1 件のみ）")
+    self.assertTrue((self.evidence / "2026-06-14-claude-sessC.md").exists(),
+                    f"古い sessC も全件取り込むべき。stdout={r.stdout} stderr={r.stderr}")
 
   def test_only_current_no_capture(self):
     """現セッションしか無ければ何も取り込まず exit 0。"""

@@ -10576,8 +10576,8 @@ class ActiveSessionsCommitGuardTests(unittest.TestCase):
       json.dumps({"active": list(session_ids)}), encoding="utf-8"
     )
 
-  def test_commit_preflight_blocks_session_record_of_active_session(self):
-    """active-sessions に含まれるセッション ID の記録は staged でも弾く"""
+  def test_commit_preflight_allows_session_record_of_active_session(self):
+    """active-sessions に含まれるセッション ID の記録もスナップショットとしてコミット可能"""
     session_id = "aaaa1111-0000-0000-0000-000000000001"
     self._make_session_record(session_id)
     self._write_active_sessions([session_id])
@@ -10586,11 +10586,9 @@ class ActiveSessionsCommitGuardTests(unittest.TestCase):
       ["commit-preflight", "--json"], cwd=self.tmpdir
     )
     _assert_script_invoked(self, result)
-    self.assertEqual(result.returncode, 2, result.stdout)
     data = json.loads(result.stdout)
-    self.assertEqual(data["verdict"], "DEVIATION")
-    reasons = "\n".join(data["reasons"])
-    self.assertIn("進行中セッション", reasons)
+    reasons = "\n".join(data.get("reasons", []))
+    self.assertNotIn("進行中セッション", reasons)
 
   def test_commit_preflight_allows_session_record_of_inactive_session(self):
     """active-sessions に含まれないセッション ID の記録はコミット可能"""
@@ -10606,8 +10604,8 @@ class ActiveSessionsCommitGuardTests(unittest.TestCase):
     reasons = "\n".join(data.get("reasons", []))
     self.assertNotIn("進行中セッション", reasons)
 
-  def test_commit_preflight_blocks_when_active_sessions_missing_and_sha256_changed(self):
-    """active-sessions.json が存在しない場合は従来の sha256 判定にフォールバックする"""
+  def test_commit_preflight_allows_when_active_sessions_missing_and_sha256_changed(self):
+    """active-sessions.json が存在しない場合も sha256 によるコミット阻止は行わない"""
     session_id = "cccc3333-0000-0000-0000-000000000003"
     fake_jsonl = Path(self.tmpdir) / "fake.jsonl"
     fake_jsonl.write_bytes(b"old content")
@@ -10634,11 +10632,9 @@ class ActiveSessionsCommitGuardTests(unittest.TestCase):
       ["commit-preflight", "--json"], cwd=self.tmpdir
     )
     _assert_script_invoked(self, result)
-    self.assertEqual(result.returncode, 2, result.stdout)
     data = json.loads(result.stdout)
-    self.assertEqual(data["verdict"], "DEVIATION")
-    reasons = "\n".join(data["reasons"])
-    self.assertIn("進行中セッション", reasons)
+    reasons = "\n".join(data.get("reasons", []))
+    self.assertNotIn("進行中セッション", reasons)
 
 
 if __name__ == "__main__":

@@ -1,13 +1,11 @@
-"""commit 事前検査の歯止め：進行中セッションの記録はコミットさせない（強制コード）。
+"""commit 事前検査：セッション記録はスナップショットとしてコミット可能。
 
 背景：会話ログの2層記録は、元の会話ログ（jsonl）から機械生成され、frontmatter に
-source_path と source_sha256（生成時の元ログのハッシュ）を刻む。まだ終わっていない
-セッションを途中で記録すると、後で会話が伸びて取り込み直し＝差分のたまり（churn）に
-なる。これを「コミット時に手で除外する」のは守り忘れの温床なので、コミット前検査で
-機械的に弾く。判定は「staged のセッション記録の source_sha256 が、いまの元ログの
-ハッシュと一致するか」。一致しなければ元ログは生成後に変化＝まだ進行中とみなす。
+source_path と source_sha256（生成時の元ログのハッシュ）を刻む。進行中セッションの
+記録もスナップショットとしてコミット可能。後で会話が伸びた場合は再取り込みして
+上書き更新する（backfill.py の classify_update で重複を防ぐ）。
 
-TDD 規律（AGENTS.md 入口規律）に従い、本テストは実装前に作成する。
+TDD 規律（AGENTS.md 入口規律）に従う。
 実行：
   cd /Users/Daily/Development/ReviewCompass
   python3 -m unittest tests.tools.test_commit_in_progress_session_guard -v
@@ -69,18 +67,16 @@ class CommitInProgressSessionGuardTests(unittest.TestCase):
       _record_text(str(self.src), self.src_sha))
     _write_commit_approval(self.tmpdir, [self.record_rel])
 
-  def test_in_progress_record_is_blocked(self):
-    """元ログが生成後に変化（進行中）したセッション記録は exit 2 で弾く。"""
+  def test_in_progress_record_is_allowed_as_snapshot(self):
+    """元ログが生成後に変化（進行中）したセッション記録もスナップショットとしてコミット可能。"""
     self._stage_record()
-    # 記録を作った後に元ログが伸びた＝まだ進行中
+    # 記録を作った後に元ログが伸びた（進行中）
     with open(self.src, "ab") as f:
       f.write(b'{"type":"assistant","content":"more"}\n')
-    r = run_script(["commit", "--rationale", "進行中記録の遮断テスト"],
+    r = run_script(["commit", "--rationale", "進行中記録のスナップショットテスト"],
                    cwd=self.tmpdir)
-    self.assertEqual(r.returncode, 2,
-                     f"進行中記録は遮断すべき。\nstdout={r.stdout}\nstderr={r.stderr}")
-    self.assertIn(GUARD_MSG, r.stdout, f"遮断理由が必要。stdout={r.stdout}")
-    self.assertIn(self.record_rel, r.stdout, "対象ファイル名を示すべき")
+    self.assertNotIn(GUARD_MSG, r.stdout,
+                     f"進行中記録もコミット可能なはず。stdout={r.stdout}")
 
   def test_finished_record_is_allowed(self):
     """元ログが生成時から不変（終了済み）なら、この歯止めは作動しない。"""
@@ -101,8 +97,8 @@ class CommitInProgressSessionGuardTests(unittest.TestCase):
     self.assertNotIn(GUARD_MSG, r.stdout,
                      f"判定不能は弾かない。stdout={r.stdout}")
 
-  def test_stage_command_excludes_in_progress_record(self):
-    """stage helper は進行中セッション記録を最初から stage 対象から外す。"""
+  def test_stage_command_includes_in_progress_record(self):
+    """stage helper は進行中セッション記録もスナップショットとして stage 対象に含める。"""
     record_path = Path(self.tmpdir) / self.record_rel
     record_path.parent.mkdir(parents=True, exist_ok=True)
     record_path.write_text(_record_text(str(self.src), self.src_sha))
@@ -116,9 +112,7 @@ class CommitInProgressSessionGuardTests(unittest.TestCase):
     self.assertEqual(r.returncode, 0, f"stage helper should pass. stdout={r.stdout}")
     payload = json.loads(r.stdout)
     self.assertIn("notes.md", payload["staged"])
-    self.assertIn(self.record_rel, payload["excluded_in_progress_records"])
-    staged = run_script(["commit", "--rationale", "stage helper 結果確認"], cwd=self.tmpdir)
-    self.assertNotIn(GUARD_MSG, staged.stdout)
+    self.assertNotIn(self.record_rel, payload.get("excluded_in_progress_records", []))
 
 
 if __name__ == "__main__":

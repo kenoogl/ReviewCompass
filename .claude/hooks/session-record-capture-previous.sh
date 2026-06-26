@@ -40,81 +40,45 @@ ENC=$(printf '%s' "$CWD" | sed 's#/#-#g')
 PROJ="$HOME/.claude/projects/$ENC"
 [ ! -d "$PROJ" ] && exit 0
 
-# 現セッション以外で mtime 最新の jsonl を 1 件選ぶ（＝前セッション）
-PREV=""
-while IFS= read -r f; do
-  [ -z "$f" ] && continue
-  base=$(basename "$f" .jsonl)
-  [ "$base" = "$SESSION_ID" ] && continue
-  PREV="$f"
-  break
-done < <(ls -t "$PROJ"/*.jsonl 2>/dev/null)
-
-# 前セッションが無ければ通過
-[ -z "$PREV" ] && exit 0
-[ ! -f "$PREV" ] && exit 0
-
-PREV_ID=$(basename "$PREV" .jsonl)
 DONE_DIR="${RC_SESSION_BACKFILL_DONE_DIR:-$REPO_ROOT/.reviewcompass/runtime/session-backfill-done}"
-DONE_MARKER="$DONE_DIR/$PREV_ID"
-
 EVIDENCE_DIR="${RC_SESSION_EVIDENCE_DIR:-$REPO_ROOT/.reviewcompass/evidence/sessions}"
 DOCS_DIR="${RC_SESSION_DOCS_DIR:-$REPO_ROOT/docs/sessions}"
 
-# 取り込み済みマーカーがある場合でも、source_sha256 が現在の jsonl と一致しなければ再取り込みする。
-# Claude Code アプリはセッション終了後も last-prompt / mode 行を jsonl に追記するため、
-# 初回取り込み後に sha256 が変化し、コミット前検査で「進行中セッション」と誤判定される。
-if [ -f "$DONE_MARKER" ]; then
-  # 対応する md ファイルを探す（層1 の evidence ディレクトリ）
-  MD_FILE=$(ls "$EVIDENCE_DIR"/*-claude-"$PREV_ID".md 2>/dev/null | head -1)
-  if [ -n "$MD_FILE" ] && [ -f "$MD_FILE" ]; then
-    STORED_SHA=$(grep "^source_sha256:" "$MD_FILE" 2>/dev/null | awk '{print $2}')
-    if [ -n "$STORED_SHA" ]; then
-      if command -v shasum >/dev/null 2>&1; then
-        CURRENT_SHA=$(shasum -a 256 "$PREV" 2>/dev/null | awk '{print $1}')
-      else
-        CURRENT_SHA=$(sha256sum "$PREV" 2>/dev/null | awk '{print $1}')
-      fi
-      # sha256 が一致していれば再取り込み不要
-      [ "$STORED_SHA" = "$CURRENT_SHA" ] && exit 0
-      # 不一致（stale）の場合は再取り込みへ続く
-    else
-      # sha256 が読めない場合は安全のためスキップ
-      exit 0
-    fi
-  else
-    # md がない（取り込み済みでない）場合は通常取り込みへ続く
-    :
-  fi
-fi
-
+# 現セッション以外の jsonl を全件取り込む（mtime 降順）
 cd "$REPO_ROOT" || exit 0
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  [ ! -f "$f" ] && continue
+  PREV_ID=$(basename "$f" .jsonl)
+  [ "$PREV_ID" = "$SESSION_ID" ] && continue
 
-# 現セッション ID を active-sessions.json に登録する
-ACTIVE_SESSIONS_PATH="$REPO_ROOT/.reviewcompass/runtime/active-sessions.json"
-if [ -n "$SESSION_ID" ]; then
-  python3 - "$ACTIVE_SESSIONS_PATH" "$SESSION_ID" <<'PYEOF'
-import json, sys, pathlib
-path, sid = pathlib.Path(sys.argv[1]), sys.argv[2]
-path.parent.mkdir(parents=True, exist_ok=True)
-try:
-  data = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
-except (json.JSONDecodeError, OSError):
-  data = {}
-active = data.get("active", [])
-if sid not in active:
-  active.append(sid)
-data["active"] = active
-path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-PYEOF
-fi
+  DONE_MARKER="$DONE_DIR/$PREV_ID"
 
-python3 tools/session-record-backfill.py \
-  --session "$PREV" --source claude \
-  --evidence-dir "$EVIDENCE_DIR" --docs-dir "$DOCS_DIR" >/dev/null 2>&1 || true
+  # 取り込み済みマーカーがある場合でも、source_sha256 が stale なら再取り込みする。
+  # Claude Code はセッション終了後も jsonl に追記するため sha256 が変化する。
+  if [ -f "$DONE_MARKER" ]; then
+    MD_FILE=$(ls "$EVIDENCE_DIR"/*-claude-"$PREV_ID".md 2>/dev/null | head -1)
+    if [ -n "$MD_FILE" ] && [ -f "$MD_FILE" ]; then
+      STORED_SHA=$(grep "^source_sha256:" "$MD_FILE" 2>/dev/null | awk '{print $2}')
+      if [ -n "$STORED_SHA" ]; then
+        if command -v shasum >/dev/null 2>&1; then
+          CURRENT_SHA=$(shasum -a 256 "$f" 2>/dev/null | awk '{print $1}')
+        else
+          CURRENT_SHA=$(sha256sum "$f" 2>/dev/null | awk '{print $1}')
+        fi
+        [ "$STORED_SHA" = "$CURRENT_SHA" ] && continue
+      else
+        continue
+      fi
+    fi
+  fi
 
-# 取り込み完了マーカーを記録
-mkdir -p "$DONE_DIR"
-touch "$DONE_MARKER"
+  python3 tools/session-record-backfill.py \
+    --session "$f" --source claude \
+    --evidence-dir "$EVIDENCE_DIR" --docs-dir "$DOCS_DIR" >/dev/null 2>&1 || true
+
+  mkdir -p "$DONE_DIR"
+  touch "$DONE_MARKER"
+done < <(ls -t "$PROJ"/*.jsonl 2>/dev/null)
 
 exit 0

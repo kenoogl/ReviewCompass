@@ -3374,28 +3374,12 @@ def _session_record_is_active(record_text, cwd):
 
 
 def validate_no_in_progress_session_records(cwd, staged_files):
-  """進行中セッションの記録が staged にあれば弾く。
+  """セッション記録のコミット検査（スナップショットを許可）。
 
-  会話ログの記録は終了済みセッションについてだけコミットする。手作業の除外に頼ると
-  守り忘れの温床になるため、コミット前検査で機械的に止める歯止め。
+  進行中セッションの記録もスナップショットとしてコミット可能。
+  セッション終了後に再取り込みすれば上書き更新される。
   """
-  offenders = []
-  for path in staged_files:
-    if not _is_session_record_path(path):
-      continue
-    text = commit_file_text(cwd, "", path)
-    if text is None:
-      continue
-    if _session_record_is_active(text, cwd):
-      offenders.append(path)
-  errors = []
-  if offenders:
-    errors.append(
-      "進行中セッションの記録はコミットできません"
-      "（セッションがまだ active、または終了後に取り込み直す必要あり）: "
-      + ", ".join(offenders)
-    )
-  return {"in_progress_records": offenders}, errors
+  return {"in_progress_records": []}, []
 
 
 def _porcelain_path(line):
@@ -3407,20 +3391,8 @@ def _porcelain_path(line):
 
 
 def _status_line_is_in_progress_record(line, cwd):
-  """porcelain の 1 行が、進行中セッションの記録（コミット対象外）かを返す。
-
-  進行中の記録は「コミットしない」のが正なので、push 前検査の作業ツリー clean 判定
-  でも汚れに数えない。終了済みの記録や通常ファイルは数える（False を返す）。
-  """
-  path = _porcelain_path(line)
-  if not _is_session_record_path(path):
-    return False
-  target = Path(cwd) / path
-  try:
-    text = target.read_text(encoding="utf-8")
-  except OSError:
-    return False
-  return _session_record_is_active(text, cwd)
+  """セッション記録はスナップショットとしてコミット可能なので常に False を返す。"""
+  return False
 
 
 def _unique_preserving_order(items):

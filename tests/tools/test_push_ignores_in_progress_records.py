@@ -1,12 +1,9 @@
-"""push 事前検査：進行中セッションの記録は『作業ツリーの汚れ』に数えない（強制コード）。
+"""push 事前検査：セッション記録（進行中・終了済み問わず）は未コミットなら汚れとして扱う。
 
-背景：会話ログの記録は「進行中セッションはコミットしない」のが正（コミット側の歯止め
-＝test_commit_in_progress_session_guard）。ところが push 前検査は作業ツリーを完全に
-clean に保つよう求めるため、進行中の記録が未追跡で残っていると永遠に push できない。
-両者の矛盾を解くため、push 前検査でも「進行中セッションの記録（元ログが生成後に変化）」
-は汚れに数えず無視する。終了済みの記録や通常ファイルは従来どおり汚れとして弾く。
+背景：セッション記録はスナップショットとしてコミット可能になったため、未追跡の記録は
+「コミットすべき変更」として扱う。進行中セッションの記録も例外ではない。
 
-TDD 規律（AGENTS.md 入口規律）に従い、本テストは実装前に作成する。
+TDD 規律（AGENTS.md 入口規律）に従う。
 実行：
   cd /Users/Daily/Development/ReviewCompass
   python3 -m unittest tests.tools.test_push_ignores_in_progress_records -v
@@ -61,18 +58,19 @@ class PushIgnoresInProgressRecordTests(unittest.TestCase):
     )
     self.record.parent.mkdir(parents=True, exist_ok=True)
 
-  def test_push_not_blocked_by_in_progress_record(self):
-    """進行中（元ログが生成後に変化）の未追跡記録は汚れに数えず、push を止めない。"""
+  def test_push_blocked_by_in_progress_record(self):
+    """進行中（元ログが生成後に変化）の未追跡記録もスナップショットとしてコミット可能な
+    ため、未追跡のまま残っていれば汚れとして push を止める。"""
     self.record.write_text(_record_text(str(self.src), self.src_sha))
     # 記録生成後に元ログが伸びた＝まだ進行中
     with open(self.src, "ab") as f:
       f.write(b'{"type":"assistant","content":"more"}\n')
-    r = run_script(["push", "--rationale", "進行中記録は無視して push"],
+    r = run_script(["push", "--rationale", "進行中記録も汚れとして弾く"],
                    cwd=self.tmpdir)
-    self.assertNotIn(DIRTY_MSG, r.stdout,
-                     f"進行中記録は汚れに数えない。stdout={r.stdout}")
-    self.assertEqual(r.returncode, 0,
-                     f"他に汚れが無ければ push 通過。stdout={r.stdout}\nstderr={r.stderr}")
+    self.assertEqual(r.returncode, 2,
+                     f"進行中記録も未コミットなら push を止める。stdout={r.stdout}")
+    self.assertIn(DIRTY_MSG, r.stdout,
+                  f"汚れ理由が必要。stdout={r.stdout}")
 
   def test_push_still_blocked_by_finished_record(self):
     """終了済み（元ログが生成時から不変）の未追跡記録は、従来どおり汚れとして弾く。"""
