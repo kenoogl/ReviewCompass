@@ -4735,7 +4735,7 @@ def _is_structured_reopen_commit_stop_point(data):
     if expected_kind != "approval_complete":
       return False
     phase, _stage = _parse_stage_gate(gate)
-    if phase != "implementation":
+    if phase not in ("requirements", "design", "tasks", "implementation"):
       return False
     return True
 

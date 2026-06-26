@@ -8757,6 +8757,50 @@ class CommitExitCodeTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout)
 
+  def test_commit_allows_step4_requirements_approval_complete_stop_point(self):
+    """第4過程の requirements approval_complete 停止点は構造フィールドで通過する"""
+    _set_pending_findings(self.pending_file, unresolved_count=0)
+    _stage_file(self.tmpdir, "notes.md", "# requirements approval 停止点の記録")
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-06-26.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第4過程：完了\n"
+      "step_number: 4\n"
+      "commit_stop_point: true\n"
+      "commit_stop_point_step: 4\n"
+      "commit_stop_point_kind: approval_complete\n"
+      "commit_stop_point_gate: stages/requirements.yaml#approval\n"
+      "commit_stop_point_reason: requirements approval 完了時点の停止点\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/in-progress/reopen-procedure-2026-06-26.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+    _write_commit_approval(
+      self.tmpdir,
+      [
+        "notes.md",
+        "stages/in-progress/reopen-procedure-2026-06-26.yaml",
+      ],
+    )
+
+    result = run_script(
+      ["commit", "--rationale", "reopen requirements approval 停止点 commit"],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+
   def test_commit_allows_normal_workflow_cross_feature_phase_end(self):
     """通常 workflow の cross-feature phase 終端差分は通常 commit guard で通過する"""
     _set_pending_findings(self.pending_file, unresolved_count=0)
