@@ -1,0 +1,28 @@
+run_id: 2026-06-26-mwp0-requirements-triad-review
+phase: post_write_verification
+criteria_id: mwp0-requirements-triad-review
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-26-mwp0-requirements-triad-review/review-target.md
+criteria_file_sha256: a4795e949e40a2fc89b0a3a8781ad8844bcca3af182fea0b573756fbc2a4da8d
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-26-mwp0-requirements-triad-review/prompt-manifest.yaml
+prompt_manifest_sha256: c3d84642354272d786efbfb3b04155d9fd32fb07cb51d6d5bb7fa722a17f2e70
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: f0e0f7c5f37e995954474defbfc9466e5fa843a8f5f8440d44ece2bf0d8e5407
+  content_mode: full_text
+  content_sha256: f0e0f7c5f37e995954474defbfc9466e5fa843a8f5f8440d44ece2bf0d8e5407
+source_materials:
+- path: docs/notes/2026-06-26-next-json-kind-redesign.md
+  sha256: a2539c18675124a968b96a5b1f8792f5f9ad84d20b304556429df9a516096d92
+  content_mode: full_text
+  content_sha256: a2539c18675124a968b96a5b1f8792f5f9ad84d20b304556429df9a516096d92
+- path: docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+  sha256: 0b4af4b70d5c4ce53d46cf652498e3448a3e124d56bff4ca181040e130e612dd
+  content_mode: full_text
+  content_sha256: 0b4af4b70d5c4ce53d46cf652498e3448a3e124d56bff4ca181040e130e612dd
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-26T12:54:58.839239+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-26-mwp0-requirements-triad-review/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-26-mwp0-requirements-triad-review/prompt-manifest.yaml

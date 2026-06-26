@@ -1,0 +1,13 @@
+findings:
+  - severity: WARN
+    target_location: "Requirement 2 受入 12"
+    description: "[claim-A] 除外対象と基準は明確だが、設計正本をdesign.mdではなくnote文書に委任している点、および `commit-preflight` の定義位置が不明瞭である。"
+    rationale: "除外する3種類とその理由は明確であり、実装者が何をすべきかは決定できる。しかし、設計の正本を恒久的な `design.md` ではなく `docs/notes/...` としているため、今後の保守で仕様の参照先が分散・陳腐化するリスクがある。また、`commit-preflight` が Requirement 12 (operation preflight) の一部なのか独立したサブコマンドなのかが要件上で紐付いておらず、設計工程での補完にやや過度に依存している。"
+  - severity: ERROR
+    target_location: "Requirement 2 受入 11 および 受入 12"
+    description: "[claim-B] 受入11の「値域は design で確定」という記述と、受入12の「7種類に限定する」という要件レベルでの直接列挙が明確に矛盾している。"
+    rationale: "同じ仕様項目（kindフィールドの値域）に対して、受入11は設計工程への委任を指示し、受入12は要件工程での確定を指示しており、整合性が取れていない。実装時やJSON Schema定義時にどちらを正とすべきか混乱を招くため、受入11を修正して「値域は受入12で確定」と書き直す必要がある。"
+  - severity: INFO
+    target_location: "Requirement 2"
+    description: "[claim-C] 受入12を Requirement 2 の下に配置したことは妥当である。"
+    rationale: "Requirement 2 は「軽量版検査スクリプトの提供」を目的とし、すでに `next --json` コマンドの挙動や出力インターフェイス定義（受入6〜11）を管轄している。そのため、出力フィールドである `kind` の再設計および責務の分離に関する要件をこの場所に配置するのは、文脈の連続性と仕様の凝集度の観点から非常に適切である。"

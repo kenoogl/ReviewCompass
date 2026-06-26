@@ -7,11 +7,9 @@ classification_basis: docs/reviews/reopen-classification-2026-06-26-wm-next-json
 completed_steps:
 - 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements/design/tasks/implementation の alignment/approval
   → false、recheck=upstream_change_pending → true）
-next_step: 第2過程：正本修正
-step_number: 2
-pending_gates:
-- stages/requirements.yaml#alignment
-- stages/requirements.yaml#approval
+next_step: 第4過程：完了
+step_number: 4
+pending_gates: []
 current_blocker: null
 reopen_step_records:
 - from_step: 1
@@ -21,7 +19,37 @@ reopen_step_records:
     で R-0（workflow-management）と確定。next --json kind 整理・commit-preflight 移動・手引き改修が対象。
   evidence:
   - docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+commit_stop_point_records:
+- step: 2
+  kind: canonical_update_complete
+  gate: null
+  reason: 第2過程の正本修正完了（requirements.md に受入基準追記・spec.json フラグ差し戻し）
+  head: 第2過程：正本修正完了（requirements.md 受入 12 追加・spec.json 差し戻し）
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+completed_gates:
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+downstream_impact_decisions:
+- gate: stages/requirements.yaml#alignment
+  feature_scope: workflow-management
+  decision: pass
+  rationale: MWP-0 requirements の triad-review を実施（3件の所見、ERROR-B 対処済み）。受入 12 新設（kind
+    7種類への整理・commit 関連3種類の commit-preflight 集約）と受入 11 の「値域は受入 12 で確定」への修正が完了。post-write-verification
+    2件完了。requirements 内容は intent および上流仕様と整合している。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-26-mwp0-requirements-triad-review/review_summary.md
+  - .reviewcompass/post-write-verification/post-write-2026-06-26-007.yaml
+  - .reviewcompass/post-write-verification/post-write-2026-06-26-008.yaml
+- gate: stages/requirements.yaml#approval
+  feature_scope: workflow-management
+  decision: pass
+  rationale: 利用者が triad-review 所見対処・受入 12 新設・受入 11 修正を確認して「承認」と発言（セッション 76b4149b）。requirements
+    フェーズの alignment と approval を通過させる。
+  evidence:
+  - .reviewcompass/evidence/review-runs/2026-06-26-mwp0-requirements-triad-review/review_summary.md
 commit_stop_point: true
-commit_stop_point_step: 2
-commit_stop_point_kind: canonical_update_complete
-commit_stop_point_reason: 第2過程の正本修正完了（requirements.md に受入基準追記・spec.json フラグ差し戻し）
+commit_stop_point_step: 4
+commit_stop_point_kind: approval_complete
+commit_stop_point_gate: stages/requirements.yaml#approval
+commit_stop_point_reason: requirements approval 完了時点の停止点

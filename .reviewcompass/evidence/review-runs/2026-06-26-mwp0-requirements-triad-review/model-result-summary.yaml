@@ -1,0 +1,15 @@
+run_id: 2026-06-26-mwp0-requirements-triad-review
+models:
+- model_id: gemini-3.1-pro-preview
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  parse_status: parsed
+  triage_status: triaged
+  findings_count: 3
+  findings_count_by_severity:
+    WARN: 1
+    ERROR: 1
+    INFO: 1
+  must_fix_count: 1
+  should_fix_count: 0
+  leave_as_is_count: 2
+  human_required_count: 0

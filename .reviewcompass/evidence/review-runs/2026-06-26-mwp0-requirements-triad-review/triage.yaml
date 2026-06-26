@@ -1,0 +1,63 @@
+run_id: 2026-06-26-mwp0-requirements-triad-review
+triage_status: decided
+generated_at: '2026-06-26T12:56:37.225796+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-26-mwp0-requirements-triad-review-gemini-3.1-pro-preview-primary-001
+  run_id: 2026-06-26-mwp0-requirements-triad-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Requirement 2 受入 12
+  plain_language_summary: '[claim-A] 除外対象と基準は明確だが、設計正本をdesign.mdではなくnote文書に委任している点、および
+    `commit-preflight` の定義位置が不明瞭である。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: claude_session
+  decision_actor_type: agent
+  decision_at: '2026-06-26T12:58:55.518436+00:00'
+  decision_reason: 設計正本は design フェーズで design.md に引き継がれる。commit-preflight の位置付けも design
+    で確定する設計であり、requirements レベルでは許容範囲。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-26-mwp0-requirements-triad-review-gemini-3.1-pro-preview-primary-002
+  run_id: 2026-06-26-mwp0-requirements-triad-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Requirement 2 受入 11 および 受入 12
+  plain_language_summary: '[claim-B] 受入11の「値域は design で確定」という記述と、受入12の「7種類に限定する」という要件レベルでの直接列挙が明確に矛盾している。'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: claude_session
+  decision_actor_type: agent
+  decision_at: '2026-06-26T12:58:55.562240+00:00'
+  decision_reason: 受入 11 の「値域は design で確定」という記述が受入 12 の7種類直接列挙と矛盾する。受入 11 を修正して「値域は受入
+    12 で確定」とする必要あり。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-26-mwp0-requirements-triad-review-gemini-3.1-pro-preview-primary-003
+  run_id: 2026-06-26-mwp0-requirements-triad-review
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Requirement 2
+  plain_language_summary: '[claim-C] 受入12を Requirement 2 の下に配置したことは妥当である。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: claude_session
+  decision_actor_type: agent
+  decision_at: '2026-06-26T12:58:55.604375+00:00'
+  decision_reason: Requirement 2 への配置は妥当。次 --json の出力インターフェイスは Requirement 2 が管轄しており配置の整合性に問題なし。
+  applied_files: []
+  superseded_by: null
