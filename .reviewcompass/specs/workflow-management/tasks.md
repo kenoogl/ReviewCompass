@@ -335,8 +335,8 @@ language: ja
   - `.reviewcompass/schema/next_action_response.schema.json`（Req 2 受入 11）
 - **完了条件**：
   1. `required_action.schema.json` が design §5.1 の設計（`$schema: https://json-schema.org/draft/2020-12/schema`・`$id: urn:reviewcompass:schema:required_action`・`type: string`・`enum` 19語彙）を満たし、かつ `enum` の配列が D-003 §6 の優先順位順に並んでいること（テストは順序を確認しないため手動確認）
-  2. `next_action_response.schema.json` が design §5.2 の設計を満たすこと：最上位5フィールド必須（`verdict`・`exit_code`・`next_action`・`reasons`・`current_state`）、`next_action` 10フィールド必須（`kind`・`required_action`・`active_gate`・`feature`・`phase`・`stage`・`required_feature_scope`・`blocked_by`・`future_gates`・`state_refs`）、`next_action` 内で `properties: { "verdict": false }` による verdict 禁止（手動確認）、`next_action.required_action` が `$ref: "urn:reviewcompass:schema:required_action"` を参照（手動確認、テストは $ref 値を検証しない）、`kind` が 14 値インライン enum であること（手動確認）、条件付き必須フィールドが `if/then` 構文で定義されていること：`repair_reasons`（`required_action = "repair_workflow_state"` のとき必須）・`action_parameters`（`required_action = "run_maintenance"` のとき必須）（手動確認）
-  3. `python3 -m pytest tests/tools/test_phase1_schema_definitions.py -v` の 17 テストが全て pass する（exit 0）。ただし17テスト全通過は必要条件であり、完了条件1の enum 順序、完了条件2の手動確認項目（verdict 禁止・kind 14 値の具体値・$ref 具体値・条件付き必須フィールド）の充足は別途手動で確認する
+  2. `next_action_response.schema.json` が design §5.2 の設計を満たすこと：最上位5フィールド必須（`verdict`・`exit_code`・`next_action`・`reasons`・`current_state`）、`next_action` 10フィールド必須（`kind`・`required_action`・`active_gate`・`feature`・`phase`・`stage`・`required_feature_scope`・`blocked_by`・`future_gates`・`state_refs`）、`next_action` 内で `properties: { "verdict": false }` による verdict 禁止（手動確認）、`next_action.required_action` が `$ref: "urn:reviewcompass:schema:required_action"` を参照（手動確認、テストは $ref 値を検証しない）、`kind` が 7 値インライン enum であること（手動確認、MWP-0 受入 12 反映：旧14値から整理済み）、条件付き必須フィールドが `if/then` 構文で定義されていること：`repair_reasons`（`required_action = "repair_workflow_state"` のとき必須）・`action_parameters`（`required_action = "run_maintenance"` のとき必須）（手動確認）
+  3. `python3 -m pytest tests/tools/test_phase1_schema_definitions.py -v` の 17 テストが全て pass する（exit 0）。ただし17テスト全通過は必要条件であり、完了条件1の enum 順序、完了条件2の手動確認項目（verdict 禁止・kind 7 値の具体値（`completed`・`in_progress`・`blocking_in_progress`・`verification_pending`・`reopen_in_progress`・`feature_definition_required`・`unknown`）・$ref 具体値・条件付き必須フィールド）の充足は別途手動で確認する
 - **テスト要件（TDD：テストは作成済み、失敗状態）**：テストは `tests/tools/test_phase1_schema_definitions.py` に作成済みで commit 済み（失敗状態）。実装でテストを通過させる。テストの変更は禁止。
 
 ### T-016：operation contract 語彙と required_action 対応（Req 13、reopen R-0 2026-06-19）
@@ -587,6 +587,33 @@ language: ja
   - Phase 0〜6 の順序や境界が design.md と一致しない場合。
   - proxy decision 証跡の既存形式が複数あり、単一 schema へ写像できない場合。
 
+### T-020：kind 7値スキーマ更新と commit-preflight サブコマンド（Req 2 受入 12、MWP-0 2026-06-27）
+
+- **対応設計節**：design.md §5.2 kind フィールドの値域・§5.4 commit-preflight サブコマンドの kind 設計
+- **対応要件**：Requirement 2 受入 12（MWP-0 で新設）
+- **背景**：MWP-0（next-json-kind-redesign）により `next --json` の kind 値域を旧14値から7値へ整理し、コミット操作前確認用の3値（`commit_candidate`・`commit_mixing_risk`・`commit_unit_stale`）を `commit-preflight` サブコマンドへ移動した。本タスクは MWP-0 の設計変更をスキーマ・実装・テストに反映する。
+- **責務**：
+  1. `.reviewcompass/schema/next_action_response.schema.json` の `kind` インライン enum を旧14値から7値（`completed`・`in_progress`・`blocking_in_progress`・`verification_pending`・`reopen_in_progress`・`feature_definition_required`・`unknown`）へ更新する。
+  2. `commit-preflight` サブコマンドの出力スキーマを定義する。返す `kind` は `commit_candidate`・`commit_mixing_risk`・`commit_unit_stale` の3値に限定する。
+  3. `tools/check-workflow-action.py` の `next --json` 実装から `commit_candidate`・`commit_mixing_risk`・`commit_unit_stale` の出力を除去し、`commit-preflight` サブコマンドに集約する。
+  4. design.alignment の先送り事項3件を tasks として記録し、実装時に対処する：（a）受入 11(6)②〜⑥の `required_action` 値ごとのフィールド制約を `next_action_response.schema.json` の `if/then` 構文で定義する、（b）`next_action` 内の `reason` フィールドと最上位の `reasons` 配列の責務差を設計書と実装で明確化する、（c）design §5.3 の「廃止」と Req 2 受入 12 の「廃止予定」の表現を統一する。
+- **前提タスク**：T-015（`next_action_response.schema.json` の基盤）、T-004（`check-workflow-action.py` 本体）
+- **成果物**：
+  - `.reviewcompass/schema/next_action_response.schema.json`（kind 7値更新版）
+  - `.reviewcompass/schema/commit_preflight_response.schema.json`（新規）
+  - `tools/check-workflow-action.py`（commit-preflight サブコマンド追加・next --json から3値除去）
+- **テスト要件（TDD）**：
+  - `next --json` が kind=`commit_candidate`・`commit_mixing_risk`・`commit_unit_stale` を返さないこと
+  - `commit-preflight` が kind=`commit_candidate`・`commit_mixing_risk`・`commit_unit_stale` の3値のみを返すこと
+  - `next_action_response.schema.json` の `kind` enum が7値に限定されていること（既存テストの更新）
+  - 受入 11(6)②〜⑥の if/then 制約の正常系・異常系テスト（先送り事項 (a)）
+  - `next_action.reason` と最上位 `reasons` の責務分離が実装に反映されていること（先送り事項 (b)）
+- **完了条件**：
+  1. `next --json` の kind 値域が7値に限定され、旧3値が出力されないことを pytest で確認できる。
+  2. `commit-preflight` サブコマンドが3値の kind を返し、他の kind を返さないことを pytest で確認できる。
+  3. スキーマの if/then 制約（先送り事項 (a)）の失敗テストが作成され、実装で通過する。
+  4. WORKFLOW_NAVIGATION.md の `next_drafting_gate` 廃止に伴う記述を更新する（design §5.4 反映）。
+
 ## 要件追跡（Requirements Traceability）
 
 | 要件 | 対応タスク |
@@ -603,7 +630,8 @@ language: ja
 | Requirement 2 受入 4：結論不能は fail（fail-closed） | T-004（パースエラー）＋ T-006（ゲート） |
 | Requirement 2 受入 5：in-progress 警告 | T-004（警告出力）＋ T-008（in-progress 管理） |
 | Requirement 2 受入 10：required_action 語彙スキーマ定義 | T-015 |
-| Requirement 2 受入 11：next_action_response 応答スキーマ定義 | T-015 |
+| Requirement 2 受入 11：next_action_response 応答スキーマ定義 | T-015（kind 7値は T-020 で更新） |
+| Requirement 2 受入 12：kind 値域を7値に限定・commit-preflight 集約（MWP-0） | T-020 |
 | Requirement 3 受入 1：author／reviewer 必須 | T-005 |
 | Requirement 3 受入 2：identity 同一を許容しない | T-005 |
 | Requirement 3 受入 3：subagent_mediated の判定役は別エンティティ | T-005（複合役許容） |
