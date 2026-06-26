@@ -1,45 +1,35 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-26 セッション4（Mac ローカル）。最新状態は必ず `git log --oneline -5`、`git status`、`.venv/bin/python3 tools/check-workflow-action.py next --json` で確認する。
+最終更新：2026-06-26 セッション5（Mac ローカル）。最新状態は必ず `git log --oneline -5`、`git status`、`.venv/bin/python3 tools/check-workflow-action.py next --json` で確認する。
 
-## 1. 今回（2026-06-26 セッション4）の完了作業
+## 1. 今回（2026-06-26 セッション5）の完了作業
 
-- **残存4件のテスト失敗をすべて修正**（コミット git:608bac79）
-  - グループA（3件）：`CommitExitCodeTests` でファイル作成後に `git add` が欠如 → 追加・順序修正
-  - グループB（1件）：`is_lightweight_self_check_target` が `docs/notes/review-runs/` を誤検出 → 除外条件追加
-  - テスト 286件通過（全件）
-- **issue を resolved に更新**（コミット git:05ee8bb9）
-- **セッション記録が蓄積して新セッションでもコミットできない問題を調査・修正**（コミット git:46864601）
-  - 原因：Claude Code アプリがセッション終了後も `last-prompt` / `mode` 等を jsonl に追記するため sha256 が変化していた
-  - 修正：`SessionStart` フックで DONE_MARKER があっても sha256 が古ければ再取り込みするよう変更
-- **過去4セッションのセッション記録を手動再取り込みしてコミット**（コミット git:d9c24309）
-  - 2026-06-24〜26 の 4件（現セッション `fb8b24ee` は除く）
+- **前セッション残作業のコミット**
+  - `todo-2026-06-26-ppwm1-canonical-effective-prompt-fixation.yaml` 完了決定記録（コミット git:ad0a8299）
+  - `tests/tools/test_check_workflow_action.py` 空行整理（同コミット）
+- **セッション記録の進行中判定を根本対策**（コミット git:29be0d51）
+  - 原因：sha256 比較はセッション終了後の Claude Code 追記で永遠に一致しない
+  - 修正：`active-sessions.json` で進行中セッションを明示管理
+    - SessionStart フック：現セッション ID を登録
+    - SessionEnd フック：現セッション ID を削除
+    - `commit-preflight` / `commit` 検査：active リスト参照（ファイル不在時のみ sha256 フォールバック）
+  - テスト3件追加、748件全通過
+- **`fb8b24ee` セッション記録を再生成・コミット**（コミット git:c9c0bf86）
+  - sha256 を最新化してからコミット
 
-現時点のテスト状況：286件全通過。
+現時点のテスト状況：748件全通過（tools/ + hooks/）。
 
 ## 2. 次セッションの最初にやること
 
 ### セッション記録のコミット
 
-現セッション（`fb8b24ee`）の記録が untracked のままになっている。次セッション開始時に SessionStart フックが自動で再取り込みするが、取り込み済みであっても `git add` → コミットを確認する。
+現セッション（`8a181b69`）の記録が untracked のまま。SessionEnd フックが発火して `active-sessions.json` から削除されれば、次セッションの SessionStart フックが自動取り込み・コミット可能になる。
 
-```
-# 状態確認
-git status | grep sessions/
-# stale なら手動再取り込み
-python3 tools/session-record-backfill.py \
-  --session ~/.claude/projects/-Users-Daily-Development-ReviewCompass/fb8b24ee-a301-4651-902c-8ba5341d8f66.jsonl \
-  --source claude \
-  --evidence-dir .reviewcompass/evidence/sessions \
-  --docs-dir docs/sessions
-```
+取り込み済みでも sha256 一致確認後にコミットすること。
 
-### 未コミットのファイル
+### `active-sessions.json` の動作確認
 
-- `.reviewcompass/backlog/todos/todo-2026-06-26-ppwm1-canonical-effective-prompt-fixation.yaml`（修正済みだが未コミット）
-- `tests/tools/test_check_workflow_action.py`（軽微な変更が未コミット）
-
-これらは内容を確認してからコミットする。
+今セッションで仕組みを導入したが、実際に SessionStart / SessionEnd フックが `active-sessions.json` を正しく更新するかは次セッション開始時に初めて確認できる。動作に問題があれば修正する。
 
 ## 3. 横展開の課題（issue 記録済み・未着手）
 
@@ -48,13 +38,12 @@ python3 tools/session-record-backfill.py \
 
 ## 4. MWP-0：next --json kind 再設計（検討完了・実装未着手）
 
-kind を41種類から7種類に整理する設計が確定済み。詳細は `docs/notes/2026-06-26-next-json-kind-redesign.md`。実装の優先順位は未決定。
+kind を41種類から7種類に整理する設計が確定済み。詳細は `docs/notes/2026-06-26-next-json-kind-redesign.md`。スコープは commit-preflight への移動・手引き改修も含む。ReviewCompass ワークフロー（reopen）に乗せて実施予定。
 
 ## 5. 参照
 
-- post-write 機械化計画（完了済み）：`.reviewcompass/backlog/plans/plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml`
-- セッション記録 issue（resolved）：`.reviewcompass/backlog/issues/issue-2026-06-26-post-write-tests-need-mechanization-not-fixture-rename.yaml`
 - commit 手順：`.reviewcompass/guidance/COMMIT_OPERATION_CARD.md`
 - backlog 操作カード：`.reviewcompass/guidance/WORKFLOW_NAVIGATION.md`
+- kind 再設計メモ：`docs/notes/2026-06-26-next-json-kind-redesign.md`
 
 過去の詳細は git log、`docs/notes/`、`docs/sessions/` を正本とする。
