@@ -37,9 +37,9 @@
       "approval": true
     },
     "implementation": {
-      "drafting": true,
-      "triad-review": true,
-      "review-wave": true,
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
       "alignment": false,
       "approval": false
     }
