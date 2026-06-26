@@ -496,6 +496,18 @@ DEFAULT_DISCIPLINE_MAP = {
   "decision_points": {
     "next_action_kind": [
       {
+        "id": "post_write_verification",
+        "prompt_source_refs": [
+          ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification",
+          ".reviewcompass/guidance/discipline_post_write_verification.md",
+        ],
+        "effective_prompt_policy": "one_effective_prompt_per_decision_point",
+        "canonical_effective_prompt_path": (
+          ".reviewcompass/guidance/effective-prompts/"
+          "next-action-post-write-verification.prompt.md"
+        ),
+      },
+      {
         "id": "post_write_policy_violation",
         "prompt_source_refs": [
           ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_policy_violation",
@@ -2756,6 +2768,7 @@ def validate_workflow_state_repair_record(cwd, paths, mode):
     path
     for path in paths
     if path != DEFAULT_WORKFLOW_STATE_REPAIR_PATH
+    and not path.startswith(".reviewcompass/runtime/")
   ]
   state, errors = load_workflow_state_repair_record(cwd)
   if not state.get("exists"):
@@ -2875,12 +2888,12 @@ def cmd_repair_workflow_state(args):
   cwd = Path.cwd()
   if args.repair_workflow_state_command != "prepare":
     return 2
-  changed_files = list_changed_files(cwd)
-  repair_targets = post_write_verification_targets_for_paths(cwd, changed_files)
-  if not changed_files:
+  staged_files = _git_cached_files(cwd) or []
+  repair_targets = post_write_verification_targets_for_paths(cwd, staged_files)
+  if not staged_files:
     payload = {
       "status": "error",
-      "error": "repair 対象の未コミット変更がありません",
+      "error": "repair 対象の staged 変更がありません",
     }
     if args.json:
       print(json.dumps(payload, ensure_ascii=False, indent=2))
@@ -2899,7 +2912,7 @@ def cmd_repair_workflow_state(args):
     return 2
 
   now = _iso_utc_now()
-  canonical = workflow_repair_target(cwd, changed_files, "changed")
+  canonical = workflow_repair_target(cwd, staged_files, "staged")
   record = {
     "schema_version": "workflow-state-repair-v1",
     "repair_id": f"repair-{now.strftime('%Y%m%dT%H%M%SZ')}",
@@ -4417,8 +4430,8 @@ def build_commit_instruction_preflight(cwd):
   next_required_action = next_action.get("required_action")
   repair_state, repair_errors = validate_workflow_state_repair_record(
     cwd,
-    changed_files,
-    "changed",
+    staged_files,
+    "staged",
   )
   commit_unit_state, commit_unit_errors = validate_commit_unit_record(cwd)
   reasons = []

@@ -56,6 +56,7 @@ decision_points:
         - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification
         - .reviewcompass/guidance/discipline_post_write_verification.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
+      canonical_effective_prompt_path: .reviewcompass/guidance/effective-prompts/next-action-post-write-verification.prompt.md
     - id: parent_resume_pending
       prompt_source_refs:
         - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#parent_resume_pending

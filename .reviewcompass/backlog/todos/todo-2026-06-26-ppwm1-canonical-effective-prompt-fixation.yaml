@@ -1,0 +1,56 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-26-ppwm1-canonical-effective-prompt-fixation
+kind: todo
+title: 'PPWM-1: post_write_verification canonical effective prompt を正本に固定する'
+status: completed
+source_unit_id: main-completed
+created_at: '2026-06-26T02:45:30.676431+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml
+  reason: PPWM-1 は機械化計画の最優先項目。next が runtime 生成物ではなく guidance 正本を返すことで後続の source bundle
+    / prompt builder が安定する。
+decisions: []
+summary: 'next コマンドが post_write_verification 地点で返す effective_prompt_path を、 runtime
+  生成物（.reviewcompass/runtime/effective-prompts/）から canonical 正本（.reviewcompass/guidance/effective-prompts/）へ切り替える。
+  まず正本ファイルを作成し、次に next の実装を修正してテストを緑化する。
+
+  '
+tasks:
+- id: T-1
+  title: テストが赤（失敗中）であることを確認する
+  status: done
+- id: T-2
+  title: '.reviewcompass/guidance/effective-prompts/next-action-post-write-verification.prompt.md
+    を正本ファイルとして作成する
+
+    '
+  status: done
+- id: T-3
+  title: 'next が post_write_verification のとき runtime ではなく guidance の正本パスを 返すよう実装を修正する
+
+    '
+  status: done
+- id: T-4
+  title: 対象テスト test_next_post_write_verification_returns_canonical_effective_prompt
+    が緑になることを確認する
+  status: done
+- id: T-5
+  title: 全テストに回帰がないことを確認する
+  status: done
+acceptance:
+- .reviewcompass/guidance/effective-prompts/next-action-post-write-verification.prompt.md
+  が存在する。
+- next --json が post_write_verification のとき、effective_prompt_path が guidance 配下のパスになる。
+- effective_prompt_loaded が true になる。
+- 既存テスト（軽量審査・policy_violation 系）に回帰がない。
+related:
+- .reviewcompass/backlog/plans/plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml
+- .reviewcompass/backlog/issues/issue-2026-06-26-post-write-tests-need-mechanization-not-fixture-rename.yaml
+- tests/tools/test_check_workflow_action.py
+execution_history:
+- checklist_id: checklist-todo-2026-06-26-ppwm1-canonical-effective-prompt-fixation
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-26-ppwm1-canonical-effective-prompt-fixation.yaml
+  completion_summary: 5/5完了。正本ファイル作成・YAML更新・実装追加によりテスト緑化。issue分離済み1件を除く全276件が通過。
+  completed_at: '2026-06-26T02:50:02.470490+00:00'
