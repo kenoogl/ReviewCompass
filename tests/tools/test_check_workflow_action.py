@@ -7392,6 +7392,12 @@ class CommitExitCodeTests(unittest.TestCase):
     tool = Path(self.tmpdir) / "tools" / "helper.py"
     tool.parent.mkdir(parents=True)
     tool.write_text("print('repair')\n", encoding="utf-8")
+    subprocess.run(
+      ["git", "add", "docs/operations/policy.md", "tools/helper.py"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
 
     prepare = run_script(
       [
@@ -7425,6 +7431,12 @@ class CommitExitCodeTests(unittest.TestCase):
     tool = Path(self.tmpdir) / "tools" / "helper.py"
     tool.parent.mkdir(parents=True)
     tool.write_text("print('repair')\n", encoding="utf-8")
+    subprocess.run(
+      ["git", "add", "docs/operations/policy.md", "tools/helper.py"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
 
     prepare = run_script(
       [
@@ -7438,12 +7450,6 @@ class CommitExitCodeTests(unittest.TestCase):
     )
     _assert_script_invoked(self, prepare)
     self.assertEqual(prepare.returncode, 0, prepare.stdout)
-    subprocess.run(
-      ["git", "add", "docs/operations/policy.md", "tools/helper.py"],
-      cwd=str(self.tmpdir),
-      check=True,
-      capture_output=True,
-    )
     _write_commit_approval(
       self.tmpdir,
       ["docs/operations/policy.md", "tools/helper.py"],
@@ -7469,6 +7475,12 @@ class CommitExitCodeTests(unittest.TestCase):
     target = Path(self.tmpdir) / "docs" / "operations" / "policy.md"
     target.parent.mkdir(parents=True)
     target.write_text("運用正本\n", encoding="utf-8")
+    subprocess.run(
+      ["git", "add", "docs/operations/policy.md"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
     prepare = run_script(
       [
         "repair-workflow-state",
@@ -7484,6 +7496,12 @@ class CommitExitCodeTests(unittest.TestCase):
     Path(self.tmpdir, "docs", "operations", "extra.md").write_text(
       "追加差分\n",
       encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "docs/operations/extra.md"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
     )
 
     result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)

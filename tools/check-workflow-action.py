@@ -5687,6 +5687,8 @@ def is_lightweight_self_check_target(path):
   """API post-write ではなく軽量自己精査で扱う作業中メモかを返す。"""
   if path == "TODO_NEXT_SESSION.md":
     return True
+  if "/review-runs/" in path:
+    return False
   return any(path.startswith(prefix) for prefix in LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES)
 
 
