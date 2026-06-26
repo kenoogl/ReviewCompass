@@ -1,0 +1,12 @@
+proxy_model_id: gpt-4.1
+finding_id: gamma
+adopted_option: 別案
+rationale: 案Aの方向性で重複排除すべきだが、案Aの注記は「①は T-015 の repair_reasons で対処済み」としており事実関係が誤っているため、そのまま採用すべきではない。別案として、受入11(6)の各 required_action 値ごとに責務表を明示し、T-015 は④の repair_reasons 条件と⑥の action_parameters 条件を担当、T-020 は少なくとも①②③⑤およびT-015で未担当の制約を担当する形に整理するのが妥当である。あわせて T-020 の責務記述とテスト要件から⑥の重複を除外し、①の担当不明も解消する必要がある。
+rejected_options:
+  - option: 案A
+    reason: 重複排除の方向性は妥当だが、①を T-015 の repair_reasons で対処済みとする注記が誤りであり、④の扱いも曖昧に残るためそのままでは採用不可。
+  - option: 案B
+    reason: T-020 に⑥が残るため、T-015 と T-020 の責務重複が解消されない。
+  - option: 案C
+    reason: 全範囲を T-020 に集約する一方で T-015 の手動確認と重複し、正本となる責務が曖昧になる。
+final_label: must-fix

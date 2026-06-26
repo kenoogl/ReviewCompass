@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: beta
+cluster_id: beta
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-adjudication-prompt-beta.md
+raw_response_path: proxy-decision-response-beta.yaml
+adopted_option: 案A
+final_label: must-fix
+rationale: "完了条件4の問題は、直接の根拠でない design §5.4 を根拠として参照している点にあるため、誤参照を除去して正しい reopen 分類文書へ差し替える案Aが最適。design §5.4 は commit-preflight の kind 設計に関する節であり、WORKFLOW_NAVIGATION.md の next_drafting_gate 廃止に伴う改修根拠として残す必要はない。"
+rejected_options:
+  案B: design §5.4 を「関連」として残しても直接根拠ではないため、将来的な混同を招く可能性があり不要。
+candidate_options:
+  - 案A
+  - 案B
+source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  - raw/gpt-5.5.round-1.txt
+  - raw/gemini-3.1-pro-preview.round-1.txt

@@ -1,0 +1,8 @@
+variant: proxy_model_openai_gpt_55
+provider: openai-api
+model: gpt-5.5
+prompt_path: .reviewcompass/evidence/review-runs/2026-06-27-mwp0-tasks-triad-review/proxy-adjudication-prompt-epsilon.md
+raw_response_path: proxy-decision-response-epsilon.yaml
+parsed_decisions_path: proxy-decision-decisions-epsilon.yaml
+duration_seconds: 7.228
+parse_status: parsed

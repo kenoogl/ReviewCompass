@@ -1,0 +1,8 @@
+proxy_model_id: gpt-4.1
+finding_id: beta
+adopted_option: 案A
+rationale: 完了条件4の問題は、直接の根拠でない design §5.4 を根拠として参照している点にあるため、誤参照を除去して正しい reopen 分類文書へ差し替える案Aが最適です。design §5.4 は commit-preflight の kind 設計に関する節であり、WORKFLOW_NAVIGATION.md の next_drafting_gate 廃止に伴う改修根拠として残す必要はありません。案Aはトレーサビリティを回復し、変更量も最小です。
+rejected_options:
+  - option: 案B
+    reason: design §5.4 を「関連」として残しても直接根拠ではないため、将来的な混同を招く可能性があり、今回の誤参照解消としては不要です。
+final_label: must-fix

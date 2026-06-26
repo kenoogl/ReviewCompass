@@ -1,0 +1,27 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 21.436
+findings:
+- severity: ERROR
+  target_location: 3.2 T-020 新タスク / 完了条件 4
+  description: 完了条件4に「design §5.4 反映」として`next_drafting_gate`廃止の記述更新が挙げられているが、対象のdesign
+    §5.4には該当の記述が存在しない。
+  rationale: reopen分類文書には根拠があるものの、タスク定義内で誤った設計箇所を根拠として参照しており、要件追跡の正確性（トレーサビリティ）が損なわれているため。
+- severity: ERROR
+  target_location: 3.2 T-020 新タスク / テスト要件
+  description: T-020のテスト要件で「既存テストの更新」を求めているが、前提タスクであるT-015の「テストの変更は禁止」という制約と矛盾している。
+  rationale: タスク間でテスト修正の制約に矛盾があると、実装フェーズで混乱やコンフリクトを招き、想定外のテスト破壊につながるリスクがあるため。
+- severity: WARN
+  target_location: 3.2 T-020 新タスク / 責務 4 (a)
+  description: T-020の責務4(a)で「受入 11(6)②〜⑥」の制約を扱うとしているが、⑥（action_parameters等）はT-015の対象と重複している。
+  rationale: 同じ制約の実装・テスト責務がT-015とT-020の両方に定義されていると、実装の重複や完了確認漏れなどの管理上の問題が生じるため。
+- severity: WARN
+  target_location: 3.2 T-020 新タスク / 責務 4 (c)
+  description: 責務4(c)として「廃止と廃止予定の表現統一」が挙げられているが、それに対するテスト要件や完了条件が一切定義されていない。
+  rationale: 完了条件やテスト要件が存在しない責務は、実装フェーズで対応が漏れる（先送り事項が最終的に解決されない）可能性が高いため。
+- severity: INFO
+  target_location: 3.2 T-020 新タスク / 成果物
+  description: 上流要件（受入12やdesign §5.4）に明記されていない`commit_preflight_response.schema.json`が成果物として追加されている。
+  rationale: 明示的な指示はないものの、新規サブコマンドの出力検証を堅牢に行うためのスキーマ作成は、実装上の適切な裁量範囲内とみなせるため。

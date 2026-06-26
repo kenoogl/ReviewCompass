@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: alpha
+cluster_id: alpha
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-adjudication-prompt-alpha.md
+raw_response_path: proxy-decision-response.yaml
+adopted_option: 案A
+final_label: must-fix
+rationale: "T-015の「テストの変更は禁止」は実装者に対する強い制約なので、例外はその制約が書かれている箇所に明記するのが最も誤読を防げる。T-020側だけに書くと、T-015のみを読んだ実装者が矛盾と判断するリスクが残る。"
+rejected_options:
+  案B: T-015側の禁止文がそのまま残るため、T-020を読まない限り例外を把握できず、矛盾の解消として不十分。
+  案C: 同じ制約関係を2箇所で同期する必要があり、案Aで十分。
+candidate_options:
+  - 案A
+  - 案B
+  - 案C
+source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  - raw/gpt-5.5.round-1.txt
+  - raw/gemini-3.1-pro-preview.round-1.txt

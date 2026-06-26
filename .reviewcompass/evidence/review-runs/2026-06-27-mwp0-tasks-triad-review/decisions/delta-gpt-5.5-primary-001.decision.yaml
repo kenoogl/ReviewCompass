@@ -1,0 +1,20 @@
+approved_by: proxy_model
+finding_id: delta
+cluster_id: delta
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-adjudication-prompt-delta.md
+raw_response_path: proxy-decision-response-delta.yaml
+adopted_option: 案A
+final_label: must-fix
+rationale: "先送り事項(c)は文書間の表現統一であるため機械テスト要件ではなく完了条件として手動確認を明示するのが適切。これにより責務として記録されている事項に対応する完了確認が存在しないという欠陥を直接解消できる。"
+rejected_options:
+  案B: 表現統一は機械検証に向かず、テスト要件へ追加しても形式的な要件追加になりやすい。
+  案C: 完了条件を設けないと先送り事項(c)が未解消のまま残るリスクを許容することになる。
+candidate_options:
+  - 案A
+  - 案B
+  - 案C
+source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  - raw/gpt-5.5.round-1.txt
+  - raw/gemini-3.1-pro-preview.round-1.txt

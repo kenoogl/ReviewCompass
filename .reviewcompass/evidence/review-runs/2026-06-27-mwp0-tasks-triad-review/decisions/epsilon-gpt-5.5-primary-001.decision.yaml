@@ -1,0 +1,18 @@
+approved_by: proxy_model
+finding_id: epsilon
+cluster_id: epsilon
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-adjudication-prompt-epsilon.md
+raw_response_path: proxy-decision-response-epsilon.yaml
+adopted_option: 案B
+final_label: should-fix
+rationale: "受入11(6)②〜⑤の if/then 制約が T-020 の責務に含まれる以上、要件追跡表から T-020 へ辿れるようにすべき。案Bは既存の受入11行を維持したまま T-020 の担当範囲を明示でき追記量も最小。追跡表に複数タスクを併記する既存方針とも整合する。"
+rejected_options:
+  案A: 受入11を別行に分割することで追跡表の粒度が細かくなり設計がやや不均一になる。
+  案C: T-020 が担う受入11(6)②〜⑤の実装責務が追跡表から見えにくいままとなりトレーサビリティ問題が解消されない。
+candidate_options:
+  - 案A
+  - 案B
+  - 案C
+source_raw_paths:
+  - raw/gpt-5.5.round-1.txt

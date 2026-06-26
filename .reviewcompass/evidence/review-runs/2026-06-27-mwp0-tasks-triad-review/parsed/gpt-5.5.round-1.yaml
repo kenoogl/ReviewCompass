@@ -1,0 +1,38 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 52.782
+findings:
+- severity: ERROR
+  target_location: T-020責務 / T-020テスト要件 / T-020完了条件
+  description: '[must-fix] design.alignment の先送り事項3件のうち、(b) と (c) の完了確認が弱く、特に (c)
+    の『廃止』表現統一はテスト要件・完了条件・成果物のいずれにも落ちていない。'
+  rationale: T-020責務4では3件を『実装時に対処する』と記録しているが、完了条件で明示的に閉じているのは主に (a) の if/then 制約だけである。(b)
+    はテスト要件にあるものの完了条件では確認されず、(c) は実施対象文書や検証方法が不明なため、上流で tasks フェーズ対処とされた事項が実装時に抜け落ちる可能性がある。
+- severity: WARN
+  target_location: T-020完了条件
+  description: '[should-fix] 完了条件4の WORKFLOW_NAVIGATION.md 更新は根拠文書へのトレーサビリティが不足しており、design
+    §5.4 反映という説明だけでは根拠がずれている。'
+  rationale: 提示された design §5.4 は commit-preflight の kind 設計であり、WORKFLOW_NAVIGATION.md
+    の next_drafting_gate 廃止記述更新を直接指示していない。根拠は reopen 分類文書の『手引き改修』にあるため、T-020内にその参照を明記しないと、未根拠追加または誤った設計節への紐付けに見える。
+- severity: WARN
+  target_location: T-015修正 / T-020テスト要件
+  description: '[should-fix] T-015 の『テストの変更は禁止』と、T-020 の『既存テストの更新』の関係が文書上明確でない。'
+  rationale: MWP-0 により kind enum が14値から7値へ変わるため、既存テスト更新自体は妥当である。しかし T-015 側の禁止制約が有効範囲や時点を限定せずに残っている場合、T-020実装者がテスト更新を禁止されていると解釈する余地がある。T-020による例外・上書き・別タスク範囲での更新であることを明記すると矛盾を避けられる。
+- severity: WARN
+  target_location: T-015修正 / T-020責務 / 要件追跡
+  description: '[should-fix] 受入 11(6) の if/then 制約について、T-015 と T-020 の責務分担が曖昧で、重複または漏れが生じ得る。'
+  rationale: T-020 の先送り事項 (a) は受入 11(6)②〜⑥を扱う一方、T-015にも repair_reasons・action_parameters
+    の if/then 条件が残っているため ④・⑥相当が重複する可能性がある。また、commit_stop_point の ①をどのタスクで機械検証するかも、この抜粋上は明確でない。受入
+    11(6) は machine-checkable な構造を要求しているため、各 required_action 値の担当タスクを明示する必要がある。
+- severity: WARN
+  target_location: 要件追跡
+  description: '[should-fix] Requirement 2 受入 11 の追跡先が T-015 中心のままで、T-020 が担う受入 11(6)②〜⑥の制約実装が追跡表に反映されていない。'
+  rationale: T-020 は受入 12だけでなく、先送り事項 (a) として受入 11(6)②〜⑥の if/then 制約も責務に含んでいる。追跡表が『Requirement
+    2 受入 11：T-015（kind 7値は T-020で更新）』だけだと、受入 11の重要部分がT-020に移っている事実を追跡できず、レビュー・実装・完了確認で漏れる可能性がある。
+- severity: INFO
+  target_location: T-020成果物
+  description: '[leave-as-is] commit_preflight_response.schema.json の新規追加は、明示指示がなくても上流意図から導出可能であり、未根拠追加とはいえない。'
+  rationale: Req 2 受入 12と design §5.4 は commit-preflight が3値の kind のみを返し、next --json
+    はそれらを返さないことを要求している。専用出力の値域を機械的に検証するために commit_preflight_response.schema.json を成果物化するのは、設計意図を実装・テストへ落とす妥当な具体化である。

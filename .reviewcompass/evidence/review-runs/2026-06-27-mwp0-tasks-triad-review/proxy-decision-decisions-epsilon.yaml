@@ -1,0 +1,11 @@
+proxy_model_id: ChatGPT
+finding_id: epsilon
+adopted_option: 案B
+rationale: 受入11(6)②〜⑤の if/then 制約が T-020 の責務に含まれる以上、要件追跡表から T-020 へ辿れるようにするべきです。案Bは既存の受入11行を維持したまま
+  T-020 の担当範囲を明示でき、追記量も最小です。追跡表に複数タスクを併記する既存方針とも整合します。
+rejected_options:
+- option: 案A
+  reason: 明示性は高いものの、受入11を別行に分割することで追跡表の粒度が細かくなり、表の設計がやや不均一になるためです。
+- option: 案C
+  reason: T-020 が担う受入11(6)②〜⑤の実装責務が追跡表から見えにくいままとなり、指摘されたトレーサビリティ上の問題が解消されないためです。
+final_label: should-fix

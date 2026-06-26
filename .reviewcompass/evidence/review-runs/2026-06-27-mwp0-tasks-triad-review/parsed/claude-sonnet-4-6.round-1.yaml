@@ -1,0 +1,41 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 29.575
+findings:
+- severity: WARN
+  target_location: T-020 完了条件4
+  description: WORKFLOW_NAVIGATION.md の next_drafting_gate 廃止更新に関する完了条件4の根拠が T-020
+    内に明記されていない。
+  rationale: 完了条件4の根拠は reopen 分類文書（docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md）の「手引き改修」記載にあるが、T-020
+    のテキスト内にその参照が存在しない。上流材料として参照可能な文書が tasks.md 変更箇所内で引用されていないため、後から変更を追う際にトレーサビリティが断絶する。must-fix
+    とまでは言えないが、完了条件4に「（根拠：reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+    §手引き改修）」程度の参照を加えることが望ましい。対象箇所：T-020完了条件。
+- severity: WARN
+  target_location: T-020 テスト要件「既存テストの更新」
+  description: T-020 のテスト要件に「next_action_response.schema.json の kind enum が7値に限定されていること（既存テストの更新）」と記載されており、T-015
+    が持つと推定される「テストの変更は禁止」制約との整合が文書上で説明されていない。
+  rationale: T-015 の「テスト変更禁止」が kind 14値を前提とするテストを保護する趣旨であれば、T-020 が同テストを更新することは実質的にその禁止を解除することになる。tasks.md
+    上で T-020 が T-015 テスト禁止制約の例外となることを明示していないため、実装担当者が矛盾と判断するリスクがある。T-020 内か T-015
+    修正内に「T-015 の kind-enum テストは T-020 で更新する」旨の一文を加えることが望ましい。対象箇所：T-020テスト要件・T-015修正。
+- severity: WARN
+  target_location: T-020 責務4（先送り事項）と T-015 完了条件2の責務境界
+  description: T-015 完了条件2が if/then 構文による repair_reasons・action_parameters の定義（受入
+    11(6)①⑥相当）を担当し、T-020 先送り事項(a)が受入 11(6)②〜⑥を担当すると読めるが、⑥が両者に重複している可能性があり、文書上の分担が明確でない。
+  rationale: 受入 11(6)⑥（run_maintenance 時の action_parameters）は T-015 完了条件2の「action_parameters」記述と
+    T-020 先送り事項(a)の「受入 11(6)②〜⑥」の両方に含まれうる。実装時に二重実装または漏れが生じるリスクがある。T-020 先送り事項(a)の対象範囲を「②〜⑤」と限定するか、または「①⑥は
+    T-015 で対処済みのため②〜⑤を T-020 で対処する」と注記することが望ましい。対象箇所：T-020責務・T-015修正。
+- severity: INFO
+  target_location: T-020 成果物「commit_preflight_response.schema.json（新規）」
+  description: Req 2 受入 12 および design §5.4 はいずれも commit_preflight_response.schema.json
+    というファイル名・新規作成を明示していないが、T-020 が成果物として掲げることは上流意図から合理的に導出可能であり、未根拠追加には当たらない。
+  rationale: design §5.4 は「commit-preflight サブコマンドの出力」の kind 値域（3値）を定義しており、next_action_response.schema.json
+    と対称的な構造としてスキーマファイルを新設することは設計上の自然な実装手順である。ファイル名の明示的な指示はないが、設計意図の逸脱・弱体化ではなく実装詳細の具体化と判断できる。ただしその導出根拠を
+    T-020 の背景節に一文加えると透明性が増す。対象箇所：T-020責務。
+- severity: INFO
+  target_location: T-015 修正・T-020 全体
+  description: MWP-0 の上流意図（Req 2 受入 12 の kind 7値限定・commit-preflight 集約、design §5.2〜§5.4
+    の詳細設計）は tasks.md の変更箇所へ欠落・逸脱なく引き継がれており、主問に対する総合評価は概ね適切。
+  rationale: T-015 の完了条件が14値→7値に更新され具体7値も列挙されている。T-020 は受入 12 の3値除外・commit-preflight
+    集約・スキーマ更新・テスト要件を網羅している。要件追跡も受入 11・受入 12 と T-015・T-020 を対応付けている。重大な欠落・弱体化・逸脱は確認されない。

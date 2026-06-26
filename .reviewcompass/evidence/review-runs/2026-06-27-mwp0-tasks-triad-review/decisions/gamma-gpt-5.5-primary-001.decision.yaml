@@ -1,0 +1,23 @@
+approved_by: proxy_model
+finding_id: gamma
+cluster_id: gamma
+proxy_model_id: gpt-5.5
+decision_prompt_path: proxy-adjudication-prompt-gamma.md
+raw_response_path: proxy-decision-response-gamma.yaml
+adopted_option: 別案
+final_label: must-fix
+rationale: "重複排除の方向は案Aと同じだが、案Aの注記「①は T-015 の repair_reasons で対処済み」は事実誤認（T-015 が担当するのは④と⑥）。正しくは受入11(6)の担当を明示した責務表を設け、T-015 は④(repair_reasons)と⑥(action_parameters)を担当、T-020 先送り事項(a)は①②③⑤および T-015 未担当分を担当する形に整理し、T-020 のテスト要件からも⑥の重複を除外する。"
+rejected_options:
+  案A: 重複排除の方向性は妥当だが①を T-015 の repair_reasons で対処済みとする注記が誤り。
+  案B: T-020 に⑥が残るため責務重複が解消されない。
+  案C: T-015 の手動確認と T-020 の機械検証が重複し正本が曖昧になる。
+implementation_note: "T-020 責務4(a)を「①②③⑤の if/then 制約を定義する（④は T-015 完了条件2の repair_reasons で対処済み、⑥は T-015 完了条件2の action_parameters で対処済み）」に修正。T-020 テスト要件の「受入11(6)②〜⑥」も「①②③⑤」に修正する。"
+candidate_options:
+  - 案A
+  - 案B
+  - 案C
+  - 別案
+source_raw_paths:
+  - raw/claude-sonnet-4-6.round-1.txt
+  - raw/gpt-5.5.round-1.txt
+  - raw/gemini-3.1-pro-preview.round-1.txt

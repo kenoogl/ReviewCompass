@@ -1,0 +1,4 @@
+run_id: 2026-06-27-mwp0-tasks-triad-review
+target_files:
+- path: .reviewcompass/evidence/review-runs/2026-06-27-mwp0-tasks-triad-review/target.md
+  sha256: 8de4350ae86d2cb953e1099a2bb5258eeb67e0cc820db92c8377510d4b332351
