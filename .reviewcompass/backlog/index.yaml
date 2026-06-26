@@ -95,9 +95,10 @@ items:
 - id: plan-2026-06-23-postwrite-prompt-mechanization-completion
   kind: plan
   title: Complete post-write prompt mechanization
-  status: candidate
+  status: completed
   path: .reviewcompass/backlog/plans/plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml
   source_unit_id: main-completed
+  completed_at: '2026-06-26T00:00:00+09:00'
   created_at: '2026-06-23T08:58:57+09:00'
 - id: plan-2026-06-23-effective-prompt-freshness-audit
   kind: plan

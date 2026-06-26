@@ -2,7 +2,8 @@ schema_version: reviewcompass-backlog-item-v1
 id: plan-2026-06-23-postwrite-prompt-mechanization-completion
 kind: plan
 title: Complete post-write prompt mechanization
-status: candidate
+status: completed
+completed_at: '2026-06-26T00:00:00+09:00'
 source_unit_id: main-completed
 created_at: '2026-06-23T08:58:57+09:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -36,7 +37,7 @@ completed_baseline:
 remaining_work:
   - id: PPWM-1
     title: Canonical effective prompts
-    status: candidate
+    status: completed
     tasks:
       - post_write_verification 用 canonical effective prompt を正本として固定する。
       - post_write_human_decision_required 用 canonical effective prompt を正本として固定する。
@@ -48,7 +49,7 @@ remaining_work:
       - 元文書変更時の freshness audit へ接続できる。
   - id: PPWM-2
     title: post_write_policy_violation inspect operation
-    status: candidate
+    status: completed
     tasks:
       - dirty worktree の変更ファイルを機械分類する。
       - guidance / tools / tests / docs notes / runtime artifacts を別 cluster に分ける。
@@ -59,7 +60,7 @@ remaining_work:
       - 次に許可される操作と禁止操作が機械出力に含まれる。
   - id: PPWM-3
     title: Source bundle builder
-    status: candidate
+    status: completed
     tasks:
       - target 本文を full text または non-summary excerpt として出す。
       - source material 本文を full text または non-summary excerpt として出す。
@@ -71,7 +72,7 @@ remaining_work:
       - API reviewer が、path-only ではなく実本文を読める。
   - id: PPWM-4
     title: Prompt builder
-    status: candidate
+    status: completed
     tasks:
       - source bundle から固定構造の prompt を生成する。
       - prompt 必須セクションを固定する。
@@ -91,7 +92,7 @@ remaining_work:
       - Sensitive Information Check
   - id: PPWM-5
     title: Prompt audit
-    status: candidate
+    status: completed
     tasks:
       - target file body がない prompt を拒否する。
       - source material body がない prompt を拒否する。
@@ -107,7 +108,7 @@ remaining_work:
       - invalid prompt を保存する場合も、有効な review result として扱わない。
   - id: PPWM-6
     title: Runner gate
-    status: candidate
+    status: completed
     tasks:
       - next_action.kind == post_write_verification であることを gate が確認する。
       - prompt audit が OK の場合だけ API runner を許可する。
@@ -121,7 +122,7 @@ remaining_work:
       - prompt quality review、proxy decision、post-write verification の runner/schema を混同しない。
   - id: PPWM-7
     title: Practical operation verification
-    status: candidate
+    status: completed
     tasks:
       - 実際の post-write 対象ファイルで source bundle、prompt、manifest、audit result が一貫する。
       - generated prompt に target 本文、source material、out of scope、required checks、output contract が含まれる。
