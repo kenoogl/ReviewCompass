@@ -1,0 +1,26 @@
+role: primary
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 38.212
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/requirements.md (Requirement
+    4 受入 9)
+  description: 受入基準の追記先が Requirement 4（不可逆操作の直前ゲート）となっているが、`next --json` の出力インターフェースや
+    `kind` 値域の定義は Requirement 2（軽量版検査スクリプトの提供）の管轄である。
+  rationale: Requirement 2（特に受入 11）で `next --json` のスキーマ定義が行われており、出力項目の除外や制限の要件はそこに集約すべきである。不可逆操作の条件を規定する
+    Requirement 4 に出力定義を記載すると要件の凝集度が下がり、仕様の保守性が損なわれる。
+- severity: ERROR
+  target_location: .reviewcompass/specs/workflow-management/requirements.md (Change
+    Intent)
+  description: Change Intent には「Requirement 4 受入 1 に追記を行う」と記載されているが、実際のドキュメントでは受入
+    1 は変更されず「受入 9」が新設されており、意図の記述と実際の変更が矛盾している。
+  rationale: 改訂意図（Change Intent）と実際の変更内容が乖離していると、将来の変更履歴の追跡や監査において混乱を招く。追記先を Requirement
+    2 に見直した上で、それに合わせて Change Intent の記述を正確に修正する必要がある。
+- severity: WARN
+  target_location: docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+    (feature impact 判定)
+  description: 他機能への影響をなし（no_reopen_existing_feature）とする根拠に「共通スキーマに変更なし」とあるが、実際には
+    `next --json` の `kind` 値が41種類から7種類へと大幅に変更される。これをパースしている他機能の処理やテストが存在する場合、影響を受ける可能性が否定できない。
+  rationale: CLI出力（特にJSON形式の `kind` フィールド）は、runtime の自動実行フックなど他機能のツールから暗黙的に依存されやすい。他機能がこの変更によって状態判定エラーを起こすリスクがあるため、本当に依存がないか調査・確認するプロセスが欠落している懸念がある。

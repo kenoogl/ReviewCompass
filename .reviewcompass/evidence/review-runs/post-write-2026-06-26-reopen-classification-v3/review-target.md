@@ -1,3 +1,243 @@
+# Post-write Review Target
+
+criteria_id: reopen-classification-fix-verify
+phase: post_write_verification
+generated_at: 2026-06-26T12:45:27.170315+00:00
+
+## Change Summary
+
+ERROR-1/ERROR-2 対処: 受入基準を Requirement 4 受入 9 から Requirement 2 受入 12 に移動し、Change Intent を「Requirement 2 受入 12 を新設した」と修正した。
+
+## Review Question
+
+修正後の requirements.md は正しいか。Requirement 2 受入 12 の内容・配置・Change Intent の記述に問題はないか。
+
+## Target Files
+
+- docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md sha256=0b4af4b70d5c4ce53d46cf652498e3448a3e124d56bff4ca181040e130e612dd
+- .reviewcompass/specs/workflow-management/requirements.md sha256=f0e0f7c5f37e995954474defbfc9466e5fa843a8f5f8440d44ece2bf0d8e5407
+
+## Source Materials
+
+### docs/notes/2026-06-26-next-json-kind-redesign.md
+
+content_mode: full_text
+content_sha256: a2539c18675124a968b96a5b1f8792f5f9ad84d20b304556429df9a516096d92
+
+```text
+# `next --json` の kind 再設計（議論記録）
+
+最終更新：2026-06-26（詳細フィールド設計を追記）。
+
+## 動機
+
+`next --json` の本来の役割は「ワークフロー作業の中のどの地点にいるかを返す」こと。
+地点が分かれば次のアクションが機械的に決まり、LLM の手作業が減り動作がセキュアになる。
+
+現状の `kind` 値は41種類あり、次の問題がある：
+
+- 「作業状態」「手続きの内部ステップ追跡」「コミット操作の確認」が同じ `kind` に混在
+- `maintenance_in_progress` と `blocking_unit_in_progress` は意味が同じだが別の `kind`
+- reopen のサブステップ13種類が `kind` に詰め込まれている
+
+## 決定：7種類への整理
+
+| `kind` | 意味 |
+|--------|------|
+| `completed` | 全作業完了。次の作業を始められる |
+| `in_progress` | 通常の作業中（フェーズ終端のコミット待ちも `stage: commit_stop_point` で表現） |
+| `blocking_in_progress` | 本線とは別の作業中。完了後は親または次判定へ戻る |
+| `verification_pending` | 書き込み後の検証（post-write verification）待ち |
+| `reopen_in_progress` | 再開手続き中（サブステップは詳細フィールドで返す） |
+| `feature_definition_required` | プロジェクト立ち上げ時の初期設定未完了（特殊ケース・verdict: OK） |
+| `unknown` | 想定外のエラー状態（ファイル破損・整合違反など・verdict: DEVIATION） |
+
+`feature_definition_required` と `unknown` の区別：同じ設定ファイル問題でも、前者は「正常な未完了」（修復方法が明確）、後者は「壊れた異常状態」（調査が必要）。
+
+## 新旧対照表
+
+| 旧 `kind` | 新 `kind` |
+|-----------|-----------|
+| `stage` | `in_progress` |
+| `cross_feature_stage` | `in_progress` |
+| `upstream_recheck` | `in_progress`（`upstream_phase` フィールドを追加） |
+| `commit_stop_point` | `in_progress`（`stage: commit_stop_point`） |
+| `maintenance_in_progress` | `blocking_in_progress` |
+| `blocking_unit_in_progress` | `blocking_in_progress` |
+| `blocking_unit_required` | `blocking_in_progress` |
+| `parent_resume_pending` | `blocking_in_progress` |
+| `resume_in_progress` | `blocking_in_progress` |
+| `post_write_verification` | `verification_pending` |
+| `post_write_policy_violation` | `verification_pending` |
+| `post_write_human_decision_required` | `verification_pending` |
+| `reopen_in_progress` + サブステップ13種類 | `reopen_in_progress`（詳細はフィールドへ） |
+| `completed` | `completed`（変わらず） |
+| `feature_definition_required` | `feature_definition_required`（変わらず） |
+| `unknown` | `unknown`（変わらず） |
+| `commit_candidate` / `commit_mixing_risk` / `commit_unit_stale` | `next --json` から除外 → `commit --preflight` へ移動（検討中） |
+| `phase_approval_complete` / `human_decision_recorded` / `record_human_decision_failed` | 元から `next --json` の kind ではなかった（別サブコマンドの出力・入れ子フィールド） |
+| `next_action_template` / `project_state` / `subthread` / `human` / `operation_prompt` / `lightweight_self_check` | 元から `next --json` の kind ではなかった（コード内部のデータ構造） |
+
+## 詳細フィールドの設計（確定）
+
+### 全 `kind` 共通フィールド
+
+| フィールド | 役割 |
+|-----------|------|
+| `kind` | 現在地のカテゴリ |
+| `required_action` | 次にすべき操作の名前（機械が読む） |
+| `reason` | 状態の説明（人間が読む） |
+
+### `in_progress`
+
+| フィールド | 説明 |
+|-----------|------|
+| `feature` | 対象機能名（cross_feature_stage では `"all_features"` 固定） |
+| `phase` | 現在のフェーズ |
+| `stage` | 現在のステージ（`commit_stop_point` を含む） |
+| `upstream_phase` | 上流フェーズ名（upstream_recheck の場合のみ） |
+
+### `blocking_in_progress`
+
+`blocking_phase` サブフィールドで段階を区別する（3値）：
+
+| `blocking_phase` | 意味 | 統合された旧 `kind` |
+|-----------------|------|-------------------|
+| `required` | blocking 作業の開始が必要 | `blocking_unit_required` |
+| `in_progress` | blocking 作業中 | `blocking_unit_in_progress` / `maintenance_in_progress` / `resume_in_progress` |
+| `return_pending` | blocking 完了・親への復帰待ち | `parent_resume_pending` |
+
+`resuming` は廃止。`in_progress`（`unit_id` / `parent_unit_id` が null）として吸収。
+
+| フィールド | `required` | `in_progress` | `return_pending` | 説明 |
+|-----------|:---:|:---:|:---:|------|
+| `blocking_phase` | ✓ | ✓ | ✓ | 段階の区別 |
+| `title` | ✓ | ✓ | — | 作業の名前 |
+| `unit_id` | ✓ | ✓ | — | blocking unit の識別子（種別不明時は null） |
+| `parent_unit_id` | ✓ | ✓ | ✓ | 親への戻り先 |
+| `return_conditions` | ✓ | ✓ | — | 戻る条件（旧 `completion_conditions` と統一） |
+| `allowed_scope` | — | ✓ | — | 許可された操作の種類 |
+| `allowed_files` | — | ✓ | — | 許可されたファイル |
+| `file` | — | ✓ | — | 進行中ファイルのパス（ファイルベース管理の場合） |
+| `completed_unit_id` | — | — | ✓ | 完了した unit の識別子 |
+
+廃止するフィールド：`resuming`（`blocking_phase` 値）/ `completion_conditions`（`return_conditions` に統一）/ `process_id`（`blocking_phase` で代替）/ `maintenance_action`（`required_action` で代替）/ `blocked_normal_workflow`（`blocking_phase: in_progress` で暗示）/ `mainline_blocked_by`（`completed` 開始の maintenance に戻り先はないという整理から不要）/ `action_parameters`（他フィールドの重複コピー）/ `active_gate`（maintenance では常に null）
+
+### `verification_pending`
+
+`verification_type` サブフィールドで種類を区別する：
+
+| `verification_type` | 意味 | 次のアクション |
+|--------------------|------|--------------|
+| `pending` | 検証待ち・未着手 | 検証を実施する |
+| `policy_violation` | 禁止変更が混入 | 違反を解消する |
+| `human_decision_required` | 未解決の重大所見あり | 人間が判断する |
+
+| フィールド | `pending` | `policy_violation` | `human_decision_required` | 説明 |
+|-----------|:---:|:---:|:---:|------|
+| `verification_type` | ✓ | ✓ | ✓ | 種類の区別 |
+| `target_files` | ✓ | ✓ | ✓ | 検証対象ファイル |
+| `manifest` | ✓ | — | ✓ | 封印ファイルのパス |
+| `forbidden_files` | — | ✓ | — | ルール違反のファイル |
+| `codes` | ✓（任意） | — | — | 検証コード |
+
+### `reopen_in_progress`
+
+廃止するフィールド：`next_drafting_gate`（`active_gate` で代替・手引き改修が必要）/ `feature`（`required_feature_scope` で代替）/ `direct_features` / `indirect_features` / `feature_impact_scope_basis`（手引きに参照なし）
+
+残すフィールド：`file` / `next_step` / `step_number` / `completed_steps` / `pending_gates` / `next_pending_gate` / `active_gate` / `current_blocker` / `required_action` / `blocked_by` / `approval_record_path` / `required_feature_scope` / `phase` / `stage` / `reason` / `repair_reasons`（任意）
+
+## 決定：`commit --preflight` への移動
+
+`commit_candidate` / `commit_mixing_risk` / `commit_unit_stale` の3種類を `next --json` から除外し、`commit-preflight` サブコマンドの判定に集約する。
+
+根拠：
+- `commit-preflight` は既にコミット前の必須確認として手引きに定義されている（手順：commit-preflight → git add → guarded commit）
+- これら3種類は「コミット操作の前確認」であり「作業の現在地」ではない
+- 利用者の操作手順は変わらない（`commit-preflight` を実行する点は同じ）
+- 手引きの `commit_mixing_risk` / `commit_unit_stale` の説明箇所を `commit-preflight` の文脈に移す改修が必要
+
+## 未決定・残作業
+
+- `next_drafting_gate` 廃止に伴う `WORKFLOW_NAVIGATION.md` の手引き改修
+- 実装変更の優先順位・着手時期
+
+## 関連
+
+- [2026-06-25-workflow-state-simplification.md](2026-06-25-workflow-state-simplification.md)（前日の状態整理）
+- [2026-06-25-work-mode-taxonomy-related-work-index.md](2026-06-25-work-mode-taxonomy-related-work-index.md)（関連作業索引）
+- [plan-2026-06-23-maintenance-workflow-protocol.yaml](../../.reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml)（MWP-0〜MWP-3）
+```
+
+
+## Target File Contents
+
+### docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+
+content_mode: full_text
+content_sha256: 0b4af4b70d5c4ce53d46cf652498e3448a3e124d56bff4ca181040e130e612dd
+
+```text
+---
+date: 2026-06-26
+classifier: claude_session
+classification: R-0（workflow-management）
+trigger_source: 2026-06-26 セッションで `next --json` の kind 値が 41 種類あり「作業状態」「手続き内部ステップ」「コミット操作確認」が混在していることを確認。設計文書 `docs/notes/2026-06-26-next-json-kind-redesign.md` で 7 種類への整理設計が確定。利用者指示により reopen 正式手続きへ進む。
+feature: workflow-management
+finding: next-json-kind-redesign
+---
+
+## 分類根拠
+
+`next --json` が返す `kind` 値を 41 種類から 7 種類へ整理する。現状の `kind` には「作業の現在地」「手続き内部のサブステップ追跡」「コミット操作の前確認」が同一フィールドに混在しており、機械的な次アクション決定が困難になっている。整理後は `kind` が「作業の現在地カテゴリ」のみを示し、サブ情報はサブフィールドで返す設計とする。
+
+手戻り種別：**R-0（requirements 起点。intent・feature-partitioning へは遡らない）**。
+
+- intent（意図）：workflow-management の意図は「段集合 YAML による静的検査、所定手続きの階層構造、不可逆操作の直前ゲート、修復手続きの機械強制を担う」ことである。`next --json` の kind 整理は既存の「次アクション通知」の出力形式改善であり、新しい意図を導入しない。意図文書の改訂は不要。
+- feature-partitioning（機能分割）：対象は `workflow-management` の `next --json` 出力インターフェイスであり、機能分割・責務境界の再定義は不要。
+
+## 事実
+
+- 設計文書：`docs/notes/2026-06-26-next-json-kind-redesign.md` に新旧対照表・詳細フィールド設計・廃止フィールド一覧が確定済み。
+- 現状の kind 種類：41 種類。うち `maintenance_in_progress` と `blocking_unit_in_progress` は意味が同一だが別 kind として実装されており、reopen のサブステップ 13 種類が `kind` に詰め込まれている。
+- 変更後の kind：7 種類（`completed` / `in_progress` / `blocking_in_progress` / `verification_pending` / `reopen_in_progress` / `feature_definition_required` / `unknown`）。
+- commit 関連の kind 移動：`commit_candidate` / `commit_mixing_risk` / `commit_unit_stale` の 3 種類を `next --json` から除外し `commit-preflight` サブコマンドへ集約する。
+- 手引き改修：`WORKFLOW_NAVIGATION.md` の `next_drafting_gate` 廃止に伴う記述改修が必要。
+
+## feature impact 判定
+
+| feature | decision | impact_basis | rationale |
+| --- | --- | --- | --- |
+| workflow-management | reopen_existing_feature | contract_ownership | `next --json` の出力インターフェイスと `commit-preflight` の判定ロジックを所有する。kind 整理・commit 関連 kind 移動・手引き改修の requirements / design / tasks / implementation を所有するため。 |
+| foundation | no_reopen_existing_feature | no_implementation_impact | 共通語彙・共通スキーマに変更なし。 |
+| runtime | no_reopen_existing_feature | no_implementation_impact | session 記録や hook 実行契約に変更なし。 |
+| evaluation | no_reopen_existing_feature | no_implementation_impact | レビュー評価契約に変更なし。 |
+| analysis | no_reopen_existing_feature | no_implementation_impact | 分析・可視化・報告機能に変更なし。 |
+| self-improvement | no_reopen_existing_feature | no_implementation_impact | 自己改善提案や規律本文に変更なし。 |
+| conformance-evaluation | no_reopen_existing_feature | no_implementation_impact | 実装照合・逸脱検出に変更なし。 |
+
+新 feature 判定：no_new_feature。
+
+## 再実施対象
+
+- **workflow-management（R-0）**：requirements に `next --json` kind 再設計・`commit-preflight` への移動・手引き改修の受入基準を追記または更新する。requirements は drafting 相当の本文修正後に triad-review / review-wave / alignment / approval を再実施する。
+- **design**：7 種類の kind 定義・サブフィールド設計・廃止フィールド・`commit-preflight` 集約の設計を更新する。
+- **tasks**：kind 変更に対応するテスト要件と実装作業を追記する。
+- **implementation**：TDD で失敗テストを先に作成し、kind 整理を実装する。
+
+impacted_downstream_phases：design／tasks／implementation。
+
+## 停止点
+
+reopen-start により in-progress ファイルを発行し、spec.json のフラグ差し戻し（workflow-management：requirements 以降の alignment・approval を false、recheck＝upstream_change_pending を true・impacted_downstream_phases に design／tasks／implementation を設定）を行ったうえで、第1過程停止点として差し戻し内容の利用者承認を待つ。
+```
+
+### .reviewcompass/specs/workflow-management/requirements.md
+
+content_mode: full_text
+content_sha256: f0e0f7c5f37e995954474defbfc9466e5fa843a8f5f8440d44ece2bf0d8e5407
+
+```text
 # Requirements Document：workflow-management
 
 ## Introduction
@@ -65,6 +305,7 @@
 9. 本検査スクリプトの `next --json` は、状態要約ではなく現在実行してよい唯一の action selector として振る舞う。`next_action.required_action` は常に 1 つだけを返し、post-write verification、maintenance、reopen blocker、reopen commit stop point、workflow state repair のような active workflow unit を持たない action では `feature`、`phase`、`stage`、`active_gate` を null にする。reopen 第3過程または通常 workflow の gate 実行だけが active workflow unit を持ち、その場合のみ `active_gate`、`feature`、`phase`、`stage` を非 null にする。`pending_gates`、`future_gates`、reopen scope、impact review scope は予定または補助情報であり、`active_gate` と混同してはならない。
 10. 本機能は `required_action` の19語彙（D-003 §6 の19段階優先順位に対応）を `.reviewcompass/schema/required_action.schema.json` として JSON Schema 形式で定義する。語彙は D-003 §6 の優先順位順に列挙し、`repair_workflow_state`〜`completed` の19値を `enum` として持つ。語彙の追加・変更はこのスキーマファイルの修正で完結し、実装コード側の列挙はこのファイルを正本とする。
 11. 本機能は `next --json` の目標応答スキーマを `.reviewcompass/schema/next_action_response.schema.json` として JSON Schema 形式で定義する。本スキーマは受入9が定める振る舞い契約（唯一アクション選択・進行中作業単位の有無による null/非 null の切り替え）をスキーマとして表現する。（1）最上位の必須フィールドは `verdict`（文字列）・`exit_code`（整数）・`next_action`（オブジェクト）・`reasons`（配列）・`current_state`（オブジェクト）の5つとし、`verdict` は最上位だけに置き `next_action` 内には含めない。（2）`next_action` の最低限の必須フィールドは `kind`（文字列・`required_action` の分類子、値域は design で確定）・`required_action`（受入10のスキーマを参照）・`active_gate`（文字列または null）・`feature`（文字列または null）・`phase`（文字列または null）・`stage`（文字列または null）・`required_feature_scope`（配列）・`blocked_by`（オブジェクトまたは null）・`future_gates`（配列）・`state_refs`（オブジェクト）の10フィールドとする。これに加え、`repair_reasons`（配列）は `repair_workflow_state` 時に必須となる条件付きフィールド（非空配列・最低1要素）とし、`action_parameters`（オブジェクト）は `run_maintenance` のみを対象とする必須の条件付きフィールドとして定義する。6フィールド（`maintenance_action`・`allowed_scope`・`allowed_files`・`completion_conditions`・`active_stack_frame_id`・`parent_frame_id`）はすべて required とし、追加フィールドの許可・禁止は design で確定する。（3）`feature` はリスト型を許容せず、取り得る値は「単一フィーチャー名」・`"all_features"`（review-wave のような真に横断的な実行単位の場合のみ）・null（進行中の作業単位がない場合）の3種類に限る。複数フィーチャーが影響範囲に入る場合は `required_feature_scope` または `future_gates` に置く。（4）受入9の null/非 null 規則をスキーマで表現する。進行中の作業単位（active workflow unit）がない場合、`feature`・`phase`・`stage`・`active_gate` はすべて null とする。作業単位がある（reopen 第3過程または通常 workflow の gate 実行時）場合のみ、これらのフィールドは非 null とする。（5）後方互換のため `pending_gates`・`next_pending_gate` はオプションフィールドとして定義し、このスキーマの正本フィールドは `future_gates`・`active_gate` とする。これらの後方互換フィールドが存在する場合は対応する正本フィールドと一致させること（`next --json` の実装側の不変条件として要求する。JSON Schema での表現は design で確定する）。新規のコンシューマは正本フィールドのみを参照してよい。（6）`required_action` の値ごとにフィールドの値制約（相互排他）がある。以下は D-003 §4.2 で確定している制約であり、スキーマはこれらを機械的に検証できる構造で表現する（スキーマ上の表現方法は design で確定）。① `commit_stop_point` の時：`active_gate=null`・`phase=null`・`stage=null`・`blocked_by.type="commit_stop_point"`。② `run_reopen_pending_gate` の時：`active_gate` 非 null・`phase`/`stage` は `active_gate` と一致・`blocked_by=null`。③ `run_reopen_drafting` の時：`active_gate` は `stages/<phase>.yaml#drafting` 形式・`phase`/`stage` はその drafting 単位と一致。④ `repair_workflow_state` の時：`active_gate=null`・`phase=null`・`stage=null`・`repair_reasons` に修復理由を含める。⑤ `wait_for_human_decision` の時：`blocked_by.type` で停止理由を区別。⑥ `run_maintenance` の時：`action_parameters` に `maintenance_action`・`allowed_scope`・`allowed_files`・`completion_conditions`・`active_stack_frame_id`・`parent_frame_id` を含める。上記①〜⑥の制約は D-003 §4.2 で確定している制約の全てであり、これ以外の `required_action` 種別には確定した追加フィールド制約はない（universal 必須フィールドのみが適用される）。
+12. 本機能は `commit_candidate`、`commit_mixing_risk`、`commit_unit_stale` の3種類の判定を `next --json` の `kind` から除外し、`commit-preflight` サブコマンドの出力にのみ含める。これらの判定は「作業の現在地カテゴリ」ではなく「コミット操作の前確認」であり、`next --json` の `kind` は作業の現在地のみを示す7種類（`completed` / `in_progress` / `blocking_in_progress` / `verification_pending` / `reopen_in_progress` / `feature_definition_required` / `unknown`）に限定する。設計の詳細は `docs/notes/2026-06-26-next-json-kind-redesign.md` を正本とする。（2026-06-26 reopen R-0 next-json-kind-redesign、根拠：`docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md`）
 
 ### Requirement 3：起草者と判定者の分離
 
@@ -92,7 +333,6 @@
 6. 本機能は LLM 介在の commit 承認を、staged ファイル集合と staged 内容に束縛した nonce challenge 経由で記録する。commit 承認用 challenge は、staged ファイル一覧、ファイル別 `target_sha256`、全体 target digest、nonce、有効期限、消費状態を保持する。commit 承認レコードの作成時と commit 直前ゲートは、nonce 一致、challenge の未期限切れ、未消費、staged ファイル集合と staged 内容の一致、approval record と challenge の target digest 一致を検査し、欠落・形式不正・期限切れ・不一致・消費済みの場合は fail-closed で遮断する。
 7. 本機能は commit 承認 nonce の判定を、操縦する LLM、provider、model に依存させない。nonce 生成、challenge 保存、approval record 作成、commit gate 判定、consume は staged ファイル集合・staged blob hash・target digest・nonce・expiry・consumed 状態だけを入力にし、model 名や provider 名を判定条件に含めない。LLM ごとの差異は利用者への説明文やプロンプト表現に限定する。本方式は利用者が UI 上で nonce を発話したことの暗号的証明ではなく、承認を staged 内容に束縛して古い承認・別対象の承認・対象差し替え後の commit を防ぐ範囲を保証する。
 8. 本機能は LLM が `git commit` 実行を代行する場合、staged 内容承認とは別に、LLM への commit 実行代行承認を正式 CLI で記録できなければならない。正式 CLI は承認文を標準入力からのみ受け取り、argv には載せず、commit approval record と同居または参照可能な機械可読 delegation record を書き込む。実行代行承認は、同じ nonce challenge、target digest、staged ファイル集合、有効期限に束縛し、runtime JSON の手編集を正規経路として扱わない。delegation record は、同じ nonce に対する有効・未期限切れ・未消費の staged 内容承認 challenge と staged 内容承認 record が存在する場合だけ作成でき、staged 内容承認より前、challenge 不在、期限切れ、消費済み、target digest 不一致、または未期限切れ delegation record が既に存在する場合は fail-closed にする。ただし、同じ nonce・同じ staged exact index・同じ承認文に対する有効な staged 内容承認 record と delegation record が既に揃っている場合、配布可能 wrapper の再実行は既存 transaction を再利用し、approval record を書き直して delegation の digest を壊してはならない。承認文は commit 実行を明示する短い UTF-8 text に限定し、UTF-8 として解析不能、空、空白のみ、設計で定める byte 上限超過、または non-text/binary input の場合は fail-closed にする。承認文を保存する場合は秘匿性のある文字列を redaction し、redaction 失敗または redaction 後の残留 secret 検出時は delegation record を作成せず fail-closed にする。承認文言は `コミット`、`コミットして`、`コミットを実行`、`承認`、`commit`、`commitして` のような commit 実行代行を明示する短い文言に限定し、`次のコミットまで`、`コミット点まで`、`コミット準備`、`自律実行`、`進めて`、`続けて`、`OK` のような準備・継続・一般応答を表す文言では fail-closed にする。配布可能な通常 UX では、1 回目の「コミット」で nonce / target digest / staged 対象を提示し、2 回目の「承認」1 行を `guarded-git-commit.py` が読み、staged 内容承認 record と実行代行 delegation record を内部で連続作成してから commit 直前ゲートを通す。低レベルの `prepare`、`record`、`delegate-execution` はデバッグ・検査用に残してよいが、第三者向け操作手順に露出させない。commit 直前 gate 通過後に `git commit` 本体が lock、sandbox、hook、署名などの実行失敗で commit を作成できなかった場合、staged exact index と approval / challenge / delegation が同一で未期限切れなら、approval / challenge / delegation を consumed または invalidated にせず同じ transaction で再試行可能にする。
-9. 本機能は `commit_candidate`、`commit_mixing_risk`、`commit_unit_stale` の3種類の判定を `next --json` の `kind` から除外し、`commit-preflight` サブコマンドの出力にのみ含める。これらの判定は「作業の現在地カテゴリ」ではなく「コミット操作の前確認」であり、`next --json` の `kind` は作業の現在地のみを示す7種類（`completed` / `in_progress` / `blocking_in_progress` / `verification_pending` / `reopen_in_progress` / `feature_definition_required` / `unknown`）に限定する。設計の詳細は `docs/notes/2026-06-26-next-json-kind-redesign.md` を正本とする。（2026-06-26 reopen R-0 next-json-kind-redesign、根拠：`docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md`）
 
 ### Requirement 5：reopen 手続きの機械強制
 
@@ -326,7 +566,7 @@ ReviewCompass 固有の追加：
 - 2026-06-17 の maintenance（next-json-unique-state）により、D-003 rollback 退避資料 `/private/tmp/reviewcompass-d003-rollback-20260617/files/docs/notes/2026-06-16-next-json-unique-state-redesign.md` を根拠として、Requirement 2 受入 9、Requirement 5 受入 6、Requirement 12 受入 14 を追加した。`next --json` を状態投影ではなく唯一 action selector とし、maintenance / reopen blocker / commit stop point / active gate の相互排他を要件化する。本改訂は退避後の単独 maintenance として TDD で実装する正順の手続きである。
 - 2026-06-18 の reopen R-0（phase1-schema-definitions）により、Requirement 2 受入 10・11 を追加した。Phase 0（D-003 選択層 TDD 実装）の開始前提として、`required_action` 19語彙スキーマ（`.reviewcompass/schema/required_action.schema.json`）と `next --json` 応答スキーマ（`.reviewcompass/schema/next_action_response.schema.json`）の定義を要件化する。根拠は `docs/notes/2026-06-18-integrated-design-selection-execution-layers.md` §7 item 2 および `docs/notes/working/2026-06-16-next-json-unique-state-redesign.md` §4.1・§4.2。実装は仕様確定後に TDD で行う正順の手続きとする（失敗テスト `tests/tools/test_phase1_schema_definitions.py` は作成済み）。
 - 2026-06-19 の統合設計メモ追記補完により、Requirement 13〜16 を追加した。2026-06-18 セッション 77e272a2 では `docs/notes/2026-06-18-integrated-design-selection-execution-layers.md` と `docs/notes/working/2026-06-18-mechanized-workflow-execution-design.md` の全体を intent／requirements へ織り込む依頼だったが、直前の「Phase 1 の最小限」議論に引かれて AC10・AC11 のみが追記された。今回、統合設計 §3〜§5、Phase 0〜6、機械化設計 §3〜§10 を要件層へ戻し、operation contract 語彙、承認ゲート、側道スタック、状態スナップショット、構造化有効プロンプト、段階的実装計画を正本要件化した。経緯は `docs/notes/working/2026-06-19-integrated-design-requirements-missing.md`。
-- 2026-06-26 の reopen R-0（next-json-kind-redesign）により、Requirement 2 受入 11 の `kind` 値域（design で確定と記載）の設計が確定したことを受けて、Requirement 4 受入 1 に `commit_candidate` / `commit_mixing_risk` / `commit_unit_stale` を `next --json` から除外し `commit-preflight` サブコマンドへ集約するという追記を行う。`next --json` の `kind` は7種類（`completed` / `in_progress` / `blocking_in_progress` / `verification_pending` / `reopen_in_progress` / `feature_definition_required` / `unknown`）に整理し、サブ情報はサブフィールドで返す設計とする。詳細は `docs/notes/2026-06-26-next-json-kind-redesign.md` を正本とする（根拠は `docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md`）。本改訂は仕様確定後に TDD で実装する正順の手続きである。
+- 2026-06-26 の reopen R-0（next-json-kind-redesign）により、Requirement 2 受入 12 を新設した。`commit_candidate` / `commit_mixing_risk` / `commit_unit_stale` の3種類の判定を `next --json` の `kind` から除外し `commit-preflight` サブコマンドへ集約すること、および `next --json` の `kind` を作業の現在地を示す7種類（`completed` / `in_progress` / `blocking_in_progress` / `verification_pending` / `reopen_in_progress` / `feature_definition_required` / `unknown`）に限定することを要件化する。これらの判定は「作業の現在地カテゴリ」ではなく「コミット操作の前確認」であるため、`next --json` の出力インターフェイスを所有する Requirement 2 の管轄とした。設計の詳細は `docs/notes/2026-06-26-next-json-kind-redesign.md` を正本とする（根拠は `docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md`）。本改訂は仕様確定後に TDD で実装する正順の手続きである。
 
 削減・除去：
 
@@ -351,3 +591,42 @@ ReviewCompass 固有の追加：
 - `XDI-WM-002`：既存システムへの後追い intent 追加時に、受け皿 feature の reopen、下流工程の修正要否判定、既存設計との衝突確認、conformance-evaluation 評価記録の正式手続きへの取り込み、衝突候補発見時の停止・承認・記録を行う契約は Requirement 9 の外部可視要件に含める。詳細な設計・タスク化は design／tasks 段で確定する。
 - `XDI-WM-004`：operation registry / preflight は、Requirement 12 の外部可視要件に含める。既存の `next`、post-write verification、commit approval、reopen、decision-source-lint、session-record guard などの部分対応を、操作単位の contract / preflight として束ねる。詳細な設計・タスク化は design／tasks 段で確定する。
 - `XDI-WM-005`：統合設計メモ由来の選択層／実行層接続は、Requirement 13〜16 の外部可視要件に含める。`required_action` と operation contract の対応、承認ゲート、側道スタック、状態スナップショット、構造化有効プロンプト、Phase 0〜6 の段階的実装順序を要件層から追跡可能にする。詳細な設計・タスク化は design／tasks 段で確定する。
+```
+
+
+## Scope
+
+- Check whether the changed target files clearly state the intended contract.
+- Check whether related instructions are mutually consistent across targets.
+- Check whether the documented procedure is actionable before API review, triage, manifest, or commit steps continue.
+
+## Out Of Scope
+
+- Do not request unrelated refactors or style-only rewrites.
+- Do not judge files that are not listed in Target Files.
+- Do not treat missing implementation work as a document defect unless the target text claims it already exists.
+
+## Finding Policy
+
+- Report must-fix findings for contradictions, missing required gates, or instructions that would allow an unsafe workflow action.
+- Report should-fix findings for ambiguity that could cause repeated manual judgment or unnecessary API review loops.
+- Return findings: [] when the target files are internally consistent for this review question.
+
+## Sensitive Information Check
+
+- status: passed
+- External API review must not proceed if this section reports potential secrets.
+
+## 判断ポイント（修正後の検証）
+
+### check-1：受入基準の追記先が正しいか
+Requirement 2 の末尾（受入 11 の後）に受入 12 として追加した。Requirement 2 は `next --json` の出力インターフェイスを所有する要件であり、kind 値域の制限（commit 関連 kind の除外）はその管轄として適切か。
+
+### check-2：Requirement 4 から受入 9 が削除されているか
+旧 Requirement 4 受入 9（commit 関連 kind の除外）が削除されており、Requirement 4 の受入基準は 1〜8 になっているか。
+
+### check-3：Change Intent の記述が実態と一致しているか
+Change Intent に「Requirement 2 受入 12 を新設した」と記述されており、実際の変更内容と一致しているか。以前の誤記「Requirement 4 受入 1 に追記」が完全に置き換えられているか。
+
+### check-4：受入 12 の内容が設計文書と整合しているか
+`docs/notes/2026-06-26-next-json-kind-redesign.md` の設計内容（7種類の kind、commit 関連 kind の commit-preflight への移動）と受入 12 の記述が一致しているか。

@@ -1,0 +1,6 @@
+run_id: post-write-2026-06-26-reopen-classification-v2
+target_files:
+- path: docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+  sha256: 0b4af4b70d5c4ce53d46cf652498e3448a3e124d56bff4ca181040e130e612dd
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: d40fec6baa6b62d51fdbf05eab8d361f44ac4cc0c9e34812fd11cc84a96740ff

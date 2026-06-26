@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+- .reviewcompass/specs/workflow-management/requirements.md
+target_sha256:
+  docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md: 0b4af4b70d5c4ce53d46cf652498e3448a3e124d56bff4ca181040e130e612dd
+  .reviewcompass/specs/workflow-management/requirements.md: f0e0f7c5f37e995954474defbfc9466e5fa843a8f5f8440d44ece2bf0d8e5407
+required_verifiers: &id001
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  target_sha256:
+    docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md: 0b4af4b70d5c4ce53d46cf652498e3448a3e124d56bff4ca181040e130e612dd
+    .reviewcompass/specs/workflow-management/requirements.md: f0e0f7c5f37e995954474defbfc9466e5fa843a8f5f8440d44ece2bf0d8e5407
+review_run:
+  path: .reviewcompass/evidence/review-runs/post-write-2026-06-26-reopen-classification-v2
+  summary_path: .reviewcompass/evidence/review-runs/post-write-2026-06-26-reopen-classification-v2/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

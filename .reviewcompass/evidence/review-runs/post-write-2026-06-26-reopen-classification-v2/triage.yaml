@@ -1,0 +1,69 @@
+run_id: post-write-2026-06-26-reopen-classification-v2
+triage_status: decided
+generated_at: '2026-06-26T12:35:21.710559+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: post-write-2026-06-26-reopen-classification-v2-gemini-3.1-pro-preview-primary-001
+  run_id: post-write-2026-06-26-reopen-classification-v2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/requirements.md (Requirement
+    4 受入 9)
+  plain_language_summary: 受入基準の追記先が Requirement 4（不可逆操作の直前ゲート）となっているが、`next --json`
+    の出力インターフェースや `kind` 値域の定義は Requirement 2（軽量版検査スクリプトの提供）の管轄である。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: claude_session
+  decision_actor_type: agent
+  decision_at: '2026-06-26T12:43:27.875562+00:00'
+  decision_reason: next --json の出力インターフェイス定義は Requirement 2（検査スクリプト）の管轄。Requirement
+    4（不可逆操作の直前ゲート）への追記は誤配置。受入 9 を Requirement 2 配下へ移動する必要あり。
+  applied_files: []
+  superseded_by: null
+- finding_id: post-write-2026-06-26-reopen-classification-v2-gemini-3.1-pro-preview-primary-002
+  run_id: post-write-2026-06-26-reopen-classification-v2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/requirements.md (Change
+    Intent)
+  plain_language_summary: Change Intent には「Requirement 4 受入 1 に追記を行う」と記載されているが、実際のドキュメントでは受入
+    1 は変更されず「受入 9」が新設されており、意図の記述と実際の変更が矛盾している。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: claude_session
+  decision_actor_type: agent
+  decision_at: '2026-06-26T12:43:27.919500+00:00'
+  decision_reason: Change Intent に「受入 1 に追記」と書いたが実際は「受入 9 の新設」。矛盾しており修正要。ERROR-1 の対処（Requirement
+    2 への移動）に合わせて Change Intent も正確に書き直す。
+  applied_files: []
+  superseded_by: null
+- finding_id: post-write-2026-06-26-reopen-classification-v2-gemini-3.1-pro-preview-primary-003
+  run_id: post-write-2026-06-26-reopen-classification-v2
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+    (feature impact 判定)
+  plain_language_summary: 他機能への影響をなし（no_reopen_existing_feature）とする根拠に「共通スキーマに変更なし」とあるが、実際には
+    `next --json` の `kind` 値が41種類から7種類へと大幅に変更される。これをパースしている他機能の処理やテストが存在する場合、影響を受ける可能性が否定できない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: claude_session
+  decision_actor_type: agent
+  decision_at: '2026-06-26T12:43:27.962703+00:00'
+  decision_reason: grep で確認済み。test_work_unit_cli.py は workflow-management 配下の work-unit
+    サブコマンドのテスト。他機能（foundation / runtime / evaluation 等）のコードに next --json の kind 値を直接参照する箇所は存在しない。分類根拠ファイルの修正不要。
+  applied_files: []
+  superseded_by: null

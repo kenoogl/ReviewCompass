@@ -1,0 +1,27 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: R-0
+started_at: '2026-06-26T00:00:00+09:00'
+trigger: next --json kind を 41 種類から 7 種類へ整理し、commit 関連 kind を commit-preflight へ移動する。手引き改修も含む。
+classification_basis: docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+completed_steps:
+- 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements/design/tasks/implementation の alignment/approval
+  → false、recheck=upstream_change_pending → true）
+next_step: 第2過程：正本修正
+step_number: 2
+pending_gates:
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+current_blocker: null
+reopen_step_records:
+- from_step: 1
+  completed_step: 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements/design/tasks/implementation
+    の alignment/approval → false、recheck=upstream_change_pending → true）
+  rationale: docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+    で R-0（workflow-management）と確定。next --json kind 整理・commit-preflight 移動・手引き改修が対象。
+  evidence:
+  - docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md
+commit_stop_point: true
+commit_stop_point_step: 2
+commit_stop_point_kind: canonical_update_complete
+commit_stop_point_reason: 第2過程の正本修正完了（requirements.md に受入基準追記・spec.json フラグ差し戻し）

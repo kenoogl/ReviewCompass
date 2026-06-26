@@ -1,0 +1,14 @@
+approved_action: review_run_triage
+approved_by: user
+review_run_id: post-write-2026-06-26-reopen-classification-v2
+summary_presented_to_user: true
+triage_presented_to_user: true
+approved_finding_ids:
+  - post-write-2026-06-26-reopen-classification-v2-gemini-3.1-pro-preview-primary-001
+  - post-write-2026-06-26-reopen-classification-v2-gemini-3.1-pro-preview-primary-002
+  - post-write-2026-06-26-reopen-classification-v2-gemini-3.1-pro-preview-primary-003
+approved_final_labels:
+  post-write-2026-06-26-reopen-classification-v2-gemini-3.1-pro-preview-primary-001: must-fix
+  post-write-2026-06-26-reopen-classification-v2-gemini-3.1-pro-preview-primary-002: must-fix
+  post-write-2026-06-26-reopen-classification-v2-gemini-3.1-pro-preview-primary-003: leave-as-is
+consumed: false
