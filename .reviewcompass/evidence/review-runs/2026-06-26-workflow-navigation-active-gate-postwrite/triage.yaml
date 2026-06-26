@@ -1,0 +1,45 @@
+run_id: 2026-06-26-workflow-navigation-active-gate-postwrite
+triage_status: decided
+generated_at: '2026-06-25T23:55:15.842457+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-26-workflow-navigation-active-gate-postwrite-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-26-workflow-navigation-active-gate-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md, `reopen_in_progress`
+    セクション, `run_reopen_drafting` の説明行
+  plain_language_summary: '`active_gate` を参照するよう変更されているが、notes ソース（2026-06-26-next-json-kind-redesign.md）は
+    `next_drafting_gate` 廃止を「未決定・残作業」として明記しており、実装が `active_gate` を返すという根拠が文書化されていない。'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-25T23:56:29.157107+00:00'
+  decision_reason: 変更の根拠（active_gate と next_drafting_gate が run_reopen_drafting 経路で常に同値）はコードとテストで確認済み。ノートの「未決定・残作業」は実装変更の着手時期の話であり、手引きの記述変更の正確性とは別の問題。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-26-workflow-navigation-active-gate-postwrite-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-26-workflow-navigation-active-gate-postwrite
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md, `reopen_in_progress`
+    セクション, `run_reopen_drafting` の説明行
+  plain_language_summary: 旧フィールド名 `next_drafting_gate` への後方参照または移行期間の扱いが手引きに記載されていない。
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: human
+  decision_actor_type: human
+  decision_at: '2026-06-25T23:56:33.181037+00:00'
+  decision_reason: next_drafting_gate はコードに残存するが、手引きが active_gate（今すぐ実行するゲートを指す正本フィールド）を参照することは正確。移行期間の補足説明は今回の1行変更のスコープ外。
+  applied_files: []
+  superseded_by: null

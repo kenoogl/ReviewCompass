@@ -1,0 +1,17 @@
+process_id: blocking_unit
+title: "review_triage.py が docs/sessions/ を post-write 対象と誤判定するバグを修正"
+trigger: >
+  write-manifest 実行時に docs/sessions/auto-*.md が unreviewed post-write target として
+  検出されてしまい、封印生成が失敗した。check-workflow-action.py はセッション記録を
+  post-write 対象から除外しているが、review_triage.py の _is_post_write_target が
+  docs/ 以下全体を対象とするため docs/sessions/ を誤って引っかける。
+parent_unit_id: stages/in-progress/maintenance-2026-06-26-next-drafting-gate-guidance-update.yaml
+allowed_scope:
+  - bug_fix
+allowed_files:
+  - tools/api_providers/review_triage.py
+  - tests/tools/test_review_triage.py
+completion_conditions:
+  - review_triage.py の _is_post_write_target が docs/sessions/ を除外する
+  - テストを追加して確認した
+  - コミットした

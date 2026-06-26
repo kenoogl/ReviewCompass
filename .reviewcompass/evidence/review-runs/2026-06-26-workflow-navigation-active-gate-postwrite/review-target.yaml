@@ -1,0 +1,24 @@
+run_id: 2026-06-26-workflow-navigation-active-gate-postwrite
+phase: post_write_verification
+criteria_id: workflow-navigation-active-gate-rename
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-26-workflow-navigation-active-gate-postwrite/review-target.md
+criteria_file_sha256: 3c88aa46d1f35d5790bb7447a905d8fe4e178a5a8f09a57830e21c1538c31392
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-26-workflow-navigation-active-gate-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: 3e9947c4e7735dc25c897d3519779c0801aa99a972968004158ca004444f2e96
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 69303e69581129d8b9b21f99e285925d27d5b1e6c9ebadfbb0fc0c7d3fa048f4
+  content_mode: full_text
+  content_sha256: 69303e69581129d8b9b21f99e285925d27d5b1e6c9ebadfbb0fc0c7d3fa048f4
+source_materials:
+- path: docs/notes/2026-06-26-next-json-kind-redesign.md
+  sha256: a2539c18675124a968b96a5b1f8792f5f9ad84d20b304556429df9a516096d92
+  content_mode: full_text
+  content_sha256: a2539c18675124a968b96a5b1f8792f5f9ad84d20b304556429df9a516096d92
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-25T23:53:22.308612+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-26-workflow-navigation-active-gate-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-26-workflow-navigation-active-gate-postwrite/prompt-manifest.yaml

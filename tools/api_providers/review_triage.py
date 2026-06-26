@@ -83,6 +83,8 @@ def _is_post_write_target(path: str) -> bool:
     return False
   if any(path.startswith(prefix) for prefix in LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES):
     return False
+  if path.startswith("docs/sessions/auto-"):
+    return False
   if path in POST_WRITE_VERIFICATION_FILE_PATHS:
     return True
   if path.startswith("docs/reviews/"):

@@ -1,0 +1,4 @@
+run_id: 2026-06-26-workflow-navigation-active-gate-postwrite
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 69303e69581129d8b9b21f99e285925d27d5b1e6c9ebadfbb0fc0c7d3fa048f4

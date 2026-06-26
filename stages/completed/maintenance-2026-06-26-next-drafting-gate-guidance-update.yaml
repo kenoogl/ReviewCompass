@@ -1,0 +1,17 @@
+process_id: maintenance
+title: "WORKFLOW_NAVIGATION.md の next_drafting_gate 参照を active_gate に置き換え"
+trigger: >
+  next_drafting_gate を廃止して active_gate で代替する設計が確定した（2026-06-26 の
+  next --json kind 再設計の議論記録）。手引きの run_reopen_drafting 説明に残る
+  next_drafting_gate の参照を active_gate に更新する。
+mainline_blocked_by: null
+side_track: false
+blocked_normal_workflow: false
+allowed_scope:
+  - guidance_text_update
+allowed_files:
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+completion_conditions:
+  - WORKFLOW_NAVIGATION.md の101行目の next_drafting_gate を active_gate に置き換えた
+  - post-write verification（strict）を完了した
+  - コミットした

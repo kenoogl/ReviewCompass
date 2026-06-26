@@ -1,0 +1,22 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 16.847
+findings:
+- severity: WARN
+  target_location: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md, `reopen_in_progress`
+    セクション, `run_reopen_drafting` の説明行
+  description: '`active_gate` を参照するよう変更されているが、notes ソース（2026-06-26-next-json-kind-redesign.md）は
+    `next_drafting_gate` 廃止を「未決定・残作業」として明記しており、実装が `active_gate` を返すという根拠が文書化されていない。'
+  rationale: notes の「未決定・残作業」節に「`next_drafting_gate` 廃止に伴う `WORKFLOW_NAVIGATION.md`
+    の手引き改修」が残作業として列挙されており、実装変更の着手時期も未定とされている。手引きが `active_gate` を参照するよう先行して書き換えられた場合、実装がまだ
+    `next_drafting_gate` を返している期間は、手引きを読んだ作業者が `active_gate` フィールドを探して見つからず、空値またはフィールド欠如を誤って「drafting
+    完了」や「gate なし」と解釈するリスクがある。`active_gate` と `next_drafting_gate` が同じ値を返すという根拠（実装変更済み、またはエイリアス設定済みなど）が手引き内または参照可能な場所に示されていないため、安全なワークフロー操作の前提条件として不十分である。
+- severity: WARN
+  target_location: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md, `reopen_in_progress`
+    セクション, `run_reopen_drafting` の説明行
+  description: 旧フィールド名 `next_drafting_gate` への後方参照または移行期間の扱いが手引きに記載されていない。
+  rationale: 実装移行が段階的に行われる場合、`next_drafting_gate` のみを返す古い実装バージョンと手引きを同時に使う環境が生じ得る。手引きが
+    `active_gate` だけを案内している状態では、旧実装環境での操作が誤った判断（フィールド不在 → gate なしと誤解）につながる可能性がある。移行期間の注記、または「実装が
+    `active_gate` を返すよう更新済みであることを前提とする」旨の明示があれば、この曖昧さを解消できる。
