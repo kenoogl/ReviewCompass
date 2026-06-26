@@ -4224,6 +4224,9 @@ class NextNavigationTests(unittest.TestCase):
     target = cwd / "docs" / "disciplines" / "policy.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("規律文書\n", encoding="utf-8")
+    forbidden = cwd / "tools" / "helper.py"
+    forbidden.parent.mkdir(parents=True, exist_ok=True)
+    forbidden.write_text("# 禁止ファイル\n", encoding="utf-8")
     test_file = cwd / "tests" / "tools" / "test_something.py"
     test_file.parent.mkdir(parents=True, exist_ok=True)
     test_file.write_text("# テスト\n", encoding="utf-8")

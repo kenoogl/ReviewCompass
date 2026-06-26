@@ -5773,6 +5773,53 @@ def list_forbidden_post_write_pending_changes(cwd, verification_targets):
   ]
 
 
+def classify_changed_files_for_policy_violation(paths):
+  """変更ファイル群をクラスタ別に分類して返す（読み取り専用）。
+
+  クラスタ:
+    guidance           .reviewcompass/guidance/ 配下
+    tools              tools/ 配下
+    tests              tests/ 配下
+    docs_notes_and_disciplines  docs/ 配下
+    runtime_artifacts  .reviewcompass/runtime/ 配下
+    other              上記以外
+  """
+  clusters = {
+    "guidance": [],
+    "tools": [],
+    "tests": [],
+    "docs_notes_and_disciplines": [],
+    "runtime_artifacts": [],
+    "other": [],
+  }
+  for path in paths:
+    if path.startswith(".reviewcompass/guidance/"):
+      clusters["guidance"].append(path)
+    elif path.startswith("tools/"):
+      clusters["tools"].append(path)
+    elif path.startswith("tests/"):
+      clusters["tests"].append(path)
+    elif path.startswith("docs/"):
+      clusters["docs_notes_and_disciplines"].append(path)
+    elif path.startswith(".reviewcompass/runtime/"):
+      clusters["runtime_artifacts"].append(path)
+    else:
+      clusters["other"].append(path)
+  return clusters
+
+
+POST_WRITE_POLICY_VIOLATION_FORBIDDEN_OPERATIONS = [
+  "run_post_write_review",
+  "create_post_write_manifest",
+  "commit",
+  "push",
+]
+
+POST_WRITE_POLICY_VIOLATION_ALLOWED_OPERATIONS = [
+  "inspect_policy_violation",
+]
+
+
 def load_post_write_manifests(cwd):
   """post-write-verification manifest を読み込む"""
   manifest_dir = Path(cwd) / ".reviewcompass" / "post-write-verification"
@@ -6920,10 +6967,14 @@ def cmd_next(args):
       else:
         forbidden_files = list_forbidden_post_write_pending_changes(cwd, verification_targets)
         if forbidden_files:
+          all_changed = list_changed_files(cwd)
           next_action = {
             "kind": "post_write_policy_violation",
             "target_files": verification_targets,
             "forbidden_files": forbidden_files,
+            "file_classification": classify_changed_files_for_policy_violation(all_changed),
+            "allowed_operations": POST_WRITE_POLICY_VIOLATION_ALLOWED_OPERATIONS,
+            "forbidden_operations": POST_WRITE_POLICY_VIOLATION_FORBIDDEN_OPERATIONS,
             "feature": None,
             "phase": None,
             "stage": None,
