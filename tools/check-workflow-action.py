@@ -3299,88 +3299,6 @@ def _is_session_record_path(path):
   )
 
 
-def _load_active_sessions(cwd):
-  """active-sessions.json の active リストを返す。ファイルがなければ None。
-
-  None は「管理ファイル不在」を意味し、呼び出し側で sha256 フォールバックを行う。
-  """
-  path = Path(cwd) / ".reviewcompass" / "runtime" / "active-sessions.json"
-  if not path.exists():
-    return None
-  try:
-    data = json.loads(path.read_text(encoding="utf-8"))
-    ids = data.get("active")
-    return list(ids) if isinstance(ids, list) else []
-  except (OSError, json.JSONDecodeError):
-    return None
-
-
-def _session_id_from_record(record_text):
-  """frontmatter の session_label からセッション ID を取り出す。
-
-  session_label の形式は 'claude-<date>-<uuid>' または '<uuid>' を想定する。
-  取り出せなければ None。
-  """
-  fm = _front_matter_from_text(record_text)
-  if not isinstance(fm, dict):
-    return None
-  label = fm.get("session_label", "")
-  if not label:
-    return None
-  # 末尾の UUID 部分（8-4-4-4-12 形式）を抽出する
-  import re
-  m = re.search(
-    r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$",
-    label,
-    re.IGNORECASE,
-  )
-  return m.group(1) if m else None
-
-
-def _session_record_is_active(record_text, cwd):
-  """セッション記録が進行中セッションに属していれば True を返す。
-
-  判定の優先順位：
-  1. active-sessions.json が存在する → session_label の UUID が active リストに含まれるか
-  2. active-sessions.json が存在しない → 従来の sha256 比較にフォールバック
-
-  判定不能（frontmatter 無し・セッション ID 取得失敗・ファイル読み取り失敗）は
-  False を返し、過剰遮断しない。
-  """
-  active = _load_active_sessions(cwd)
-  if active is not None:
-    session_id = _session_id_from_record(record_text)
-    if session_id is None:
-      return False
-    return session_id in active
-  # フォールバック：sha256 比較
-  fm = _front_matter_from_text(record_text)
-  if not isinstance(fm, dict):
-    return False
-  source_path = fm.get("source_path")
-  stored = fm.get("source_sha256")
-  if not source_path or not stored:
-    return False
-  expanded = Path(str(source_path)).expanduser()
-  if not expanded.is_absolute():
-    expanded = Path(cwd) / expanded
-  if not expanded.exists():
-    return False
-  try:
-    current = hashlib.sha256(expanded.read_bytes()).hexdigest()
-  except OSError:
-    return False
-  return current != stored
-
-
-def validate_no_in_progress_session_records(cwd, staged_files):
-  """セッション記録のコミット検査（スナップショットを許可）。
-
-  進行中セッションの記録もスナップショットとしてコミット可能。
-  セッション終了後に再取り込みすれば上書き更新される。
-  """
-  return {"in_progress_records": []}, []
-
 
 def _porcelain_path(line):
   """git status --porcelain の 1 行からパスを取り出す（リネームは新側）"""
@@ -3389,10 +3307,6 @@ def _porcelain_path(line):
     body = body.split(" -> ", 1)[1]
   return body.strip().strip('"')
 
-
-def _status_line_is_in_progress_record(line, cwd):
-  """セッション記録はスナップショットとしてコミット可能なので常に False を返す。"""
-  return False
 
 
 def _unique_preserving_order(items):
@@ -3407,7 +3321,7 @@ def _unique_preserving_order(items):
 
 
 def cmd_stage(args):
-  """git add の前段で、進行中セッション記録だけを機械的に除外する。"""
+  """git add の前段ヘルパー。対象パスを git add してステージング結果を返す。"""
   cwd = Path.cwd()
   pathspecs = args.paths or ["."]
   status = subprocess.run(
@@ -3430,19 +3344,13 @@ def cmd_stage(args):
     return 2
 
   staged = []
-  excluded = []
   for line in status.stdout.splitlines():
     if not line.strip():
       continue
     path = _porcelain_path(line)
-    if not path:
-      continue
-    if _status_line_is_in_progress_record(line, cwd):
-      excluded.append(path)
-    else:
+    if path:
       staged.append(path)
   staged = _unique_preserving_order(staged)
-  excluded = _unique_preserving_order(excluded)
 
   if staged:
     add_result = subprocess.run(
@@ -3455,7 +3363,7 @@ def cmd_stage(args):
       payload = {
         "status": "error",
         "staged": staged,
-        "excluded_in_progress_records": excluded,
+        "excluded_in_progress_records": [],
         "error": add_result.stderr.strip(),
       }
       if args.json:
@@ -3467,7 +3375,7 @@ def cmd_stage(args):
   payload = {
     "status": "staged",
     "staged": staged,
-    "excluded_in_progress_records": excluded,
+    "excluded_in_progress_records": [],
   }
   if args.json:
     print(json.dumps(payload, ensure_ascii=False, sort_keys=True))
@@ -4044,10 +3952,6 @@ def cmd_commit(args):
   document_link_lint_state, document_link_lint_errors = (
     validate_document_links_for_staged_files(cwd, staged_files)
   )
-  in_progress_record_state, in_progress_record_errors = (
-    validate_no_in_progress_session_records(cwd, staged_files)
-  )
-
   # decision-source-lint 統合（Req 11 受入 7）
   from check_workflow_action.decision_source_lint import run_decision_source_lint_all
   dsl_result = run_decision_source_lint_all(cwd)
@@ -4083,8 +3987,6 @@ def cmd_commit(args):
     deviation_reasons.extend(deployment_lint_errors)
   if document_link_lint_errors:
     deviation_reasons.extend(document_link_lint_errors)
-  if in_progress_record_errors:
-    deviation_reasons.extend(in_progress_record_errors)
 
   # decision-source-lint の DEVIATION 判定を統合
   if dsl_result.exit_code == 2:
@@ -4127,7 +4029,6 @@ def cmd_commit(args):
     f"配置非依存 lint 所見: {len(deployment_lint_state['findings'])} 件\n"
     f"文書リンク lint 対象: {len(document_link_lint_state['target_files'])} 件\n"
     f"文書リンク lint 所見: {len(document_link_lint_state['findings'])} 件\n"
-    f"進行中セッション記録: {len(in_progress_record_state['in_progress_records'])} 件\n"
     f"decision-source-lint 判定: {dsl_result.verdict}（{len(dsl_result.messages)} 件）"
   )
   current_state_dict = {
@@ -4145,7 +4046,6 @@ def cmd_commit(args):
     "commit_unit": commit_unit_state,
     "deployment_independence_lint": deployment_lint_state,
     "document_link_lint": document_link_lint_state,
-    "in_progress_session_records": in_progress_record_state,
   }
   action_str = f"commit (rationale='{rationale}')"
   action_dict = {
@@ -4498,16 +4398,6 @@ def build_commit_instruction_preflight(cwd):
     allowed_to_delegate_execution = False
     reasons.extend(commit_unit_errors)
 
-  in_progress_record_state, in_progress_record_errors = (
-    validate_no_in_progress_session_records(cwd, staged_files)
-  )
-  if in_progress_record_errors:
-    verdict = "DEVIATION"
-    allowed_to_stage = False
-    allowed_to_prepare_approval = False
-    allowed_to_delegate_execution = False
-    reasons.extend(in_progress_record_errors)
-
   approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
   execution_delegation_errors = validate_commit_execution_delegation(
     cwd,
@@ -4531,7 +4421,6 @@ def build_commit_instruction_preflight(cwd):
     "execution_delegation_errors": execution_delegation_errors,
     "repair_workflow_state": repair_state,
     "commit_unit": commit_unit_state,
-    "in_progress_session_records": in_progress_record_state,
   }
 
   return _build_commit_preflight_response(
@@ -4585,12 +4474,7 @@ def cmd_push(args):
     print(f"error: git status 失敗: {status_result.stderr}", file=sys.stderr)
     return 2
 
-  # 進行中セッションの記録（コミット対象外）は作業ツリーの汚れに数えない。
-  # 「進行中はコミットしない」（コミット側の歯止め）と push 前の clean 要求の矛盾を解く。
-  dirty_lines = [
-    line for line in status_result.stdout.splitlines()
-    if line.strip() and not _status_line_is_in_progress_record(line, cwd)
-  ]
+  dirty_lines = [line for line in status_result.stdout.splitlines() if line.strip()]
   is_dirty = bool(dirty_lines)
 
   # 直近 5 コミット

@@ -60,20 +60,4 @@ python3 tools/session-record-backfill.py \
   --session "$TRANSCRIPT" --source claude \
   --evidence-dir "$EVIDENCE_DIR" --docs-dir "$DOCS_DIR" >/dev/null 2>&1 || true
 
-# セッション ID を active-sessions.json から削除する
-ACTIVE_SESSIONS_PATH="$REPO_ROOT/.reviewcompass/runtime/active-sessions.json"
-if [ -n "$SESSION_ID" ] && [ -f "$ACTIVE_SESSIONS_PATH" ]; then
-  python3 - "$ACTIVE_SESSIONS_PATH" "$SESSION_ID" <<'PYEOF'
-import json, sys, pathlib
-path, sid = pathlib.Path(sys.argv[1]), sys.argv[2]
-try:
-  data = json.loads(path.read_text(encoding="utf-8"))
-except (json.JSONDecodeError, OSError):
-  data = {}
-active = [x for x in data.get("active", []) if x != sid]
-data["active"] = active
-path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-PYEOF
-fi
-
 exit 0
