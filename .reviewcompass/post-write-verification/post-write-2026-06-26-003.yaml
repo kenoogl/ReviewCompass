@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- docs/notes/2026-06-26-test-check-workflow-action-post-write-failures.md
+target_sha256:
+  docs/notes/2026-06-26-test-check-workflow-action-post-write-failures.md: f7f52d059ac887035c4e646a8b628e2b63e91c9b1819bcc9c94ab1ff96a991c0
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - docs/notes/2026-06-26-test-check-workflow-action-post-write-failures.md
+  target_sha256:
+    docs/notes/2026-06-26-test-check-workflow-action-post-write-failures.md: f7f52d059ac887035c4e646a8b628e2b63e91c9b1819bcc9c94ab1ff96a991c0
+  result: no_substantive_findings
+  checklist:
+  - 失敗テスト20件の一覧を正確に記録した。
+  - 原因（docs/notes/ が lightweight_self_check になったことでテストと乖離）を記録した。
+  - 決定済み事項と未決定事項を区別した。
+  - 正本仕様を変えていない（docs/notes/ の議論記録に留めた）。
+  - API review 対象ではなく軽量自己精査の対象として適切。
+notes: Lightweight self-check for test failure memo.

@@ -1,0 +1,43 @@
+# test_check_workflow_action.py の post-write 関連テスト20件失敗（未対処）
+
+記録日：2026-06-26
+
+## 症状
+
+`tests/tools/test_check_workflow_action.py` の post-write verification 関連テストが20件失敗している。
+
+```
+NextNavigationTests::test_next_deviation_when_new_runner_created_during_post_write_verification
+NextNavigationTests::test_next_does_not_complete_manifest_after_target_content_changes
+NextNavigationTests::test_next_does_not_complete_manifest_with_empty_required_verifiers
+NextNavigationTests::test_next_post_write_policy_violation_returns_canonical_effective_prompt
+NextNavigationTests::test_next_post_write_verification_returns_canonical_effective_prompt
+NextNavigationTests::test_next_prioritizes_post_write_over_maintenance
+NextNavigationTests::test_next_prioritizes_post_write_verification_for_target_doc_changes
+NextNavigationTests::test_next_rejects_manifest_when_unit_binding_mismatches_commit_unit
+NextNavigationTests::test_next_requires_human_decision_for_unresolved_substantive_findings
+NextNavigationTests::test_next_uses_latest_post_write_manifest_when_multiple_exist
+PostWriteCoverageMatrixTests::test_next_rejects_manifest_when_verifications_lack_per_entry_sha256
+PostWriteCoverageMatrixTests::test_next_rejects_manifest_when_verifier_covers_only_partial_files
+PostWriteCoverageMatrixTests::test_next_rejects_manifest_when_verifier_entry_sha256_mismatches_master
+PostWriteReviewRunTraceabilityTests::test_next_rejects_manifest_when_model_is_absent_from_triage
+PostWriteReviewRunTraceabilityTests::test_next_rejects_manifest_when_required_model_raw_is_missing
+PostWriteReviewRunTraceabilityTests::test_next_rejects_manifest_when_review_summary_is_missing
+PostWriteReviewRunEndToEndTests::test_next_accepts_manifest_generated_from_review_triage_helper
+CommitExitCodeTests::test_commit_with_post_write_target_without_manifest_returns_two
+AuditCommitTests::test_audit_commit_detects_post_write_target_without_manifest
+AuditCommitTests::test_audit_commit_detects_root_commit_post_write_target_without_manifest
+```
+
+## 原因
+
+テストは `docs/notes/` 配下のファイルを `post_write_verification`（API 経由の厳格検証）の対象として期待しているが、`check-workflow-action.py` の現在の実装では `docs/notes/` が `LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES` に含まれているため `lightweight_self_check`（軽量自己精査）として返る。
+
+テストが書かれた時点の仕様と、現在の実装が乖離している。
+
+## 対処方針（未決定）
+
+- テスト側を修正する：`docs/notes/` を使っているテストのターゲットを `docs/disciplines/` など厳格検証対象のパスに変更する
+- 実装側を見直す：`docs/notes/` の一部（例：正本に近い内容）を厳格検証対象に戻す
+
+今回の変更（`review_triage.py` の `docs/sessions/auto-` 除外バグ修正）とは無関係。
