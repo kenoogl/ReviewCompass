@@ -9909,6 +9909,7 @@ class CommitExitCodeTests(unittest.TestCase):
     )
 
 
+
 class PushExitCodeTests(unittest.TestCase):
   """push サブコマンドの終了コード判定（仕様 §6.3）"""
 

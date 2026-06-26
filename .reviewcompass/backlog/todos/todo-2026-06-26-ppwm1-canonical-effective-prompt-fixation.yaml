@@ -11,7 +11,13 @@ provenance:
   source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml
   reason: PPWM-1 は機械化計画の最優先項目。next が runtime 生成物ではなく guidance 正本を返すことで後続の source bundle
     / prompt builder が安定する。
-decisions: []
+decisions:
+- decision: completed
+  decision_ref: git:81db6ff7
+  reason: PPWM-1 実装完了。post_write_verification の canonical_effective_prompt_path を
+    WORKFLOW_DISCIPLINE_MAP.yaml と DEFAULT_DISCIPLINE_MAP に追加し、正本ファイルを作成した。テスト test_next_post_write_verification_returns_canonical_effective_prompt
+    が緑になった。
+  decided_at: '2026-06-26T03:34:53.496691+00:00'
 summary: 'next コマンドが post_write_verification 地点で返す effective_prompt_path を、 runtime
   生成物（.reviewcompass/runtime/effective-prompts/）から canonical 正本（.reviewcompass/guidance/effective-prompts/）へ切り替える。
   まず正本ファイルを作成し、次に next の実装を修正してテストを緑化する。
