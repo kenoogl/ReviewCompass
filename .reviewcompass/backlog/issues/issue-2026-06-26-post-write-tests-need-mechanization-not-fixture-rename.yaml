@@ -12,33 +12,58 @@ provenance:
   source_ref: .reviewcompass/backlog/todos/todo-2026-06-26-post-write-test-fixture-strict-path-realignment.yaml
   reason: テスト付け替えでは緑化しない2件を分離。canonical effective prompt 未実装(PPWM-1)と review-runs
     成果物の軽量自己精査残留が原因。
-decisions: []
-unresolved_tests:
+decisions:
+- decision: resolved
+  decision_ref: git:81db6ff7
+  reason: >
+    PPWM-1 実装により test_next_post_write_verification_returns_canonical_effective_prompt
+    が緑化した（2026-06-26 セッション2）。
+  decided_at: '2026-06-26T00:00:00+09:00'
+resolved_tests:
 - test: NextNavigationTests::test_next_post_write_verification_returns_canonical_effective_prompt
-  progress: 付け替えで kind == post_write_verification までは前進済み。
+  resolved_by: git:81db6ff7
+  resolution: PPWM-1 で canonical_effective_prompt_path を WORKFLOW_DISCIPLINE_MAP.yaml と
+    DEFAULT_DISCIPLINE_MAP に追加し、next が guidance 正本を返すよう修正。
+unresolved_tests:
+- test: CommitExitCodeTests::test_repair_workflow_state_prepare_allows_post_write_exception_preflight
   remaining_failure: >
-    effective_prompt_path が canonical 正本
-    (.reviewcompass/guidance/effective-prompts/next-action-post-write-verification.prompt.md)
-    ではなく runtime 生成物
-    (.reviewcompass/runtime/effective-prompts/next_action_kind-post_write_verification.prompt.md)
-    を返している。
-  root_cause: PPWM-1(canonical effective prompt の正本固定)が未実装。
+    "repair 対象の staged 変更がありません" でテストが失敗する。
+  root_cause: >
+    テストがファイル作成後に git add を呼ばないまま repair-workflow-state prepare を実行している。
+    repair-workflow-state prepare は _git_cached_files() でステージング済みファイルを取得するため、
+    ステージング前に呼ぶと空扱いになる。実装は正しく、テストコードのバグ。
   direction: >
-    plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml の PPWM-1 を実装し、
-    next が都度合成ではなく canonical 正本を参照するようにする。
+    各テストで target.write_text() / tool.write_text() の直後、repair-workflow-state prepare
+    呼び出しの前に subprocess.run(["git", "add", ...]) を追加する。
+- test: CommitExitCodeTests::test_repair_workflow_state_record_allows_matching_commit
+  remaining_failure: >
+    "repair 対象の staged 変更がありません" でテストが失敗する。
+  root_cause: >
+    テスト内に git add 呼び出しはあるが、repair-workflow-state prepare の後に配置されているため
+    効果がない。git add を prepare より前に移動する必要がある。
+  direction: >
+    git add の呼び出し位置を repair-workflow-state prepare より前に移動する。
+- test: CommitExitCodeTests::test_repair_workflow_state_record_rejects_changed_scope
+  remaining_failure: >
+    "repair 対象の staged 変更がありません" でテストが失敗する。
+  root_cause: >
+    CommitExitCodeTests::test_repair_workflow_state_prepare_allows_post_write_exception_preflight
+    と同じ原因。git add が欠如している。
+  direction: >
+    ファイル作成後・repair-workflow-state prepare 呼び出し前に git add を追加する。
 - test: PostWriteReviewRunEndToEndTests::test_next_accepts_manifest_generated_from_review_triage_helper
   progress: review-target.md の付け替えは共通ヘルパー _write_review_run 経由で実施済み。
   remaining_failure: >
     review_run 成果物一式(docs/notes/review-runs/<run>/ 配下)が軽量自己精査の
-    作業中メモとして残り、manifest が completed でも next が stage(完了)ではなく
+    作業中メモとして残り、manifest が completed でも next が stage ではなく
     lightweight_self_check を返す。
   root_cause: >
     docs/notes/review-runs/ 配下は is_post_write_verification_target では除外されるが、
     is_lightweight_self_check_target では docs/notes/ prefix により軽量対象として浮上する。
     レビュー証跡を軽量自己精査の対象から外す扱いが未整備。
   direction: >
-    review-runs 成果物(証跡)を next の作業対象(軽量含む)から除外する実装方針を検討する。
-    実装変更かテスト再設計かは未決定。
+    is_lightweight_self_check_target に /review-runs/ を含むパスを除外する条件を追加する、
+    または review-runs 成果物を next の変更ファイル対象から外す実装を検討する。
 related:
 - .reviewcompass/backlog/plans/plan-2026-06-23-postwrite-prompt-mechanization-completion.yaml
 - .reviewcompass/backlog/todos/todo-2026-06-26-post-write-test-fixture-strict-path-realignment.yaml
