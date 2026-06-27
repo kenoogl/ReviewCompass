@@ -13,30 +13,27 @@ default_prompt_length_bounds:
   failure_verdict: WARN
 decision_points:
   next_action_kind:
-    - id: stage
+    - id: in_progress
       prompt_source_refs:
         - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
         - .reviewcompass/guidance/discipline_workflow_state_truth_source.md
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: cross_feature_stage
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
-        - .reviewcompass/guidance/discipline_workflow_state_truth_source.md
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: commit_stop_point
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_stop_point
+        - .reviewcompass/guidance/REOPEN_PROCEDURE.md
         - .reviewcompass/guidance/discipline_approval_operation.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: upstream_recheck
+    - id: blocking_in_progress
       prompt_source_refs:
         - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
-        - .reviewcompass/guidance/REOPEN_PROCEDURE.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: reopen_classification_required
+    - id: verification_pending
       prompt_source_refs:
         - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+        - .reviewcompass/guidance/discipline_post_write_verification.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: reopen_in_progress
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#reopen_in_progress
         - .reviewcompass/guidance/REOPEN_PROCEDURE.md
+        - .reviewcompass/guidance/discipline_approval_operation.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: completed
       prompt_source_refs:
@@ -51,62 +48,6 @@ decision_points:
         - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#feature_definition_required
         - .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: post_write_verification
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification
-        - .reviewcompass/guidance/discipline_post_write_verification.md
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-      canonical_effective_prompt_path: .reviewcompass/guidance/effective-prompts/next-action-post-write-verification.prompt.md
-    - id: parent_resume_pending
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#parent_resume_pending
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: blocking_unit_required
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#blocking_unit_required
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: blocking_unit_in_progress
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#blocking_unit_in_progress
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: commit_mixing_risk
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_mixing_risk
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: commit_unit_stale
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_unit_stale
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: lightweight_self_check
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#lightweight_self_check
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: post_write_policy_violation
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_policy_violation
-        - .reviewcompass/guidance/discipline_post_write_verification.md
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-      canonical_effective_prompt_path: .reviewcompass/guidance/effective-prompts/next-action-post-write-policy-violation.prompt.md
-    - id: post_write_human_decision_required
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_human_decision_required
-        - .reviewcompass/guidance/discipline_post_write_verification.md
-        - .reviewcompass/guidance/discipline_approval_operation.md
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: reopen_in_progress
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#reopen_in_progress
-        - .reviewcompass/guidance/REOPEN_PROCEDURE.md
-        - .reviewcompass/guidance/discipline_approval_operation.md
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: maintenance_in_progress
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#maintenance_in_progress
-      effective_prompt_policy: one_effective_prompt_per_decision_point
-    - id: resume_in_progress
-      prompt_source_refs:
-        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#resume_in_progress
-      effective_prompt_policy: one_effective_prompt_per_decision_point
     - id: reopen_started
       prompt_source_refs:
         - .reviewcompass/guidance/WORKFLOW_PRECHECK.md#reopen-start
@@ -118,6 +59,29 @@ decision_points:
         - .reviewcompass/guidance/WORKFLOW_PRECHECK.md#reopen-start
         - .reviewcompass/guidance/WORKFLOW_PRECHECK_DETAILS.md#commit
         - .reviewcompass/guidance/REOPEN_PROCEDURE.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+  next_action_verification_type:
+    - id: post_write_verification
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification
+        - .reviewcompass/guidance/discipline_post_write_verification.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+      canonical_effective_prompt_path: .reviewcompass/guidance/effective-prompts/next-action-post-write-verification.prompt.md
+    - id: policy_violation
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_policy_violation
+        - .reviewcompass/guidance/discipline_post_write_verification.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+      canonical_effective_prompt_path: .reviewcompass/guidance/effective-prompts/next-action-post-write-policy-violation.prompt.md
+    - id: human_decision_required
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_human_decision_required
+        - .reviewcompass/guidance/discipline_post_write_verification.md
+        - .reviewcompass/guidance/discipline_approval_operation.md
+      effective_prompt_policy: one_effective_prompt_per_decision_point
+    - id: lightweight_self_check
+      prompt_source_refs:
+        - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#lightweight_self_check
       effective_prompt_policy: one_effective_prompt_per_decision_point
   workflow_stage:
     - id: candidate-proposal
@@ -403,42 +367,26 @@ decision_points:
         - .reviewcompass/guidance/discipline_post_write_verification.md
       effective_prompt_policy: one_effective_prompt_per_decision_point
 by_kind:
-  stage:
+  in_progress:
     - .reviewcompass/guidance/discipline_workflow_state_truth_source.md
-  cross_feature_stage:
-    - .reviewcompass/guidance/discipline_workflow_state_truth_source.md
-  post_write_verification:
-    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification
+  verification_pending:
     - .reviewcompass/guidance/discipline_post_write_verification.md
-  lightweight_self_check:
-    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#lightweight_self_check
-  parent_resume_pending:
-    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#parent_resume_pending
-  blocking_unit_required:
-    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#blocking_unit_required
-  blocking_unit_in_progress:
-    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#blocking_unit_in_progress
-  commit_mixing_risk:
-    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_mixing_risk
-  commit_unit_stale:
-    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#commit_unit_stale
-  post_write_policy_violation:
-    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_policy_violation
-    - .reviewcompass/guidance/discipline_post_write_verification.md
-  post_write_human_decision_required:
-    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_human_decision_required
-    - .reviewcompass/guidance/discipline_post_write_verification.md
-    - .reviewcompass/guidance/discipline_approval_operation.md
   reopen_in_progress:
     - .reviewcompass/guidance/REOPEN_PROCEDURE.md
     - .reviewcompass/guidance/discipline_approval_operation.md
-  maintenance_in_progress:
-    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#maintenance_in_progress
-  resume_in_progress:
-    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#resume_in_progress
   feature_definition_required:
     - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#feature_definition_required
     - .reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md
+by_verification_type:
+  post_write_verification:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_verification
+  policy_violation:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_policy_violation
+  human_decision_required:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#post_write_human_decision_required
+    - .reviewcompass/guidance/discipline_approval_operation.md
+  lightweight_self_check:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md#lightweight_self_check
 by_stage:
   drafting:
     - .reviewcompass/guidance/REOPEN_PROCEDURE.md

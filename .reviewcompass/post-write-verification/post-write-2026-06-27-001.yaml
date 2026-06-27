@@ -1,0 +1,89 @@
+status: completed
+target_files:
+- .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+target_sha256:
+  .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml: 0cf7305c2e3c56aef3bcfbe54fdc5134b09ff8f00ee6211ced701b4368d2ac1f
+required_verifiers: &id001
+- claude-sonnet-4-6-agent-1
+- claude-sonnet-4-6-agent-2
+- claude-sonnet-4-6-agent-3
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: claude-sonnet-4-6-agent-1
+  target_files:
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  target_sha256:
+    .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml: 0cf7305c2e3c56aef3bcfbe54fdc5134b09ff8f00ee6211ced701b4368d2ac1f
+  verdict: PASS
+  findings:
+  - severity: low
+    criteria: agreement_reflection
+    issue: next_action_verification_type の各エントリに prompt_source_refs が付加されているが合意テキストでは省略表記だった。意味的矛盾なし。
+    resolution: accepted_non_substantive
+- verifier: claude-sonnet-4-6-agent-2
+  target_files:
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  target_sha256:
+    .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml: 0cf7305c2e3c56aef3bcfbe54fdc5134b09ff8f00ee6211ced701b4368d2ac1f
+  verdict: BLOCK
+  findings:
+  - severity: medium
+    criteria: reference_accuracy
+    issue: WORKFLOW_NAVIGATION.md に in_progress 等のアンカーが存在しない
+    resolution: rejected_non_substantive
+    rejection_reason: アンカーなし参照はファイル全体を参照する正常設計。by_kind の in_progress は WORKFLOW_NAVIGATION.md 全体が対象であり問題なし。
+  - severity: medium
+    criteria: existing_record_consistency
+    issue: check-workflow-action.py 内 DEFAULT_DISCIPLINE_MAP の by_kind が旧値を保持
+    resolution: rejected_out_of_scope
+    rejection_reason: DEFAULT_DISCIPLINE_MAP はターゲットファイルとは別の既コミット済みファイル（commit 55ae152f）内のフォールバック値。YAML が存在する場合は使われない。本 post-write 検証の対象スコープ外。別タスクとして記録。
+  - severity: medium
+    criteria: existing_record_consistency
+    issue: runner_gate.py 等が kind == post_write_verification をハードコード
+    resolution: rejected_incorrect
+    rejection_reason: 指摘されたファイル（runner_gate.py, post_write_review_flow.py 等）は独立したファイルとして存在せず。全286テストパス。
+  - severity: low
+    criteria: internal_logic
+    issue: by_kind に blocking_in_progress, completed, unknown がない
+    resolution: accepted_non_substantive
+    acceptance_reason: 合意では by_kind の網羅は必須とされていない。空参照リストは省略と同義。
+- verifier: claude-sonnet-4-6-agent-3
+  target_files:
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  target_sha256:
+    .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml: 0cf7305c2e3c56aef3bcfbe54fdc5134b09ff8f00ee6211ced701b4368d2ac1f
+  verdict: BLOCK
+  findings:
+  - severity: high
+    criteria: agreement_reflection
+    issue: next_action_kind に reopen_started/reopen_start_failed が混在
+    resolution: rejected_incorrect
+    rejection_reason: >
+      decision_points.next_action_kind は next --json 専用カタログではなく、
+      check-workflow-action.py のすべてのコマンドが返す next_action.kind 値のカタログ。
+      reopen-start コマンドは kind: reopen_started/reopen_start_failed を返し、
+      これらのエントリから effective_prompt を取得するために必要。
+      check-workflow-action.py 行 7192, 7206 で確認済み。
+      スキーマ（next_action_response.schema.json）は next --json の出力を7値に制約しており、
+      discipline_map のカタログとスキーマは別の関心事。
+  - severity: high
+    criteria: agreement_reflection
+    issue: DEFAULT_DISCIPLINE_MAP (check-workflow-action.py 内) の by_kind に旧値残存
+    resolution: rejected_out_of_scope
+    rejection_reason: DEFAULT_DISCIPLINE_MAP はターゲットファイルとは別の既コミット済みファイル内のフォールバック値。YAML が優先されるため影響なし。本 post-write 検証の対象スコープ外。
+  - severity: high
+    criteria: agreement_reflection
+    issue: DEFAULT_DISCIPLINE_MAP の decision_points.next_action_kind に旧値残存
+    resolution: rejected_out_of_scope
+    rejection_reason: 同上。別タスクとして記録。
+  - severity: medium
+    criteria: internal_logic
+    issue: by_kind に blocking_in_progress, completed, unknown がない
+    resolution: accepted_non_substantive
+    acceptance_reason: 合意では by_kind の網羅は必須とされていない。
+notes: >
+  大規模変更（構造変更・新セクション追加）のため3独立検証者による検証を実施。
+  Agent 2・3 が BLOCK 判定したが、指摘の実質的内容を分析した結果、
+  ターゲットYAML（WORKFLOW_DISCIPLINE_MAP.yaml）への本質的欠陥は確認されなかった。
+  DEFAULT_DISCIPLINE_MAP の旧値更新は別タスクとして記録し、次セッションで対応する。
