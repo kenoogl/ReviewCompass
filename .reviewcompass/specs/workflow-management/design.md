@@ -1488,11 +1488,11 @@ state_refs:
     stage: string
     reopen_scope: [string]
     impact_review_scope: [string]
-    direct_features: [string]  # 2026-06-26 MWP-0 廃止予定（required_feature_scope で代替）
-    indirect_features: [string]  # 2026-06-26 MWP-0 廃止予定（required_feature_scope で代替）
+    direct_features: [string]  # 2026-06-26 MWP-0 廃止（required_feature_scope で代替、T-020 実装完了）
+    indirect_features: [string]  # 2026-06-26 MWP-0 廃止（required_feature_scope で代替、T-020 実装完了）
     flag_policy: object
     next_pending_gate: string | null
-    next_drafting_gate: string | null  # 2026-06-26 MWP-0 廃止予定（active_gate で代替）
+    next_drafting_gate: string | null  # 2026-06-26 MWP-0 廃止（active_gate で代替、T-020 実装完了・WORKFLOW_NAVIGATION.md 更新済み）
     pending_gates: [string]
     completed_gates: [string]
     superseded_gates: [string]
@@ -1619,7 +1619,7 @@ deployment / export は read-only preflight の対象であり、実際の出力
 - direct / indirect features
 - flag policy
 - `next_pending_gate`
-- `next_drafting_gate`（2026-06-26 MWP-0 廃止予定。`active_gate` で代替。手引き改修を実装時に実施する）
+- `next_drafting_gate`（2026-06-26 MWP-0 廃止。`active_gate` で代替。手引き改修は T-020 実装時に完了（WORKFLOW_NAVIGATION.md 更新済み））
 - `pending_gates`
 - `completed_gates`
 - superseded gate の有無
