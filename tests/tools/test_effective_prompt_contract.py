@@ -84,27 +84,20 @@ def test_workflow_discipline_map_catalogs_all_current_decision_points():
 
   expected = {
     "next_action_kind": {
-      "stage",
-      "cross_feature_stage",
-      "upstream_recheck",
-      "reopen_classification_required",
+      "in_progress",
+      "blocking_in_progress",
+      "verification_pending",
+      "reopen_in_progress",
       "completed",
       "unknown",
       "feature_definition_required",
-      "post_write_verification",
-      "post_write_policy_violation",
-      "post_write_human_decision_required",
-      "reopen_in_progress",
-      "maintenance_in_progress",
-      "resume_in_progress",
-      "parent_resume_pending",
-      "blocking_unit_required",
-      "blocking_unit_in_progress",
-      "commit_mixing_risk",
-      "commit_unit_stale",
       "reopen_started",
       "reopen_start_failed",
-      "commit_stop_point",
+    },
+    "next_action_verification_type": {
+      "post_write_verification",
+      "policy_violation",
+      "human_decision_required",
       "lightweight_self_check",
     },
     "workflow_stage": {
@@ -187,7 +180,7 @@ def test_workflow_discipline_map_catalogs_all_current_decision_points():
 
 
 def test_post_write_policy_violation_uses_canonical_effective_prompt_artifact():
-  item = _decision_point("next_action_kind", "post_write_policy_violation")
+  item = _decision_point("next_action_verification_type", "policy_violation")
 
   assert item["canonical_effective_prompt_path"] == (
     ".reviewcompass/guidance/effective-prompts/"
@@ -196,7 +189,7 @@ def test_post_write_policy_violation_uses_canonical_effective_prompt_artifact():
 
 
 def test_post_write_policy_violation_canonical_prompt_contains_operation_boundary():
-  item = _decision_point("next_action_kind", "post_write_policy_violation")
+  item = _decision_point("next_action_verification_type", "policy_violation")
   prompt_path = ROOT / item["canonical_effective_prompt_path"]
 
   text = prompt_path.read_text(encoding="utf-8")

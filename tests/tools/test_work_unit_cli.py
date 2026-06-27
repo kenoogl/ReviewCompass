@@ -126,7 +126,7 @@ class WorkUnitCliTests(unittest.TestCase):
     assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
     data = json.loads(result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "blocking_unit_in_progress")
+    self.assertEqual(data["next_action"]["kind"], "blocking_in_progress")
     self.assertEqual(data["next_action"]["unit_id"], "unit-blocking-test")
     self.assertEqual(data["current_state"]["active_work_units"][0]["unit_id"], "unit-blocking-test")
 
@@ -261,7 +261,7 @@ class WorkUnitCliTests(unittest.TestCase):
     assert_script_invoked(self, next_result)
     self.assertEqual(next_result.returncode, 0, next_result.stdout + next_result.stderr)
     data = json.loads(next_result.stdout)
-    self.assertEqual(data["next_action"]["kind"], "parent_resume_pending")
+    self.assertEqual(data["next_action"]["kind"], "blocking_in_progress")
     self.assertEqual(data["next_action"]["parent_unit_id"], "unit-parent-resume")
 
   def test_resume_parent_consumes_parent_resume_pending_marker(self):
@@ -365,7 +365,7 @@ class WorkUnitCliTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
     data = json.loads(result.stdout)
     action = data["next_action"]
-    self.assertEqual(action["kind"], "blocking_unit_required")
+    self.assertEqual(action["kind"], "blocking_in_progress")
     self.assertEqual(action["required_action"], "enter_blocking_unit")
     self.assertEqual(action["unit_id"], "unit-new-work")
     self.assertEqual(

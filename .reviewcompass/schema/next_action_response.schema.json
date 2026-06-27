@@ -105,6 +105,66 @@
               }
             }
           }
+        },
+        {
+          "$comment": "① commit_stop_point: active_gate/phase/stage はすべて null（受入 11(6)①）",
+          "if": {
+            "properties": { "required_action": { "const": "commit_stop_point" } },
+            "required": ["required_action"]
+          },
+          "then": {
+            "properties": {
+              "active_gate": { "type": "null" },
+              "phase": { "type": "null" },
+              "stage": { "type": "null" }
+            }
+          }
+        },
+        {
+          "$comment": "② run_reopen_pending_gate: active_gate 非 null、blocked_by=null（受入 11(6)②）",
+          "if": {
+            "properties": { "required_action": { "const": "run_reopen_pending_gate" } },
+            "required": ["required_action"]
+          },
+          "then": {
+            "properties": {
+              "active_gate": { "type": "string" },
+              "blocked_by": { "type": "null" }
+            }
+          }
+        },
+        {
+          "$comment": "③ run_reopen_drafting: active_gate は stages/<phase>.yaml#drafting 形式（受入 11(6)③）",
+          "if": {
+            "properties": { "required_action": { "const": "run_reopen_drafting" } },
+            "required": ["required_action"]
+          },
+          "then": {
+            "properties": {
+              "active_gate": {
+                "type": "string",
+                "pattern": "^stages/.+\\.yaml#drafting$"
+              }
+            }
+          }
+        },
+        {
+          "$comment": "⑤ wait_for_human_decision: blocked_by 非 null かつ type フィールド必須（受入 11(6)⑤）",
+          "if": {
+            "properties": { "required_action": { "const": "wait_for_human_decision" } },
+            "required": ["required_action"]
+          },
+          "then": {
+            "properties": {
+              "blocked_by": {
+                "type": "object",
+                "required": ["type"],
+                "properties": {
+                  "type": { "type": "string" }
+                }
+              }
+            }
+          }
         }
       ]
     },
