@@ -4,7 +4,7 @@
 
 ## 1. 現在状態
 
-- 直近作業では `todo-2026-07-01-action-effect-spec.yaml`（AES-2）を完了し、commit 後は push 待ちになる。
+- 直近作業では `todo-2026-07-01-normal-output-formatter-boundary.yaml`（NOM-1）の赤テストを追加し、commit 後は push 待ちになる。
 - clean 状態の `tools/check-workflow-action.py next --json` は `kind: completed` を返す。
 - 全 feature の workflow_state は implementation.approval まで完了済み。
 
@@ -24,6 +24,10 @@
   - AES-1：ReviewExecutionSpec for API review-runs 完了。
   - AES-2：ActionEffectSpec for workflow actions 完了。
   - AES-2 の確認済み：`tests/tools/test_action_effect_spec.py` 3 tests OK、`tests/tools/test_action_effect_spec.py tests/tools/test_commit_from_current_staged.py` 12 tests OK、`tests/tools/test_check_workflow_action.py` 303 tests OK。
+- normal output minimization rollout plan の NOM-1 は linked TODO として materialize 済み。
+  - 追加済み赤テスト：`tests/tools/test_normal_output_helper.py`
+  - 確認済み：`tests/tools/test_normal_output_helper.py` は 5 failed。未実装 API は `NORMAL_OUTPUT_VERDICTS`、`NORMAL_OUTPUT_MODES`、`render_human_output`、`render_json_output`、`output_stream_for`。
+  - 次は `tools/normal_output.py` に共有 formatter 境界を実装し、focused tests を通す。
 - 既知の注意点：
   - `work-backlog audit-checklist-bridge` は、既存の別 TODO `todo-2026-06-24-commit-minimal-progress-output` の古い execution_history 由来で DEVIATION を出す。今回 ORP-4 の evidence 自体は OK。
   - `plan-2026-06-23-operation-registry-preflight.yaml` は plan 本体の `remaining_work` 表示に candidate が残っているが、linked TODO は ORP-1〜ORP-4 すべて completed。
@@ -49,7 +53,7 @@
    - effective prompt が古くなっていないか監査する。
    - 導線追加後の品質維持に効く。
 5. `.reviewcompass/backlog/plans/plan-2026-06-23-normal-output-minimization-rollout.yaml`
-   - CLI 出力を必要最小限に揃える。
+   - NOM-1 の赤テスト追加済み。次は `tools/normal_output.py` の共有 formatter 境界実装。
 6. `.reviewcompass/backlog/plans/plan-2026-06-23-working-note-self-check-hardening.yaml`
    - notes / TODO 系の軽量自己検査を強化する。
 7. `.reviewcompass/backlog/plans/plan-2026-06-23-postwrite-review-prompt-isolation.yaml`

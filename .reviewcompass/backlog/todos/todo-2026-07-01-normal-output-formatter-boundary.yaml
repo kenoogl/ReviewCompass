@@ -1,0 +1,86 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-07-01-normal-output-formatter-boundary
+kind: todo
+title: Define shared normal output formatter boundary
+status: active
+source_unit_id: main-completed
+created_at: '2026-07-01T00:00:00+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-normal-output-minimization-rollout.yaml#NOM-1
+  reason: NOM-1 を plan から実行可能 TODO に materialize し、runtime checklist 経由で TDD 実行するため
+decisions: []
+source_plan_id: plan-2026-06-23-normal-output-minimization-rollout
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-normal-output-minimization-rollout.yaml
+source_plan_slice:
+  phase_id: NOM-1
+  title: Define shared output formatter boundary
+summary: >
+  normal output minimization rollout plan の第 1 実行単位として、
+  `tools/normal_output.py` の共通 formatter / output helper の最小 API を固定する。
+  OK / WARN / DEVIATION、human / json / verbose、stdout / stderr の分担を明示し、
+  既存 CLI が判定データと human output 生成を分離できる境界を作る。
+problem_statement:
+- 既存 CLI がそれぞれ別々に正常系 human output を組み立てており、OK / WARN / DEVIATION の短文化境界が統一されていない。
+- `--json` と `--verbose` に詳細を残す契約が helper API として固定されていない。
+- stdout / stderr の分担が CLI ごとに散らばり、正常系と診断系の見え方が揺れやすい。
+implementation_plan:
+  phases:
+  - id: NOM-1
+    title: Define shared output formatter boundary
+    tasks:
+    - id: NOM-1A
+      title: Add red tests for shared verdict and mode vocabulary
+      status: done
+    - id: NOM-1B
+      title: Add red tests for short OK human output
+      status: done
+    - id: NOM-1C
+      title: Add red tests for WARN / DEVIATION reasons and next action
+      status: done
+    - id: NOM-1D
+      title: Add red tests for json / verbose detail preservation
+      status: done
+    - id: NOM-1E
+      title: Add red tests for stdout / stderr stream policy
+      status: done
+    - id: NOM-1F
+      title: Confirm the new tests fail before implementation
+      status: done
+    - id: NOM-1G
+      title: Implement shared normal output formatter boundary
+      status: pending
+    - id: NOM-1H
+      title: Run focused tests and update checklist evidence
+      status: pending
+acceptance_criteria:
+- 新規 CLI が同じ helper を使える。
+- 既存 CLI が返す判定データと human output 生成を分離できる。
+- OK / WARN / DEVIATION / --json / --verbose の出し分けを helper API で固定できる。
+- stdout / stderr の分担が helper API で確認できる。
+red_tests:
+- id: NOM-1-RT-1
+  title: Shared formatter declares verdict and mode vocabulary
+  expected: tools.normal_output exposes exact local verdict and output mode constants.
+  status: done
+- id: NOM-1-RT-2
+  title: OK human output keeps one short line
+  expected: OK human output only includes success fact, action, and summary fields.
+  status: done
+- id: NOM-1-RT-3
+  title: WARN / DEVIATION output keeps concise reasons and next action
+  expected: diagnostic output includes at most three reasons and a next action.
+  status: done
+- id: NOM-1-RT-4
+  title: JSON and verbose output preserve details
+  expected: details omitted from OK human output remain available in json and verbose modes.
+  status: done
+- id: NOM-1-RT-5
+  title: Stream policy routes normal and diagnostic output
+  expected: OK human output goes to stdout, WARN / DEVIATION to stderr, and json to stdout.
+  status: done
+non_goals:
+- この TODO で全 CLI を共通 helper へ接続しない。
+- 異常系の診断情報を削らない。
+- medium priority inventory の棚卸し更新まで同時に行わない。

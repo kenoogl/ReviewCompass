@@ -114,6 +114,13 @@ items:
   path: .reviewcompass/backlog/plans/plan-2026-06-23-normal-output-minimization-rollout.yaml
   source_unit_id: main-completed
   created_at: '2026-06-23T09:35:00+09:00'
+- id: todo-2026-07-01-normal-output-formatter-boundary
+  kind: todo
+  title: Define shared normal output formatter boundary
+  status: active
+  path: .reviewcompass/backlog/todos/todo-2026-07-01-normal-output-formatter-boundary.yaml
+  source_unit_id: main-completed
+  created_at: '2026-07-01T00:00:00+00:00'
 - id: plan-2026-06-23-session-record-operation-hardening
   kind: plan
   title: Harden session record draft and formalization operations

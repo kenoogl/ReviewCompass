@@ -32,7 +32,7 @@ current_baseline:
 remaining_work:
   - id: NOM-1
     title: Define shared output formatter boundary
-    status: candidate
+    status: active
     tasks:
       - 共通 formatter / output helper の最小 API を決める。
       - OK / WARN / DEVIATION / --json / --verbose の出し分けを固定する。
@@ -40,6 +40,11 @@ remaining_work:
     acceptance:
       - 新規 CLI が同じ helper を使える。
       - 既存 CLI が返す判定データと human output 生成を分離できる。
+    todo_path: .reviewcompass/backlog/todos/todo-2026-07-01-normal-output-formatter-boundary.yaml
+    checklist_path: .reviewcompass/runtime/work-units/checklists/checklist-todo-2026-07-01-normal-output-formatter-boundary.yaml
+    note: >
+      Red tests for the shared formatter boundary have been added. Implementation
+      remains pending for the next TDD step.
   - id: NOM-2
     title: Connect high-priority pending CLI tools
     status: candidate

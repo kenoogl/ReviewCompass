@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: d8dd6da280843120ea601c75ba8b6156fb93cbc09eb28b1d5def25a08c1af383
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: d8dd6da280843120ea601c75ba8b6156fb93cbc09eb28b1d5def25a08c1af383
+notes: >
+  Lightweight self-check for TODO_NEXT_SESSION.md. Confirmed the update records
+  NOM-1 red-test status, expected failing API names, and the next implementation
+  step only; no canonical workflow rule or API review judgment was changed.
