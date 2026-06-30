@@ -461,6 +461,29 @@ class GuardedGitCommitTests(unittest.TestCase):
     self.assertIn("sandbox_git_write_denied", combined_output)
     self.assertIn("required_action=rerun_commit_with_escalation", combined_output)
 
+  def test_preflight_git_index_lock_reports_existing_lock(self):
+    """既存 index.lock があれば commit 前に検査停止する"""
+    guarded = load_guarded_module()
+    lock_path = Path(self.tmpdir) / ".git" / "index.lock"
+    lock_path.write_text("existing lock\n", encoding="utf-8")
+
+    result = guarded.preflight_git_index_lock(self.tmpdir)
+
+    self.assertFalse(result["ok"])
+    self.assertEqual(result["classification"], "git_index_lock_exists")
+    self.assertEqual(result["required_action"], "inspect_existing_git_index_lock")
+    self.assertTrue(lock_path.exists())
+
+  def test_preflight_git_index_lock_allows_writable_index_lock(self):
+    """index.lock を作成削除できる場合は commit 実行へ進める"""
+    guarded = load_guarded_module()
+    lock_path = Path(self.tmpdir) / ".git" / "index.lock"
+
+    result = guarded.preflight_git_index_lock(self.tmpdir)
+
+    self.assertEqual(result, {"ok": True})
+    self.assertFalse(lock_path.exists())
+
   def test_guarded_commit_classifies_index_lock_failure_after_commit_attempt(self):
     """commit 実行後の index.lock 失敗も sandbox_git_write_denied として表示する"""
     _stage_file(self.tmpdir, "notes.md", "# sandbox denied during commit")
