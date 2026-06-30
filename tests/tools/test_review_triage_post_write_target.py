@@ -51,3 +51,15 @@ def test_docs_discipline_file_is_still_target():
   assert rt._is_post_write_target(
     "docs/disciplines/some-discipline.md"
   ) is True
+
+
+def test_workflow_stage_specs_are_not_post_write_targets():
+  rt = _load_review_triage()
+  for name in [
+    ".reviewcompass/specs/workflow-management/spec.json",
+    ".reviewcompass/specs/workflow-management/requirements.md",
+    ".reviewcompass/specs/workflow-management/design.md",
+    ".reviewcompass/specs/workflow-management/tasks.md",
+    ".reviewcompass/specs/workflow-management/reviews/2026-06-27-run/triage.yaml",
+  ]:
+    assert rt._is_post_write_target(name) is False, f"{name} should not be a target"

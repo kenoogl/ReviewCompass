@@ -30,7 +30,6 @@ POST_WRITE_VERIFICATION_DIR_PREFIXES = (
   "docs/experiments/",
 )
 POST_WRITE_VERIFICATION_MD_DIR_PREFIXES = (
-  ".reviewcompass/specs/",
   "intent/",
   "templates/",
 )

@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: issue-2026-06-24-post-write-target-judgment-mismatch
 kind: issue
 title: post-write target 判定が next と write-manifest で不整合(specs/機械生成記録を誤対象化)
-status: candidate
+status: completed
 source_unit_id: main-side-conversation
 created_at: '2026-06-24T10:17:22.811221+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -16,4 +16,14 @@ provenance:
     は正しく除外。2026-06-24 proxy-layout-codecanon 封印で顕在化。修正方針:review_triage._is_post_write_target
     を check-workflow-action 判定(specs除外・機械生成除外)に一致させ TDD 検証。post-write pending 中は tools/*.py
     が forbidden のため封印後に着手。
-decisions: []
+decisions:
+- decided_at: '2026-06-30T00:00:00+09:00'
+  decision: completed
+  reason: review_triage._is_post_write_target から .reviewcompass/specs/ 配下の
+    md 対象化を除去し、check-workflow-action の post-write 対象判定と一致させた。
+    docs/sessions/auto-* の除外は既存実装と既存テストで保持され、今回
+    tests/tools/test_review_triage_post_write_target.py に workflow stage specs
+    が write-manifest の post-write 対象にならない回帰テストを追加した。
+  evidence:
+  - tools/api_providers/review_triage.py
+  - tests/tools/test_review_triage_post_write_target.py

@@ -411,7 +411,7 @@ items:
 - id: issue-2026-06-24-post-write-target-judgment-mismatch
   kind: issue
   title: post-write target 判定が next と write-manifest で不整合(specs/機械生成記録を誤対象化)
-  status: candidate
+  status: completed
   path: .reviewcompass/backlog/issues/issue-2026-06-24-post-write-target-judgment-mismatch.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-24T10:17:22.811221+00:00'
