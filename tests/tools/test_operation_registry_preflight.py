@@ -231,6 +231,41 @@ def review_artifact_operation(**overrides):
   return operation
 
 
+def workflow_mixing_operation(**overrides):
+  operation = base_operation(
+    operation_id="workflow_mixing_preflight",
+    kind="workflow_state",
+    operation_family="workflow_cli",
+    workflow_binding={
+      "phase": "implementation",
+      "stage": "triad-review",
+      "gate": "stages/implementation.yaml#triad-review",
+      "next_action_kind": "reopen_in_progress",
+    },
+    required_inputs=[
+      "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+      "allowed_files=docs/allowed.md",
+      "pending_unit=reopen-procedure",
+    ],
+    target_identity=["allowed_files=docs/allowed.md"],
+    planned_outputs=[],
+    sequence_mode="serial_only",
+    worktree_policy="allow_matching_dirty_scope",
+    pending_conflict_policy="stop_on_mixed_workflow_scope",
+    artifact_policy="read_only",
+    family_required_checks=[
+      "parser_invocation",
+      "workflow_binding",
+      "next_active_state_dimensions",
+      "scope_consistency",
+      "workflow_mixing_preflight",
+    ],
+    vocabulary_refs=["verdict", "allowed_files", "pending_conflicts"],
+  )
+  operation.update(overrides)
+  return operation
+
+
 class OperationRegistryPreflightTests(unittest.TestCase):
   def setUp(self):
     self.tmp = Path(tempfile.mkdtemp())
@@ -640,6 +675,70 @@ class OperationRegistryPreflightTests(unittest.TestCase):
     self.assertEqual(data["state_refs"]["target_session_id"], "codex-current")
     self.assertEqual(data["state_refs"]["session_record_mode"], "formal")
     self.assertIn("current session", "\n".join(data["reasons"]))
+
+  def _prepare_dirty_git_scope(self, changed_files):
+    subprocess.run(["git", "init"], cwd=str(self.tmp), capture_output=True, text=True, check=True)
+    for rel_path in ["docs/allowed.md", "docs/outside.md"]:
+      path = self.tmp / rel_path
+      path.parent.mkdir(parents=True, exist_ok=True)
+      path.write_text("base\n", encoding="utf-8")
+    subprocess.run(
+      ["git", "add", "docs/allowed.md", "docs/outside.md"],
+      cwd=str(self.tmp),
+      capture_output=True,
+      text=True,
+      check=True,
+    )
+    for rel_path in changed_files:
+      (self.tmp / rel_path).write_text("changed\n", encoding="utf-8")
+
+  def test_workflow_mixing_preflight_reports_files_outside_allowed_scope(self):
+    self._prepare_dirty_git_scope(["docs/allowed.md", "docs/outside.md"])
+    write_registry(self.tmp, [workflow_mixing_operation()])
+
+    result = run(["operation-preflight", "--operation-id", "workflow_mixing_preflight", "--json"], self.tmp)
+
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(data["worktree_state"]["allowed_files"], ["docs/allowed.md"])
+    self.assertEqual(data["worktree_state"]["changed_files"], ["docs/allowed.md", "docs/outside.md"])
+    self.assertEqual(data["worktree_state"]["out_of_scope_changed_files"], ["docs/outside.md"])
+    self.assertIn("docs/outside.md", "\n".join(data["reasons"]))
+
+  def test_workflow_mixing_preflight_returns_conflict_resolution_choices(self):
+    self._prepare_dirty_git_scope(["docs/allowed.md", "docs/outside.md"])
+    write_registry(self.tmp, [workflow_mixing_operation()])
+
+    result = run(["operation-preflight", "--operation-id", "workflow_mixing_preflight", "--json"], self.tmp)
+
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    conflict = data["pending_conflicts"][0]
+    self.assertEqual(conflict["kind"], "workflow_mixing")
+    self.assertEqual(conflict["pending_unit"], "reopen-procedure")
+    self.assertEqual(
+      [
+        "complete_pending",
+        "use_separate_worktree",
+        "park_as_blocker_or_side_track",
+      ],
+      conflict["resolution_choices"],
+    )
+
+  def test_workflow_mixing_preflight_accepts_matching_dirty_scope(self):
+    self._prepare_dirty_git_scope(["docs/allowed.md"])
+    write_registry(self.tmp, [workflow_mixing_operation()])
+
+    result = run(["operation-preflight", "--operation-id", "workflow_mixing_preflight", "--json"], self.tmp)
+
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["worktree_state"]["allowed_files"], ["docs/allowed.md"])
+    self.assertEqual(data["worktree_state"]["changed_files"], ["docs/allowed.md"])
+    self.assertEqual(data["worktree_state"]["out_of_scope_changed_files"], [])
+    self.assertEqual(data["pending_conflicts"], [])
 
 
 if __name__ == "__main__":

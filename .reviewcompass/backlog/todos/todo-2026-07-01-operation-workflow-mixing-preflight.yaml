@@ -1,0 +1,78 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-07-01-operation-workflow-mixing-preflight
+kind: todo
+title: Add workflow mixing preflight checks
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-30T20:19:17.859983+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-operation-registry-preflight.yaml#ORP-4
+  reason: ORP-4 を plan から実行可能 TODO に materialize し、runtime checklist 経由で TDD 実行するため
+decisions: []
+source_plan_id: plan-2026-06-23-operation-registry-preflight
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-operation-registry-preflight.yaml
+source_plan_slice:
+  phase_id: ORP-4
+  title: Workflow mixing preflight
+summary: 'operation registry / preflight plan の第 4 実行単位として、post-write pending、 reopen、review-run、commit
+  approval などの途中状態に別作業差分が混ざる前に、 read-only preflight が衝突理由、allowed files と実差分の差、次に取るべき
+  選択肢を返せるようにする。
+
+  '
+problem_statement:
+- pending workflow unit 中に別作業差分が混ざると、作業者が停止理由を把握する前に状態が複雑化する。
+- allowed files と実差分の差が operation preflight で一貫して表示されない。
+- pending 完了、別 worktree、保留メモ化、blocking / side-track 承認の選択肢が機械的に返らない。
+implementation_plan:
+  phases:
+  - id: ORP-4
+    title: Workflow mixing preflight
+    tasks:
+    - id: ORP-4A
+      title: Add red tests for allowed files vs actual diff mixing detection
+      status: pending
+    - id: ORP-4B
+      title: Add red tests for pending workflow conflict choices
+      status: pending
+    - id: ORP-4C
+      title: Add red tests for clean matching scope acceptance
+      status: pending
+    - id: ORP-4D
+      title: Confirm the new tests fail before implementation
+      status: pending
+    - id: ORP-4E
+      title: Implement read-only workflow mixing preflight checks
+      status: pending
+    - id: ORP-4F
+      title: Implement recommended next choices and diff reporting
+      status: pending
+    - id: ORP-4G
+      title: Run focused tests and confirm next --json remains completed or reports
+        only expected post-write state
+      status: pending
+acceptance_criteria:
+- 作業者が作業混線に入る前に、現在の pending unit と衝突理由を確認できる。
+- operation preflight が allowed files と実差分の差を表示できる。
+- pending 完了、別 worktree、保留メモ化、blocking / side-track 承認の選択肢を返せる。
+red_tests:
+- id: ORP-4-RT-1
+  title: Workflow mixing preflight reports files outside allowed scope
+  expected: operation-preflight reports DEVIATION with out_of_scope_changed_files
+    when dirty files exceed allowed_files.
+  status: pending
+- id: ORP-4-RT-2
+  title: Workflow mixing preflight returns conflict resolution choices
+  expected: operation-preflight returns complete_pending, use_separate_worktree, park_as_blocker_or_side_track
+    choices for pending conflicts.
+  status: pending
+- id: ORP-4-RT-3
+  title: Workflow mixing preflight accepts matching dirty scope
+  expected: operation-preflight returns OK when dirty files are confined to allowed_files
+    for the pending operation.
+  status: pending
+non_goals:
+- 別 worktree 作成や blocker / side-track 登録を自動実行すること。
+- post-write / reopen / review-run の既存完了判定を全面的に作り直すこと。
+- 人間承認が必要な不可逆操作を自動承認すること。
