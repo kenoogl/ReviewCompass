@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-23-trigger-operation-entry
 kind: todo
 title: Mechanize trigger to operation entry resolution
-status: candidate
+status: completed
 source_unit_id: main-side-conversation
 created_at: '2026-06-23T09:53:01.061941+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -12,7 +12,18 @@ provenance:
   reason: commit operation card and wrapper existed, but the operator entered a manual
     low-level path before the standard trigger-to-operation flow; record this as a
     mechanization target before further operation hardening
-decisions: []
+decisions:
+- id: TOE-DEC-1
+  status: decided
+  decision: implement_read_only_operation_trigger_resolver
+  reason: 短い操作語から operation entry を返す read-only command を追加し、mutation 前に operation
+    card / first command / mutation boundary を確認できるようにする。
+- id: TOE-DEC-2
+  status: decided
+  decision: do_not_add_guarded_git_commit_warning_now
+  reason: 標準入口は operation-trigger-resolve と commit-from-current-staged.py に固定し、guarded-git-commit.py
+    direct execution は fallback_or_low_level_commands として明示する。低レベル guard 自体の警告追加は本
+    TODO では行わない。
 summary: '利用者の短い操作語（例: コミット、push、次へ）を LLM の記憶や手順選択に委ねず、
 
   trigger resolver から operation card / first command へ機械的に接続する。
@@ -55,18 +66,22 @@ implementation_plan:
     - id: TOE-1A
       title: Define machine-readable mapping from short user operation words to operation
         IDs
+      status: done
     - id: TOE-1B
       title: Include operation card path, first read-only command, and allowed mutation
         boundary in mapping output
+      status: done
     - id: TOE-1C
       title: Classify ambiguous operation words as stop-and-ask instead of best-effort
         execution
+      status: done
   - id: TOE-2
     title: Resolver command
     tasks:
     - id: TOE-2A
       title: Add read-only trigger resolver command for commit / push / next / spec-set
         style operations
+      status: done
     - id: TOE-2B
       title: Add tests that commit trigger resolves to COMMIT_OPERATION_CARD and commit-preflight
         before git add
@@ -81,9 +96,11 @@ implementation_plan:
     - id: TOE-3A
       title: Update guidance so short operation requests require trigger resolver
         before mutation
+      status: done
     - id: TOE-3B
       title: Decide whether guarded-git-commit.py should warn when invoked without
         standard wrapper context
+      status: done
 acceptance_criteria:
 - A read-only trigger resolver can map "コミット" to a commit operation record before
   any git add or approval creation.
@@ -113,3 +130,9 @@ non_goals:
 - Implementing the resolver in this ticket creation step.
 - Changing commit guard behavior immediately.
 - Replacing human approval requirements for commit or push.
+execution_history:
+- checklist_id: checklist-todo-2026-06-23-trigger-operation-entry
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-23-trigger-operation-entry.yaml
+  completion_summary: checklist-todo-2026-06-23-trigger-operation-entry completed
+    11/11 items
+  completed_at: '2026-06-30T13:26:16.619518+00:00'

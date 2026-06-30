@@ -285,6 +285,8 @@ post-write-verification pending 中に禁止変更がある。通常ワークフ
 
 通常 workflow の phase 終端または reopen 手続き上の停止点に到達している。`required_action: commit_stop_point` の場合、次 phase / 次 gate へ進まず、利用者の明示的な commit 指示を待つ。
 
+利用者の短い操作語（例: `コミット`、`push`、`次へ`）を受けた場合は、mutation の前に `.venv/bin/python3 tools/check-workflow-action.py operation-trigger-resolve --trigger-text <text> --json` を実行し、`operation_id`、`operation_card_path`、`first_readonly_command`、`mutation_allowed_after` を確認する。`resolution_status: stop-and-ask` または `unknown_operation` の場合は、低レベルコマンドを推測実行せず利用者確認で停止する。
+
 利用者が commit を指示した直後は、Git index への追加（`git add`）や approval record を作る前に `.venv/bin/python3 tools/check-workflow-action.py commit-preflight --json` を実行する。`DEVIATION` の場合は何も作らず停止し、理由と次に許可されている action だけを報告する。
 
 通常 workflow では、`intent.approval` または `feature-partitioning.approval` が全 feature で完了し、該当 phase の workflow_state または成果物に未コミット変更がある場合に返る。`blocked_by.phase`、`blocked_by.stage`、`blocked_by.dirty_paths` を確認する。`commit-preflight` が `OK` を返した後に対象差分を `git add` し、guarded commit の通常手順へ進む。commit 後に作業ツリーが clean であれば、同じ停止点を返し続けず次 phase の action へ進む。

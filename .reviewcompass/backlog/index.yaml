@@ -299,7 +299,7 @@ items:
 - id: todo-2026-06-23-trigger-operation-entry
   kind: todo
   title: Mechanize trigger to operation entry resolution
-  status: candidate
+  status: completed
   path: .reviewcompass/backlog/todos/todo-2026-06-23-trigger-operation-entry.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-23T09:53:01.061941+00:00'

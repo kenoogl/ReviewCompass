@@ -1,0 +1,87 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-23-trigger-operation-entry
+unit_id: main-side-conversation
+title: Mechanize trigger to operation entry resolution
+status: completed
+created_at: '2026-06-23T09:53:35.542923+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-23-trigger-operation-entry.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: TOE-1A
+  title: Define machine-readable mapping from short user operation words to operation
+    IDs
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TOE-1B
+  title: Include operation card path, first read-only command, and allowed mutation
+    boundary in mapping output
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TOE-1C
+  title: Classify ambiguous operation words as stop-and-ask instead of best-effort
+    execution
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TOE-2A
+  title: Add read-only trigger resolver command for commit / push / next / spec-set
+    style operations
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TOE-2B
+  title: Add tests that commit trigger resolves to COMMIT_OPERATION_CARD and commit-preflight
+    before git add
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TOE-2C
+  title: Add tests that direct low-level commit execution is not the recommended first
+    step
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TOE-3A
+  title: Update guidance so short operation requests require trigger resolver before
+    mutation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TOE-3B
+  title: Decide whether guarded-git-commit.py should warn when invoked without standard
+    wrapper context
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TOE-RT-1
+  title: Commit trigger cannot skip operation card
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TOE-RT-2
+  title: Low-level guarded commit is not first recommendation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: TOE-RT-3
+  title: Unknown trigger is non-mutating
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-23-trigger-operation-entry
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-23-trigger-operation-entry.yaml
+progress:
+  total: 11
+  done: 11
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-30T13:26:16.619518+00:00'
+completion_summary: checklist-todo-2026-06-23-trigger-operation-entry completed 11/11
+  items

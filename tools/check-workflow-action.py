@@ -96,6 +96,61 @@ COMMIT_AVOID_DIRECT_INVOCATION = [
   "tools/guarded-git-commit.py",
   "tools/check-workflow-action.py commit-approval prepare",
 ]
+OPERATION_TRIGGER_ENTRIES = {
+  "commit": {
+    "operation_id": "commit",
+    "operation_card_path": ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md",
+    "first_readonly_command": ".venv/bin/python3 tools/check-workflow-action.py commit-preflight --json",
+    "mutation_allowed_after": "commit-preflight_ok",
+    "mutation_commands_after_preflight": [
+      "git add",
+      ".venv/bin/python3 tools/commit-from-current-staged.py",
+    ],
+    "standard_execution_wrapper": COMMIT_STANDARD_RUNNER,
+    "fallback_or_low_level_commands": COMMIT_AVOID_DIRECT_INVOCATION,
+  },
+  "push": {
+    "operation_id": "push",
+    "operation_card_path": None,
+    "first_readonly_command": ".venv/bin/python3 tools/check-workflow-action.py push --rationale <reason> --json",
+    "mutation_allowed_after": "push_preflight_ok",
+    "mutation_commands_after_preflight": ["git push"],
+    "standard_execution_wrapper": "tools/check-workflow-action.py push",
+    "fallback_or_low_level_commands": ["git push"],
+  },
+  "next": {
+    "operation_id": "next",
+    "operation_card_path": None,
+    "first_readonly_command": ".venv/bin/python3 tools/check-workflow-action.py next --json",
+    "mutation_allowed_after": "never_read_only",
+    "mutation_commands_after_preflight": [],
+    "standard_execution_wrapper": "tools/check-workflow-action.py next",
+    "fallback_or_low_level_commands": [],
+  },
+  "spec-set": {
+    "operation_id": "spec-set",
+    "operation_card_path": None,
+    "first_readonly_command": ".venv/bin/python3 tools/check-workflow-action.py spec-set --help",
+    "mutation_allowed_after": "explicit_user_scope",
+    "mutation_commands_after_preflight": ["tools/check-workflow-action.py spec-set"],
+    "standard_execution_wrapper": "tools/check-workflow-action.py spec-set",
+    "fallback_or_low_level_commands": [],
+  },
+}
+OPERATION_TRIGGER_ALIASES = {
+  "コミット": "commit",
+  "commit": "commit",
+  "こみっと": "commit",
+  "プッシュ": "push",
+  "ぷっしゅ": "push",
+  "push": "push",
+  "次へ": "next",
+  "つぎへ": "next",
+  "tugihe": "next",
+  "next": "next",
+  "specset": "spec-set",
+  "spec-set": "spec-set",
+}
 DEPLOYMENT_INDEPENDENCE_GUARD_PREFIXES = (
   "config/",
   "docs/operations/",
@@ -7260,6 +7315,59 @@ def resolve_operation_prompt_from_trigger(cwd, trigger_text, plan_id=None):
   }
 
 
+def resolve_operation_trigger_entry(trigger_text):
+  normalized = _normalize_trigger_text(trigger_text)
+  operation_id = OPERATION_TRIGGER_ALIASES.get(normalized)
+  base = {
+    "trigger_text": trigger_text,
+    "normalized_trigger_text": normalized,
+    "operation_mode": "read_only",
+  }
+  if operation_id is None:
+    base.update({
+      "verdict": "DEVIATION",
+      "exit_code": 2,
+      "resolution_status": "stop-and-ask",
+      "reason": "unknown_operation",
+      "operation_id": None,
+      "operation_card_path": None,
+      "first_readonly_command": None,
+      "mutation_allowed_after": "never",
+      "mutation_commands_after_preflight": [],
+      "standard_execution_wrapper": None,
+      "fallback_or_low_level_commands": [],
+      "reasons": ["trigger_text から operation entry を解決できません"],
+    })
+    return base
+
+  entry = dict(OPERATION_TRIGGER_ENTRIES[operation_id])
+  base.update(entry)
+  base.update({
+    "verdict": "OK",
+    "exit_code": 0,
+    "resolution_status": "resolved",
+    "reason": "matched_operation_trigger",
+    "reasons": [],
+  })
+  return base
+
+
+def cmd_operation_trigger_resolve(args):
+  """短い操作語から read-only operation entry を返す"""
+  payload = resolve_operation_trigger_entry(args.trigger_text)
+  if args.json:
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {payload['verdict']}（exit {payload['exit_code']}）")
+    print(f"[STATUS] {payload.get('resolution_status')}")
+    print(f"[OPERATION] {payload.get('operation_id')}")
+    if payload.get("first_readonly_command"):
+      print(f"[FIRST] {payload['first_readonly_command']}")
+    for reason in payload.get("reasons", []):
+      print(f"- {reason}")
+  return payload["exit_code"]
+
+
 def build_operation_prompt_payload(cwd, operation, trigger_resolution=None):
   """不可逆操作直前に読む prompt 情報を返す"""
   effective_prompt = effective_prompt_for_decision_point(
@@ -9213,6 +9321,17 @@ def main():
     help="trigger-text 解決時に対象 plan を明示する",
   )
 
+  otr = sub.add_parser(
+    "operation-trigger-resolve",
+    help="短い操作語から read-only operation entry を返す",
+    parents=[common_parser],
+  )
+  otr.add_argument(
+    "--trigger-text",
+    required=True,
+    help="利用者の短い操作語",
+  )
+
   rs = sub.add_parser(
     "reopen-start",
     help="reopen classification から in-progress ファイルを生成する",
@@ -9908,6 +10027,8 @@ def main():
     sys.exit(cmd_next(args))
   elif args.subcommand == "operation-prompt":
     sys.exit(cmd_operation_prompt(args))
+  elif args.subcommand == "operation-trigger-resolve":
+    sys.exit(cmd_operation_trigger_resolve(args))
   elif args.subcommand == "reopen-start":
     sys.exit(cmd_reopen_start(args))
   elif args.subcommand == "reopen-advance-step":
