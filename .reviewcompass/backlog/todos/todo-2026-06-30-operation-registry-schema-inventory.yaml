@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-30-operation-registry-schema-inventory
 kind: todo
 title: Define operation registry schema and command inventory
-status: candidate
+status: completed
 source_unit_id: main-completed
 created_at: '2026-06-30T14:03:25.583237+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -33,30 +33,30 @@ implementation_plan:
     tasks:
     - id: ORP-1A
       title: Add red tests for operation registry schema JSON
-      status: candidate
+      status: done
     - id: ORP-1B
       title: Add red tests for required operation contract fields
-      status: candidate
+      status: done
     - id: ORP-1C
       title: Add red tests for missing canonical command path detection
-      status: candidate
+      status: done
     - id: ORP-1D
       title: Confirm the new tests fail before implementation
-      status: candidate
+      status: done
     - id: ORP-1E
       title: Implement read-only operation registry schema output
-      status: candidate
+      status: done
     - id: ORP-1F
       title: Register canonical commands for commit, push, post-write manifest, review-run,
         reopen, and session-record
-      status: candidate
+      status: done
     - id: ORP-1G
       title: Implement read-only validation for registered command paths
-      status: candidate
+      status: done
     - id: ORP-1H
       title: Run focused tests and confirm next --json remains completed or reports
         only expected post-write state
-      status: candidate
+      status: done
 acceptance_criteria:
 - LLM が記憶や前例からコマンドを推測せず、registry から正規経路を解決できる。
 - 登録済み operation の command path が存在しない場合にテストで検出できる。
@@ -68,19 +68,25 @@ red_tests:
   title: Operation registry schema is exposed as JSON
   expected: operation-registry-schema --json returns verdict OK, operation_mode read_only,
     schema_version, and registry_contract.
-  status: candidate
+  status: done
 - id: ORP-1-RT-2
   title: Required operation contract fields are declared
   expected: registry_contract.required_fields includes operation_id, kind, canonical_commands,
     required_args, outputs, serial_only, conflicting_states.
-  status: candidate
+  status: done
 - id: ORP-1-RT-3
   title: Missing canonical command path is reported
   expected: operation-registry-validate --json reports DEVIATION when a registered
     command path does not exist or points to an obsolete path.
-  status: candidate
+  status: done
 non_goals:
 - ORP-2 の creation preflight を実装すること。
 - ORP-3 の serial-only operation runner を実装すること。
 - ORP-4 の workflow mixing preflight を実装すること。
 - 人間承認が必要な不可逆操作を自動承認すること。
+execution_history:
+- checklist_id: checklist-todo-2026-06-30-operation-registry-schema-inventory
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-30-operation-registry-schema-inventory.yaml
+  completion_summary: ORP-1 operation registry schema, core inventory, and read-only
+    command path validation implemented; focused tests passed.
+  completed_at: '2026-06-30T14:12:12.617281+00:00'

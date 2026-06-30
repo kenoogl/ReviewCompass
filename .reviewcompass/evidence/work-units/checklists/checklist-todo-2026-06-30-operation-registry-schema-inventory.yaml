@@ -1,0 +1,81 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-30-operation-registry-schema-inventory
+unit_id: main-completed
+title: Define operation registry schema and command inventory
+status: completed
+created_at: '2026-06-30T14:03:42.992409+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-30-operation-registry-schema-inventory.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: ORP-1A
+  title: Add red tests for operation registry schema JSON
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-1B
+  title: Add red tests for required operation contract fields
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-1C
+  title: Add red tests for missing canonical command path detection
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-1D
+  title: Confirm the new tests fail before implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-1E
+  title: Implement read-only operation registry schema output
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-1F
+  title: Register canonical commands for commit, push, post-write manifest, review-run,
+    reopen, and session-record
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-1G
+  title: Implement read-only validation for registered command paths
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-1H
+  title: Run focused tests and confirm next --json remains completed or reports only
+    expected post-write state
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-1-RT-1
+  title: Operation registry schema is exposed as JSON
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-1-RT-2
+  title: Required operation contract fields are declared
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-1-RT-3
+  title: Missing canonical command path is reported
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-30-operation-registry-schema-inventory
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-30-operation-registry-schema-inventory.yaml
+progress:
+  total: 11
+  done: 11
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-30T14:12:12.617281+00:00'
+completion_summary: ORP-1 operation registry schema, core inventory, and read-only
+  command path validation implemented; focused tests passed.

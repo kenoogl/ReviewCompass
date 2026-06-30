@@ -60,7 +60,12 @@ from check_workflow_action import (
 from check_workflow_action.implementation_phases import check_phase_plan, load_plan
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import load_contracts, run_contract_check
-from check_workflow_action.operation_list import build_operation_list
+from check_workflow_action.operation_list import (
+  build_operation_list,
+  build_operation_registry_inventory,
+  build_operation_registry_schema,
+  validate_operation_registry,
+)
 from check_workflow_action.entrypoint_inventory import (
   build_entrypoint_coverage_audit,
   build_entrypoint_inventory,
@@ -9071,6 +9076,42 @@ def cmd_operation_list(args):
   return result.get("exit_code", 2)
 
 
+def cmd_operation_registry_schema(args):
+  """operation registry schema を read-only として返す（ORP-1）"""
+  result = build_operation_registry_schema(Path.cwd())
+  if args.json:
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {result.get('verdict')}")
+    print(f"[SCHEMA] {result.get('schema_version')}")
+  return result.get("exit_code", 2)
+
+
+def cmd_operation_registry_inventory(args):
+  """operation registry inventory を read-only として返す（ORP-1）"""
+  result = build_operation_registry_inventory(Path.cwd())
+  if args.json:
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {result.get('verdict')}")
+    print(f"[OPERATIONS] {len(result.get('operations', []))}")
+  return result.get("exit_code", 2)
+
+
+def cmd_operation_registry_validate(args):
+  """operation registry command path を read-only で検査する（ORP-1）"""
+  result = validate_operation_registry(
+    Path.cwd(),
+    registry_file=args.registry_file,
+  )
+  if args.json:
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {result.get('verdict')}")
+    print(f"[FINDINGS] {len(result.get('findings', []))}")
+  return result.get("exit_code", 2)
+
+
 def cmd_entrypoint_inventory(args):
   """workflow entrypoint を read-only inventory として返す（ECA-1）"""
   result = build_entrypoint_inventory(Path.cwd())
@@ -9908,6 +9949,29 @@ def main():
   )
 
   sub.add_parser(
+    "operation-registry-schema",
+    help="operation registry schema を read-only として出力する（ORP-1）",
+    parents=[common_parser],
+  )
+
+  sub.add_parser(
+    "operation-registry-inventory",
+    help="operation registry inventory を read-only として出力する（ORP-1）",
+    parents=[common_parser],
+  )
+
+  orv = sub.add_parser(
+    "operation-registry-validate",
+    help="operation registry command path を read-only で検査する（ORP-1）",
+    parents=[common_parser],
+  )
+  orv.add_argument(
+    "--registry-file",
+    default=None,
+    help="検査対象 registry YAML（省略時は組み込み core inventory）",
+  )
+
+  sub.add_parser(
     "entrypoint-inventory",
     help="workflow entrypoint を read-only inventory として出力する（ECA-1）",
     parents=[common_parser],
@@ -10069,6 +10133,12 @@ def main():
     sys.exit(cmd_implementation_phase_check(args))
   elif args.subcommand == "operation-list":
     sys.exit(cmd_operation_list(args))
+  elif args.subcommand == "operation-registry-schema":
+    sys.exit(cmd_operation_registry_schema(args))
+  elif args.subcommand == "operation-registry-inventory":
+    sys.exit(cmd_operation_registry_inventory(args))
+  elif args.subcommand == "operation-registry-validate":
+    sys.exit(cmd_operation_registry_validate(args))
   elif args.subcommand == "entrypoint-inventory":
     sys.exit(cmd_entrypoint_inventory(args))
   elif args.subcommand == "entrypoint-registry-schema":
