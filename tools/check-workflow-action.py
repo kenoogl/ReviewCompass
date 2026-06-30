@@ -73,6 +73,7 @@ DEFAULT_LAST_COMMIT_PRECHECK_PATH = ".git/reviewcompass/last-commit-precheck.jso
 DEFAULT_WORKFLOW_STATE_REPAIR_PATH = ".reviewcompass/runtime/repairs/workflow-state-repair.json"
 WORKFLOW_STATE_REPAIR_TTL_SECONDS = 3600
 DEFAULT_DISCIPLINE_MAP_PATH = ".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml"
+DEFAULT_SIDE_TRACK_STACK_PATH = "stages/in-progress/side-track-stack.yaml"
 DEFAULT_CARRY_FORWARD_REGISTER_PATH = "learning/workflow/carry-forward-register/reviewcompass-import.yaml"
 DEFAULT_CARRY_FORWARD_SOURCE_PATH = (
   "learning/workflow/carry-forward-register/sources/"
@@ -618,6 +619,9 @@ DEFAULT_DISCIPLINE_MAP = {
     ],
     "parent_resume_pending": [
       ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#parent_resume_pending",
+    ],
+    "side_track_return_pending": [
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#maintenance_in_progress",
     ],
     "blocking_unit_required": [
       ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#parent_resume_pending",
@@ -4721,7 +4725,47 @@ def list_in_progress_files(cwd):
   if not in_progress_dir.exists():
     return []
   files = [p for p in in_progress_dir.iterdir() if p.is_file()]
-  return [str(p.relative_to(cwd)) for p in sorted(files)]
+  return [
+    str(p.relative_to(cwd))
+    for p in sorted(files)
+    if str(p.relative_to(cwd)) != DEFAULT_SIDE_TRACK_STACK_PATH
+  ]
+
+
+def resolve_side_track_return_pending(cwd):
+  """side-track stack の top frame から復帰先 next_action を返す"""
+  result = current_side_track_stack(Path(cwd) / DEFAULT_SIDE_TRACK_STACK_PATH)
+  frames = result.get("stack", {}).get("frames", [])
+  if not isinstance(frames, list) or not frames:
+    return None, None, result.get("reasons", [])
+  top = frames[-1]
+  if not isinstance(top, dict):
+    return None, None, ["side-track stack の top frame は mapping である必要があります"]
+  return_to = top.get("return_to")
+  if not isinstance(return_to, dict):
+    return None, None, ["side-track stack の return_to は mapping である必要があります"]
+  state_refs = return_to.get("state_refs") or []
+  if not isinstance(state_refs, list):
+    state_refs = []
+  next_action = {
+    "kind": "blocking_in_progress",
+    "blocking_phase": "side_track_return_pending",
+    "required_action": return_to.get("required_action"),
+    "frame_id": top.get("frame_id"),
+    "parent_frame_id": top.get("parent_frame_id"),
+    "title": top.get("title"),
+    "return_target_refs": state_refs,
+    "active_gate": return_to.get("active_gate"),
+    "feature": None,
+    "phase": None,
+    "stage": None,
+    "reason": "side-track 完了後に構造化された復帰先へ戻る必要があります",
+  }
+  current_state = {
+    "active_side_track": top,
+    "side_track_stack_path": DEFAULT_SIDE_TRACK_STACK_PATH,
+  }
+  return next_action, current_state, result.get("reasons", [])
 
 
 def is_reopen_stop_point_commit_allowed(cwd, in_progress_files, staged_files):
@@ -6838,6 +6882,15 @@ def cmd_next(args):
               )
               if resolved_action.get("kind") == "completed":
                 resolved_action = resolve_upstream_recheck_action(cwd) or resolved_action
+              side_track_action = None
+              side_track_state = None
+              side_track_reasons = []
+              if resolved_action.get("kind") == "completed":
+                side_track_action, side_track_state, side_track_reasons = (
+                  resolve_side_track_return_pending(cwd)
+                )
+                if side_track_action is not None:
+                  resolved_action = side_track_action
               next_action = augment_cross_feature_next_action(
                 cwd,
                 specs,
@@ -6848,7 +6901,10 @@ def cmd_next(args):
                 "workflow_state": summarize_workflow_state(specs),
                 "post_write_manifest": manifest.get("_path"),
               }
+              if side_track_state is not None:
+                current_state.update(side_track_state)
               reasons = []
+              reasons.extend(side_track_reasons)
               verdict, exit_code = "OK", 0
       else:
         forbidden_files = list_forbidden_post_write_pending_changes(cwd, verification_targets)
@@ -6962,6 +7018,15 @@ def cmd_next(args):
             )
             if resolved_action.get("kind") == "completed":
               resolved_action = resolve_upstream_recheck_action(cwd) or resolved_action
+            side_track_action = None
+            side_track_state = None
+            side_track_reasons = []
+            if resolved_action.get("kind") == "completed":
+              side_track_action, side_track_state, side_track_reasons = (
+                resolve_side_track_return_pending(cwd)
+              )
+              if side_track_action is not None:
+                resolved_action = side_track_action
             next_action = augment_cross_feature_next_action(
               cwd,
               specs,
@@ -6971,7 +7036,10 @@ def cmd_next(args):
               "feature_order": FEATURE_ORDER,
               "workflow_state": summarize_workflow_state(specs),
             }
+            if side_track_state is not None:
+              current_state.update(side_track_state)
             reasons = []
+            reasons.extend(side_track_reasons)
             verdict, exit_code = "OK", 0
 
   next_action = attach_required_context(cwd, next_action)

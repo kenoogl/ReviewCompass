@@ -3148,6 +3148,49 @@ class NextNavigationTests(unittest.TestCase):
       "side-track",
     )
 
+  def test_next_returns_side_track_return_pending_before_completed(self):
+    """side-track stack に復帰先があれば completed より優先する"""
+    cwd = Path(self.tmpdir)
+    complete = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_specs_for_next(cwd, {feature: complete for feature in FEATURE_ORDER})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "side-track-stack.yaml").write_text(
+      "schema_version: side-track-stack-v1\n"
+      "frames:\n"
+      "  - frame_id: maintenance-note\n"
+      "    kind: maintenance\n"
+      "    title: Maintenance note\n"
+      "    return_to:\n"
+      "      required_action: run_maintenance\n"
+      "      active_gate: null\n"
+      "      state_refs:\n"
+      "        - .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["next_action"]["kind"], "blocking_in_progress")
+    self.assertEqual(data["next_action"]["blocking_phase"], "side_track_return_pending")
+    self.assertEqual(data["next_action"]["required_action"], "run_maintenance")
+    self.assertEqual(data["next_action"]["frame_id"], "maintenance-note")
+    self.assertEqual(
+      data["next_action"]["return_target_refs"],
+      [".reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml"],
+    )
+    self.assertIn("active_side_track", data["current_state"])
+
   def test_next_prioritizes_post_write_over_maintenance(self):
     """maintenance 中でも書き込み後検証対象があれば post-write を優先する"""
     cwd = Path(self.tmpdir)
