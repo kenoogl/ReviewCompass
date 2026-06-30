@@ -327,8 +327,8 @@ class CommitPreflightKindBehaviorTests(unittest.TestCase):
     if kind is not None:
       self.assertIn(
         kind,
-        EXPECTED_COMMIT_PREFLIGHT_KIND_VALUES | {"post_write_verification", "unknown"},
-        f"commit-preflight の kind '{kind}' は想定外の値。",
+        EXPECTED_COMMIT_PREFLIGHT_KIND_VALUES,
+        f"commit-preflight の kind '{kind}' は想定外の値。commit-preflight は {sorted(EXPECTED_COMMIT_PREFLIGHT_KIND_VALUES)} の3値のみ返すこと（受入 12）。",
       )
 
 

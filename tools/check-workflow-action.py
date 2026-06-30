@@ -4429,9 +4429,13 @@ def build_commit_instruction_preflight(cwd):
       reasons.append("commit より前に post-write verification を完了してください")
       if repair_state.get("exists"):
         reasons.extend(repair_errors)
+    next_action = None  # verification_pending は外部スキーマに公開しない
+
+  if next_action is not None and next_action.get("kind") == "unknown":
+    next_action = None  # unknown は commit-preflight の外部スキーマに公開しない（受入 12）
 
   if commit_unit_errors:
-    if next_action.get("kind") not in ("commit_mixing_risk", "commit_unit_stale"):
+    if next_action is None or next_action.get("kind") not in ("commit_mixing_risk", "commit_unit_stale"):
       verdict = "DEVIATION"
       allowed_to_stage = False
       allowed_to_prepare_approval = False
