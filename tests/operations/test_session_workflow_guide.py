@@ -191,6 +191,29 @@ def test_codex_commit_sandbox_external_wrapper_is_starting_condition():
     assert "先に sandbox 内で失敗させてから再実行" in text
 
 
+def test_sandbox_non_tty_guarded_commit_issue_is_closed_by_commit_card_contract():
+  card = guidance_path("COMMIT_OPERATION_CARD.md").read_text(encoding="utf-8")
+  issue = (
+    ROOT
+    / ".reviewcompass"
+    / "backlog"
+    / "issues"
+    / "issue-2026-06-24-sandbox-guarded-commit-blocked.yaml"
+  ).read_text(encoding="utf-8")
+  index = (ROOT / ".reviewcompass" / "backlog" / "index.yaml").read_text(
+    encoding="utf-8")
+
+  assert "status: completed" in issue
+  assert "擬似端末（PTY" in card
+  assert "直近の利用者発話で明示された commit 指示の一行だけを流す" in card
+  assert "commit wrapper 本体を最初から sandbox 外" in card
+  assert "wrapper を経由せず承認レコードを内部関数で自作する" in card
+  assert "issue-2026-06-24-sandbox-guarded-commit-blocked" in index
+  assert "status: completed" in index.split(
+    "issue-2026-06-24-sandbox-guarded-commit-blocked", 1)[1].split(
+      "created_at:", 1)[0]
+
+
 def test_user_facing_reports_avoid_translation_style_japanese():
   guide = guidance_path("SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
 

@@ -404,7 +404,7 @@ items:
 - id: issue-2026-06-24-sandbox-guarded-commit-blocked
   kind: issue
   title: サンドボックス/非TTY 環境では guarded commit が完了できない
-  status: candidate
+  status: completed
   path: .reviewcompass/backlog/issues/issue-2026-06-24-sandbox-guarded-commit-blocked.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-24T10:15:47.659078+00:00'
