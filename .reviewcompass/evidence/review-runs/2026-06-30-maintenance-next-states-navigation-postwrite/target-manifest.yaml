@@ -1,0 +1,4 @@
+run_id: 2026-06-30-maintenance-next-states-navigation-postwrite
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 0d917606303dcf7923288f34ac36907782327159786347486f11d4ae7e9cd344

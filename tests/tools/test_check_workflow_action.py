@@ -3239,6 +3239,109 @@ class NextNavigationTests(unittest.TestCase):
       data["next_action"]["required_reviews"],
     )
 
+  def test_next_returns_maintenance_review_required(self):
+    """未完了の変更内容レビューがあれば maintenance review required を返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "maintenance-2026-06-30-review.yaml").write_text(
+      "process_id: maintenance\n"
+      "title: Maintenance review\n"
+      "work_class: maintenance\n"
+      "control_relation: side-track\n"
+      "required_reviews:\n"
+      "  - id: change-review\n"
+      "    status: pending\n"
+      "    review_type: change_content\n"
+      "post_write_verification:\n"
+      "  status: not_applicable\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["next_action"]["blocking_phase"],
+      "maintenance_review_required",
+    )
+    self.assertEqual(
+      data["next_action"]["required_action"],
+      "run_maintenance_review",
+    )
+
+  def test_next_returns_maintenance_post_write_required(self):
+    """post-write が未完了なら変更内容レビューと別の段階を返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "maintenance-2026-06-30-post-write.yaml").write_text(
+      "process_id: maintenance\n"
+      "title: Maintenance post-write\n"
+      "work_class: maintenance\n"
+      "control_relation: side-track\n"
+      "required_reviews:\n"
+      "  - id: change-review\n"
+      "    status: completed\n"
+      "    review_type: change_content\n"
+      "post_write_verification:\n"
+      "  status: pending\n"
+      "  target_files:\n"
+      "    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["next_action"]["blocking_phase"],
+      "maintenance_post_write_required",
+    )
+    self.assertEqual(
+      data["next_action"]["required_action"],
+      "run_maintenance_post_write_verification",
+    )
+
+  def test_next_returns_maintenance_completion_required(self):
+    """必要レビューと post-write が完了したら completion required を返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "maintenance-2026-06-30-completion.yaml").write_text(
+      "process_id: maintenance\n"
+      "title: Maintenance completion\n"
+      "work_class: maintenance\n"
+      "control_relation: side-track\n"
+      "required_reviews:\n"
+      "  - id: change-review\n"
+      "    status: completed\n"
+      "    review_type: change_content\n"
+      "post_write_verification:\n"
+      "  status: completed\n"
+      "completion_criteria:\n"
+      "  - move maintenance file to stages/completed\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["next_action"]["blocking_phase"],
+      "maintenance_completion_required",
+    )
+    self.assertEqual(data["next_action"]["required_action"], "complete_maintenance")
+
   def test_next_returns_side_track_return_pending_before_completed(self):
     """side-track stack に復帰先があれば completed より優先する"""
     cwd = Path(self.tmpdir)

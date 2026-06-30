@@ -614,6 +614,16 @@ DEFAULT_DISCIPLINE_MAP = {
     "maintenance_in_progress": [
       ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#maintenance_in_progress",
     ],
+    "maintenance_review_required": [
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#maintenance_in_progress",
+    ],
+    "maintenance_post_write_required": [
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#maintenance_in_progress",
+      ".reviewcompass/guidance/discipline_post_write_verification.md",
+    ],
+    "maintenance_completion_required": [
+      ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#maintenance_in_progress",
+    ],
     "resume_in_progress": [
       ".reviewcompass/guidance/WORKFLOW_NAVIGATION.md#resume_in_progress",
     ],
@@ -5501,6 +5511,62 @@ def select_reopen_next_action_fields(data, pending_gates, cwd=None):
   }
 
 
+COMPLETED_MAINTENANCE_STATUSES = {
+  "approved",
+  "completed",
+  "done",
+  "not_applicable",
+  "skipped",
+}
+
+
+def is_maintenance_item_completed(item):
+  """maintenance 記録項目の status が完了扱いか判定する"""
+  if not isinstance(item, dict):
+    return False
+  status = item.get("status")
+  if status is None:
+    return False
+  return str(status).lower() in COMPLETED_MAINTENANCE_STATUSES
+
+
+def has_pending_maintenance_review(required_reviews):
+  """変更内容レビューに未完了項目があるか判定する"""
+  if not isinstance(required_reviews, list):
+    return False
+  return any(not is_maintenance_item_completed(review) for review in required_reviews)
+
+
+def is_maintenance_post_write_pending(post_write_verification):
+  """maintenance の post-write verification が未完了か判定する"""
+  if not isinstance(post_write_verification, dict):
+    return False
+  if not post_write_verification:
+    return False
+  status = post_write_verification.get("status")
+  if status is None:
+    return True
+  return str(status).lower() not in COMPLETED_MAINTENANCE_STATUSES
+
+
+def select_maintenance_next_state(
+  required_reviews,
+  post_write_verification,
+  completion_criteria,
+):
+  """maintenance in-progress 内の次に必要な段階を一意に選ぶ"""
+  if has_pending_maintenance_review(required_reviews):
+    return "maintenance_review_required", "run_maintenance_review"
+  if is_maintenance_post_write_pending(post_write_verification):
+    return (
+      "maintenance_post_write_required",
+      "run_maintenance_post_write_verification",
+    )
+  if completion_criteria:
+    return "maintenance_completion_required", "complete_maintenance"
+  return "maintenance_in_progress", "run_maintenance"
+
+
 def build_in_progress_next_action(cwd, relative_path):
   """進行中状態ファイルから next_action を作る"""
   data = load_in_progress_file(cwd, relative_path)
@@ -5514,15 +5580,20 @@ def build_in_progress_next_action(cwd, relative_path):
     review_evidence = data.get("review_evidence", [])
     post_write_verification = data.get("post_write_verification", {})
     completion_criteria = data.get("completion_criteria", [])
+    blocking_phase, required_action = select_maintenance_next_state(
+      required_reviews,
+      post_write_verification,
+      completion_criteria,
+    )
     return {
       "kind": "blocking_in_progress",
-      "blocking_phase": "maintenance_in_progress",
+      "blocking_phase": blocking_phase,
       "file": relative_path,
       "process_id": process_id,
       "title": data.get("title"),
       "work_class": work_class,
       "control_relation": control_relation,
-      "required_action": "run_maintenance",
+      "required_action": required_action,
       "maintenance_action": maintenance_action,
       "blocked_normal_workflow": data.get("blocked_normal_workflow", True),
       "mainline_blocked_by": data.get("mainline_blocked_by"),
@@ -6841,7 +6912,10 @@ def cmd_next(args):
 
   if in_progress_files:
     in_progress_action = build_in_progress_next_action(cwd, in_progress_files[0])
-    if not (in_progress_action.get("kind") == "blocking_in_progress" and in_progress_action.get("blocking_phase") == "maintenance_in_progress"):
+    if not (
+      in_progress_action.get("kind") == "blocking_in_progress"
+      and in_progress_action.get("process_id") == "maintenance"
+    ):
       next_action = in_progress_action
       current_state = {"in_progress_files": in_progress_files}
       reasons = []

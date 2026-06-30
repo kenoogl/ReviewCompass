@@ -1,0 +1,24 @@
+run_id: 2026-06-30-maintenance-next-states-navigation-postwrite
+phase: post_write_verification
+criteria_id: maintenance-next-states-navigation-postwrite
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-next-states-navigation-postwrite/review-target.md
+criteria_file_sha256: 310d41383946ae289a34f69ca2b65b192585821cbbc5722d84455470908e66bf
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-next-states-navigation-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: 9a14114b92b4d008b8658d66156d32c76e919d6ca3430fc479407589586e48be
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 0d917606303dcf7923288f34ac36907782327159786347486f11d4ae7e9cd344
+  content_mode: full_text
+  content_sha256: 0d917606303dcf7923288f34ac36907782327159786347486f11d4ae7e9cd344
+source_materials:
+- path: .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+  sha256: d822714a692ae109c6c198296e766461b4c96f18f7ce1b2c5e42ffc696da4bc4
+  content_mode: full_text
+  content_sha256: d822714a692ae109c6c198296e766461b4c96f18f7ce1b2c5e42ffc696da4bc4
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-30T09:50:05.444186+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-next-states-navigation-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-next-states-navigation-postwrite/prompt-manifest.yaml
