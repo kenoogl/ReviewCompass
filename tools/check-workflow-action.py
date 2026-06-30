@@ -61,6 +61,7 @@ from check_workflow_action.implementation_phases import check_phase_plan, load_p
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import load_contracts, run_contract_check
 from check_workflow_action.operation_list import build_operation_list
+from check_workflow_action.entrypoint_inventory import build_entrypoint_inventory
 from check_workflow_action.prompt_audit import audit_manifest, load_manifest as load_prompt_manifest
 from check_workflow_action.proxy_triage_decisions import (
   check_decision as check_proxy_triage_decision,
@@ -8958,6 +8959,17 @@ def cmd_operation_list(args):
   return result.get("exit_code", 2)
 
 
+def cmd_entrypoint_inventory(args):
+  """workflow entrypoint を read-only inventory として返す（ECA-1）"""
+  result = build_entrypoint_inventory(Path.cwd())
+  if args.json:
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {result.get('verdict')}")
+    print(f"[ENTRYPOINTS] {len(result.get('entrypoints', []))}")
+  return result.get("exit_code", 2)
+
+
 def cmd_proxy_triage_decision_check(args):
   """proxy triage decision を read-only で検査する（Req 16）"""
   action_dict = {
@@ -9749,6 +9761,12 @@ def main():
     parents=[common_parser],
   )
 
+  sub.add_parser(
+    "entrypoint-inventory",
+    help="workflow entrypoint を read-only inventory として出力する（ECA-1）",
+    parents=[common_parser],
+  )
+
   ptd = sub.add_parser(
     "proxy-triage-decision-check",
     help="proxy triage decision の構造と coverage を read-only で検査する（Req 16）",
@@ -9891,6 +9909,8 @@ def main():
     sys.exit(cmd_implementation_phase_check(args))
   elif args.subcommand == "operation-list":
     sys.exit(cmd_operation_list(args))
+  elif args.subcommand == "entrypoint-inventory":
+    sys.exit(cmd_entrypoint_inventory(args))
   elif args.subcommand == "proxy-triage-decision-check":
     sys.exit(cmd_proxy_triage_decision_check(args))
   elif args.subcommand == "commit-approval":

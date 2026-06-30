@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-30-entrypoint-coverage-inventory
 kind: todo
 title: Inventory current workflow entrypoints
-status: candidate
+status: completed
 source_unit_id: main-completed
 created_at: '2026-06-30T11:42:26.444406+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -34,29 +34,29 @@ implementation_plan:
     tasks:
     - id: ECA-1A
       title: Add red tests for enumerating current next_action.kind values
-      status: pending
+      status: done
     - id: ECA-1B
       title: Add red tests for enumerating major check-workflow-action CLI subcommands
-      status: pending
+      status: done
     - id: ECA-1C
       title: Add red tests for recording required_action, expected effective prompt,
         and evidence path presence per entrypoint
-      status: pending
+      status: done
     - id: ECA-1D
       title: Confirm the new tests fail for the missing inventory mechanism before
         implementation
-      status: pending
+      status: done
     - id: ECA-1E
       title: Implement a read-only entrypoint inventory function or CLI output
-      status: pending
+      status: done
     - id: ECA-1F
       title: Include entrypoint id, kind, trigger, required_action, expected effective
         prompt, mechanized command, and evidence path in JSON output
-      status: pending
+      status: done
     - id: ECA-1G
       title: Run focused tests and confirm next --json still returns completed on
         clean state
-      status: pending
+      status: done
 acceptance_criteria:
 - 現在存在する主要入口を機械的に列挙できる。
 - 入口ごとに required_action、expected effective prompt、mechanized command、evidence path
@@ -68,18 +68,24 @@ red_tests:
   title: Current next_action.kind values are enumerable
   expected: entrypoint inventory can list known next_action.kind values and their
     discipline/effective prompt coverage.
-  status: pending
+  status: done
 - id: ECA-1-RT-2
   title: Major CLI subcommands are enumerable
   expected: entrypoint inventory can list major check-workflow-action subcommands
     without relying on LLM memory.
-  status: pending
+  status: done
 - id: ECA-1-RT-3
   title: Entrypoint connection fields are recorded
   expected: each inventory entry exposes required_action, expected effective prompt,
     mechanized command, and evidence path fields.
-  status: pending
+  status: done
 non_goals:
 - ECA-2 の registry schema を確定すること。
 - ECA-3 以降の coverage audit / freshness audit / commit enforcement を実装すること。
 - すべての CLI を一度に統合 registry 化すること。
+execution_history:
+- checklist_id: checklist-todo-2026-06-30-entrypoint-coverage-inventory
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-30-entrypoint-coverage-inventory.yaml
+  completion_summary: ECA-1 entrypoint inventory CLI implemented and focused tests
+    passed
+  completed_at: '2026-06-30T11:49:50.775148+00:00'

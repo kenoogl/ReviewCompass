@@ -1,0 +1,76 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-30-entrypoint-coverage-inventory
+unit_id: main-completed
+title: Inventory current workflow entrypoints
+status: completed
+created_at: '2026-06-30T11:42:42.061958+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-30-entrypoint-coverage-inventory.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: ECA-1A
+  title: Add red tests for enumerating current next_action.kind values
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-1B
+  title: Add red tests for enumerating major check-workflow-action CLI subcommands
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-1C
+  title: Add red tests for recording required_action, expected effective prompt, and
+    evidence path presence per entrypoint
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-1D
+  title: Confirm the new tests fail for the missing inventory mechanism before implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-1E
+  title: Implement a read-only entrypoint inventory function or CLI output
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-1F
+  title: Include entrypoint id, kind, trigger, required_action, expected effective
+    prompt, mechanized command, and evidence path in JSON output
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-1G
+  title: Run focused tests and confirm next --json still returns completed on clean
+    state
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-1-RT-1
+  title: Current next_action.kind values are enumerable
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-1-RT-2
+  title: Major CLI subcommands are enumerable
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-1-RT-3
+  title: Entrypoint connection fields are recorded
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-30-entrypoint-coverage-inventory
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-30-entrypoint-coverage-inventory.yaml
+progress:
+  total: 10
+  done: 10
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-30T11:49:50.775148+00:00'
+completion_summary: ECA-1 entrypoint inventory CLI implemented and focused tests passed
