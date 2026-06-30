@@ -69,6 +69,16 @@ def test_workflow_navigation_requires_taxonomy_fields_for_maintenance_yaml():
   assert "`control_relation: side-track`" in text
 
 
+def test_workflow_navigation_classifies_completed_entry_paths():
+  text = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+
+  assert "completed からの作業開始分類" in text
+  assert "局所的な運用・検査器・手引き補修" in text
+  assert "既存正本の意味変更や下流再実施が必要" in text
+  assert "既存 feature の責務境界に収まらない新しい責務" in text
+  assert "判断が分かれる場合は候補だけを提示し、人間判断を待つ" in text
+
+
 def test_reopen_drafting_is_required_before_triad_review():
   navigation = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
   reopen = guidance_path("REOPEN_PROCEDURE.md").read_text(encoding="utf-8")

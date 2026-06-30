@@ -1,0 +1,4 @@
+run_id: 2026-06-30-completed-entry-classification-navigation-postwrite
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 1bcb3f2a7873b8e2312684eb3032b4f64068c965278bbcedcf3ba9798281ef2a

@@ -1,0 +1,32 @@
+run_id: 2026-06-30-completed-entry-classification-navigation-postwrite
+phase: post_write_verification
+criteria_id: completed-entry-classification-navigation-postwrite
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-30-completed-entry-classification-navigation-postwrite/review-target.md
+criteria_file_sha256: 3a4cdb6bc7f64ff85991124ea4f31c44b499cf0652a2f27b3ea7ed4271befdd3
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-30-completed-entry-classification-navigation-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: b87bfaf9f998c7bde343e7d9aa9f7dbe7d587075b69ed3448e8ca7ccd3f19b6e
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 1bcb3f2a7873b8e2312684eb3032b4f64068c965278bbcedcf3ba9798281ef2a
+  content_mode: full_text
+  content_sha256: 1bcb3f2a7873b8e2312684eb3032b4f64068c965278bbcedcf3ba9798281ef2a
+source_materials:
+- path: .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+  sha256: 3f9d01e32c19afee9ea1ebcee5cef89a18227285444c3d36a1c3eaa8c6375d19
+  content_mode: full_text
+  content_sha256: 3f9d01e32c19afee9ea1ebcee5cef89a18227285444c3d36a1c3eaa8c6375d19
+- path: docs/notes/2026-06-25-work-mode-taxonomy-related-work-index.md
+  sha256: cfc9b1aa2dc339ed2b4ca28009387b3feadab84a8840fd3460373aefe8046834
+  content_mode: full_text
+  content_sha256: cfc9b1aa2dc339ed2b4ca28009387b3feadab84a8840fd3460373aefe8046834
+- path: stages/completed/maintenance-2026-06-23-workflow-mode-taxonomy-note.yaml
+  sha256: 5b4fcac20e0c47d1eaaa9ff27eef390478bc439c2b945f668c37c9bbd0948135
+  content_mode: full_text
+  content_sha256: 5b4fcac20e0c47d1eaaa9ff27eef390478bc439c2b945f668c37c9bbd0948135
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-30T09:15:53.225698+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-30-completed-entry-classification-navigation-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-30-completed-entry-classification-navigation-postwrite/prompt-manifest.yaml
