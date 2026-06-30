@@ -67,8 +67,43 @@ remaining_work:
     note: >
       commit-preflight の human_summary / commit_operation、operation-prompt commit の標準 runner、
       commit-from-current-staged.py の短文表示で CSUX-3 全体を実装済み。
+  - id: CSUX-4
+    title: Autonomous execution through commit
+    status: candidate
+    tasks:
+      - '利用者指示 `自律実行` を、次の 1 commit 分の作業、検証、TODO / checklist 更新、commit まで進める明示承認として解釈する。'
+      - '`次へ` は従来どおり commit 停止点までで止め、`自律実行` と区別する。'
+      - commit 停止点到達時に停止せず、commit preflight、stage、approval / execution delegation、guarded commit を逐次実行する。
+      - TDD 境界では 1 commit 分だけ進める。赤テスト段階なら赤テスト commit で停止し、実装段階なら実装 commit で停止する。
+      - 'commit 後は push へ進まず停止し、利用者向け報告の末尾に `次に必要な操作: プッシュ` を示す。'
+    acceptance:
+      - '`自律実行` は commit 代行承認を含むが、push 代行承認は含まない。'
+      - commit preflight が DEVIATION / WARN を返した場合は commit せず停止する。
+      - 予定外差分、未解決テスト失敗、post-write-verification 未完了、仕様判断が必要な場合は自律実行を中断する。
+      - '利用者発話なしに任意の承認文を生成する経路を作らない。承認 source は `自律実行` 指示そのものに束縛する。'
+  - id: CSUX-5
+    title: Autonomous execution through push
+    status: candidate
+    tasks:
+      - '利用者指示 `pushまで自律実行` を、次の 1 commit 分の作業、検証、TODO / checklist 更新、commit、push まで進める明示承認として解釈する。'
+      - commit 成功後に push preflight を実行し、作業ツリー clean、ローカル先行 commit、push 先、commit 事前検査記録を確認する。
+      - push preflight が通った場合だけ push を実行し、push 後に clean / synced 状態を確認して停止する。
+      - 'push まで完了した場合は、次タスクがあるときだけ `次に必要な操作: 次へ` を示す。'
+    acceptance:
+      - '`pushまで自律実行` は commit 代行承認と push 代行承認を含む。'
+      - push preflight が DEVIATION / WARN を返した場合は push せず停止する。
+      - commit 成功後に追加の未コミット差分がある場合は push へ進まない。
+      - push 先が想定外の場合は停止し、利用者判断を求める。
 non_goals:
-  - push を自動実行しない。
+  - '`pushまで自律実行` の明示なしに push を自動実行しない。'
   - commit guard 自体を緩めない。
   - 利用者承認の必要性を runtime state で代替しない。
-decisions: []
+decisions:
+  - date: '2026-07-01'
+    decision: >
+      自律実行の範囲を二段階に分ける。`自律実行` は次の 1 commit 分を
+      commit まで進め、push 前で停止する。`pushまで自律実行` は同じ 1 commit
+      分を commit した後、push preflight を通した場合だけ push まで進める。
+    rationale: >
+      作業が安定してきたため往復を減らす。ただし TDD の commit 境界、
+      commit / push preflight、予定外差分検出、仕様判断停止は維持する。
