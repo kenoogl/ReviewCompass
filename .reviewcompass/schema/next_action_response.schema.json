@@ -107,7 +107,7 @@
           }
         },
         {
-          "$comment": "① commit_stop_point: active_gate/phase/stage はすべて null（受入 11(6)①）",
+          "$comment": "① commit_stop_point: active_gate/phase/stage はすべて null、blocked_by.type は commit_stop_point（受入 11(6)①）",
           "if": {
             "properties": { "required_action": { "const": "commit_stop_point" } },
             "required": ["required_action"]
@@ -116,12 +116,19 @@
             "properties": {
               "active_gate": { "type": "null" },
               "phase": { "type": "null" },
-              "stage": { "type": "null" }
+              "stage": { "type": "null" },
+              "blocked_by": {
+                "type": "object",
+                "required": ["type"],
+                "properties": {
+                  "type": { "const": "commit_stop_point" }
+                }
+              }
             }
           }
         },
         {
-          "$comment": "② run_reopen_pending_gate: active_gate 非 null、blocked_by=null（受入 11(6)②）",
+          "$comment": "② run_reopen_pending_gate: active_gate/phase/stage 非 null、blocked_by=null（受入 11(6)②）",
           "if": {
             "properties": { "required_action": { "const": "run_reopen_pending_gate" } },
             "required": ["required_action"]
@@ -129,12 +136,14 @@
           "then": {
             "properties": {
               "active_gate": { "type": "string" },
+              "phase": { "type": "string" },
+              "stage": { "type": "string" },
               "blocked_by": { "type": "null" }
             }
           }
         },
         {
-          "$comment": "③ run_reopen_drafting: active_gate は stages/<phase>.yaml#drafting 形式（受入 11(6)③）",
+          "$comment": "③ run_reopen_drafting: active_gate は stages/<phase>.yaml#drafting 形式、phase 非 null、stage=drafting（受入 11(6)③）",
           "if": {
             "properties": { "required_action": { "const": "run_reopen_drafting" } },
             "required": ["required_action"]
@@ -144,7 +153,9 @@
               "active_gate": {
                 "type": "string",
                 "pattern": "^stages/.+\\.yaml#drafting$"
-              }
+              },
+              "phase": { "type": "string" },
+              "stage": { "const": "drafting" }
             }
           }
         },
