@@ -107,7 +107,12 @@ remaining_work:
       - completed は作業不要だけでなく、利用者指示により maintenance / reopen / new workflow を開始可能と扱える。
   - id: MWP-2
     title: Maintenance evidence fields and next-json states
-    status: candidate
+    status: completed
+    completed_at: '2026-06-30'
+    completion_evidence: >
+      WORKFLOW_NAVIGATION.md maintenance evidence field definitions,
+      next --json maintenance required-state tests and commits
+      73f88db8, 8fe89efc.
     tasks:
       - workflow_steps、required_reviews、review_evidence、post_write_verification、completion_criteria を定義する。
       - next --json が maintenance review required、post-write required、completion required を返せるようにする。
