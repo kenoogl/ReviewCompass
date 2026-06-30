@@ -1,0 +1,88 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-07-01-autonomous-execution-through-commit
+kind: todo
+title: Add autonomous execution through commit
+status: completed
+source_unit_id: main-completed
+created_at: '2026-06-30T21:03:32.357368+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml#CSUX-4
+  reason: CSUX-4 を plan から実行可能 TODO に materialize し、runtime checklist 経由で TDD 実行するため
+decisions:
+- decision: completed
+  decision_ref: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-autonomous-execution-through-commit.yaml
+  reason: CSUX-4 autonomous-through-commit trigger metadata implemented; tests/tools/test_check_workflow_action.py
+    passed
+  decided_at: '2026-06-30T21:08:42.734317+00:00'
+source_plan_id: plan-2026-06-23-commit-stop-point-and-approval-ux
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml
+source_plan_slice:
+  phase_id: CSUX-4
+  title: Autonomous execution through commit
+summary: 'commit stop-point and approval UX plan の CSUX-4 実行単位として、 利用者指示 `自律実行` を次の
+  1 commit 分の作業、検証、TODO / checklist 更新、commit まで進める明示承認として扱えるようにする。
+
+  '
+problem_statement:
+- 現在の `次へ` は commit 停止点までで止まり、commit 実行代行は含まない。
+- 作業が安定してきたため、利用者が明示した場合だけ commit まで進む自律実行モードが必要である。
+- push 代行承認と混同せず、commit までの承認範囲を機械可読に区別する必要がある。
+implementation_plan:
+  phases:
+  - id: CSUX-4
+    title: Autonomous execution through commit
+    tasks:
+    - id: CSUX-4A
+      title: Add red tests for autonomous execution trigger resolution
+      status: done
+    - id: CSUX-4B
+      title: Add red tests that `next` remains commit-stop-only
+      status: done
+    - id: CSUX-4C
+      title: Add red tests for post-commit stop before push
+      status: done
+    - id: CSUX-4D
+      title: Confirm the new tests fail before implementation
+      status: done
+    - id: CSUX-4E
+      title: Implement autonomous execution trigger metadata through commit
+      status: done
+    - id: CSUX-4F
+      title: Keep push authorization excluded from `自律実行`
+      status: done
+    - id: CSUX-4G
+      title: Run focused tests and confirm workflow next remains clean
+      status: done
+acceptance_criteria:
+- '`自律実行` は commit 代行承認を含むが、push 代行承認は含まない。'
+- '`次へ` は従来どおり commit 停止点までで止まり、commit 実行代行を含まない。'
+- commit preflight が DEVIATION / WARN を返した場合は commit せず停止する導線が残る。
+- commit 後は push へ進まず、利用者向けの次操作が `プッシュ` になる。
+red_tests:
+- id: CSUX-4-RT-1
+  title: Autonomous execution trigger includes commit delegation only
+  expected: operation-trigger-resolve --trigger-text 自律実行 --json returns autonomous-through-commit
+    metadata with commit delegation allowed and push delegation denied.
+  status: done
+- id: CSUX-4-RT-2
+  title: Next trigger remains read-only and commit-stop-only
+  expected: operation-trigger-resolve --trigger-text 次へ --json remains next/read-only
+    and does not include commit delegation.
+  status: done
+- id: CSUX-4-RT-3
+  title: Autonomous execution stops before push after commit
+  expected: autonomous-through-commit metadata reports post_commit_stop_action プッシュ
+    and excludes git push from mutation commands.
+  status: done
+non_goals:
+- '`pushまで自律実行` をこの TODO で実装すること。'
+- commit guard や commit preflight を緩めること。
+- 利用者承認の必要性を runtime state で代替すること。
+execution_history:
+- checklist_id: checklist-todo-2026-07-01-autonomous-execution-through-commit
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-autonomous-execution-through-commit.yaml
+  completion_summary: CSUX-4 autonomous-through-commit trigger metadata implemented
+    and verified
+  completed_at: '2026-06-30T21:08:29.460934+00:00'

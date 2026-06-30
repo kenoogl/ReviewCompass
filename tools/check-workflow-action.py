@@ -133,6 +133,23 @@ OPERATION_TRIGGER_ENTRIES = {
     "standard_execution_wrapper": "tools/check-workflow-action.py next",
     "fallback_or_low_level_commands": [],
   },
+  "autonomous-through-commit": {
+    "operation_id": "autonomous-through-commit",
+    "operation_card_path": ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md",
+    "first_readonly_command": ".venv/bin/python3 tools/check-workflow-action.py next --json",
+    "mutation_allowed_after": "next_action_and_commit_preflight_ok",
+    "mutation_commands_after_preflight": [
+      "work through one commit-sized unit",
+      "git add",
+      ".venv/bin/python3 tools/commit-from-current-staged.py",
+    ],
+    "standard_execution_wrapper": "autonomous-through-commit",
+    "fallback_or_low_level_commands": COMMIT_AVOID_DIRECT_INVOCATION,
+    "autonomous_execution_scope": "through_commit",
+    "commit_execution_delegation": "included",
+    "push_execution_delegation": "excluded",
+    "post_commit_stop_action": "プッシュ",
+  },
   "spec-set": {
     "operation_id": "spec-set",
     "operation_card_path": None,
@@ -154,6 +171,9 @@ OPERATION_TRIGGER_ALIASES = {
   "つぎへ": "next",
   "tugihe": "next",
   "next": "next",
+  "自律実行": "autonomous-through-commit",
+  "じりつじっこう": "autonomous-through-commit",
+  "autonomous": "autonomous-through-commit",
   "specset": "spec-set",
   "spec-set": "spec-set",
 }

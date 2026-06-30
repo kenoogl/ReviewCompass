@@ -2908,6 +2908,44 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["mutation_commands_after_preflight"], [])
     self.assertIsNone(data["first_readonly_command"])
 
+  def test_operation_trigger_resolve_autonomous_execution_delegates_commit_only(self):
+    """自律実行は commit までの代行承認を含み、push 代行は含まない"""
+    cwd = Path(self.tmpdir)
+
+    result = run_script(
+      ["operation-trigger-resolve", "--trigger-text", "自律実行", "--json"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["operation_id"], "autonomous-through-commit")
+    self.assertEqual(data["autonomous_execution_scope"], "through_commit")
+    self.assertEqual(data["commit_execution_delegation"], "included")
+    self.assertEqual(data["push_execution_delegation"], "excluded")
+    self.assertEqual(data["post_commit_stop_action"], "プッシュ")
+    self.assertNotIn("git push", data["mutation_commands_after_preflight"])
+
+  def test_operation_trigger_resolve_next_remains_read_only_without_commit_delegation(self):
+    """次へは従来どおり commit 代行を含まない read-only 入口のままにする"""
+    cwd = Path(self.tmpdir)
+
+    result = run_script(
+      ["operation-trigger-resolve", "--trigger-text", "次へ", "--json"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["operation_id"], "next")
+    self.assertEqual(data["operation_mode"], "read_only")
+    self.assertEqual(data["mutation_allowed_after"], "never_read_only")
+    self.assertNotIn("commit_execution_delegation", data)
+    self.assertNotIn(".venv/bin/python3 tools/commit-from-current-staged.py", data["mutation_commands_after_preflight"])
+
   def test_operation_prompt_default_map_keeps_materialization_plan_refs(self):
     """fallback discipline map も plan materialization source refs を保持する"""
     sys.path.insert(0, str(REPO_ROOT / "tools"))

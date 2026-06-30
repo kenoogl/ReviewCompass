@@ -69,7 +69,7 @@ remaining_work:
       commit-from-current-staged.py の短文表示で CSUX-3 全体を実装済み。
   - id: CSUX-4
     title: Autonomous execution through commit
-    status: candidate
+    status: completed
     tasks:
       - '利用者指示 `自律実行` を、次の 1 commit 分の作業、検証、TODO / checklist 更新、commit まで進める明示承認として解釈する。'
       - '`次へ` は従来どおり commit 停止点までで止め、`自律実行` と区別する。'
@@ -81,6 +81,12 @@ remaining_work:
       - commit preflight が DEVIATION / WARN を返した場合は commit せず停止する。
       - 予定外差分、未解決テスト失敗、post-write-verification 未完了、仕様判断が必要な場合は自律実行を中断する。
       - '利用者発話なしに任意の承認文を生成する経路を作らない。承認 source は `自律実行` 指示そのものに束縛する。'
+    evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-autonomous-execution-through-commit.yaml
+    note: >
+      `operation-trigger-resolve --trigger-text 自律実行 --json` が
+      autonomous-through-commit metadata、commit_execution_delegation included、
+      push_execution_delegation excluded、post_commit_stop_action プッシュを返すようにした。
+      `次へ` は従来どおり read-only のまま維持した。
   - id: CSUX-5
     title: Autonomous execution through push
     status: candidate
