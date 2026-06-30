@@ -25,7 +25,11 @@ related:
 remaining_work:
   - id: MWP-0
     title: Clarify workflow mode taxonomy
-    status: candidate
+    status: completed
+    completed_at: '2026-06-30'
+    completion_evidence: >
+      docs/notes/2026-06-25-work-mode-taxonomy-related-work-index.md and
+      commits 6d61565e, 1dd496c4, 6757188e, d69c82e5.
     tasks:
       - workflow 実施区分、maintenance、side-track、blocking unit が同列概念ではないことを整理する。
       - 最小概念セットを「現在状態」「作業区分」「制御関係」に絞る。
@@ -90,7 +94,11 @@ remaining_work:
       - completed の意味を「作業意図上も完全終了」に拡張しない。
   - id: MWP-1
     title: Maintenance entry and classification protocol
-    status: candidate
+    status: completed
+    completed_at: '2026-06-30'
+    completion_evidence: >
+      WORKFLOW_NAVIGATION.md completed entry classification and commit
+      da8730c5.
     tasks:
       - completed 状態から maintenance を始める標準手順を定義する。
       - maintenance、reopen、新規 workflow unit の使い分け基準を文書化する。
