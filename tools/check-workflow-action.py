@@ -62,6 +62,7 @@ from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import load_contracts, run_contract_check
 from check_workflow_action.operation_list import build_operation_list
 from check_workflow_action.entrypoint_inventory import (
+  build_entrypoint_coverage_audit,
   build_entrypoint_inventory,
   build_entrypoint_registry_schema,
 )
@@ -8984,6 +8985,18 @@ def cmd_entrypoint_registry_schema(args):
   return result.get("exit_code", 2)
 
 
+def cmd_entrypoint_coverage_audit(args):
+  """workflow entrypoint coverage を read-only で監査する（ECA-3）"""
+  result = build_entrypoint_coverage_audit(Path.cwd())
+  if args.json:
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {result.get('verdict')}")
+    print(f"[ENTRYPOINTS] {result.get('coverage_summary', {}).get('total_entrypoints')}")
+    print(f"[FINDINGS] {len(result.get('findings', []))}")
+  return result.get("exit_code", 2)
+
+
 def cmd_proxy_triage_decision_check(args):
   """proxy triage decision を read-only で検査する（Req 16）"""
   action_dict = {
@@ -9787,6 +9800,12 @@ def main():
     parents=[common_parser],
   )
 
+  sub.add_parser(
+    "entrypoint-coverage-audit",
+    help="workflow entrypoint coverage を read-only で監査する（ECA-3）",
+    parents=[common_parser],
+  )
+
   ptd = sub.add_parser(
     "proxy-triage-decision-check",
     help="proxy triage decision の構造と coverage を read-only で検査する（Req 16）",
@@ -9933,6 +9952,8 @@ def main():
     sys.exit(cmd_entrypoint_inventory(args))
   elif args.subcommand == "entrypoint-registry-schema":
     sys.exit(cmd_entrypoint_registry_schema(args))
+  elif args.subcommand == "entrypoint-coverage-audit":
+    sys.exit(cmd_entrypoint_coverage_audit(args))
   elif args.subcommand == "proxy-triage-decision-check":
     sys.exit(cmd_proxy_triage_decision_check(args))
   elif args.subcommand == "commit-approval":
