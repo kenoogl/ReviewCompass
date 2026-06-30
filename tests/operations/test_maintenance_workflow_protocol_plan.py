@@ -18,10 +18,10 @@ def _remaining_work_by_id():
   return {item["id"]: item for item in data["remaining_work"]}
 
 
-def test_mwp0_mwp1_and_mwp2_are_marked_completed_with_evidence():
+def test_mwp0_through_mwp3_are_marked_completed_with_evidence():
   remaining_work = _remaining_work_by_id()
 
-  for item_id in ("MWP-0", "MWP-1", "MWP-2"):
+  for item_id in ("MWP-0", "MWP-1", "MWP-2", "MWP-3"):
     item = remaining_work[item_id]
     assert item["status"] == "completed"
     assert item["completed_at"] == "2026-06-30"
@@ -31,3 +31,6 @@ def test_mwp0_mwp1_and_mwp2_are_marked_completed_with_evidence():
   assert "da8730c5" in remaining_work["MWP-1"]["completion_evidence"]
   assert "73f88db8" in remaining_work["MWP-2"]["completion_evidence"]
   assert "8fe89efc" in remaining_work["MWP-2"]["completion_evidence"]
+  assert "6eebe013" in remaining_work["MWP-3"]["completion_evidence"]
+  assert "d583949b" in remaining_work["MWP-3"]["completion_evidence"]
+  assert "0b0fbd5d" in remaining_work["MWP-3"]["completion_evidence"]

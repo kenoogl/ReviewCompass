@@ -122,7 +122,12 @@ remaining_work:
       - post-write verification と変更内容そのものの review が混同されない。
   - id: MWP-3
     title: Commit and sandbox preflight for maintenance
-    status: candidate
+    status: completed
+    completed_at: '2026-06-30'
+    completion_evidence: >
+      commit-preflight maintenance unmet-state guard, sandbox retry approval
+      reuse guidance, sandbox index.lock preflight regression tests and
+      commits 6eebe013, d583949b, 0b0fbd5d.
     tasks:
       - maintenance workflow の未充足を commit guard で検出する。
       - sandbox の git 書き込み権限を commit 実行前に検査する。
