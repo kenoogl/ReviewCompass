@@ -140,6 +140,7 @@ def build_entrypoint_coverage_audit(cwd: str | Path) -> Dict[str, Any]:
   effective_prompt_names = set(effective_prompt_paths)
   entrypoint_coverage = []
   freshness_audit_targets = []
+  mechanized_action_links = []
   findings = []
 
   for entry in inventory["entrypoints"]:
@@ -148,8 +149,11 @@ def build_entrypoint_coverage_audit(cwd: str | Path) -> Dict[str, Any]:
     freshness_target = _freshness_audit_target(coverage, effective_prompt_paths)
     if freshness_target is not None:
       freshness_audit_targets.append(freshness_target)
+    action_link = _mechanized_action_link(entry)
+    mechanized_action_links.append(action_link)
     findings.extend(_coverage_findings(coverage))
     findings.extend(_freshness_findings(freshness_target))
+    findings.extend(_mechanized_action_link_findings(action_link))
 
   verdict = "WARN" if findings else "OK"
   return {
@@ -161,15 +165,18 @@ def build_entrypoint_coverage_audit(cwd: str | Path) -> Dict[str, Any]:
       "unregistered_entrypoint_severity": "WARN",
       "missing_discipline_map_severity": "WARN",
       "missing_effective_prompt_severity": "WARN",
+      "missing_mechanized_action_link_severity": "WARN",
     },
     "coverage_summary": {
       "total_entrypoints": len(entrypoint_coverage),
       "covered_entrypoints": _covered_entrypoint_count(entrypoint_coverage),
       "warning_candidate_count": len(findings),
       "freshness_target_count": len(freshness_audit_targets),
+      "mechanized_action_link_count": len(mechanized_action_links),
     },
     "entrypoint_coverage": entrypoint_coverage,
     "freshness_audit_targets": freshness_audit_targets,
+    "mechanized_action_links": mechanized_action_links,
     "findings": findings,
     "reasons": [finding["message"] for finding in findings],
   }
@@ -307,6 +314,39 @@ def _mechanized_action_status(entry: Dict[str, Any]) -> str:
   return "missing"
 
 
+def _mechanized_action_link(entry: Dict[str, Any]) -> Dict[str, Any]:
+  mechanized_command = entry.get("mechanized_command")
+  evidence_path = entry.get("evidence_path")
+  return {
+    "entrypoint_id": entry["entrypoint_id"],
+    "required_action": entry.get("required_action"),
+    "mechanized_command": mechanized_command,
+    "mechanized_command_status": "covered" if mechanized_command else "missing",
+    "preflight_status": _preflight_status(entry),
+    "output_schema_status": _output_schema_status(entry),
+    "evidence_contract_status": "covered" if evidence_path else "missing",
+    "evidence_contract": evidence_path,
+  }
+
+
+def _preflight_status(entry: Dict[str, Any]) -> str:
+  command = entry.get("mechanized_command")
+  if not command:
+    return "missing"
+  if "preflight" in command:
+    return "covered"
+  return "missing"
+
+
+def _output_schema_status(entry: Dict[str, Any]) -> str:
+  command = entry.get("mechanized_command")
+  if not command:
+    return "missing"
+  if "--json" in command:
+    return "covered"
+  return "missing"
+
+
 def _covered_entrypoint_count(entrypoint_coverage: List[Dict[str, Any]]) -> int:
   covered_count = 0
   for entry in entrypoint_coverage:
@@ -393,3 +433,25 @@ def _freshness_findings(target: Dict[str, Any] | None) -> List[Dict[str, str]]:
     "status": "missing",
     "message": f"{target['entrypoint_id']}: effective prompt freshness target is missing",
   }]
+
+
+def _mechanized_action_link_findings(action_link: Dict[str, Any]) -> List[Dict[str, str]]:
+  checks = [
+    ("mechanized_command_status", "mechanized command is missing"),
+    ("preflight_status", "mechanized action preflight is missing"),
+    ("output_schema_status", "mechanized action output schema is missing"),
+    ("evidence_contract_status", "mechanized action evidence contract is missing"),
+  ]
+  findings = []
+  for field, message in checks:
+    status = action_link[field]
+    if status in ("covered", "not_applicable"):
+      continue
+    findings.append({
+      "severity": "WARN",
+      "entrypoint_id": action_link["entrypoint_id"],
+      "field": field,
+      "status": status,
+      "message": f"{action_link['entrypoint_id']}: {message}",
+    })
+  return findings
