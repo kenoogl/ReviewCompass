@@ -70,9 +70,11 @@ implementation_plan:
     - id: TOE-2B
       title: Add tests that commit trigger resolves to COMMIT_OPERATION_CARD and commit-preflight
         before git add
+      status: done
     - id: TOE-2C
       title: Add tests that direct low-level commit execution is not the recommended
         first step
+      status: done
   - id: TOE-3
     title: Operator integration
     tasks:
@@ -96,14 +98,17 @@ red_tests:
   title: Commit trigger cannot skip operation card
   expected: Resolving "コミット" returns commit_operation with COMMIT_OPERATION_CARD and
     commit-preflight before git add.
+  status: done
 - id: TOE-RT-2
   title: Low-level guarded commit is not first recommendation
   expected: Resolver output recommends commit-from-current-staged.py as the standard
     wrapper, not guarded-git-commit.py direct execution.
+  status: done
 - id: TOE-RT-3
   title: Unknown trigger is non-mutating
   expected: Unsupported short operation words return stop-and-ask / unknown_operation
     and no mutation command.
+  status: done
 non_goals:
 - Implementing the resolver in this ticket creation step.
 - Changing commit guard behavior immediately.

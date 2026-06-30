@@ -2842,6 +2842,72 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["trigger_resolution"]["reason"], "unmaterialized_plan_slice")
     self.assertEqual(data["trigger_resolution"]["candidate_plan_ids"], ["plan-two"])
 
+  def test_operation_trigger_resolve_commit_cannot_skip_operation_card(self):
+    """コミット操作語は git add 前に操作カードと commit-preflight へ解決される"""
+    cwd = Path(self.tmpdir)
+
+    result = run_script(
+      ["operation-trigger-resolve", "--trigger-text", "コミット", "--json"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["operation_id"], "commit")
+    self.assertEqual(data["resolution_status"], "resolved")
+    self.assertEqual(data["operation_card_path"], ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md")
+    self.assertEqual(
+      data["first_readonly_command"],
+      ".venv/bin/python3 tools/check-workflow-action.py commit-preflight --json",
+    )
+    self.assertEqual(data["mutation_allowed_after"], "commit-preflight_ok")
+    self.assertIn("git add", data["mutation_commands_after_preflight"])
+
+  def test_operation_trigger_resolve_low_level_guarded_commit_is_not_first_recommendation(self):
+    """低レベル guarded commit 直接実行は最初の推奨手順にしない"""
+    cwd = Path(self.tmpdir)
+
+    result = run_script(
+      ["operation-trigger-resolve", "--trigger-text", "コミット", "--json"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["standard_execution_wrapper"],
+      "tools/commit-from-current-staged.py",
+    )
+    self.assertNotEqual(
+      data["first_readonly_command"],
+      "tools/guarded-git-commit.py",
+    )
+    self.assertIn(
+      "tools/guarded-git-commit.py",
+      data["fallback_or_low_level_commands"],
+    )
+
+  def test_operation_trigger_resolve_unknown_trigger_is_non_mutating(self):
+    """未知の短い操作語は mutation command を返さず stop-and-ask になる"""
+    cwd = Path(self.tmpdir)
+
+    result = run_script(
+      ["operation-trigger-resolve", "--trigger-text", "なんかやって", "--json"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(data["resolution_status"], "stop-and-ask")
+    self.assertEqual(data["reason"], "unknown_operation")
+    self.assertEqual(data["mutation_commands_after_preflight"], [])
+    self.assertIsNone(data["first_readonly_command"])
+
   def test_operation_prompt_default_map_keeps_materialization_plan_refs(self):
     """fallback discipline map も plan materialization source refs を保持する"""
     sys.path.insert(0, str(REPO_ROOT / "tools"))
