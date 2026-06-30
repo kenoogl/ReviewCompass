@@ -1,0 +1,4 @@
+run_id: 2026-06-30-work-mode-taxonomy-navigation-postwrite
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 24436b44498dca6a819052292416a144e726d6d690e09028382ae2163b72d1d8

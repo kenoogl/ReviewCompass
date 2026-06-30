@@ -45,6 +45,22 @@ def test_workflow_navigation_exposes_triad_review_proxy_gate():
   assert "利用者へ提示して停止" in text
 
 
+def test_workflow_navigation_defines_work_mode_taxonomy_terms():
+  text = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+
+  assert "作業モード分類の用語表" in text
+  assert "`current_state`" in text
+  assert "`work_class`" in text
+  assert "`control_relation`" in text
+  assert "`permitted_scope`" in text
+  assert "`work_context`" in text
+  assert "maintenance は作業区分" in text
+  assert "side-track は本線との関係" in text
+  assert "blocking unit は親作業に束縛された制御構造" in text
+  assert "単一 enum に押し込まない" in text
+  assert "work mode taxonomy" in text
+
+
 def test_reopen_drafting_is_required_before_triad_review():
   navigation = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
   reopen = guidance_path("REOPEN_PROCEDURE.md").read_text(encoding="utf-8")

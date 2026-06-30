@@ -1,0 +1,83 @@
+schema_version: effective-prompt-manifest-v1
+decision_point:
+  kind: post_write_verification
+  required_action: run_post_write_verification
+source_artifacts:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: sha256:24436b44498dca6a819052292416a144e726d6d690e09028382ae2163b72d1d8
+- path: docs/notes/2026-06-25-work-mode-taxonomy-related-work-index.md
+  sha256: sha256:cfc9b1aa2dc339ed2b4ca28009387b3feadab84a8840fd3460373aefe8046834
+- path: .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+  sha256: sha256:3f9d01e32c19afee9ea1ebcee5cef89a18227285444c3d36a1c3eaa8c6375d19
+- path: stages/completed/maintenance-2026-06-23-workflow-mode-taxonomy-note.yaml
+  sha256: sha256:5b4fcac20e0c47d1eaaa9ff27eef390478bc439c2b945f668c37c9bbd0948135
+required_disciplines:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+- .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+operation_contract:
+  operation_id: prepare_post_write_review
+  sha256: sha256:49f432fc0ebf5d96c0aebf277014f068ab79f97d8b65bba0f59bdf70831b9d6f
+expected_output_schema:
+  schema_ref: null
+  required_sections:
+  - findings
+prompt_length:
+  min_chars: 1
+  max_chars: 200000
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-30-work-mode-taxonomy-navigation-postwrite/review-target.md
+  failure_verdict: DEVIATION
+preconditions_checked:
+- id: post-write-review-target-generated
+  source: prepare_post_write_review
+  machine_checked: true
+  evidence_ref: .reviewcompass/evidence/review-runs/2026-06-30-work-mode-taxonomy-navigation-postwrite/review-target.md
+language_task:
+  document_kind: post_write_verification
+  input:
+    required_files:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    state_refs: []
+    source_refs:
+    - docs/notes/2026-06-25-work-mode-taxonomy-related-work-index.md
+    - .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+    - stages/completed/maintenance-2026-06-23-workflow-mode-taxonomy-note.yaml
+  output_format:
+    kind: yaml_findings
+    required_sections:
+    - findings
+    schema_ref: null
+  constraints:
+  - Review language-level consistency only.
+  - Do not mutate workflow state.
+  - Do not create review-run artifacts.
+  - Do not commit or push.
+review_prompt_materials:
+  target_files:
+  - path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    content_mode: full_text
+    content_sha256: sha256:24436b44498dca6a819052292416a144e726d6d690e09028382ae2163b72d1d8
+  source_materials:
+  - path: docs/notes/2026-06-25-work-mode-taxonomy-related-work-index.md
+    content_mode: full_text
+    content_sha256: sha256:cfc9b1aa2dc339ed2b4ca28009387b3feadab84a8840fd3460373aefe8046834
+  - path: .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+    content_mode: full_text
+    content_sha256: sha256:3f9d01e32c19afee9ea1ebcee5cef89a18227285444c3d36a1c3eaa8c6375d19
+  - path: stages/completed/maintenance-2026-06-23-workflow-mode-taxonomy-note.yaml
+    content_mode: full_text
+    content_sha256: sha256:5b4fcac20e0c47d1eaaa9ff27eef390478bc439c2b945f668c37c9bbd0948135
+postconditions:
+- id: post-write-review-target-manifest-matches
+  check_kind: review_target_manifest_matches
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-30-work-mode-taxonomy-navigation-postwrite/review-target.md
+on_completion:
+  next_required_action: run_post_write_verification
+  allowed_followups:
+  - prompt-audit
+  - run-post-write-review
+  forbidden_actions:
+  - commit
+  - push
+  - spec-set
+generated_at: '2026-06-30T08:22:14.037786+00:00'
+criteria_id: work-mode-taxonomy-navigation-postwrite
