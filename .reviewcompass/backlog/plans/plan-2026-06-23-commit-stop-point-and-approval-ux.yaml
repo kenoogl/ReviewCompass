@@ -125,6 +125,34 @@ remaining_work:
       `Nを自律実行` / `Nをpushまで自律実行` を限定構文として解決し、
       commit approval / delegation の approval_source に raw instruction、
       candidate_selector、operation_id、delegation 範囲を残すようにした。
+  - id: CSUX-7
+    title: Redesign candidate autonomous trigger wording
+    status: candidate
+    tasks:
+      - '候補番号付き自律実行では、曖昧な `Nを自律実行` を廃止し、拒否扱いにする。'
+      - '`Nをコミットまで自律実行` と `Nをcommitまで自律実行` を、候補番号 N の選択と `autonomous-through-commit` の実行モードに分解する。'
+      - '`Nをプッシュまで自律実行` と `Nをpushまで自律実行` を、候補番号 N の選択と `autonomous-through-push` の実行モードに分解する。'
+      - '`MからNまで自律実行` を、候補 M から N までを順に `autonomous-through-push` で実行する範囲指定構文として定義する。'
+      - commit / コミット、push / プッシュを同義として正規化し、証跡には元発話と正規化後 operation_id の両方を残す。
+      - CSUX-4〜6 の旧 completed 記録は履歴として残し、新構文への移行差分を CSUX-7 の実装証跡で追跡する。
+    acceptance:
+      - '`Nを自律実行` は曖昧な短縮形として拒否され、commit / push 代行承認に使えない。'
+      - '`1をコミットまで自律実行` と `1をcommitまで自律実行` は同じ `autonomous-through-commit` に解決される。'
+      - '`1をプッシュまで自律実行` と `1をpushまで自律実行` は同じ `autonomous-through-push` に解決される。'
+      - '`1から3まで自律実行` は候補 1, 2, 3 を含む範囲指定として解決され、各候補の既定実行範囲は push までである。'
+      - 範囲指定は昇順のみ許可し、未知候補番号、空範囲、逆順、範囲内の失敗時は fail-closed で停止する。
+      - push を含む構文では push preflight、作業ツリー clean、想定 push 先確認を省略しない。
+      - approval_source には raw instruction、normalized_instruction、candidate_selector または candidate_range、operation_id、commit_execution_delegation、push_execution_delegation が残る。
+    migration_notes:
+      - CSUX-6 で実装済みの `Nを自律実行` は、今回の再設計で拒否対象へ変える。
+      - 既存の `Nをpushまで自律実行` は互換構文として残し、`Nをプッシュまで自律実行` を同義に追加する。
+      - 「push まで」という到達点は push を含む意味に統一する。「コミットまで」も commit を含む意味に統一する。
+    red_tests:
+      - operation-trigger-resolve が `1を自律実行` を拒否する。
+      - operation-trigger-resolve が `1をコミットまで自律実行` / `1をcommitまで自律実行` を commit までに正規化する。
+      - operation-trigger-resolve が `1をプッシュまで自律実行` / `1をpushまで自律実行` を push までに正規化する。
+      - operation-trigger-resolve が `1から3まで自律実行` を push までの candidate_range として正規化する。
+      - commit approval source が新しい候補番号 / 範囲指定構文の正規化証跡を保持する。
 non_goals:
   - '`pushまで自律実行` の明示なしに push を自動実行しない。'
   - commit guard 自体を緩めない。
@@ -147,3 +175,14 @@ decisions:
       証跡も「候補選択」と「実行範囲」に分解できない。元発話、候補番号、
       operation 解決結果、delegation 範囲を記録して、commit / push guard が
       機械的に確認できる形にする。
+  - date: '2026-07-01'
+    decision: >
+      候補番号付き自律実行の操作語を再設計する。`Nを自律実行` は曖昧なため廃止し、
+      `Nをコミットまで自律実行` / `Nをcommitまで自律実行` を commit まで、
+      `Nをプッシュまで自律実行` / `Nをpushまで自律実行` を push までとして扱う。
+      `MからNまで自律実行` は候補 M から N までを含む範囲指定であり、各候補を
+      push まで実行する。
+    rationale: >
+      `まで` は到達点の操作を含む意味に統一し、push / プッシュ、commit / コミットの
+      表記揺れも同義にする。短縮形の `Nを自律実行` は commit までか push までかを
+      読み手が補う必要があり、不可逆操作の承認証跡として曖昧なため廃止する。
