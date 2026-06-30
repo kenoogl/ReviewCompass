@@ -1,0 +1,80 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-30-entrypoint-mechanized-action-link-audit
+kind: todo
+title: Audit entrypoint mechanized action links
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-30T12:34:59.286516+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml#ECA-5
+  reason: ECA-5 を plan から実行可能 TODO に materialize し、runtime checklist 経由で実行するため
+decisions: []
+source_plan_id: plan-2026-06-23-entrypoint-coverage-audit
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml
+source_plan_slice:
+  phase_id: ECA-5
+  title: Audit mechanized action links
+summary: 'entrypoint coverage audit の第5実行単位として、entrypoint の required_action が 実行可能な
+  command / preflight / output schema / evidence contract に接続されているかを read-only で検査する。
+
+  '
+problem_statement:
+- ECA-3/ECA-4 で registry、discipline map、effective prompt、freshness target の接続は見えるようになった。
+- ただし required_action から機械処理、preflight、出力 schema、evidence 保存先までの接続状況はまだ entrypoint
+  単位で見えない。
+- 機械化できない LLM 判断が残る場合に、明示的な output contract として監査対象化する導線が必要。
+implementation_plan:
+  phases:
+  - id: ECA-5
+    title: Audit mechanized action links
+    tasks:
+    - id: ECA-5A
+      title: Add red tests for mechanized action link output
+      status: done
+    - id: ECA-5B
+      title: Add red tests for preflight output schema and evidence fields
+      status: done
+    - id: ECA-5C
+      title: Add red tests for missing action link findings
+      status: done
+    - id: ECA-5D
+      title: Confirm the new tests fail before implementation
+      status: done
+    - id: ECA-5E
+      title: Implement mechanized action link extraction in entrypoint coverage audit
+      status: pending
+    - id: ECA-5F
+      title: Include missing command preflight schema or evidence findings
+      status: pending
+    - id: ECA-5G
+      title: Run focused tests and confirm next --json still returns completed
+      status: pending
+acceptance_criteria:
+- entrypoint coverage audit が mechanized_action_links を JSON で返す。
+- mechanized_action_links は entrypoint_id、required_action、mechanized_command、preflight_status、output_schema_status、evidence_contract_status
+  を含む。
+- command / preflight / output schema / evidence contract の欠落は WARN finding として entrypoint
+  単位で報告される。
+- audit は read-only で、workflow state や backlog を変更しない。
+red_tests:
+- id: ECA-5-RT-1
+  title: Coverage audit exposes mechanized action links
+  expected: entrypoint-coverage-audit --json returns mechanized_action_links as a
+    list.
+  status: done
+- id: ECA-5-RT-2
+  title: Mechanized action links expose execution contract fields
+  expected: each link declares required_action, mechanized_command, preflight_status,
+    output_schema_status, and evidence_contract_status.
+  status: done
+- id: ECA-5-RT-3
+  title: Missing action link fields become warning candidates
+  expected: missing command/preflight/schema/evidence link fields are reported with
+    WARN severity and entrypoint_id.
+  status: done
+non_goals:
+- すべての operation contract を再設計すること。
+- commit/CI enforcement を有効化すること。
+- 実際の command を実行すること。
