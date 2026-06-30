@@ -2928,6 +2928,45 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["post_commit_stop_action"], "プッシュ")
     self.assertNotIn("git push", data["mutation_commands_after_preflight"])
 
+  def test_operation_trigger_resolve_autonomous_execution_through_push_delegates_commit_and_push(self):
+    """pushまで自律実行は commit と push の代行承認を含む"""
+    cwd = Path(self.tmpdir)
+
+    result = run_script(
+      ["operation-trigger-resolve", "--trigger-text", "pushまで自律実行", "--json"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    self.assertEqual(data["operation_id"], "autonomous-through-push")
+    self.assertEqual(data["autonomous_execution_scope"], "through_push")
+    self.assertEqual(data["commit_execution_delegation"], "included")
+    self.assertEqual(data["push_execution_delegation"], "included")
+    self.assertEqual(data["post_push_stop_state"], "clean_synced")
+    self.assertIn("git push", data["mutation_commands_after_preflight"])
+
+  def test_operation_trigger_resolve_autonomous_execution_through_push_requires_push_preflight(self):
+    """pushまで自律実行は git push 前の push preflight を必須にする"""
+    cwd = Path(self.tmpdir)
+
+    result = run_script(
+      ["operation-trigger-resolve", "--trigger-text", "pushまで自律実行", "--json"],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["push_preflight_command"],
+      ".venv/bin/python3 tools/check-workflow-action.py push --rationale <reason> --json",
+    )
+    self.assertEqual(data["mutation_allowed_after"], "commit_and_push_preflight_ok")
+    self.assertEqual(data["post_push_stop_action"], "完了")
+
   def test_operation_trigger_resolve_next_remains_read_only_without_commit_delegation(self):
     """次へは従来どおり commit 代行を含まない read-only 入口のままにする"""
     cwd = Path(self.tmpdir)
