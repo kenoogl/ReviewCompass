@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: ccf61a2aaefdc1b8f01ec1b72ef592572867d71ae3d6968c274e35101ca38878
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: ccf61a2aaefdc1b8f01ec1b72ef592572867d71ae3d6968c274e35101ca38878
+  result: no_substantive_findings
+  checklist:
+  - 利用者指示「推奨順と簡単な内容を TODO に記録、更新」を TODO_NEXT_SESSION.md に反映した。
+  - 現在状態、完了済み作業、次に着手する推奨 plan 順を区別して記録した。
+  - plan 候補の説明は推奨メモに留め、正本仕様や workflow 規律として昇格していない。
+  - 最優先候補と実行方針（plan を TODO にし、その後 checklist にする）を次の判断材料として残した。
+  - API post-write verification が必要な正本文書ではなく、単独の TODO_NEXT_SESSION.md 更新として扱った。
+notes: Lightweight self-check for recording recommended backlog plan order in TODO_NEXT_SESSION.md.
