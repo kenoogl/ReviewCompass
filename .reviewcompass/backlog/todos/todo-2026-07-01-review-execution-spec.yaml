@@ -1,0 +1,80 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-07-01-review-execution-spec
+kind: todo
+title: Add ReviewExecutionSpec for API review-runs
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-30T20:35:00.838327+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-action-execution-spec.yaml#AES-1
+  reason: AES-1 を plan から実行可能 TODO に materialize し、runtime checklist 経由で TDD 実行するため
+decisions: []
+source_plan_id: plan-2026-06-23-action-execution-spec
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-action-execution-spec.yaml
+source_plan_slice:
+  phase_id: AES-1
+  title: ReviewExecutionSpec for API review-runs
+summary: 'action execution spec plan の第 1 実行単位として、API review-run の target files、phase、criteria、variant、provider、model、prompt、
+  output paths を実行前 spec として保存し、rounds.yaml、 target-manifest.yaml、model-result-summary.yaml
+  から参照できるようにする。
+
+  '
+problem_statement:
+- API review-run は複数の入力、モデル、出力先を持つが、実行前に何を読んで何を書くかを単一 spec として追跡できない。
+- 実行前 spec と実出力がずれても、invalid execution または要確認として機械的に検出する導線が不足している。
+- rounds.yaml、target-manifest.yaml、model-result-summary.yaml から同じ実行 spec を参照できないため、後追い監査が会話記憶に寄りやすい。
+implementation_plan:
+  phases:
+  - id: AES-1
+    title: ReviewExecutionSpec for API review-runs
+    tasks:
+    - id: AES-1A
+      title: Add red tests for writing review execution spec before API review-run
+        execution
+      status: pending
+    - id: AES-1B
+      title: Add red tests for linking rounds, target manifest, and model result summary
+        to the execution spec
+      status: pending
+    - id: AES-1C
+      title: Add red tests for detecting spec/output mismatches
+      status: pending
+    - id: AES-1D
+      title: Confirm the new tests fail before implementation
+      status: pending
+    - id: AES-1E
+      title: Implement ReviewExecutionSpec creation for API review-runs
+      status: pending
+    - id: AES-1F
+      title: Implement execution spec references and mismatch audit
+      status: pending
+    - id: AES-1G
+      title: Run focused tests and confirm next --json remains completed or reports
+        only expected post-write state
+      status: pending
+acceptance_criteria:
+- API review-run の実行前後で、何を読んで何を書いたかが追跡できる。
+- rounds.yaml、target-manifest.yaml、model-result-summary.yaml から同じ execution spec を参照できる。
+- spec と実出力の不一致を invalid execution または要確認として検出できる。
+red_tests:
+- id: AES-1-RT-1
+  title: API review-run writes ReviewExecutionSpec before execution
+  expected: prepare/run review flow records target files, phase, criteria, variant,
+    provider, model, prompt, and output paths in a ReviewExecutionSpec.
+  status: pending
+- id: AES-1-RT-2
+  title: Review-run artifacts reference the same execution spec
+  expected: rounds.yaml, target-manifest.yaml, and model-result-summary.yaml contain
+    a reference to the same execution spec path and digest.
+  status: pending
+- id: AES-1-RT-3
+  title: Execution spec audit detects output mismatch
+  expected: a mismatch between the execution spec and actual review-run outputs is
+    reported as invalid execution or requires confirmation.
+  status: pending
+non_goals:
+- API review-run の provider 実行ロジックを全面的に置き換えること。
+- 外部モデル呼び出しを新規に増やすこと。
+- workflow action 全般の ActionEffectSpec を同時に実装すること。

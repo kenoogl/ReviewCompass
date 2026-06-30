@@ -13,6 +13,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 import yaml
 
 from tools.api_providers.prepare_post_write_review import main as prepare_post_write_review
+import tools.api_providers.run_review as run_review
 from tools.api_providers.run_review import main
 
 
@@ -1051,3 +1052,155 @@ def test_run_review_allows_vertical_review_with_structured_upstream_summary(
   assert exit_code == 0
   rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
   assert len(rounds["model_results"]) == 3
+
+
+def test_run_review_writes_execution_spec_before_api_call(
+  tmp_path,
+  monkeypatch,
+):
+  """API 送信前に ReviewExecutionSpec を review-run 配下へ書く。"""
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "target.md"
+  target.write_text("レビュー対象\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  spec_path = review_run_dir / "review-execution-spec.yaml"
+
+  class Provider:
+    def __init__(self, **_kwargs):
+      pass
+
+    def send_request(self, _prompt):
+      assert spec_path.is_file()
+      spec = yaml.safe_load(spec_path.read_text(encoding="utf-8"))
+      assert spec["schema_version"] == "review-execution-spec-v1"
+      assert spec["review_run_id"] == review_run_dir.name
+      assert spec["phase"] == "post_write_verification"
+      assert spec["intended_outputs"]["rounds_path"] == "rounds.yaml"
+      return "findings: []\n"
+
+  with patch("tools.api_providers.run_review.get_provider", return_value=Provider):
+    exit_code = main(
+      [
+        "--variant", "post_write_verification_google",
+        "--target", str(target),
+        "--phase", "post_write_verification",
+        "--criteria", "execution spec",
+        "--review-run-dir", str(review_run_dir),
+        "--round-id", "round-1",
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+
+
+def test_run_review_artifacts_reference_same_execution_spec(
+  tmp_path,
+  monkeypatch,
+):
+  """rounds、target manifest、model summary が同じ ReviewExecutionSpec を参照する。"""
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "target.md"
+  target.write_text("レビュー対象\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "review-run"
+  responses = {"gemini-api": "findings: []\n"}
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=_make_provider_factory(responses),
+  ):
+    exit_code = main(
+      [
+        "--variant", "post_write_verification_google",
+        "--target", str(target),
+        "--phase", "post_write_verification",
+        "--criteria", "execution spec",
+        "--review-run-dir", str(review_run_dir),
+        "--round-id", "round-1",
+        "--config", str(config_path),
+      ]
+    )
+
+  assert exit_code == 0
+  spec = yaml.safe_load(
+    (review_run_dir / "review-execution-spec.yaml").read_text(encoding="utf-8")
+  )
+  target_manifest = yaml.safe_load(
+    (review_run_dir / "target-manifest.yaml").read_text(encoding="utf-8")
+  )
+  rounds = yaml.safe_load((review_run_dir / "rounds.yaml").read_text(encoding="utf-8"))
+  summary = yaml.safe_load(
+    (review_run_dir / "model-result-summary.yaml").read_text(encoding="utf-8")
+  )
+
+  assert spec["execution_spec_path"] == "review-execution-spec.yaml"
+  assert target_manifest["execution_spec_path"] == spec["execution_spec_path"]
+  assert rounds["execution_spec_path"] == spec["execution_spec_path"]
+  assert summary["execution_spec_path"] == spec["execution_spec_path"]
+  assert rounds["execution_spec_sha256"] == spec["execution_spec_sha256"]
+  assert summary["execution_spec_sha256"] == spec["execution_spec_sha256"]
+
+
+def test_review_execution_spec_audit_detects_output_mismatch(tmp_path):
+  """ReviewExecutionSpec と実成果物の不一致を不正な実行として検出する。"""
+  review_run_dir = tmp_path / "review-run"
+  review_run_dir.mkdir()
+  (review_run_dir / "review-execution-spec.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "schema_version": "review-execution-spec-v1",
+        "review_run_id": "review-run",
+        "execution_spec_path": "review-execution-spec.yaml",
+        "intended_outputs": {
+          "rounds_path": "rounds.yaml",
+          "target_manifest_path": "target-manifest.yaml",
+          "model_result_summary_path": "model-result-summary.yaml",
+        },
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (review_run_dir / "rounds.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "round_id": "round-1",
+        "execution_spec_path": "different-spec.yaml",
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (review_run_dir / "target-manifest.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "run_id": "review-run",
+        "execution_spec_path": "review-execution-spec.yaml",
+        "target_files": [],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  (review_run_dir / "model-result-summary.yaml").write_text(
+    yaml.safe_dump(
+      {
+        "run_id": "review-run",
+        "execution_spec_path": "review-execution-spec.yaml",
+        "models": [],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+
+  result = run_review.audit_review_execution_spec(review_run_dir)
+
+  assert result["verdict"] == "DEVIATION"
+  assert "rounds.yaml execution_spec_path mismatch" in result["reasons"]
