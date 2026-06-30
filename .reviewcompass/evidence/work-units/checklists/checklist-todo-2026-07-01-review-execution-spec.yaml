@@ -1,0 +1,76 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-07-01-review-execution-spec
+unit_id: main-completed
+title: Add ReviewExecutionSpec for API review-runs
+status: completed
+created_at: '2026-06-30T20:35:10.668416+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-07-01-review-execution-spec.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: AES-1A
+  title: Add red tests for writing review execution spec before API review-run execution
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-1B
+  title: Add red tests for linking rounds, target manifest, and model result summary
+    to the execution spec
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-1C
+  title: Add red tests for detecting spec/output mismatches
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-1D
+  title: Confirm the new tests fail before implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-1E
+  title: Implement ReviewExecutionSpec creation for API review-runs
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-1F
+  title: Implement execution spec references and mismatch audit
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-1G
+  title: Run focused tests and confirm next --json remains completed or reports only
+    expected post-write state
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-1-RT-1
+  title: API review-run writes ReviewExecutionSpec before execution
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-1-RT-2
+  title: Review-run artifacts reference the same execution spec
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-1-RT-3
+  title: Execution spec audit detects output mismatch
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-07-01-review-execution-spec
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-07-01-review-execution-spec.yaml
+progress:
+  total: 10
+  done: 10
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-30T20:43:36.922341+00:00'
+completion_summary: ReviewExecutionSpec creation, artifact references, and mismatch
+  audit were implemented for API review-runs; focused tests pass.

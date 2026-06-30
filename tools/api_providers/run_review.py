@@ -4,6 +4,7 @@
 raw / parsed / rounds / summary の生成は run_role.py の成果物関数を再利用する。
 """
 import argparse
+import hashlib
 import re
 import sys
 import time
@@ -77,6 +78,158 @@ def _sha256_file(path: Path) -> str:
   import hashlib
 
   return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _sha256_data(data: Dict[str, Any]) -> str:
+  content = yaml.safe_dump(data, allow_unicode=True, sort_keys=False)
+  return hashlib.sha256(content.encode("utf-8")).hexdigest()
+
+
+def _safe_artifact_stem(model: str) -> str:
+  safe_chars = []
+  for char in model:
+    if char.isalnum() or char in (".", "-", "_"):
+      safe_chars.append(char)
+    else:
+      safe_chars.append("-")
+  return "".join(safe_chars).strip("-") or "model"
+
+
+def _relative_output_paths(model: str, round_id: str) -> Dict[str, str]:
+  model_stem = _safe_artifact_stem(model)
+  return {
+    "raw_path": f"raw/{model_stem}.{round_id}.txt",
+    "parsed_path": f"parsed/{model_stem}.{round_id}.yaml",
+    "prompt_path": f"prompts/{model_stem}.{round_id}.prompt.md",
+  }
+
+
+def _target_file_entries(target_paths: List[str]) -> List[Dict[str, str]]:
+  return [
+    {
+      "path": target_path,
+      "sha256": _sha256_file(Path(target_path)),
+    }
+    for target_path in target_paths
+  ]
+
+
+def write_review_execution_spec(
+  *,
+  args: argparse.Namespace,
+  criteria: str,
+  criteria_source_path: Optional[str],
+  criteria_source_sha256: Optional[str],
+  variant_name: Optional[str],
+  roles: List[str],
+  role_configs: Dict[str, Dict[str, Any]],
+) -> Dict[str, Any]:
+  """API 呼び出し前に review-run の実行予定を単一 spec として保存する。"""
+  run_dir = Path(args.review_run_dir)
+  target_paths = [str(path) for path in args.target]
+  spec_path = run_dir / "review-execution-spec.yaml"
+  now = datetime.now(timezone.utc).isoformat()
+  role_outputs = []
+  for role in roles:
+    role_config = role_configs[role]
+    model = role_config["model"]
+    role_outputs.append({
+      "role": role,
+      "provider": role_config["provider"],
+      "model": model,
+      "outputs": _relative_output_paths(model, args.round_id),
+    })
+
+  spec = {
+    "schema_version": "review-execution-spec-v1",
+    "review_run_id": run_dir.name,
+    "execution_spec_path": "review-execution-spec.yaml",
+    "created_at": now,
+    "round_id": args.round_id,
+    "phase": args.phase,
+    "criteria": criteria,
+    "criteria_source_path": criteria_source_path,
+    "criteria_source_sha256": criteria_source_sha256,
+    "variant": variant_name or "default",
+    "target_files": _target_file_entries(target_paths),
+    "inputs": {
+      "target_paths": target_paths,
+      "prior_finding_paths": list(args.prior_finding),
+      "effective_prompt_path": args.effective_prompt_path,
+      "prompt_manifest_path": args.prompt_manifest_path,
+    },
+    "roles": role_outputs,
+    "intended_outputs": {
+      "execution_spec_path": "review-execution-spec.yaml",
+      "target_manifest_path": "target-manifest.yaml",
+      "rounds_path": "rounds.yaml",
+      "model_result_summary_path": "model-result-summary.yaml",
+      "triage_path": "triage.yaml",
+      "review_summary_path": "review_summary.md",
+    },
+  }
+  spec["execution_spec_sha256"] = _sha256_data(spec)
+  _dump_yaml(spec_path, spec)
+  return spec
+
+
+def _attach_execution_spec_reference(review_run_dir: str, spec: Dict[str, Any]) -> None:
+  """run_role が作成した review-run 成果物へ spec 参照を付与する。"""
+  run_dir = Path(review_run_dir)
+  reference = {
+    "execution_spec_path": spec["execution_spec_path"],
+    "execution_spec_sha256": spec["execution_spec_sha256"],
+  }
+  for artifact_name in (
+    "target-manifest.yaml",
+    "rounds.yaml",
+    "model-result-summary.yaml",
+  ):
+    path = run_dir / artifact_name
+    artifact = _load_yaml_dict(path)
+    artifact.update(reference)
+    _dump_yaml(path, artifact)
+
+
+def audit_review_execution_spec(review_run_dir: str) -> Dict[str, Any]:
+  """ReviewExecutionSpec と成果物参照の一致を機械検査する。"""
+  run_dir = Path(review_run_dir)
+  spec_path = run_dir / "review-execution-spec.yaml"
+  reasons = []
+  spec = _load_yaml_dict(spec_path)
+  if not spec:
+    return {
+      "verdict": "DEVIATION",
+      "reasons": ["review-execution-spec.yaml missing"],
+    }
+  expected_path = spec.get("execution_spec_path")
+  expected_sha256 = spec.get("execution_spec_sha256")
+  expected_outputs = spec.get("intended_outputs")
+  if not isinstance(expected_outputs, dict):
+    expected_outputs = {}
+
+  checks = {
+    "target-manifest.yaml": expected_outputs.get("target_manifest_path", "target-manifest.yaml"),
+    "rounds.yaml": expected_outputs.get("rounds_path", "rounds.yaml"),
+    "model-result-summary.yaml": expected_outputs.get(
+      "model_result_summary_path",
+      "model-result-summary.yaml",
+    ),
+  }
+  for label, relative_path in checks.items():
+    artifact = _load_yaml_dict(run_dir / str(relative_path))
+    if not artifact:
+      reasons.append(f"{label} missing")
+      continue
+    if artifact.get("execution_spec_path") != expected_path:
+      reasons.append(f"{label} execution_spec_path mismatch")
+    if expected_sha256 and artifact.get("execution_spec_sha256") != expected_sha256:
+      reasons.append(f"{label} execution_spec_sha256 mismatch")
+
+  return {
+    "verdict": "OK" if not reasons else "DEVIATION",
+    "reasons": reasons,
+  }
 
 
 def _call_provider(provider, prompt: str) -> Tuple[str, int, float]:
@@ -631,10 +784,25 @@ def main(argv: Optional[List[str]] = None) -> int:
     variant_name = _select_variant_name(args, config)
     variant_config = resolve_variant(config, variant_name)
     roles = _roles_for_variant(variant_config)
+    role_configs = {
+      role: resolve_role(variant_config, role)
+      for role in roles
+    }
+    _, criteria_source_path, criteria_source_sha256 = _resolve_criteria(args)
+    execution_spec = write_review_execution_spec(
+      args=args,
+      criteria=criteria,
+      criteria_source_path=criteria_source_path,
+      criteria_source_sha256=criteria_source_sha256,
+      variant_name=variant_name,
+      roles=roles,
+      role_configs=role_configs,
+    )
     for role in roles:
       role_exit_code = _run_one_role(args, config, variant_name, role)
       if role_exit_code != 0:
         exit_code = 1
+    _attach_execution_spec_reference(args.review_run_dir, execution_spec)
     initialize_triage_draft(args.review_run_dir)
     summary_variant_name = variant_name or "default"
     summary_markdown = write_review_summary_markdown(
