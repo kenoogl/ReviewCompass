@@ -1,0 +1,85 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-30-entrypoint-coverage-inventory
+kind: todo
+title: Inventory current workflow entrypoints
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-30T11:42:26.444406+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml#ECA-1
+  reason: ECA-1 を plan から実行可能 TODO に materialize し、runtime checklist 経由で実行するため
+decisions: []
+source_plan_id: plan-2026-06-23-entrypoint-coverage-audit
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml
+source_plan_slice:
+  phase_id: ECA-1
+  title: Inventory current entrypoints
+summary: 'entrypoint coverage audit の最初の実行単位として、現在存在する主要入口を 機械的に棚卸しする。対象は next_action.kind、tools/check-workflow-action.py
+  の主要 subcommand、user-initiated backlog/checklist operation、blocking unit control、commit
+  / push operation、proxy decision and review-run post-processing とする。registry schema
+  を確定する前に、required_action、expected effective prompt、mechanized command、evidence path
+  の接続有無を一覧化する。
+
+  '
+problem_statement:
+- entrypoint の正規 registry がなく、入口と discipline map / effective prompt / 機械処理の接続漏れを網羅的に確認できない。
+- next_action.kind 以外の user-initiated operation が effective prompt を持つべきか一覧化できていない。
+- required_action と実行 CLI / preflight / evidence path の対応が機械的に追えない入口が残る。
+implementation_plan:
+  phases:
+  - id: ECA-1
+    title: Inventory current entrypoints
+    tasks:
+    - id: ECA-1A
+      title: Add red tests for enumerating current next_action.kind values
+      status: pending
+    - id: ECA-1B
+      title: Add red tests for enumerating major check-workflow-action CLI subcommands
+      status: pending
+    - id: ECA-1C
+      title: Add red tests for recording required_action, expected effective prompt,
+        and evidence path presence per entrypoint
+      status: pending
+    - id: ECA-1D
+      title: Confirm the new tests fail for the missing inventory mechanism before
+        implementation
+      status: pending
+    - id: ECA-1E
+      title: Implement a read-only entrypoint inventory function or CLI output
+      status: pending
+    - id: ECA-1F
+      title: Include entrypoint id, kind, trigger, required_action, expected effective
+        prompt, mechanized command, and evidence path in JSON output
+      status: pending
+    - id: ECA-1G
+      title: Run focused tests and confirm next --json still returns completed on
+        clean state
+      status: pending
+acceptance_criteria:
+- 現在存在する主要入口を機械的に列挙できる。
+- 入口ごとに required_action、expected effective prompt、mechanized command、evidence path
+  の有無を確認できる。
+- 出力は機械処理しやすい JSON で、LLM 向け自由記述に依存しない。
+- ECA-2 の registry schema 決定前に、実際の欠落パターンを把握できる。
+red_tests:
+- id: ECA-1-RT-1
+  title: Current next_action.kind values are enumerable
+  expected: entrypoint inventory can list known next_action.kind values and their
+    discipline/effective prompt coverage.
+  status: pending
+- id: ECA-1-RT-2
+  title: Major CLI subcommands are enumerable
+  expected: entrypoint inventory can list major check-workflow-action subcommands
+    without relying on LLM memory.
+  status: pending
+- id: ECA-1-RT-3
+  title: Entrypoint connection fields are recorded
+  expected: each inventory entry exposes required_action, expected effective prompt,
+    mechanized command, and evidence path fields.
+  status: pending
+non_goals:
+- ECA-2 の registry schema を確定すること。
+- ECA-3 以降の coverage audit / freshness audit / commit enforcement を実装すること。
+- すべての CLI を一度に統合 registry 化すること。
