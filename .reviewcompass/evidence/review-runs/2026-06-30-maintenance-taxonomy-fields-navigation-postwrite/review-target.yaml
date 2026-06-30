@@ -1,0 +1,32 @@
+run_id: 2026-06-30-maintenance-taxonomy-fields-navigation-postwrite
+phase: post_write_verification
+criteria_id: maintenance-taxonomy-fields-navigation-postwrite
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-taxonomy-fields-navigation-postwrite/review-target.md
+criteria_file_sha256: 5fb2b961c73e9a56908a1e87fb94725183fa4aa9f6b1be6a212b66826cc5ace5
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-taxonomy-fields-navigation-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: 4f4165bdd503f9c8c1c71d53962c54bc9d336690fadc1ed0c21e9bc2fce0b16b
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 90543be18aa317c25a4c26c89950e0f253a0ee8ecd28ca25e43b8e6eef761e7a
+  content_mode: full_text
+  content_sha256: 90543be18aa317c25a4c26c89950e0f253a0ee8ecd28ca25e43b8e6eef761e7a
+source_materials:
+- path: .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+  sha256: 3f9d01e32c19afee9ea1ebcee5cef89a18227285444c3d36a1c3eaa8c6375d19
+  content_mode: full_text
+  content_sha256: 3f9d01e32c19afee9ea1ebcee5cef89a18227285444c3d36a1c3eaa8c6375d19
+- path: docs/notes/2026-06-25-work-mode-taxonomy-related-work-index.md
+  sha256: cfc9b1aa2dc339ed2b4ca28009387b3feadab84a8840fd3460373aefe8046834
+  content_mode: full_text
+  content_sha256: cfc9b1aa2dc339ed2b4ca28009387b3feadab84a8840fd3460373aefe8046834
+- path: stages/completed/maintenance-2026-06-23-workflow-mode-taxonomy-note.yaml
+  sha256: 5b4fcac20e0c47d1eaaa9ff27eef390478bc439c2b945f668c37c9bbd0948135
+  content_mode: full_text
+  content_sha256: 5b4fcac20e0c47d1eaaa9ff27eef390478bc439c2b945f668c37c9bbd0948135
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-30T08:42:42.070653+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-taxonomy-fields-navigation-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-taxonomy-fields-navigation-postwrite/prompt-manifest.yaml

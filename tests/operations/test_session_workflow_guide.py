@@ -61,6 +61,14 @@ def test_workflow_navigation_defines_work_mode_taxonomy_terms():
   assert "work mode taxonomy" in text
 
 
+def test_workflow_navigation_requires_taxonomy_fields_for_maintenance_yaml():
+  text = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
+
+  assert "少なくとも `trigger`、`mainline_blocked_by`、`work_class`、`control_relation`" in text
+  assert "`work_class: maintenance`" in text
+  assert "`control_relation: side-track`" in text
+
+
 def test_reopen_drafting_is_required_before_triad_review():
   navigation = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
   reopen = guidance_path("REOPEN_PROCEDURE.md").read_text(encoding="utf-8")

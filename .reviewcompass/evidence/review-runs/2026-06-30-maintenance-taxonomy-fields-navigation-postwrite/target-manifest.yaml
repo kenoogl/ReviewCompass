@@ -1,0 +1,4 @@
+run_id: 2026-06-30-maintenance-taxonomy-fields-navigation-postwrite
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 90543be18aa317c25a4c26c89950e0f253a0ee8ecd28ca25e43b8e6eef761e7a

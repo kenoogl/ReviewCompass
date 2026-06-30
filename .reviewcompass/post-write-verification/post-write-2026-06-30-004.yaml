@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+target_sha256:
+  .reviewcompass/guidance/WORKFLOW_NAVIGATION.md: 90543be18aa317c25a4c26c89950e0f253a0ee8ecd28ca25e43b8e6eef761e7a
+required_verifiers: &id001
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  target_sha256:
+    .reviewcompass/guidance/WORKFLOW_NAVIGATION.md: 90543be18aa317c25a4c26c89950e0f253a0ee8ecd28ca25e43b8e6eef761e7a
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-taxonomy-fields-navigation-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-taxonomy-fields-navigation-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.
