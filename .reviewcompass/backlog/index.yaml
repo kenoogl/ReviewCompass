@@ -447,7 +447,7 @@ items:
 - id: todo-2026-06-30-entrypoint-registry-schema
   kind: todo
   title: Define entrypoint registry schema
-  status: candidate
+  status: completed
   path: .reviewcompass/backlog/todos/todo-2026-06-30-entrypoint-registry-schema.yaml
   source_unit_id: main-completed
   created_at: '2026-06-30T11:53:38.240817+00:00'

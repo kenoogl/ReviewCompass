@@ -83,6 +83,51 @@ def build_entrypoint_inventory(cwd: str | Path) -> Dict[str, Any]:
   }
 
 
+def build_entrypoint_registry_schema(cwd: str | Path) -> Dict[str, Any]:
+  """Return the read-only schema contract for entrypoint registry entries."""
+  _ = Path(cwd)
+  return {
+    "verdict": "OK",
+    "exit_code": 0,
+    "operation_mode": "read_only",
+    "schema_version": "entrypoint-registry-schema-v1",
+    "registry_contract": {
+      "required_fields": [
+        "entrypoint_id",
+        "kind",
+        "trigger",
+        "decision_point_ref",
+        "effective_prompt_ref",
+        "required_action",
+        "mechanized_command",
+        "evidence_contract",
+      ],
+      "responsibility_boundary": {
+        "discipline_map": {
+          "source_ref": ".reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml",
+          "owns": ["decision_point_ref", "effective_prompt_ref"],
+        },
+        "entrypoint_registry": {
+          "owns": [
+            "entrypoint_id",
+            "kind",
+            "trigger",
+            "required_action",
+            "mechanized_command",
+            "evidence_contract",
+          ],
+        },
+      },
+      "coverage_audit_contract": {
+        "consumer": "entrypoint coverage audit",
+        "required_schema_version": "entrypoint-registry-schema-v1",
+        "missing_registry_entry_verdict": "WARN",
+      },
+    },
+    "reasons": [],
+  }
+
+
 def _next_action_kind_entries() -> List[Dict[str, Any]]:
   entries = []
   for kind in NEXT_ACTION_KINDS:
