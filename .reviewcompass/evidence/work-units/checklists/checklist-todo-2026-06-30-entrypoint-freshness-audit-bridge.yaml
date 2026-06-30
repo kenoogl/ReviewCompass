@@ -1,0 +1,74 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-30-entrypoint-freshness-audit-bridge
+unit_id: main-completed
+title: Connect entrypoint coverage audit to freshness audit targets
+status: completed
+created_at: '2026-06-30T12:19:10.813654+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-30-entrypoint-freshness-audit-bridge.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: ECA-4A
+  title: Add red tests for freshness target extraction from coverage audit
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-4B
+  title: Add red tests for entrypoint-scoped freshness fields
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-4C
+  title: Add red tests for missing prompt freshness findings
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-4D
+  title: Confirm the new tests fail before implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-4E
+  title: Implement freshness target extraction in entrypoint coverage audit
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-4F
+  title: Include stale or missing freshness findings per entrypoint
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-4G
+  title: Run focused tests and confirm next --json still returns completed
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-4-RT-1
+  title: Coverage audit exposes freshness audit targets
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-4-RT-2
+  title: Freshness targets are entrypoint-scoped
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ECA-4-RT-3
+  title: Missing effective prompt becomes freshness warning candidate
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-30-entrypoint-freshness-audit-bridge
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-30-entrypoint-freshness-audit-bridge.yaml
+progress:
+  total: 10
+  done: 10
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-30T12:30:45.772792+00:00'
+completion_summary: ECA-4 freshness audit targets exposed from entrypoint coverage
+  audit and focused tests passed

@@ -136,14 +136,20 @@ def build_entrypoint_coverage_audit(cwd: str | Path) -> Dict[str, Any]:
   inventory = build_entrypoint_inventory(root)
   registry_schema = build_entrypoint_registry_schema(root)
   discipline_points = _load_discipline_decision_points(root)
-  effective_prompt_names = _effective_prompt_names(root)
+  effective_prompt_paths = _effective_prompt_paths(root)
+  effective_prompt_names = set(effective_prompt_paths)
   entrypoint_coverage = []
+  freshness_audit_targets = []
   findings = []
 
   for entry in inventory["entrypoints"]:
     coverage = _coverage_entry(entry, discipline_points, effective_prompt_names)
     entrypoint_coverage.append(coverage)
+    freshness_target = _freshness_audit_target(coverage, effective_prompt_paths)
+    if freshness_target is not None:
+      freshness_audit_targets.append(freshness_target)
     findings.extend(_coverage_findings(coverage))
+    findings.extend(_freshness_findings(freshness_target))
 
   verdict = "WARN" if findings else "OK"
   return {
@@ -160,8 +166,10 @@ def build_entrypoint_coverage_audit(cwd: str | Path) -> Dict[str, Any]:
       "total_entrypoints": len(entrypoint_coverage),
       "covered_entrypoints": _covered_entrypoint_count(entrypoint_coverage),
       "warning_candidate_count": len(findings),
+      "freshness_target_count": len(freshness_audit_targets),
     },
     "entrypoint_coverage": entrypoint_coverage,
+    "freshness_audit_targets": freshness_audit_targets,
     "findings": findings,
     "reasons": [finding["message"] for finding in findings],
   }
@@ -223,20 +231,19 @@ def _load_discipline_decision_points(cwd: Path) -> Dict[str, set[str]]:
   return result
 
 
-def _effective_prompt_names(cwd: Path) -> set[str]:
+def _effective_prompt_paths(cwd: Path) -> Dict[str, str]:
   prompt_dirs = [
     cwd / ".reviewcompass/runtime/effective-prompts",
     cwd / ".reviewcompass/guidance/effective-prompts",
   ]
-  names: set[str] = set()
+  paths: Dict[str, str] = {}
   for prompt_dir in prompt_dirs:
     if not prompt_dir.is_dir():
       continue
-    names.update(
-      path.name.removesuffix(".prompt.md")
-      for path in prompt_dir.glob("*.prompt.md")
-    )
-  return names
+    for path in prompt_dir.glob("*.prompt.md"):
+      name = path.name.removesuffix(".prompt.md")
+      paths.setdefault(name, str(path.relative_to(cwd)))
+  return paths
 
 
 def _coverage_entry(
@@ -334,3 +341,55 @@ def _coverage_findings(coverage: Dict[str, Any]) -> List[Dict[str, str]]:
       "message": f"{coverage['entrypoint_id']}: {message}",
     })
   return findings
+
+
+def _freshness_audit_target(
+  coverage: Dict[str, Any],
+  effective_prompt_paths: Dict[str, str],
+) -> Dict[str, Any] | None:
+  effective_prompt_ref = coverage.get("effective_prompt_ref")
+  if effective_prompt_ref is None:
+    return None
+  prompt_name = _effective_prompt_name_for_ref(effective_prompt_ref, effective_prompt_paths)
+  effective_prompt_path = effective_prompt_paths.get(prompt_name) if prompt_name else None
+  freshness_status = "unknown" if effective_prompt_path else "missing"
+  return {
+    "entrypoint_id": coverage["entrypoint_id"],
+    "effective_prompt_ref": effective_prompt_ref,
+    "effective_prompt_path": effective_prompt_path,
+    "freshness_status": freshness_status,
+  }
+
+
+def _effective_prompt_name_for_ref(
+  effective_prompt_ref: Any,
+  effective_prompt_paths: Dict[str, str],
+) -> str | None:
+  if not isinstance(effective_prompt_ref, str):
+    return None
+  group, _, entry_id = effective_prompt_ref.partition(":")
+  if not group or not entry_id:
+    return None
+  if entry_id == "*":
+    prefix = f"{group}-"
+    matching_names = sorted(
+      name
+      for name in effective_prompt_paths
+      if name.startswith(prefix)
+    )
+    return matching_names[0] if matching_names else None
+  return f"{group}-{entry_id}"
+
+
+def _freshness_findings(target: Dict[str, Any] | None) -> List[Dict[str, str]]:
+  if target is None:
+    return []
+  if target["freshness_status"] != "missing":
+    return []
+  return [{
+    "severity": "WARN",
+    "entrypoint_id": target["entrypoint_id"],
+    "field": "freshness_status",
+    "status": "missing",
+    "message": f"{target['entrypoint_id']}: effective prompt freshness target is missing",
+  }]

@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-30-entrypoint-freshness-audit-bridge
 kind: todo
 title: Connect entrypoint coverage audit to freshness audit targets
-status: candidate
+status: completed
 source_unit_id: main-completed
 created_at: '2026-06-30T12:19:03.930720+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -10,7 +10,12 @@ provenance:
   created_by: llm
   source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml#ECA-4
   reason: ECA-4 を plan から実行可能 TODO に materialize し、runtime checklist 経由で実行するため
-decisions: []
+decisions:
+- decision: completed
+  decision_ref: tests/workflow-management/test_entrypoint_freshness_audit_bridge_cli.py
+  reason: ECA-4 freshness audit targets exposed from entrypoint coverage audit; focused
+    tests and next --json passed
+  decided_at: '2026-06-30T12:30:54.602252+00:00'
 source_plan_id: plan-2026-06-23-entrypoint-coverage-audit
 source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml
 source_plan_slice:
@@ -43,13 +48,13 @@ implementation_plan:
       status: done
     - id: ECA-4E
       title: Implement freshness target extraction in entrypoint coverage audit
-      status: pending
+      status: done
     - id: ECA-4F
       title: Include stale or missing freshness findings per entrypoint
-      status: pending
+      status: done
     - id: ECA-4G
       title: Run focused tests and confirm next --json still returns completed
-      status: pending
+      status: done
 acceptance_criteria:
 - entrypoint coverage audit が freshness_audit_targets を JSON で返す。
 - freshness_audit_targets は entrypoint_id、effective_prompt_ref、effective_prompt_path、freshness_status
@@ -76,3 +81,9 @@ non_goals:
 - full prompt re-rendering freshness audit を実装すること。
 - commit/CI enforcement を有効化すること。
 - prompt-audit manifest contract を破壊的に変更すること。
+execution_history:
+- checklist_id: checklist-todo-2026-06-30-entrypoint-freshness-audit-bridge
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-30-entrypoint-freshness-audit-bridge.yaml
+  completion_summary: ECA-4 freshness audit targets exposed from entrypoint coverage
+    audit and focused tests passed
+  completed_at: '2026-06-30T12:30:45.772792+00:00'
