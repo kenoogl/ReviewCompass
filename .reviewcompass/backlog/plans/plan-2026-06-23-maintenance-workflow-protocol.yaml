@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: plan-2026-06-23-maintenance-workflow-protocol
 kind: plan
 title: Define maintenance workflow protocol
-status: candidate
+status: completed
 source_unit_id: main-completed
 created_at: '2026-06-23T10:12:00+09:00'
 index_path: .reviewcompass/backlog/index.yaml

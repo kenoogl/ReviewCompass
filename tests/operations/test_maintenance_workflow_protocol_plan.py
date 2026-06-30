@@ -11,11 +11,17 @@ PLAN_PATH = (
   / "plans"
   / "plan-2026-06-23-maintenance-workflow-protocol.yaml"
 )
+INDEX_PATH = ROOT / ".reviewcompass" / "backlog" / "index.yaml"
 
 
 def _remaining_work_by_id():
   data = yaml.safe_load(PLAN_PATH.read_text(encoding="utf-8"))
   return {item["id"]: item for item in data["remaining_work"]}
+
+
+def _index_item_by_id():
+  data = yaml.safe_load(INDEX_PATH.read_text(encoding="utf-8"))
+  return {item["id"]: item for item in data["items"]}
 
 
 def test_mwp0_through_mwp3_are_marked_completed_with_evidence():
@@ -34,3 +40,11 @@ def test_mwp0_through_mwp3_are_marked_completed_with_evidence():
   assert "6eebe013" in remaining_work["MWP-3"]["completion_evidence"]
   assert "d583949b" in remaining_work["MWP-3"]["completion_evidence"]
   assert "0b0fbd5d" in remaining_work["MWP-3"]["completion_evidence"]
+
+
+def test_maintenance_workflow_protocol_plan_and_index_are_completed():
+  plan = yaml.safe_load(PLAN_PATH.read_text(encoding="utf-8"))
+  index_item = _index_item_by_id()["plan-2026-06-23-maintenance-workflow-protocol"]
+
+  assert plan["status"] == "completed"
+  assert index_item["status"] == "completed"
