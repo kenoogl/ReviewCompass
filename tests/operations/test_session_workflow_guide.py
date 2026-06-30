@@ -19,6 +19,22 @@ def test_proxy_model_gate_requires_user_visible_review_run_summary():
   assert "`must-fix` 候補ごとの平易な説明" in text
 
 
+def test_approval_stage_is_human_only_and_proxy_model_is_limited_to_review_triage():
+  guide = guidance_path("SESSION_WORKFLOW_GUIDE.md").read_text(encoding="utf-8")
+  reopen = guidance_path("REOPEN_PROCEDURE.md").read_text(encoding="utf-8")
+  design = ROOT / ".reviewcompass" / "specs" / "workflow-management" / "design.md"
+  design_text = design.read_text(encoding="utf-8")
+
+  assert "proxy_model は approval 段の代行主体ではなく" in design_text
+  assert "人間承認段（actor=human）" in guide
+  assert "proxy_model は approval 段の代行主体ではなく" in guide
+  assert "review-run 後の重要件判断だけを代行できる" in guide
+  assert "approval は人間の承認（actor=human）" in reopen
+  assert "actor=human または proxy_model" not in guide
+  assert "利用者または別モデル承認" not in guide
+  assert "actor=human または proxy_model" not in reopen
+
+
 def test_workflow_navigation_exposes_triad_review_proxy_gate():
   text = guidance_path("WORKFLOW_NAVIGATION.md").read_text(encoding="utf-8")
 

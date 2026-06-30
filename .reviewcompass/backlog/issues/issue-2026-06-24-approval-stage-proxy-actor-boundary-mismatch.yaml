@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch
 kind: issue
 title: approval 段の承認主体記述（guide §2.2/§2.3）が human-only 境界と矛盾の疑い
-status: candidate
+status: completed
 source_unit_id: main-side-conversation
 created_at: '2026-06-24T09:17:15.561867+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -16,4 +16,13 @@ provenance:
     ゲートごとに human_only/proxy_allowed を区別)と照合し、(a)76/104 が decision_scope を単純化しすぎた誤誘導なら
     guide を整合、(b)整合済みなら誤報として却下。今回の proxy 裁定レコード レイアウト整合(guide 206/222-235)とは別機構の既存記述で今回スコープ外(利用者承認・案A
     で別タスク切り出し)。前回 decision-and-outcome.md で外部モデルが decision_scope を知らず過大評価した先例も考慮。
-decisions: []
+decisions:
+- decision: completed
+  decision_ref: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  reason: design.md は proxy_model を approval 段の代行主体ではなく triad-review
+    段内の review-run 後の修正方針判断だけを代行可能と定めている。SESSION_WORKFLOW_GUIDE.md
+    §2.2/§2.3 と REOPEN_PROCEDURE.md 第3過程に残っていた actor=human
+    または proxy_model の古い一般化を human-only approval 境界へ整合した。
+    tests/operations/test_session_workflow_guide.py に回帰テストを追加し、
+    approval/proxy 境界の関連テストも通過確認済み。
+  decided_at: '2026-06-30T00:00:00+09:00'

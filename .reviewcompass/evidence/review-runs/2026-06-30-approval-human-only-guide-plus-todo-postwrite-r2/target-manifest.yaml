@@ -1,0 +1,8 @@
+run_id: 2026-06-30-approval-human-only-guide-plus-todo-postwrite-r2
+target_files:
+- path: TODO_NEXT_SESSION.md
+  sha256: 62f5af2bed3630a067b7f02d19f21418563db5b26741f0ddec2de31ebd73e7c4
+- path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  sha256: e5f275e13cd69595549ffe8f017904b3fdd541870021432ec29539f22aa198b2
+- path: .reviewcompass/guidance/REOPEN_PROCEDURE.md
+  sha256: a5494b22fda1eeaf26d450f730119a4fb9ea4834970d4b5af05eb0f976f000fc

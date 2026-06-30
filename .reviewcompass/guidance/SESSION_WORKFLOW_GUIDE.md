@@ -73,7 +73,7 @@ implementation 段：drafting → triad-review → review-wave → alignment →
 - **triad-review**：機能内の 3 役レビュー（主役・敵対役・判定役）と機能内対処の実施。手動 dogfooding または subagent_mediated（サブエージェント仲介方式）で実施。actor=llm
 - **review-wave**：複数機能を横断する複数ラウンドレビュー。機能横断波及所見と同根所見（異なる機能で同じ性格の所見が独立に発見された組）を集約し、一貫した対処方針で全該当機能の仕様文書に反映する
 - **alignment**：LLM 自動判定による整合確認段（actor=llm）
-- **approval**：人間または別モデルによる承認段（actor=human または proxy_model）
+- **approval**：人間承認段（actor=human）。proxy_model は approval 段の代行主体ではなく、review-run 後の重要件判断だけを代行できる
 
 drafting と triad-review を別段にする理由は、誰が何をしたかを段単位で明確に記録し、草案作成者と判定者の分離を機械検査可能にするためである。
 
@@ -101,7 +101,7 @@ tasks review では、単に tasks.md の粒度や項目数を見るだけでは
 - **全機能で drafting ＋ triad-review を完了** してから review-wave に進む（部分的に review-wave を始めない）
 - **review-wave の所見を消化** してから alignment に進む
 - **alignment で LLM 自動判定** を通過してから approval に進む
-- **approval で利用者または別モデル承認** を得てから次フェーズに進む
+- **approval で利用者の明示承認** を得てから次フェーズに進む
 
 ### 2.4 「次の機能の drafting に進むべき」状況の判断
 

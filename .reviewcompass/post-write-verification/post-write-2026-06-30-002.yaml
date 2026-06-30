@@ -1,0 +1,28 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+- .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+- .reviewcompass/guidance/REOPEN_PROCEDURE.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 62f5af2bed3630a067b7f02d19f21418563db5b26741f0ddec2de31ebd73e7c4
+  .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md: e5f275e13cd69595549ffe8f017904b3fdd541870021432ec29539f22aa198b2
+  .reviewcompass/guidance/REOPEN_PROCEDURE.md: a5494b22fda1eeaf26d450f730119a4fb9ea4834970d4b5af05eb0f976f000fc
+required_verifiers: &id001
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - TODO_NEXT_SESSION.md
+  - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  - .reviewcompass/guidance/REOPEN_PROCEDURE.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 62f5af2bed3630a067b7f02d19f21418563db5b26741f0ddec2de31ebd73e7c4
+    .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md: e5f275e13cd69595549ffe8f017904b3fdd541870021432ec29539f22aa198b2
+    .reviewcompass/guidance/REOPEN_PROCEDURE.md: a5494b22fda1eeaf26d450f730119a4fb9ea4834970d4b5af05eb0f976f000fc
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-06-30-approval-human-only-guide-plus-todo-postwrite-r2
+  summary_path: .reviewcompass/evidence/review-runs/2026-06-30-approval-human-only-guide-plus-todo-postwrite-r2/model-result-summary.yaml
+notes: approval 段の human-only 境界を運用文書へ整合し、TODO の横展開課題欄も当該 issue 完了済みに更新。Gemini post-write
+  verification 所見0件。

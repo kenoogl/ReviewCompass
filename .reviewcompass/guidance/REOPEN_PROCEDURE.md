@@ -54,7 +54,7 @@
    - 「既存で受けられる」「修正不要」と判断する場合も、判定対象 gate、feature 範囲、判断、理由、証跡を記録する。修正不要は reopen を省略する理由ではなく、reopen 後の影響判定結果としてのみ扱う
    - 波及あり → triad-review に戻して対処（機能内対処または機能横断段へ）
    - 波及なし → approval へ
-   - approval は人の承認（actor=human または proxy_model）
+   - approval は人間の承認（actor=human）。proxy_model は review-run 後の重要件判断だけを代行でき、approval 段の代行主体にはしない
 
 → **停止点：各フェーズの approval（人の承認）。全フェーズ完了後にコミット**
 

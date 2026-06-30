@@ -397,7 +397,7 @@ items:
 - id: issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch
   kind: issue
   title: approval 段の承認主体記述（guide §2.2/§2.3）が human-only 境界と矛盾の疑い
-  status: candidate
+  status: completed
   path: .reviewcompass/backlog/issues/issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch.yaml
   source_unit_id: main-side-conversation
   created_at: '2026-06-24T09:17:15.561867+00:00'
