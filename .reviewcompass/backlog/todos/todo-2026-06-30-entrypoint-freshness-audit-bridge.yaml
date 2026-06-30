@@ -1,0 +1,78 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-30-entrypoint-freshness-audit-bridge
+kind: todo
+title: Connect entrypoint coverage audit to freshness audit targets
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-30T12:19:03.930720+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml#ECA-4
+  reason: ECA-4 を plan から実行可能 TODO に materialize し、runtime checklist 経由で実行するため
+decisions: []
+source_plan_id: plan-2026-06-23-entrypoint-coverage-audit
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml
+source_plan_slice:
+  phase_id: ECA-4
+  title: Connect freshness audit
+summary: 'entrypoint coverage audit の第4実行単位として、coverage audit が検出した effective prompt
+  refs を freshness audit 連携用の機械可読対象として出力する。
+
+  '
+problem_statement:
+- ECA-3 では entrypoint ごとの prompt 接続有無は分かるが、freshness audit へ渡す対象集合はまだ固定されていない。
+- stale / missing / source mismatch を entrypoint 単位で報告するための bridge contract がない。
+- ECA-5 以降の mechanized action link audit 前に、prompt 接続と鮮度監査の接続点を固定する必要がある。
+implementation_plan:
+  phases:
+  - id: ECA-4
+    title: Connect freshness audit
+    tasks:
+    - id: ECA-4A
+      title: Add red tests for freshness target extraction from coverage audit
+      status: done
+    - id: ECA-4B
+      title: Add red tests for entrypoint-scoped freshness fields
+      status: done
+    - id: ECA-4C
+      title: Add red tests for missing prompt freshness findings
+      status: done
+    - id: ECA-4D
+      title: Confirm the new tests fail before implementation
+      status: done
+    - id: ECA-4E
+      title: Implement freshness target extraction in entrypoint coverage audit
+      status: pending
+    - id: ECA-4F
+      title: Include stale or missing freshness findings per entrypoint
+      status: pending
+    - id: ECA-4G
+      title: Run focused tests and confirm next --json still returns completed
+      status: pending
+acceptance_criteria:
+- entrypoint coverage audit が freshness_audit_targets を JSON で返す。
+- freshness_audit_targets は entrypoint_id、effective_prompt_ref、effective_prompt_path、freshness_status
+  を含む。
+- prompt が欠落している entrypoint は missing または WARN finding として entrypoint 単位で報告される。
+- freshness 連携は read-only で、workflow state や backlog を変更しない。
+red_tests:
+- id: ECA-4-RT-1
+  title: Coverage audit exposes freshness audit targets
+  expected: entrypoint-coverage-audit --json returns freshness_audit_targets as a
+    list.
+  status: done
+- id: ECA-4-RT-2
+  title: Freshness targets are entrypoint-scoped
+  expected: each target declares entrypoint_id, effective_prompt_ref, effective_prompt_path,
+    and freshness_status.
+  status: done
+- id: ECA-4-RT-3
+  title: Missing effective prompt becomes freshness warning candidate
+  expected: missing prompt targets or findings are reported with WARN severity and
+    entrypoint_id.
+  status: done
+non_goals:
+- full prompt re-rendering freshness audit を実装すること。
+- commit/CI enforcement を有効化すること。
+- prompt-audit manifest contract を破壊的に変更すること。

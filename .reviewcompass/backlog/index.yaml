@@ -458,3 +458,10 @@ items:
   path: .reviewcompass/backlog/todos/todo-2026-06-30-entrypoint-coverage-audit.yaml
   source_unit_id: main-completed
   created_at: '2026-06-30T12:03:05.104589+00:00'
+- id: todo-2026-06-30-entrypoint-freshness-audit-bridge
+  kind: todo
+  title: Connect entrypoint coverage audit to freshness audit targets
+  status: candidate
+  path: .reviewcompass/backlog/todos/todo-2026-06-30-entrypoint-freshness-audit-bridge.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-30T12:19:03.930720+00:00'
