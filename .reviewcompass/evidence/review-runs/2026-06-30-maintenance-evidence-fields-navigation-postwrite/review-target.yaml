@@ -1,0 +1,24 @@
+run_id: 2026-06-30-maintenance-evidence-fields-navigation-postwrite
+phase: post_write_verification
+criteria_id: maintenance-evidence-fields-navigation-postwrite
+criteria_file: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-evidence-fields-navigation-postwrite/review-target.md
+criteria_file_sha256: 58d80dda3dadd4ec4fe3de23008ccf98d9acf74bc393d9acbc7beedc1257f99a
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-evidence-fields-navigation-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: 513097bc55919494cd4963a2e15e772b46c25ff82bcbf9b1ebd23cb6e2920197
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 354a8ee4a2f7b6e59afff49b6b2893ca948f889ebc6b452958a17033c187b6ef
+  content_mode: full_text
+  content_sha256: 354a8ee4a2f7b6e59afff49b6b2893ca948f889ebc6b452958a17033c187b6ef
+source_materials:
+- path: .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+  sha256: d822714a692ae109c6c198296e766461b4c96f18f7ce1b2c5e42ffc696da4bc4
+  content_mode: full_text
+  content_sha256: d822714a692ae109c6c198296e766461b4c96f18f7ce1b2c5e42ffc696da4bc4
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-06-30T09:40:02.385131+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-evidence-fields-navigation-postwrite/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-evidence-fields-navigation-postwrite/prompt-manifest.yaml

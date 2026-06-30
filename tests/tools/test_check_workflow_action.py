@@ -3130,6 +3130,11 @@ class NextNavigationTests(unittest.TestCase):
       data["next_action"]["completion_conditions"],
       ["Codex 新規セッションで TODO から開始できる"],
     )
+    self.assertEqual(data["next_action"]["workflow_steps"], [])
+    self.assertEqual(data["next_action"]["required_reviews"], [])
+    self.assertEqual(data["next_action"]["review_evidence"], [])
+    self.assertEqual(data["next_action"]["post_write_verification"], {})
+    self.assertEqual(data["next_action"]["completion_criteria"], [])
     self.assertEqual(data["next_action"]["required_action"], "run_maintenance")
     self.assertIsNone(data["next_action"]["active_gate"])
     self.assertIsNone(data["next_action"]["feature"])
@@ -3146,6 +3151,92 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(
       data["next_action"]["action_parameters"]["control_relation"],
       "side-track",
+    )
+    self.assertEqual(data["next_action"]["action_parameters"]["workflow_steps"], [])
+    self.assertEqual(data["next_action"]["action_parameters"]["required_reviews"], [])
+    self.assertEqual(data["next_action"]["action_parameters"]["review_evidence"], [])
+    self.assertEqual(
+      data["next_action"]["action_parameters"]["post_write_verification"],
+      {},
+    )
+    self.assertEqual(
+      data["next_action"]["action_parameters"]["completion_criteria"],
+      [],
+    )
+
+  def test_next_surfaces_maintenance_evidence_fields(self):
+    """maintenance の証跡フィールドを next --json へそのまま出す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "maintenance-2026-06-30-evidence-fields.yaml").write_text(
+      "process_id: maintenance\n"
+      "title: Maintenance evidence fields\n"
+      "work_class: maintenance\n"
+      "control_relation: side-track\n"
+      "required_action: run_tests\n"
+      "workflow_steps:\n"
+      "  - id: tests-first\n"
+      "    status: completed\n"
+      "required_reviews:\n"
+      "  - id: change-review\n"
+      "    status: pending\n"
+      "    review_type: change_content\n"
+      "review_evidence:\n"
+      "  - path: tests/tools/test_check_workflow_action.py\n"
+      "    evidence_type: test\n"
+      "post_write_verification:\n"
+      "  status: pending\n"
+      "  target_files:\n"
+      "    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md\n"
+      "completion_criteria:\n"
+      "  - all required_reviews are completed\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(
+      data["next_action"]["workflow_steps"],
+      [{"id": "tests-first", "status": "completed"}],
+    )
+    self.assertEqual(
+      data["next_action"]["required_reviews"],
+      [
+        {
+          "id": "change-review",
+          "status": "pending",
+          "review_type": "change_content",
+        }
+      ],
+    )
+    self.assertEqual(
+      data["next_action"]["review_evidence"],
+      [
+        {
+          "path": "tests/tools/test_check_workflow_action.py",
+          "evidence_type": "test",
+        }
+      ],
+    )
+    self.assertEqual(
+      data["next_action"]["post_write_verification"],
+      {
+        "status": "pending",
+        "target_files": [".reviewcompass/guidance/WORKFLOW_NAVIGATION.md"],
+      },
+    )
+    self.assertEqual(
+      data["next_action"]["completion_criteria"],
+      ["all required_reviews are completed"],
+    )
+    self.assertEqual(
+      data["next_action"]["action_parameters"]["required_reviews"],
+      data["next_action"]["required_reviews"],
     )
 
   def test_next_returns_side_track_return_pending_before_completed(self):

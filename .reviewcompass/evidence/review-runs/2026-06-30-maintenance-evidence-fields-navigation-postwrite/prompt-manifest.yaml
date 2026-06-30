@@ -1,0 +1,71 @@
+schema_version: effective-prompt-manifest-v1
+decision_point:
+  kind: post_write_verification
+  required_action: run_post_write_verification
+source_artifacts:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: sha256:354a8ee4a2f7b6e59afff49b6b2893ca948f889ebc6b452958a17033c187b6ef
+- path: .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+  sha256: sha256:d822714a692ae109c6c198296e766461b4c96f18f7ce1b2c5e42ffc696da4bc4
+required_disciplines:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+- .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+operation_contract:
+  operation_id: prepare_post_write_review
+  sha256: sha256:58d80dda3dadd4ec4fe3de23008ccf98d9acf74bc393d9acbc7beedc1257f99a
+expected_output_schema:
+  schema_ref: null
+  required_sections:
+  - findings
+prompt_length:
+  min_chars: 1
+  max_chars: 200000
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-evidence-fields-navigation-postwrite/review-target.md
+  failure_verdict: DEVIATION
+preconditions_checked:
+- id: post-write-review-target-generated
+  source: prepare_post_write_review
+  machine_checked: true
+  evidence_ref: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-evidence-fields-navigation-postwrite/review-target.md
+language_task:
+  document_kind: post_write_verification
+  input:
+    required_files:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    state_refs: []
+    source_refs:
+    - .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+  output_format:
+    kind: yaml_findings
+    required_sections:
+    - findings
+    schema_ref: null
+  constraints:
+  - Review language-level consistency only.
+  - Do not mutate workflow state.
+  - Do not create review-run artifacts.
+  - Do not commit or push.
+review_prompt_materials:
+  target_files:
+  - path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    content_mode: full_text
+    content_sha256: sha256:354a8ee4a2f7b6e59afff49b6b2893ca948f889ebc6b452958a17033c187b6ef
+  source_materials:
+  - path: .reviewcompass/backlog/plans/plan-2026-06-23-maintenance-workflow-protocol.yaml
+    content_mode: full_text
+    content_sha256: sha256:d822714a692ae109c6c198296e766461b4c96f18f7ce1b2c5e42ffc696da4bc4
+postconditions:
+- id: post-write-review-target-manifest-matches
+  check_kind: review_target_manifest_matches
+  source_ref: .reviewcompass/evidence/review-runs/2026-06-30-maintenance-evidence-fields-navigation-postwrite/review-target.md
+on_completion:
+  next_required_action: run_post_write_verification
+  allowed_followups:
+  - prompt-audit
+  - run-post-write-review
+  forbidden_actions:
+  - commit
+  - push
+  - spec-set
+generated_at: '2026-06-30T09:40:02.385131+00:00'
+criteria_id: maintenance-evidence-fields-navigation-postwrite

@@ -5509,6 +5509,11 @@ def build_in_progress_next_action(cwd, relative_path):
     maintenance_action = data.get("required_action", "continue_maintenance")
     work_class = data.get("work_class")
     control_relation = data.get("control_relation")
+    workflow_steps = data.get("workflow_steps", [])
+    required_reviews = data.get("required_reviews", [])
+    review_evidence = data.get("review_evidence", [])
+    post_write_verification = data.get("post_write_verification", {})
+    completion_criteria = data.get("completion_criteria", [])
     return {
       "kind": "blocking_in_progress",
       "blocking_phase": "maintenance_in_progress",
@@ -5524,11 +5529,21 @@ def build_in_progress_next_action(cwd, relative_path):
       "allowed_scope": data.get("allowed_scope", []),
       "allowed_files": data.get("allowed_files", []),
       "completion_conditions": data.get("completion_conditions", []),
+      "workflow_steps": workflow_steps,
+      "required_reviews": required_reviews,
+      "review_evidence": review_evidence,
+      "post_write_verification": post_write_verification,
+      "completion_criteria": completion_criteria,
       "action_parameters": {
         "maintenance_action": maintenance_action,
         "allowed_scope": data.get("allowed_scope", []),
         "allowed_files": data.get("allowed_files", []),
         "completion_conditions": data.get("completion_conditions", []),
+        "workflow_steps": workflow_steps,
+        "required_reviews": required_reviews,
+        "review_evidence": review_evidence,
+        "post_write_verification": post_write_verification,
+        "completion_criteria": completion_criteria,
         "work_class": work_class,
         "control_relation": control_relation,
         "active_stack_frame_id": relative_path,

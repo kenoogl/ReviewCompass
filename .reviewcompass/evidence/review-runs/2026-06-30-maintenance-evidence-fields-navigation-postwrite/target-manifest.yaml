@@ -1,0 +1,4 @@
+run_id: 2026-06-30-maintenance-evidence-fields-navigation-postwrite
+target_files:
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: 354a8ee4a2f7b6e59afff49b6b2893ca948f889ebc6b452958a17033c187b6ef
