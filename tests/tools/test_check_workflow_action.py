@@ -3081,6 +3081,8 @@ class NextNavigationTests(unittest.TestCase):
     (in_progress_dir / "maintenance-2026-06-03-codex-adapter.yaml").write_text(
       "process_id: maintenance\n"
       "title: Codex adapter migration\n"
+      "work_class: maintenance\n"
+      "control_relation: side-track\n"
       "reason: Codex 稼働前に Claude 前提の入口記述を整理する\n"
       "required_action: inspect_remaining_claude_assumptions\n"
       "blocked_normal_workflow: true\n"
@@ -3109,6 +3111,8 @@ class NextNavigationTests(unittest.TestCase):
     )
     self.assertEqual(data["next_action"]["process_id"], "maintenance")
     self.assertEqual(data["next_action"]["title"], "Codex adapter migration")
+    self.assertEqual(data["next_action"]["work_class"], "maintenance")
+    self.assertEqual(data["next_action"]["control_relation"], "side-track")
     self.assertTrue(data["next_action"]["blocked_normal_workflow"])
     self.assertEqual(
       data["next_action"]["mainline_blocked_by"],
@@ -3134,6 +3138,14 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(
       data["next_action"]["maintenance_action"],
       "inspect_remaining_claude_assumptions",
+    )
+    self.assertEqual(
+      data["next_action"]["action_parameters"]["work_class"],
+      "maintenance",
+    )
+    self.assertEqual(
+      data["next_action"]["action_parameters"]["control_relation"],
+      "side-track",
     )
 
   def test_next_prioritizes_post_write_over_maintenance(self):

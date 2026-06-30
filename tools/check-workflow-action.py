@@ -5463,12 +5463,16 @@ def build_in_progress_next_action(cwd, relative_path):
   process_id = data.get("process_id")
   if process_id == "maintenance":
     maintenance_action = data.get("required_action", "continue_maintenance")
+    work_class = data.get("work_class")
+    control_relation = data.get("control_relation")
     return {
       "kind": "blocking_in_progress",
       "blocking_phase": "maintenance_in_progress",
       "file": relative_path,
       "process_id": process_id,
       "title": data.get("title"),
+      "work_class": work_class,
+      "control_relation": control_relation,
       "required_action": "run_maintenance",
       "maintenance_action": maintenance_action,
       "blocked_normal_workflow": data.get("blocked_normal_workflow", True),
@@ -5481,6 +5485,8 @@ def build_in_progress_next_action(cwd, relative_path):
         "allowed_scope": data.get("allowed_scope", []),
         "allowed_files": data.get("allowed_files", []),
         "completion_conditions": data.get("completion_conditions", []),
+        "work_class": work_class,
+        "control_relation": control_relation,
         "active_stack_frame_id": relative_path,
         "parent_frame_id": data.get("parent_frame_id"),
       },
