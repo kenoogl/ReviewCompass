@@ -64,6 +64,10 @@
         "state_refs": {
           "type": "object"
         },
+        "reason": {
+          "$comment": "next_action.reason は現在状態と次操作を人間が読むための短い説明。最上位 reasons は verdict の根拠配列であり、責務が異なる。",
+          "type": "string"
+        },
         "pending_gates": {
           "type": "array"
         }
@@ -179,7 +183,11 @@
         }
       ]
     },
-    "reasons": { "type": "array" },
+    "reasons": {
+      "$comment": "最上位 reasons は verdict / exit_code の検査・判定根拠を機械可読に列挙する文字列配列。next_action.reason は人間向けの現在状態説明であり、最上位 reasons とは責務が異なる。",
+      "type": "array",
+      "items": { "type": "string" }
+    },
     "current_state": { "type": "object" }
   }
 }

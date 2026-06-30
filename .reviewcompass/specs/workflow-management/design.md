@@ -461,6 +461,13 @@ post-write target detection と manifest verification は、`next` と `commit` 
 | `blocked_by` | object または null |
 | `future_gates` | array |
 | `state_refs` | object |
+| `reason` | string（人間向けの現在状態説明。§5.2 の必須 10 フィールドには含めない任意フィールド） |
+
+**next_action.reason と最上位 reasons の責務差**
+
+`next_action.reason` は、現在の状態と次に取る操作を人間向けに短く説明する `next_action` 内の任意文字列である。これは §5.3 の全 kind 共通フィールドだが、§5.2 の `next_action` 必須 10 フィールドには含めない。
+
+最上位 `reasons` は、`verdict` と `exit_code` の検査・判定根拠を機械可読な文字列配列として列挙する必須フィールドである。`DEVIATION` や `WARN` の理由、検査で見つかった不足・矛盾・遮断理由を入れる。したがって、最上位 `reasons` は判定根拠の配列、`next_action.reason` は利用者が読む現在状態説明であり、互いに代替しない。
 
 **`kind` フィールドの値域**
 
