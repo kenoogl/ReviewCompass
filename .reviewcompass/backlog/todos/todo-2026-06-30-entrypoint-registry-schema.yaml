@@ -1,0 +1,81 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-30-entrypoint-registry-schema
+kind: todo
+title: Define entrypoint registry schema
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-30T11:53:38.240817+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml#ECA-2
+  reason: ECA-2 を plan から実行可能 TODO に materialize し、runtime checklist 経由で実行するため
+decisions: []
+source_plan_id: plan-2026-06-23-entrypoint-coverage-audit
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-entrypoint-coverage-audit.yaml
+source_plan_slice:
+  phase_id: ECA-2
+  title: Define entrypoint registry schema
+summary: 'entrypoint coverage audit の第2実行単位として、ECA-1 で棚卸しした入口を 正規 registry として扱うための
+  schema を定義する。schema は entrypoint id、 kind、trigger、decision_point_ref、effective_prompt_ref、required_action、
+  mechanized_command、evidence_contract を持ち、WORKFLOW_DISCIPLINE_MAP.yaml との 責務境界を機械可読に説明できるようにする。
+
+  '
+problem_statement:
+- ECA-1 の inventory は入口を列挙できるが、正本 registry schema はまだ存在しない。
+- WORKFLOW_DISCIPLINE_MAP.yaml と registry のどちらが何を保持するかが未確定である。
+- ECA-3 の coverage audit を実装する前に、registry entry の必須フィールドと責務境界を固定する必要がある。
+implementation_plan:
+  phases:
+  - id: ECA-2
+    title: Define entrypoint registry schema
+    tasks:
+    - id: ECA-2A
+      title: Add red tests for machine-readable registry schema output
+      status: done
+    - id: ECA-2B
+      title: Add red tests for required entrypoint registry fields
+      status: done
+    - id: ECA-2C
+      title: Add red tests for WORKFLOW_DISCIPLINE_MAP responsibility boundary
+      status: done
+    - id: ECA-2D
+      title: Confirm the new tests fail before implementation
+      status: done
+    - id: ECA-2E
+      title: Implement read-only registry schema output
+      status: pending
+    - id: ECA-2F
+      title: Include required fields and boundary metadata in schema JSON
+      status: pending
+    - id: ECA-2G
+      title: Run focused tests and confirm next --json still returns completed
+      status: pending
+acceptance_criteria:
+- entrypoint registry schema を機械可読 JSON として取得できる。
+- schema は entrypoint_id、kind、trigger、decision_point_ref、effective_prompt_ref、required_action、mechanized_command、evidence_contract
+  を必須フィールドとして示す。
+- WORKFLOW_DISCIPLINE_MAP.yaml は decision point / effective prompt source の正本、entrypoint
+  registry は入口 / required_action / mechanized action link / evidence contract の正本、という責務境界を説明できる。
+- ECA-3 の coverage audit が参照できる schema_version と registry_contract を持つ。
+red_tests:
+- id: ECA-2-RT-1
+  title: Entrypoint registry schema is exposed as JSON
+  expected: entrypoint-registry-schema --json returns verdict OK, schema_version,
+    registry_contract, and operation_mode read_only.
+  status: done
+- id: ECA-2-RT-2
+  title: Required registry fields are declared
+  expected: registry_contract.required_fields includes entrypoint_id, kind, trigger,
+    decision_point_ref, effective_prompt_ref, required_action, mechanized_command,
+    evidence_contract.
+  status: done
+- id: ECA-2-RT-3
+  title: Discipline map boundary is declared
+  expected: registry_contract.responsibility_boundary distinguishes WORKFLOW_DISCIPLINE_MAP.yaml
+    responsibilities from entrypoint registry responsibilities.
+  status: done
+non_goals:
+- ECA-3 の coverage audit を実装すること。
+- すべての entrypoint を registry ファイルへ移行すること。
+- effective prompt freshness audit を実装すること。
