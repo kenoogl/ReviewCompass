@@ -40,7 +40,7 @@
       "drafting": true,
       "triad-review": true,
       "review-wave": true,
-      "alignment": false,
+      "alignment": true,
       "approval": false
     }
   },
