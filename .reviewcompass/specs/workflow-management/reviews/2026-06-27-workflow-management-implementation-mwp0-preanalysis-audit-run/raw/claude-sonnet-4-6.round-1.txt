@@ -1,0 +1,138 @@
+verdict: sufficient_with_revisions
+
+independent_reconstruction:
+  judgment_items:
+    - item_id: mwp0-if-then-completeness
+      question: "Do the if/then constraints in next_action_response.schema.json and the corresponding tests completely and accurately implement all field constraints specified in 受入 11(6)①②③⑤?"
+      target_files:
+        - ".reviewcompass/schema/next_action_response.schema.json"
+        - "tests/tools/test_t020_kind_redesign.py (SchemaIfThenConstraintTests class)"
+      source_materials:
+        - "受入 11(6) full text (①②③④⑤⑥)"
+        - "design §5.2 (if/then constraint specification)"
+        - "T-020 先送り事項(a) and 完了条件3"
+      out_of_scope:
+        - "commit/push/phase completion authorization"
+        - "triage decisions or implementation fixes"
+        - "T-001 through T-019 implementation"
+      rationale: "受入 11(6) defines precise field constraints per required_action value. T-020 assigns ①②③⑤ to schema if/then definitions. The schema and test files are the implementation artifacts. Discrepancies between the requirement text and schema/test coverage are the judgment target."
+
+    - item_id: mwp0-kind-separation
+      question: "Does the implementation ensure next --json outputs only the 7 specified kind values and commit-preflight outputs only the 3 specified kind values, with tests covering both directions?"
+      target_files:
+        - "tools/check-workflow-action.py (_commit_preflight_next_action and next --json output path)"
+        - "tests/tools/test_t020_kind_redesign.py (KindValueSeparationTests class)"
+        - ".reviewcompass/schema/commit_preflight_response.schema.json"
+      source_materials:
+        - "受入 12 full text"
+        - "T-020 完了条件1 and 完了条件2"
+        - "design §5.2 (kind 7-value inline enum)"
+      out_of_scope:
+        - "commit/push authorization"
+        - "non-MWP-0 subcommands"
+      rationale: "受入 12 specifies the exact 7 and 3 kind values for each subcommand. T-020 completion conditions 1 and 2 require pytest verification of both directions. The implementation excerpt and schema are the artifacts to check."
+
+    - item_id: mwp0-reason-reasons-separation
+      question: "Is the semantic distinction between next_action.reason (inner field) and the top-level reasons array sufficiently clarified in the schema and design?"
+      target_files:
+        - ".reviewcompass/schema/next_action_response.schema.json"
+        - ".reviewcompass/specs/workflow-management/design.md §5.3"
+      source_materials:
+        - "design §5.3 (reason field description)"
+        - "T-020 先送り事項(b)"
+      out_of_scope:
+        - "commit/push authorization"
+        - "implementation test coverage for this item"
+      rationale: "T-020(b) identifies reason vs reasons distinction as a deferred item. design §5.3 partially addresses reason. The judgment is whether the clarification is present and sufficient in the schema and design."
+
+    - item_id: mwp0-upstream-intent-transfer
+      question: "Are the acceptance criteria, responsibility boundaries, and prohibitions from 受入 11(6) and 受入 12 transferred without omission, weakening, or unsupported addition through the requirements→design→tasks→implementation chain?"
+      target_files:
+        - ".reviewcompass/schema/next_action_response.schema.json"
+        - ".reviewcompass/schema/commit_preflight_response.schema.json"
+      source_materials:
+        - "受入 11(6) full text (①②③④⑤⑥)"
+        - "受入 12 full text"
+        - "design §5.2"
+        - "T-020 先送り事項 and 完了条件"
+      out_of_scope:
+        - "commit/push authorization"
+        - "WORKFLOW_NAVIGATION.md update (T-020完了条件4)"
+        - "deprecation wording unification (T-020完了条件5)"
+      rationale: "Upstream intent transfer is a cross-cutting judgment that checks whether the chain from requirements through implementation preserves all specified constraints. This is distinct from per-constraint correctness and focuses on structural fidelity of the chain."
+
+preanalysis_assessment:
+  supported_parts:
+    - "mwp0-if-then-completeness: The identification of 受入 11(6)① blocked_by.type='commit_stop_point' as potentially missing from the schema is well grounded. The schema allOf entry for commit_stop_point enforces active_gate/phase/stage=null but does not include a blocked_by.type constraint. The test stubs for commit_stop_point also do not reference blocked_by validation."
+    - "mwp0-kind-separation: The identification of the two-directional test coverage requirement is grounded in T-020 完了条件1 and 2."
+    - "mwp0-reason-reasons-separation: The finding that T-020(b) lacks an explicit verification method in 完了条件 is supported by reading T-020 完了条件 1-5, none of which explicitly tests reason vs reasons distinction."
+    - "The four candidate judgment items correspond correctly to the four review focus areas stated in the user/workflow review requirement."
+  missing_perspectives:
+    - "The preanalysis does not examine whether ② run_reopen_pending_gate enforces the phase/stage = active_gate consistency constraint. 受入 11(6)② requires 'phase/stage は active_gate と一致' but the schema allOf entry for ② only enforces active_gate non-null and blocked_by=null; there is no phase/stage consistency check. This is a missing coverage gap not flagged in the preanalysis."
+    - "The preanalysis does not check whether _commit_preflight_next_action in the implementation excerpt can return kind values outside the 3 specified values (e.g., 'verification_pending' and 'unknown' appear in the code path before the 3 commit-preflight values are returned). This is a potential kind-separation violation not flagged."
+    - "The preanalysis treats resolved_claims mwp0-claim-e and mwp0-claim-f as confirmed via 'commit history', but neither commit history nor WORKFLOW_NAVIGATION.md content is included in the bundle source materials. These claims cannot be verified from the provided materials."
+    - "The preanalysis does not note that the proposed review criteria output format (YAML findings with id/severity/target/summary/detail/suggestion) differs from the criteria output contract specified in the audit bundle criteria (which uses a structured YAML with specific severity values). This is a meta-issue about the proposed prompt's output contract."
+  unsupported_or_overconfident_parts:
+    - "resolved_claims mwp0-claim-e-deprecation-wording and mwp0-claim-f-navigation-update are stated as resolved via commit history confirmation, but no commit history or WORKFLOW_NAVIGATION.md content is present in the bundle. These claims are unverifiable from provided materials and should not be marked resolved."
+    - "The preanalysis states '_commit_preflight_next_action は commit_candidate/commit_mixing_risk/commit_unit_stale の3値のみを kind として返す' but the implementation excerpt shows it can also return 'verification_pending' (line: return {\"kind\": \"verification_pending\", ...}) and 'unknown' (line: return {\"kind\": \"unknown\", ...}). The claim of 3-value-only output is contradicted by the provided source material."
+  bias_risks:
+    - "The preanalysis pre-labels all four items as 'sensitivity: low', which may anchor the actual reviewer toward dismissing findings as minor before independent analysis."
+    - "The preanalysis finding for mwp0-upstream-intent-transfer pre-resolves claims E and F without source basis, creating a risk that the API reviewer will treat those as confirmed and not independently verify them."
+    - "The proposed criteria section 'Change Summary' describes the implementation in positive terms ('主な成果物' with test counts) before posing review questions, which may prime the reviewer toward confirmation rather than independent analysis."
+
+prompt_sufficiency:
+  information: revisions_needed
+  question: sufficient
+  scope: sufficient
+  sensitivity_check: revisions_needed
+  notes:
+    - "The source materials embedded in the proposed criteria are complete for items 1, 2, and 4 of the review question. The requirement text, design text, task text, schema files, test stubs, and implementation excerpt are all present."
+    - "Item 3 (reason vs reasons) lacks the actual schema definition of the reason field within next_action. The schema file shows next_action required fields include no 'reason' field in the properties block, which is itself a potential finding. The reviewer needs to notice this absence, and the criteria does not call attention to it."
+    - "The KindValueSeparationTests class is referenced in the scope section but its test stubs are not included in the criteria file, unlike SchemaIfThenConstraintTests. This asymmetry may cause the reviewer to be unable to independently judge T-020 完了条件1 and 2."
+    - "The implementation excerpt shows _commit_preflight_next_action returning 'verification_pending' and 'unknown' kind values, which appear to violate 受入 12. The criteria does not flag this as a known discrepancy, leaving the reviewer to independently discover it, which is appropriate for independent review but means the criteria must include the full implementation excerpt."
+    - "The output contract in the proposed criteria uses a domain-specific YAML format (id/severity/must-fix|should-fix|leave-as-is) that is appropriate for an implementation review. This is distinct from the audit criteria output contract and does not create a conflict."
+    - "The criteria does not contain any language authorizing commit, push, phase completion, or human approval delegation. Sensitivity check passes on that dimension."
+    - "The resolved_claims in the preanalysis reference WORKFLOW_NAVIGATION.md and commit history, but neither is included as source material. If T-020 完了条件4 and 5 are in scope for the review, those materials must be added or explicitly excluded."
+
+required_prompt_changes:
+  - "Add the KindValueSeparationTests class test stubs (or equivalent excerpts) to the proposed criteria as a FILE section, parallel to SchemaIfThenConstraintTests, so the reviewer can independently judge T-020 完了条件1 and 2."
+  - "Add a note or FILE section indicating that the 'reason' field within next_action properties is not present in the schema file as provided, and that the reviewer should check whether this is intentional or a gap relative to design §5.3."
+  - "Either include WORKFLOW_NAVIGATION.md content and the relevant commit history excerpt as source materials, or explicitly move T-020 完了条件4 (WORKFLOW_NAVIGATION.md update) and 完了条件5 (deprecation wording unification) to the out-of-scope section. Currently they are neither in scope nor explicitly excluded."
+  - "Remove or reframe the resolved_claims from any reviewer-visible framing. The proposed criteria Change Summary should not imply that deprecation wording and navigation file updates are confirmed resolved, as these cannot be verified from the provided materials."
+  - "Add a note to the Review Question or Scope section that the reviewer should independently check whether _commit_preflight_next_action can return kind values outside the three commit-preflight values, without pre-answering this question."
+
+findings:
+  - severity: ERROR
+    target_location: "preanalysis_assessment / resolved_claims"
+    description: "resolved_claims mwp0-claim-e and mwp0-claim-f are marked as confirmed via commit history, but no commit history or WORKFLOW_NAVIGATION.md content is present in the bundle source materials. These claims are unverifiable from the provided materials."
+    rationale: "Treating unverifiable claims as resolved in the preanalysis creates a source coverage gap. If the proposed criteria inherits this framing, the actual reviewer will have no basis to independently verify T-020 完了条件4 and 5, making those judgment items unsupportable."
+
+  - severity: ERROR
+    target_location: "FILE: tools/check-workflow-action.py (proposed criteria) / mwp0-kind-separation"
+    description: "The implementation excerpt shows _commit_preflight_next_action returning 'verification_pending' and 'unknown' kind values, which are not among the 3 values permitted by 受入 12. The preanalysis claims the function returns only 3 values, directly contradicting the provided source material."
+    rationale: "This is a factual contradiction between the preanalysis hypothesis and the source material included in the bundle. The actual reviewer must independently discover this discrepancy. The proposed criteria must not suppress or pre-resolve it."
+
+  - severity: WARN
+    target_location: "FILE: tests/tools/test_t020_kind_redesign.py (proposed criteria)"
+    description: "The KindValueSeparationTests class is referenced in the Scope section but its test stubs are not included in the proposed criteria file, unlike SchemaIfThenConstraintTests which is fully excerpted. This asymmetry makes T-020 完了条件1 and 2 unjudgeable without the missing stubs."
+    rationale: "An independent reviewer cannot judge whether kind separation test coverage is sufficient without seeing the test structure. The omission creates an information gap for one of the four primary review questions."
+
+  - severity: WARN
+    target_location: "SOURCE MATERIAL 2 / design §5.3 and FILE: next_action_response.schema.json"
+    description: "design §5.3 lists 'reason' as a next_action field with role 'state description (human-readable)', but the schema's next_action.properties block does not define a 'reason' property and 'reason' is not in the required list. The proposed criteria does not flag this discrepancy for the reviewer."
+    rationale: "The absence of 'reason' from the schema relative to design §5.3 is directly relevant to review question 3 (reason vs reasons responsibility separation). The reviewer needs to notice this absence independently, which is appropriate, but the criteria should not omit the design §5.3 table entry that makes this checkable."
+
+  - severity: WARN
+    target_location: "preanalysis_assessment / candidate_judgment_items / mwp0-if-then-completeness"
+    description: "The preanalysis flags the missing blocked_by.type constraint for ① commit_stop_point but does not flag the missing phase/stage consistency constraint for ② run_reopen_pending_gate. 受入 11(6)② requires 'phase/stage は active_gate と一致' but the schema allOf entry for ② does not enforce this."
+    rationale: "This is a missing perspective in the preanalysis. If the proposed criteria is used without correction, the actual reviewer may not be directed toward the ② phase/stage consistency gap. The criteria should not pre-list findings, but should ensure the full requirement text for ② is present for independent evaluation, which it is in SOURCE MATERIAL 1."
+
+  - severity: WARN
+    target_location: "Proposed criteria / Change Summary section"
+    description: "The Change Summary describes the implementation in positive framing ('1,496件通過') before the review questions are posed. This primes the reviewer toward confirmation bias rather than independent analysis."
+    rationale: "A neutral summary of the change scope is appropriate, but quantitative pass counts presented as achievement markers can anchor the reviewer toward assuming correctness. The framing should be descriptive rather than evaluative."
+
+  - severity: INFO
+    target_location: "Proposed criteria / Out of Scope section"
+    description: "T-020 完了条件4 (WORKFLOW_NAVIGATION.md update) and 完了条件5 (deprecation wording unification) are neither explicitly included nor explicitly excluded from scope. This ambiguity could cause the reviewer to partially evaluate them without the necessary source materials."
+    rationale: "Explicit scope boundaries prevent wasted reviewer effort and ensure findings are actionable. These two items should either be added with source materials or explicitly excluded."

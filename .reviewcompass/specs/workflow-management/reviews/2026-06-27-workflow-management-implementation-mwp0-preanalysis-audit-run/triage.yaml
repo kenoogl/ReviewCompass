@@ -1,0 +1,198 @@
+run_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run
+triage_status: decided
+generated_at: '2026-06-27T05:33:18.561864+00:00'
+decision_actor: user
+decision_actor_type: human
+items:
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: preanalysis_assessment / resolved_claims
+  plain_language_summary: resolved_claims mwp0-claim-e and mwp0-claim-f are marked
+    as confirmed via commit history, but no commit history or WORKFLOW_NAVIGATION.md
+    content is present in the bundle source materials. These claims are unverifiable
+    from the provided materials.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-30T07:00:42.367851+00:00'
+  decision_reason: この事前分析監査 run は後続の A/B/C 個別実装レビュー run に置き換え済み。T-020 完了条件4/5のスコープ曖昧さは後続個別レビューの対象整理と、実装完了コミット
+    6b5e27a4 の記録で吸収済みのため、この run では追加修正しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'FILE: tools/check-workflow-action.py (proposed criteria) / mwp0-kind-separation'
+  plain_language_summary: The implementation excerpt shows _commit_preflight_next_action
+    returning 'verification_pending' and 'unknown' kind values, which are not among
+    the 3 values permitted by 受入 12. The preanalysis claims the function returns only
+    3 values, directly contradicting the provided source material.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-30T07:00:54.413478+00:00'
+  decision_reason: この指摘は後続の B 観点レビューで本体所見として扱い、commit-preflight の外部公開 kind を3値に限定する修正を
+    c8ead8fb で実装済み。事前分析監査 run 自体は後続レビューに置き換えられたため、この run では追加修正しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'FILE: tests/tools/test_t020_kind_redesign.py (proposed criteria)'
+  plain_language_summary: The KindValueSeparationTests class is referenced in the
+    Scope section but its test stubs are not included in the proposed criteria file,
+    unlike SchemaIfThenConstraintTests which is fully excerpted. This asymmetry makes
+    T-020 完了条件1 and 2 unjudgeable without the missing stubs.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-30T07:01:07.714562+00:00'
+  decision_reason: KindValueSeparationTests の材料不足は後続の B 観点個別レビューで対象資料を分けて扱い、B 修正とレビュー記録を
+    c8ead8fb および 6b5e27a4 で確定済み。置き換え前の事前分析監査 run には追加修正しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: 'SOURCE MATERIAL 2 / design §5.3 and FILE: next_action_response.schema.json'
+  plain_language_summary: design §5.3 lists 'reason' as a next_action field with role
+    'state description (human-readable)', but the schema's next_action.properties
+    block does not define a 'reason' property and 'reason' is not in the required
+    list. The proposed criteria does not flag this discrepancy for the reviewer.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-30T07:01:15.086031+00:00'
+  decision_reason: reason と reasons の責務差は後続の C 観点レビューで本体所見として扱い、schema と design の責務差明確化を
+    0da4f15a で実装済み。事前分析監査 run は後続レビューに置き換え済みのため追加修正しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: preanalysis_assessment / candidate_judgment_items / mwp0-if-then-completeness
+  plain_language_summary: The preanalysis flags the missing blocked_by.type constraint
+    for ① commit_stop_point but does not flag the missing phase/stage consistency
+    constraint for ② run_reopen_pending_gate. 受入 11(6)② requires 'phase/stage は active_gate
+    と一致' but the schema allOf entry for ② does not enforce this.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-30T07:01:23.688068+00:00'
+  decision_reason: run_reopen_pending_gate の phase/stage 制約漏れは後続の A 観点レビューで本体所見として扱い、if/then
+    制約補完を b978abd4 で実装済み。事前分析監査 run は後続レビューに置き換え済みのため追加修正しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run-claude-sonnet-4-6-adversarial-006
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed criteria / Change Summary section
+  plain_language_summary: The Change Summary describes the implementation in positive
+    framing ('1,496件通過') before the review questions are posed. This primes the reviewer
+    toward confirmation bias rather than independent analysis.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-30T07:01:35.975359+00:00'
+  decision_reason: 肯定的な Change Summary によるバイアスリスクは、後続で A/B/C 個別レビューへ分割し、各観点ごとに独立レビューを実施したことで吸収済み。置き換え前の事前分析監査
+    run には追加修正しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run-claude-sonnet-4-6-adversarial-007
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Proposed criteria / Out of Scope section
+  plain_language_summary: T-020 完了条件4 (WORKFLOW_NAVIGATION.md update) and 完了条件5 (deprecation
+    wording unification) are neither explicitly included nor explicitly excluded from
+    scope. This ambiguity could cause the reviewer to partially evaluate them without
+    the necessary source materials.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-30T07:01:43.636116+00:00'
+  decision_reason: T-020 完了条件4/5のスコープ曖昧さは、後続の A/B/C 個別レビューで主対象を分け、本線の triad-review
+    完了記録を 6b5e27a4 で確定したことでこの監査 run の目的からは解消済み。追加修正しない。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '## Review Question'
+  plain_language_summary: Multiple independent judgments are bundled into one prompt.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-30T07:01:54.924998+00:00'
+  decision_reason: '複数判断を1つに束ねた問題は、後続で A: if/then、B: kind 分離、C: reason/reasons の個別レビュー
+    run に分割して実施済み。置き換え後のレビュー記録を 6b5e27a4 で確定したため、この事前分析監査 run には追加修正しない。'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-preanalysis-audit-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: '## Review Question (Question 3) and FILE: .reviewcompass/schema/next_action_response.schema.json'
+  plain_language_summary: Target material necessary to judge 'reason' vs 'reasons'
+    separation is missing.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: human
+  decision_at: '2026-06-30T07:02:03.834451+00:00'
+  decision_reason: reason/reasons の判断材料不足は、後続の C 観点個別レビューで対象資料を分けて扱い、schema と design
+    の責務差明確化を 0da4f15a で実装済み。置き換え前の事前分析監査 run には追加修正しない。
+  applied_files: []
+  superseded_by: null
