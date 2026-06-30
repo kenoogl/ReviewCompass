@@ -1,0 +1,7 @@
+```yaml
+findings:
+  - severity: ERROR
+    target_location: "How to apply: 適用外のリスト"
+    description: "自律進行の適用外（明示承認が必須）リストに、post-write verification や、next --json が返すワークフロー停止条件（blocking_unit_required など）が含まれていません。"
+    rationale: "post-write verification やワークフローの停止条件が適用外として明記されていない場合、実装中の自律進行指示が優先されて必須ゲートをバイパスしてよいと解釈される恐れがあり、システム全体の検証・制御が弱体化するため。"
+```

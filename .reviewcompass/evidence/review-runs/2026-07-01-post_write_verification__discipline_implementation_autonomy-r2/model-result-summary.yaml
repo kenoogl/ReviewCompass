@@ -1,0 +1,14 @@
+run_id: 2026-07-01-post_write_verification__discipline_implementation_autonomy-r2
+models:
+- model_id: gemini-3.1-pro-preview
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  parse_status: parsed
+  triage_status: no_findings
+  findings_count: 0
+  findings_count_by_severity: {}
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: f0b1569a8a5024445be24f47a14fbf68c602c077877d3486b2aa351fe4bd53f6

@@ -1,0 +1,25 @@
+run_id: 2026-07-01-post_write_verification__discipline_implementation_autonomy
+triage_status: draft
+generated_at: '2026-06-30T23:27:04.154015+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-07-01-post_write_verification__discipline_implementation_autonomy-gemini-3.1-pro-preview-primary-001
+  run_id: 2026-07-01-post_write_verification__discipline_implementation_autonomy
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: 'How to apply: 適用外のリスト'
+  plain_language_summary: 自律進行の適用外（明示承認が必須）リストに、post-write verification や、next --json
+    が返すワークフロー停止条件（blocking_unit_required など）が含まれていません。
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: post-write verification やワークフローの停止条件が適用外として明記されていない場合、実装中の自律進行指示が優先されて必須ゲートをバイパスしてよいと解釈される恐れがあり、システム全体の検証・制御が弱体化するため。
+  applied_files: []
+  superseded_by: null

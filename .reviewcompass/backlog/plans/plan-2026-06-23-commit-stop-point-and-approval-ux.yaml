@@ -74,7 +74,7 @@ remaining_work:
       - '利用者指示 `自律実行` を、次の 1 commit 分の作業、検証、TODO / checklist 更新、commit まで進める明示承認として解釈する。'
       - '`次へ` は従来どおり commit 停止点までで止め、`自律実行` と区別する。'
       - commit 停止点到達時に停止せず、commit preflight、stage、approval / execution delegation、guarded commit を逐次実行する。
-      - TDD 境界では 1 commit 分だけ進める。赤テスト段階なら赤テスト commit で停止し、実装段階なら実装 commit で停止する。
+      - TDD 境界では 1 commit 分だけ進める。赤テスト失敗確認は証跡に残し、赤テスト commit では停止せず、実装完了後の commit まで進める。
       - 'commit 後は push へ進まず停止し、利用者向け報告の末尾に `次に必要な操作: プッシュ` を示す。'
     acceptance:
       - '`自律実行` は commit 代行承認を含むが、push 代行承認は含まない。'

@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- AGENTS.md
+- .reviewcompass/guidance/discipline_implementation_autonomy.md
+target_sha256:
+  AGENTS.md: 4a8e9e44f62ca23f179c5f40cc48e19ea8807da23378cef632d818eaaada3ea0
+  .reviewcompass/guidance/discipline_implementation_autonomy.md: 172f46cd2f37928842020b7156fc74df6483dbb1ab18f0fd6056064f0a64e085
+required_verifiers: &id001
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - AGENTS.md
+  - .reviewcompass/guidance/discipline_implementation_autonomy.md
+  target_sha256:
+    AGENTS.md: 4a8e9e44f62ca23f179c5f40cc48e19ea8807da23378cef632d818eaaada3ea0
+    .reviewcompass/guidance/discipline_implementation_autonomy.md: 172f46cd2f37928842020b7156fc74df6483dbb1ab18f0fd6056064f0a64e085
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-07-01-post_write_verification__tdd_red_test_evidence_policy
+  summary_path: .reviewcompass/evidence/review-runs/2026-07-01-post_write_verification__tdd_red_test_evidence_policy/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

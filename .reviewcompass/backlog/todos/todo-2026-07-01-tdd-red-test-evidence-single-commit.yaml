@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-07-01-tdd-red-test-evidence-single-commit
 kind: todo
 title: Change TDD red-test handling from mandatory red-test commit to evidence-only before implementation commit
-status: candidate
+status: completed
 source_unit_id: main-side-conversation
 created_at: '2026-07-01T00:00:00+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -19,6 +19,36 @@ decisions:
   rationale: >
     現行 AGENTS.md は「テストが正しいことを確認できた段階でコミットする」と明示しており、
     変更には AGENTS.md、workflow guidance、commit/autonomous 実行導線、証跡形式の整合が必要なため。
+- date: '2026-07-01'
+  decision: >
+    赤テスト失敗確認は commit ではなく証跡として残し、実装完了後に赤テストと実装を
+    1 commit にまとめる契約へ更新する。
+  rationale: >
+    利用者が細切れ commit の削減を明示し、TDD の安全性は赤テスト失敗確認の機械可読な
+    証跡で維持できるため。
+execution_history:
+- date: '2026-07-01'
+  phase: red-test
+  command: .venv/bin/python3 -m pytest tests/tools/test_tdd_red_test_evidence_policy_docs.py
+  exit_code: 1
+  result: failed_as_expected
+  evidence_summary: >
+    3 tests failed because AGENTS.md, implementation autonomy guidance, and the autonomous
+    commit plan still required or implied a red-test commit boundary.
+- date: '2026-07-01'
+  phase: implementation
+  changes:
+  - AGENTS.md の TDD 契約を、赤テスト失敗確認の証跡化と実装完了 commit へ更新した。
+  - .reviewcompass/guidance/discipline_implementation_autonomy.md に自律実行時の赤テスト証跡方針を追加した。
+  - .reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml の赤テスト commit 停止記述を更新した。
+- date: '2026-07-01'
+  phase: post-write-verification-finding
+  finding_id: 2026-07-01-post_write_verification__discipline_implementation_autonomy-gemini-3.1-pro-preview-primary-001
+  decision: adopted
+  source_ref: conversation:user:採用する
+  changes:
+  - .reviewcompass/guidance/discipline_implementation_autonomy.md に post-write verification と workflow 停止条件が自律実行の適用外であることを明記した。
+  - tests/tools/test_tdd_red_test_evidence_policy_docs.py に同契約の固定テストを追加した。
 summary: >
   TDD の赤テスト段階で必ず commit する現行契約を見直し、赤テスト失敗確認は
   checklist / evidence / test output summary に保存したうえで、実装完了後に

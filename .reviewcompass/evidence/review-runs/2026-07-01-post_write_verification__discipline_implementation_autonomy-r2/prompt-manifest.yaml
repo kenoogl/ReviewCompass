@@ -1,0 +1,89 @@
+schema_version: effective-prompt-manifest-v1
+decision_point:
+  kind: post_write_verification
+  required_action: run_post_write_verification
+source_artifacts:
+- path: .reviewcompass/guidance/discipline_implementation_autonomy.md
+  sha256: sha256:172f46cd2f37928842020b7156fc74df6483dbb1ab18f0fd6056064f0a64e085
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: sha256:6f196b5fb23537a73ceeea73ebb2a7ea4a567b6a702d8b8903ca064723378ea7
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: sha256:7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+- path: .reviewcompass/guidance/discipline_post_write_verification.md
+  sha256: sha256:b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+- path: .reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
+  sha256: sha256:3e72e7431ccef008e0f87ac841053aed11b88f4350a027979661ffe1c6291d81
+required_disciplines:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+- .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+operation_contract:
+  operation_id: prepare_post_write_review
+  sha256: sha256:d19e645829db9076fb59a5078f0565a8908cb5517dd0d20515a9465e6ffd8ee6
+expected_output_schema:
+  schema_ref: null
+  required_sections:
+  - findings
+prompt_length:
+  min_chars: 1
+  max_chars: 200000
+  source_ref: .reviewcompass/evidence/review-runs/2026-07-01-post_write_verification__discipline_implementation_autonomy-r2/review-target.md
+  failure_verdict: DEVIATION
+preconditions_checked:
+- id: post-write-review-target-generated
+  source: prepare_post_write_review
+  machine_checked: true
+  evidence_ref: .reviewcompass/evidence/review-runs/2026-07-01-post_write_verification__discipline_implementation_autonomy-r2/review-target.md
+language_task:
+  document_kind: post_write_verification
+  input:
+    required_files:
+    - .reviewcompass/guidance/discipline_implementation_autonomy.md
+    state_refs: []
+    source_refs:
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+    - .reviewcompass/guidance/discipline_post_write_verification.md
+    - .reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
+  output_format:
+    kind: yaml_findings
+    required_sections:
+    - findings
+    schema_ref: null
+  constraints:
+  - Review language-level consistency only.
+  - Do not mutate workflow state.
+  - Do not create review-run artifacts.
+  - Do not commit or push.
+review_prompt_materials:
+  target_files:
+  - path: .reviewcompass/guidance/discipline_implementation_autonomy.md
+    content_mode: full_text
+    content_sha256: sha256:172f46cd2f37928842020b7156fc74df6483dbb1ab18f0fd6056064f0a64e085
+  source_materials:
+  - path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    content_mode: full_text
+    content_sha256: sha256:6f196b5fb23537a73ceeea73ebb2a7ea4a567b6a702d8b8903ca064723378ea7
+  - path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+    content_mode: full_text
+    content_sha256: sha256:7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+  - path: .reviewcompass/guidance/discipline_post_write_verification.md
+    content_mode: full_text
+    content_sha256: sha256:b5db5b8a11c57304976fd13a03e15fd39cbc44cb7b6f206b579065b0f62a10e2
+  - path: .reviewcompass/specs/workflow-management/post-write-verification-spec.yaml
+    content_mode: full_text
+    content_sha256: sha256:3e72e7431ccef008e0f87ac841053aed11b88f4350a027979661ffe1c6291d81
+postconditions:
+- id: post-write-review-target-manifest-matches
+  check_kind: review_target_manifest_matches
+  source_ref: .reviewcompass/evidence/review-runs/2026-07-01-post_write_verification__discipline_implementation_autonomy-r2/review-target.md
+on_completion:
+  next_required_action: run_post_write_verification
+  allowed_followups:
+  - prompt-audit
+  - run-post-write-review
+  forbidden_actions:
+  - commit
+  - push
+  - spec-set
+generated_at: '2026-06-30T23:30:02.253037+00:00'
+criteria_id: post_write_verification__discipline_implementation_autonomy

@@ -1,0 +1,6 @@
+run_id: 2026-07-01-post_write_verification__discipline_implementation_autonomy-r2
+target_files:
+- path: .reviewcompass/guidance/discipline_implementation_autonomy.md
+  sha256: 172f46cd2f37928842020b7156fc74df6483dbb1ab18f0fd6056064f0a64e085
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: f0b1569a8a5024445be24f47a14fbf68c602c077877d3486b2aa351fe4bd53f6

@@ -1,0 +1,8 @@
+run_id: 2026-07-01-post_write_verification__tdd_red_test_evidence_policy
+target_files:
+- path: AGENTS.md
+  sha256: 4a8e9e44f62ca23f179c5f40cc48e19ea8807da23378cef632d818eaaada3ea0
+- path: .reviewcompass/guidance/discipline_implementation_autonomy.md
+  sha256: 172f46cd2f37928842020b7156fc74df6483dbb1ab18f0fd6056064f0a64e085
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: a60d73aa61d2485105ff7b72eef098ace2cfc48dd5a848304f8517391930d69c
