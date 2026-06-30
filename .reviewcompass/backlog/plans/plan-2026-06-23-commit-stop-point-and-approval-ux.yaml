@@ -100,6 +100,21 @@ remaining_work:
       - push preflight が DEVIATION / WARN を返した場合は push せず停止する。
       - commit 成功後に追加の未コミット差分がある場合は push へ進まない。
       - push 先が想定外の場合は停止し、利用者判断を求める。
+  - id: CSUX-6
+    title: Candidate selector autonomous execution approval relay
+    status: candidate
+    tasks:
+      - '利用者指示 `Nを自律実行` を、候補番号 N の選択と `autonomous-through-commit` の実行モードに分解する。'
+      - '利用者指示 `Nをpushまで自律実行` を、候補番号 N の選択と `autonomous-through-push` の実行モードに分解する。'
+      - operation trigger 解決結果を commit 実行代行承認の証跡として保存し、元発話、候補番号、operation_id、commit / push delegation 範囲を記録する。
+      - commit guard は限定構文として解決済みの自律実行だけを commit 実行代行承認として受け入れる。
+      - '`自律実行して`、`次のコミットまで自律実行`、未知候補番号、解決済み operation_id と発話の不一致は引き続き拒否する。'
+    acceptance:
+      - '`1を自律実行` と `2を自律実行` は、同じ構文規則で候補番号だけを変えて解決できる。'
+      - '`1をpushまで自律実行` と `2をpushまで自律実行` は、同じ構文規則で候補番号だけを変えて解決できる。'
+      - commit approval / delegation record には raw instruction、candidate_selector、operation_id、commit_execution_delegation、push_execution_delegation が残る。
+      - 許可文言リストへ候補番号ごとの完全一致語を追加しない。
+      - 既存の曖昧な自律実行拒否テストを維持する。
 non_goals:
   - '`pushまで自律実行` の明示なしに push を自動実行しない。'
   - commit guard 自体を緩めない。
@@ -113,3 +128,12 @@ decisions:
     rationale: >
       作業が安定してきたため往復を減らす。ただし TDD の commit 境界、
       commit / push preflight、予定外差分検出、仕様判断停止は維持する。
+  - date: '2026-07-01'
+    decision: >
+      `Nを自律実行` / `Nをpushまで自律実行` は候補番号付きの限定構文として扱い、
+      commit 実行代行承認の許可文言を候補番号ごとに増やさない。
+    rationale: >
+      `1を自律実行` だけを完全一致許可すると `2を自律実行` 以降に拡張できず、
+      証跡も「候補選択」と「実行範囲」に分解できない。元発話、候補番号、
+      operation 解決結果、delegation 範囲を記録して、commit / push guard が
+      機械的に確認できる形にする。

@@ -1,0 +1,79 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-07-01-candidate-selector-autonomous-approval-relay
+kind: todo
+title: Add candidate selector autonomous approval relay
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-30T21:29:27.503993+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml#CSUX-6
+  reason: CSUX-6 を plan から実行可能 TODO に materialize し、runtime checklist 経由で TDD 実行するため
+decisions: []
+source_plan_id: plan-2026-06-23-commit-stop-point-and-approval-ux
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml
+source_plan_slice:
+  phase_id: CSUX-6
+  title: Candidate selector autonomous execution approval relay
+summary: '`Nを自律実行` / `Nをpushまで自律実行` を候補番号付きの限定構文として解決し、 元発話、候補番号、operation_id、commit
+  / push delegation 範囲が commit 承認証跡に残るようにする。
+
+  '
+problem_statement:
+- '`1を自律実行` を commit 承認文言として直接渡すと、現行 guard は完全一致許可語ではないため拒否する。'
+- '`1を自律実行` だけを許可語に足すと、`2を自律実行` 以降が同じ構文として扱えない。'
+- 候補選択と実行範囲を分解した証跡がないと、commit / push guard が自律実行の許可範囲を機械確認できない。
+implementation_plan:
+  phases:
+  - id: CSUX-6
+    title: Candidate selector autonomous execution approval relay
+    tasks:
+    - id: CSUX-6A
+      title: Add red tests for N-to-autonomous trigger parsing
+      status: pending
+    - id: CSUX-6B
+      title: Add red tests for candidate selector approval evidence fields
+      status: pending
+    - id: CSUX-6C
+      title: Add red tests that ambiguous autonomous wording remains rejected
+      status: pending
+    - id: CSUX-6D
+      title: Confirm red tests fail before implementation
+      status: pending
+    - id: CSUX-6E
+      title: Implement candidate selector autonomous trigger normalization
+      status: pending
+    - id: CSUX-6F
+      title: Relay normalized autonomous approval evidence into commit approval records
+      status: pending
+    - id: CSUX-6G
+      title: Run focused tests and confirm workflow next remains clean
+      status: pending
+acceptance_criteria:
+- '`1を自律実行` と `2を自律実行` は同じ構文規則で candidate_selector だけを変えて解決できる。'
+- '`1をpushまで自律実行` と `2をpushまで自律実行` は同じ構文規則で candidate_selector だけを変えて解決できる。'
+- commit approval / delegation record に raw instruction、candidate_selector、operation_id、commit_execution_delegation、push_execution_delegation
+  が残る。
+- '`自律実行して` と `次のコミットまで自律実行` は引き続き commit 実行代行承認として拒否される。'
+red_tests:
+- id: CSUX-6-RT-1
+  title: Candidate-number autonomous triggers normalize to structured selector and
+    mode
+  expected: operation-trigger-resolve --trigger-text 2を自律実行 --json returns candidate_selector.index
+    2 and autonomous-through-commit metadata.
+  status: pending
+- id: CSUX-6-RT-2
+  title: Push-through candidate-number autonomous triggers normalize to push mode
+  expected: operation-trigger-resolve --trigger-text 2をpushまで自律実行 --json returns candidate_selector.index
+    2 and autonomous-through-push metadata.
+  status: pending
+- id: CSUX-6-RT-3
+  title: Commit approval evidence records normalized autonomous trigger evidence
+  expected: commit approval source/delegation record includes raw_instruction, candidate_selector,
+    operation_id, commit_execution_delegation, and push_execution_delegation.
+  status: pending
+non_goals:
+- 候補番号ごとの完全一致承認文言を許可リストへ追加すること。
+- 曖昧な `自律実行して` を commit 実行代行承認に変えること。
+- push preflight を省略して push を許可すること。
