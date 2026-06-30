@@ -479,3 +479,10 @@ items:
   path: .reviewcompass/backlog/todos/todo-2026-06-30-operation-registry-schema-inventory.yaml
   source_unit_id: main-completed
   created_at: '2026-06-30T14:03:25.583237+00:00'
+- id: todo-2026-06-30-operation-creation-preflight
+  kind: todo
+  title: Add operation creation preflight checks
+  status: candidate
+  path: .reviewcompass/backlog/todos/todo-2026-06-30-operation-creation-preflight.yaml
+  source_unit_id: main-completed
+  created_at: '2026-06-30T14:23:47.918913+00:00'

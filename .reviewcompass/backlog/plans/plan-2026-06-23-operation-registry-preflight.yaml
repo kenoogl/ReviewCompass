@@ -26,7 +26,7 @@ related:
 remaining_work:
   - id: ORP-1
     title: Operation registry schema and canonical command inventory
-    status: candidate
+    status: completed
     tasks:
       - operation_id、kind、canonical_commands、required_args、outputs、serial_only、conflicting_states を定義する。
       - commit、push、post-write manifest、review-run、reopen、session-record の正規 entrypoint を登録する。

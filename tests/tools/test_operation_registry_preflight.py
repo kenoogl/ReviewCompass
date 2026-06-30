@@ -154,6 +154,19 @@ def write_registry(cwd, operations):
   return path
 
 
+def review_artifact_checks(*extra):
+  return [
+    "target_manifest_alignment",
+    "bundle_non_empty",
+    "criteria_alignment",
+    "document-type_alignment",
+    "approval_record_alignment",
+    "existing_artifact_drift",
+    "staged-vs-unstaged_target_selection",
+    *extra,
+  ]
+
+
 def base_operation(**overrides):
   operation = {
     "operation_id": "workflow_next_preflight",
@@ -191,12 +204,43 @@ def base_operation(**overrides):
   return operation
 
 
+def review_artifact_operation(**overrides):
+  operation = base_operation(
+    operation_id="review_run_create",
+    kind="review_artifact",
+    operation_family="review_artifact",
+    workflow_binding={"phase": None, "stage": None, "gate": None, "next_action_kind": None},
+    canonical_invocation={
+      "entrypoint": "tools/api_providers/run_review.py",
+      "subcommand": None,
+      "options": ["--target", "--phase", "--criteria", "--review-run-dir"],
+      "positional_args": [],
+      "execution_context": "repo_root",
+    },
+    required_inputs=["target-manifest.yaml"],
+    target_identity=["target_side=unstaged", "target_files=docs/target.md"],
+    planned_outputs=[".reviewcompass/specs/workflow-management/reviews/new-run"],
+    sequence_mode="parallel_ok",
+    worktree_policy="require_explicit_target_side",
+    pending_conflict_policy="no_pending_review_artifact",
+    artifact_policy="create_new_only",
+    family_required_checks=review_artifact_checks(),
+    vocabulary_refs=["verdict", "sequence_mode", "target_side"],
+  )
+  operation.update(overrides)
+  return operation
+
+
 class OperationRegistryPreflightTests(unittest.TestCase):
   def setUp(self):
     self.tmp = Path(tempfile.mkdtemp())
     write_feature_dependency(self.tmp)
     write_specs(self.tmp)
     write_reopen_state(self.tmp)
+    (self.tmp / "target-manifest.yaml").write_text(
+      yaml.safe_dump({"target_files": ["docs/target.md"]}, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
 
   def tearDown(self):
     shutil.rmtree(self.tmp, ignore_errors=True)
@@ -289,6 +333,121 @@ class OperationRegistryPreflightTests(unittest.TestCase):
     self.assertIn("criteria", reasons)
     self.assertIn("document-type", reasons)
     self.assertIn("staged-vs-unstaged", reasons)
+
+  def test_existing_review_run_output_path_is_deviation_before_creation(self):
+    existing = self.tmp / ".reviewcompass/specs/workflow-management/reviews/existing-run"
+    existing.mkdir(parents=True)
+    operation = review_artifact_operation(
+      planned_outputs=[".reviewcompass/specs/workflow-management/reviews/existing-run"],
+      family_required_checks=review_artifact_checks("output_path_collision"),
+    )
+    write_registry(self.tmp, [operation])
+
+    result = run(["operation-preflight", "--operation-id", "review_run_create", "--json"], self.tmp)
+
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    reasons = "\n".join(data["reasons"])
+    self.assertIn(".reviewcompass/specs/workflow-management/reviews/existing-run", reasons)
+    self.assertIn("already exists", reasons)
+
+  def test_existing_manifest_bundle_or_approval_record_path_is_deviation_before_creation(self):
+    paths = [
+      ".reviewcompass/runtime/post-write/manifest.yaml",
+      ".reviewcompass/runtime/review-bundles/bundle.md",
+      ".reviewcompass/runtime/approvals/commit-approval.json",
+    ]
+    for path in paths:
+      target = self.tmp / path
+      target.parent.mkdir(parents=True, exist_ok=True)
+      target.write_text("existing\n", encoding="utf-8")
+    operation = review_artifact_operation(
+      planned_outputs=paths,
+      family_required_checks=review_artifact_checks("output_path_collision"),
+    )
+    write_registry(self.tmp, [operation])
+
+    result = run(["operation-preflight", "--operation-id", "review_run_create", "--json"], self.tmp)
+
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    reasons = "\n".join(data["reasons"])
+    for path in paths:
+      self.assertIn(path, reasons)
+    self.assertIn("already exists", reasons)
+
+  def test_empty_bundle_target_set_is_deviation(self):
+    operation = review_artifact_operation(
+      target_identity=["target_side=staged"],
+      planned_outputs=[".reviewcompass/runtime/review-bundles/bundle.md"],
+      family_required_checks=review_artifact_checks(),
+    )
+    write_registry(self.tmp, [operation])
+
+    result = run(["operation-preflight", "--operation-id", "review_run_create", "--json"], self.tmp)
+
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertIn("empty", "\n".join(data["reasons"]).lower())
+
+  def test_wrong_side_bundle_target_set_is_deviation(self):
+    subprocess.run(["git", "init"], cwd=str(self.tmp), capture_output=True, text=True, check=True)
+    changed = self.tmp / "docs/target.md"
+    changed.parent.mkdir(parents=True, exist_ok=True)
+    changed.write_text("unstaged change\n", encoding="utf-8")
+    operation = review_artifact_operation(
+      target_identity=["target_side=staged", "target_files=docs/target.md"],
+      planned_outputs=[".reviewcompass/runtime/review-bundles/bundle.md"],
+      family_required_checks=review_artifact_checks(),
+    )
+    write_registry(self.tmp, [operation])
+
+    result = run(["operation-preflight", "--operation-id", "review_run_create", "--json"], self.tmp)
+
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    reasons = "\n".join(data["reasons"]).lower()
+    self.assertIn("staged", reasons)
+    self.assertIn("docs/target.md", reasons)
+
+  def test_related_artifact_target_sets_must_match(self):
+    artifact_targets = {
+      ".reviewcompass/runtime/approvals/review-approval.yaml": ["docs/target.md"],
+      ".reviewcompass/specs/workflow-management/reviews/run/raw.yaml": ["docs/target.md"],
+      ".reviewcompass/specs/workflow-management/reviews/run/triage.yaml": ["docs/other.md"],
+      ".reviewcompass/runtime/post-write/manifest.yaml": ["docs/target.md"],
+    }
+    for path, targets in artifact_targets.items():
+      target = self.tmp / path
+      target.parent.mkdir(parents=True, exist_ok=True)
+      target.write_text(
+        yaml.safe_dump({"target_files": targets}, allow_unicode=True, sort_keys=False),
+        encoding="utf-8",
+      )
+    operation = review_artifact_operation(
+      required_inputs=[
+        "target-manifest.yaml",
+        "approval_record=.reviewcompass/runtime/approvals/review-approval.yaml",
+        "raw_response=.reviewcompass/specs/workflow-management/reviews/run/raw.yaml",
+        "triage=.reviewcompass/specs/workflow-management/reviews/run/triage.yaml",
+        "manifest=.reviewcompass/runtime/post-write/manifest.yaml",
+      ],
+      family_required_checks=review_artifact_checks("related_artifact_target_set_consistency"),
+    )
+    write_registry(self.tmp, [operation])
+
+    result = run(["operation-preflight", "--operation-id", "review_run_create", "--json"], self.tmp)
+
+    self.assertEqual(result.returncode, 2)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    reasons = "\n".join(data["reasons"])
+    self.assertIn("target set", reasons)
+    self.assertIn("docs/other.md", reasons)
 
   def test_deployment_export_does_not_probe_unregistered_external_roots(self):
     outside = self.tmp.parent / "unregistered-external-output"

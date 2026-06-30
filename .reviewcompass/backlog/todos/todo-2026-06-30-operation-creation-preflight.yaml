@@ -1,0 +1,94 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-06-30-operation-creation-preflight
+kind: todo
+title: Add operation creation preflight checks
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-30T14:23:47.918913+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-operation-registry-preflight.yaml#ORP-2
+  reason: ORP-2 を plan から実行可能 TODO に materialize し、runtime checklist 経由で TDD 実行するため
+decisions: []
+source_plan_id: plan-2026-06-23-operation-registry-preflight
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-operation-registry-preflight.yaml
+source_plan_slice:
+  phase_id: ORP-2
+  title: Creation preflight for review-run, bundle, manifest, and approval records
+summary: 'operation registry / preflight plan の第 2 実行単位として、review-run dir、 manifest
+  path、bundle path、approval record を作成する前に、既存衝突、 staged / unstaged の対象ずれ、空 bundle、target
+  set 不一致を read-only preflight で検出できるようにする。
+
+  '
+problem_statement:
+- review-run / manifest / bundle / approval record の生成前に、出力先衝突を同一契約で確認する入口が不足している。
+- staged / unstaged の取り違えにより、空 bundle や対象ずれ bundle を作ってから削除する通常経路が残っている。
+- approval record、raw response、triage、manifest の target set 一致を作成前または作成直後に機械確認する契約が弱い。
+implementation_plan:
+  phases:
+  - id: ORP-2
+    title: Creation preflight for review-run, bundle, manifest, and approval records
+    tasks:
+    - id: ORP-2A
+      title: Add red tests for review-run output collision preflight
+      status: pending
+    - id: ORP-2B
+      title: Add red tests for manifest, bundle, and approval record collision preflight
+      status: pending
+    - id: ORP-2C
+      title: Add red tests for staged / unstaged target mismatch and empty bundle
+        rejection
+      status: pending
+    - id: ORP-2D
+      title: Add red tests for target set consistency across approval, raw response,
+        triage, and manifest
+      status: pending
+    - id: ORP-2E
+      title: Confirm the new tests fail before implementation
+      status: pending
+    - id: ORP-2F
+      title: Implement read-only creation preflight checks for output path collisions
+      status: pending
+    - id: ORP-2G
+      title: Implement staged / unstaged and empty target validation for bundle preflight
+      status: pending
+    - id: ORP-2H
+      title: Implement target set consistency validation for related artifacts
+      status: pending
+    - id: ORP-2I
+      title: Run focused tests and confirm next --json remains completed or reports
+        only expected post-write state
+      status: pending
+acceptance_criteria:
+- 不要な review-run / manifest を作ってから削除する経路を通常運用から除去できる。
+- staged / unstaged の取り違えで空 review bundle を作らない。
+- 既存の review-run dir、manifest path、bundle path、approval record がある場合は preflight が
+  DEVIATION を返す。
+- approval record、raw response、triage、manifest の target set 不一致を検出できる。
+red_tests:
+- id: ORP-2-RT-1
+  title: Existing review-run output path is rejected before creation
+  expected: operation creation preflight returns DEVIATION when the requested review-run
+    directory already exists.
+  status: pending
+- id: ORP-2-RT-2
+  title: Existing manifest, bundle, or approval record path is rejected before creation
+  expected: operation creation preflight returns DEVIATION for existing manifest,
+    bundle, or approval record output paths.
+  status: pending
+- id: ORP-2-RT-3
+  title: Empty or wrong-side bundle target set is rejected
+  expected: operation creation preflight returns DEVIATION when requested bundle targets
+    are empty or do not match the selected staged / unstaged side.
+  status: pending
+- id: ORP-2-RT-4
+  title: Related artifact target sets must match
+  expected: operation creation preflight returns DEVIATION when approval record, raw
+    response, triage, and manifest target sets differ.
+  status: pending
+non_goals:
+- ORP-3 の serial-only operation runner を実装すること。
+- ORP-4 の workflow mixing preflight を実装すること。
+- review-run や manifest を実際に作成する副作用 runner を追加すること。
+- 人間承認が必要な不可逆操作を自動承認すること。
