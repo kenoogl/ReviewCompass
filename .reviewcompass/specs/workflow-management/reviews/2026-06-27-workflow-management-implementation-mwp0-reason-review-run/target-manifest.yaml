@@ -1,0 +1,6 @@
+run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+target_files:
+- path: .reviewcompass/schema/next_action_response.schema.json
+  sha256: 10132957544998f478a68015ec9dcb24640b86d8c9951d00b1c3c2d11cf54b7d
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-reason-review-run/design-section-5-2-5-3-excerpt.md
+  sha256: 4cefd0706914eae4ef85dff0235289abd60644344227962b91f8a5cf09796479

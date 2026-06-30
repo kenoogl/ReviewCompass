@@ -1,0 +1,6 @@
+run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+target_files:
+- path: .reviewcompass/schema/next_action_response.schema.json
+  sha256: 10132957544998f478a68015ec9dcb24640b86d8c9951d00b1c3c2d11cf54b7d
+- path: tests/tools/test_t020_kind_redesign.py
+  sha256: ce0f01bb6eae7b7af2399416f065fc9a2fc3d6bf28ca2014357c9058e81b1713

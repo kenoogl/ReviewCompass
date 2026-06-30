@@ -1,0 +1,20 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 47.269
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:allOf[2]
+    (commit_stop_point)
+  description: 受入 11(6)①で指定されている「blocked_by.type="commit_stop_point"」の制約が if/then
+    スキーマに実装されておらず、テストクラス SchemaIfThenConstraintTests に対応する無効ケース（失敗テスト）も存在しません。
+  rationale: 制約の欠落（Omission）により、commit_stop_point アクションにおいて、本来不正であるはずの blocked_by
+    の状態（nullや他のtype値）がスキーマ検証を通過してしまいます。
+- severity: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:allOf[3],
+    allOf[4] (run_reopen_pending_gate, run_reopen_drafting)
+  description: '受入 11(6)②③で指定されている「phase/stage が active_gate や drafting 単位と一致する」という制約がスキーマから完全に欠落しており、無効ケースのテストもありません。JSON
+    Schema の仕様上クロスフィールドの動的な完全一致検証が困難な場合であっても、少なくとも非null（type: string）の制約や、③における `stage:
+    { "const": "drafting" }` などの静的に表現可能な制約を実装・テストする必要があります。'
+  rationale: 制約の緩和（Weakening）により、対象アクションの phase および stage が null や不適切な状態であってもスキーマエラーとして検知できず、仕様と実装の間に不整合が生じます。

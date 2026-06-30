@@ -1,0 +1,21 @@
+findings:
+  - severity: CRITICAL
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/commit-preflight-implementation-excerpt.py:_commit_preflight_next_action"
+    description: "commit-preflight can definitively return kind \"verification_pending\", which is outside the permitted 3 commit-preflight kind values."
+    rationale: "受入 12 and T-020 completion condition 2 require commit-preflight to return only commit_candidate, commit_mixing_risk, or commit_unit_stale. The post-write verification path constructs and returns an action with kind \"verification_pending\", a next --json kind value, so the implementation violates the required kind value separation."
+  - severity: CRITICAL
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/commit-preflight-implementation-excerpt.py:_commit_preflight_next_action"
+    description: "commit-preflight can definitively return kind \"unknown\", which is outside the permitted 3 commit-preflight kind values."
+    rationale: "When load_all_feature_specs reports missing specs, _commit_preflight_next_action returns an action with kind \"unknown\". The commit-preflight kind domain is required to be limited to commit_candidate, commit_mixing_risk, and commit_unit_stale only."
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/commit-preflight-implementation-excerpt.py:_commit_preflight_next_action"
+    description: "The in-progress-files path delegates to build_in_progress_next_action, and the returned kind value is indeterminate from the provided target files."
+    rationale: "Because build_in_progress_next_action is not included in the review target, this path cannot be verified for the 3-value commit-preflight kind constraint. Per the review instructions, delegated functions with indeterminate kind values should be reported as WARN rather than ERROR."
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/commit-preflight-implementation-excerpt.py:_commit_preflight_next_action"
+    description: "The normal workflow commit stop point path delegates to resolve_normal_workflow_commit_stop_point_action, and the returned kind value is indeterminate from the provided target files."
+    rationale: "Because resolve_normal_workflow_commit_stop_point_action is not included in the review target, this path cannot be verified for the 3-value commit-preflight kind constraint. Per the review instructions, delegated functions with indeterminate kind values should be reported as WARN rather than ERROR."
+  - severity: ERROR
+    target_location: "tests/tools/test_t020_kind_redesign.py:CommitPreflightKindBehaviorTests.test_commit_preflight_kind_is_always_commit_related"
+    description: "The test assertion allows commit-preflight kind values outside the required 3-value domain."
+    rationale: "The test asserts that kind is in EXPECTED_COMMIT_PREFLIGHT_KIND_VALUES | {\"post_write_verification\", \"unknown\"}. This contradicts 受入 12, which requires commit-preflight to output only commit_candidate, commit_mixing_risk, and commit_unit_stale. As written, the test would permit at least \"unknown\" and \"post_write_verification\" even though they are outside the required commit-preflight kind boundary."

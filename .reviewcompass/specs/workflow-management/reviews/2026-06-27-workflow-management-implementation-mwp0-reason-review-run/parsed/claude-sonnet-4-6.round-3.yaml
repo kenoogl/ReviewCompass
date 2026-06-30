@@ -1,0 +1,54 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 18.099
+findings:
+- severity: WARN
+  target_location: '## Review Target'
+  description: The target manifest lists `design-section-5-2-5-3-excerpt.md` as a
+    review target file, but this file is described as a 'verbatim excerpt' whose authoritative
+    source is `.reviewcompass/specs/workflow-management/design.md`. It is unclear
+    whether this excerpt file is a pre-prepared static artifact supplied by the review
+    runner or whether the runner is expected to extract it dynamically. If the excerpt
+    file does not exist as a standalone file at review time, the model will have no
+    access to the design §5.2–5.3 content that drives Required Checks 1, 3, and 4.
+  rationale: Required Checks 1, 3, and 4 depend on comparing schema content against
+    design §5.3. If the excerpt file is absent or not pre-populated, the model cannot
+    perform the comparison and may silently skip or guess, producing unusable findings.
+- severity: WARN
+  target_location: '## Source Materials / mwp0-reason-upstream-intent'
+  description: The source materials section includes the T-020 deferred item (b) text
+    and completion condition list as inline content, but explicitly states 'The authoritative
+    design document content is provided as `design-section-5-2-5-3-excerpt.md` in
+    the review target above.' The T-020 completion condition note ('先送り事項(b)に対応する完了条件は
+    T-020 完了条件一覧に明示されていない') is embedded in the criteria file rather than in a model-readable
+    upstream artifact. This is inline background text rather than a path-only reference,
+    which satisfies source-material inline inclusion, but the distinction between
+    'background intent only' and 'authoritative source' could confuse a model about
+    which material governs Required Check 3.
+  rationale: A model might treat the inline T-020 excerpt as sufficient to judge Required
+    Check 3 without consulting the excerpt file, or conversely might discount the
+    inline text entirely. A brief explicit instruction clarifying that the inline
+    text is supplementary and the excerpt file governs design-side judgments would
+    reduce ambiguity.
+- severity: WARN
+  target_location: '## Required Checks / Check 4'
+  description: Required Check 4 asks the model to 'determine whether that omission
+    is documented as intentional anywhere in the target files.' This asks the model
+    to make an absence-of-evidence judgment across two files. If neither file documents
+    an intentional omission, the finding policy maps this to WARN ('undocumented intentional
+    omission'). However, Check 4 does not instruct the model on what severity to assign
+    when the omission is present but undocumented, creating a gap between the check
+    wording and the finding policy.
+  rationale: Without explicit guidance, the model may apply WARN when the correct
+    label per finding policy would be ERROR (discrepancy between design §5.3 and schema
+    that is not intentional and not documented), or vice versa, reducing triage reliability.
+- severity: INFO
+  target_location: '## Out Of Scope'
+  description: The out-of-scope list correctly excludes if/then constraints and kind
+    value separation. Adding a brief note that upstream design sections outside §5.2–5.3
+    are also out of scope would further sharpen the model's focus and prevent drift
+    into adjacent design sections.
+  rationale: Minor ergonomic improvement; the current wording is adequate but slightly
+    implicit about the design document boundary.

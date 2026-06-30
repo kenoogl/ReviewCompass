@@ -1,0 +1,22 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 54.839
+findings:
+- severity: WARN
+  target_location: Required Checks (Item 3)
+  description: Instruction to trace delegated functions conflicts with excerpt-only
+    target
+  rationale: The prompt instructs the model to trace delegated functions to determine
+    their return kinds, but the review target is only a 72-line excerpt (`commit-preflight-implementation-excerpt.py`).
+    If delegated functions reside outside this excerpt, the model will lack the necessary
+    context, resulting in incomplete source-material presentation and potential model
+    hallucination or skipped checks.
+- severity: WARN
+  target_location: Review Target / Primary judgment question
+  description: Missing implementation source file for `next --json`
+  rationale: The primary judgment question asks whether the implementation ensures
+    `next --json` outputs only the 7 specified kinds. However, the Review Target only
+    includes the schema and tests for `next --json`, omitting its actual runtime implementation
+    code. This may prevent the model from verifying the actual execution paths.

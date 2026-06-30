@@ -1,0 +1,25 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/schema/next_action_response.schema.json:allOf[2] (① commit_stop_point then)"
+    description: "The then clause for ① commit_stop_point does not enforce blocked_by.type=\"commit_stop_point\". 受入 11(6)① explicitly requires blocked_by.type=\"commit_stop_point\", but the schema only constrains active_gate/phase/stage to null and leaves blocked_by unconstrained."
+    rationale: "受入 11(6)① states: blocked_by.type=\"commit_stop_point\" as a mandatory constraint. The then clause omits any constraint on blocked_by, so a document with required_action=commit_stop_point and blocked_by=null or blocked_by with a different type will pass schema validation, violating the requirement."
+
+  - severity: ERROR
+    target_location: "tests/tools/test_t020_kind_redesign.py:SchemaIfThenConstraintTests"
+    description: "No test verifies that blocked_by.type must equal \"commit_stop_point\" for required_action=commit_stop_point. The valid-case test (test_commit_stop_point_valid_when_all_null) supplies blocked_by={\"type\": \"commit_stop_point\"} but there is no failure test for blocked_by=null or blocked_by.type with a different value under commit_stop_point."
+    rationale: "受入 11(6)① specifies blocked_by.type=\"commit_stop_point\" as a constraint. Without a failure test that rejects blocked_by=null or blocked_by.type!=\"commit_stop_point\" when required_action=commit_stop_point, the constraint is unverifiable even if the schema were corrected."
+
+  - severity: WARN
+    target_location: ".reviewcompass/schema/next_action_response.schema.json:allOf[3] (② run_reopen_pending_gate then)"
+    description: "The then clause for ② run_reopen_pending_gate does not enforce that phase and stage are non-null and match active_gate. 受入 11(6)② states phase/stage は active_gate と一致, but the schema only constrains active_gate to string type and blocked_by to null."
+    rationale: "The cross-field consistency requirement (phase/stage match active_gate) may be intentionally deferred as it is difficult to express in JSON Schema without custom keywords. However, there is no documentation in the schema or test file acknowledging this deferral, leaving a gap in requirement traceability. If the requirement is enforceable at the schema level it should be implemented; if not, the deferral should be explicitly documented."
+
+  - severity: WARN
+    target_location: "tests/tools/test_t020_kind_redesign.py:SchemaIfThenConstraintTests"
+    description: "No test covers the case where phase or stage is null when required_action=run_reopen_pending_gate. 受入 11(6)② requires active_gate non-null AND phase/stage matching active_gate. Only active_gate=null and blocked_by non-null failure cases are tested."
+    rationale: "Even if the cross-field equality constraint is deferred, at minimum the non-null requirement for phase and stage under run_reopen_pending_gate should be tested if the schema is intended to enforce it. The absence of such tests leaves partial coverage of ②."
+
+  - severity: WARN
+    target_location: ".reviewcompass/schema/next_action_response.schema.json:allOf[4] (③ run_reopen_drafting then)"
+    description: "The then clause for ③ run_reopen_drafting does not enforce that phase and stage match the drafting unit derived from active_gate. 受入 11(6)③ states phase/stage はその drafting 単位と一致, but the schema only validates the active_gate pattern."
+    rationale: "Similar to ②, the cross-field consistency constraint is not enforced. No documentation of intentional deferral exists in the schema or tests."

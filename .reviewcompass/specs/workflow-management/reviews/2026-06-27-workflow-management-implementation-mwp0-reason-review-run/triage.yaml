@@ -1,0 +1,274 @@
+run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+triage_status: decided
+generated_at: '2026-06-27T06:13:15.492939+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Review Target'
+  plain_language_summary: The target manifest lists `design-section-5-2-5-3-excerpt.md`
+    as a review target file, but this file is described as a 'verbatim excerpt' whose
+    authoritative source is `.reviewcompass/specs/workflow-management/design.md`.
+    It is unclear whether this excerpt file is a pre-prepared static artifact supplied
+    by the review runner or whether the runner is expected to extract it dynamically.
+    If the excerpt file does not exist as a standalone file at review time, the model
+    will have no access to the design §5.2–5.3 content that drives Required Checks
+    1, 3, and 4.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:48.289455+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Source Materials / mwp0-reason-upstream-intent'
+  plain_language_summary: The source materials section includes the T-020 deferred
+    item (b) text and completion condition list as inline content, but explicitly
+    states 'The authoritative design document content is provided as `design-section-5-2-5-3-excerpt.md`
+    in the review target above.' The T-020 completion condition note ('先送り事項(b)に対応する完了条件は
+    T-020 完了条件一覧に明示されていない') is embedded in the criteria file rather than in a model-readable
+    upstream artifact. This is inline background text rather than a path-only reference,
+    which satisfies source-material inline inclusion, but the distinction between
+    'background intent only' and 'authoritative source' could confuse a model about
+    which material governs Required Check 3.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:48.359019+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Required Checks / Check 4'
+  plain_language_summary: Required Check 4 asks the model to 'determine whether that
+    omission is documented as intentional anywhere in the target files.' This asks
+    the model to make an absence-of-evidence judgment across two files. If neither
+    file documents an intentional omission, the finding policy maps this to WARN ('undocumented
+    intentional omission'). However, Check 4 does not instruct the model on what severity
+    to assign when the omission is present but undocumented, creating a gap between
+    the check wording and the finding policy.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:48.427841+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Out Of Scope'
+  plain_language_summary: The out-of-scope list correctly excludes if/then constraints
+    and kind value separation. Adding a brief note that upstream design sections outside
+    §5.2–5.3 are also out of scope would further sharpen the model's focus and prevent
+    drift into adjacent design sections.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:48.495877+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.next_action.properties
+  plain_language_summary: The 'reason' field is completely omitted from the schema's
+    next_action properties. This contradicts design §5.3, which defines it as a common
+    field for all kinds, and the omission is not documented as intentional.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.715054+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: design-section-5-2-5-3-excerpt.md and .reviewcompass/schema/next_action_response.schema.json
+  plain_language_summary: T-020 deferred item (b) is unaddressed. Neither the design
+    document excerpt nor the schema clarifies the responsibility difference between
+    the next_action 'reason' field and the top-level 'reasons' array.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.791289+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-reason-review-run/design-section-5-2-5-3-excerpt.md:§5.2
+    and §5.3
+  plain_language_summary: T-020 deferred item (b) is not addressed in the design document.
+    The excerpt explicitly notes that 'The design document does not contain a section
+    that explicitly contrasts next_action.reason with the top-level reasons array.'
+    The responsibility distinction between next_action.reason (human-readable state
+    description, per §5.3 common fields table) and the top-level reasons array (per
+    §5.2 required fields) remains unclarified in both the design and the schema.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.865950+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.next_action.properties
+  plain_language_summary: 'The schema does not define a reason field anywhere within
+    next_action.properties, yet design §5.3 lists reason as a common field for all
+    kind values (with role: 状態の説明（人間が読む）). The reason field is absent from both next_action.properties
+    and next_action.required, and this omission is not documented as intentional anywhere
+    in the target files.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.942724+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.reasons
+  plain_language_summary: 'The top-level reasons field is defined only as { "type":
+    "array" } with no description, minItems constraint, items schema, or any annotation
+    distinguishing its purpose from next_action.reason. The schema provides no schema-level
+    differentiation between the two fields.'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:48.155235+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。静的に表現可能な範囲を対応コミットで補完済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-reason-review-run/design-section-5-2-5-3-excerpt.md:§5.2
+  plain_language_summary: 'The §5.2 next_action required fields list (10 fields) does
+    not include reason, while §5.3 common fields table lists reason as present for
+    all kind values. The design document does not reconcile this: reason could be
+    optional, conditionally required, or simply omitted from the required list by
+    oversight. No note in §5.2 or §5.3 clarifies the intended optionality of next_action.reason.'
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:48.221273+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。静的に表現可能な範囲を対応コミットで補完済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.next_action;
+    .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-reason-review-run/design-section-5-2-5-3-excerpt.md:§5.3
+  plain_language_summary: '`next_action.reason` is listed in design §5.3 as an all-kind
+    common field, but the schema neither defines it under `next_action.properties`
+    nor requires it under `next_action.required`.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:48.015184+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-reason-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.reasons;
+    .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-reason-review-run/design-section-5-2-5-3-excerpt.md:§5.2,
+    §5.3, T-020
+  plain_language_summary: The responsibility difference between top-level `reasons`
+    and `next_action.reason` is not sufficiently clarified in either the schema or
+    the design excerpt.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:48.085934+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null

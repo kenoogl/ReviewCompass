@@ -1,0 +1,372 @@
+run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+triage_status: decided
+generated_at: '2026-06-27T06:11:04.142880+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Source Materials / mwp0-if-then-upstream-intent'
+  plain_language_summary: Source material is provided as inline text excerpt only;
+    no structured summary or path provenance is given for the upstream design documents
+    (D-003 §4.2, 設計 §5.2) from which the constraints originate.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.652981+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Required Checks / Check 3'
+  plain_language_summary: Check 3 asks the model to verify that ④ and ⑥ constraints
+    'are present but are not weakened or removed,' yet the acceptance criteria (受入
+    11(6)) explicitly states ④ and ⑥ are out of scope for this review and T-015 is
+    listed as already complete.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.727122+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: '## Source Materials'
+  plain_language_summary: 受入 11(6)③ specifies that active_gate must match the 'stages/<phase>.yaml#drafting'
+    format and that phase/stage must match the drafting unit, but no example or schema
+    reference for that format is provided in the source materials.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.812215+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Review Task / Primary judgment question'
+  plain_language_summary: The primary judgment question uses circled numerals ①②③⑤
+    which are non-ASCII characters. These are consistent with the source material
+    but may cause minor parsing or display issues in some API environments.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.888705+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-2.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: '## Finding Policy'
+  plain_language_summary: '''Return findings: [] only when every constraint in 受入
+    11(6)①②③⑤ is fully and accurately implemented and tested'' is correct but does
+    not address the case where Check 3 (④/⑥ non-regression) is inconclusive due to
+    missing baseline. A note clarifying how to label an inconclusive Check 3 result
+    would prevent silent omission.'
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.961765+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:allOf[2]
+    (commit_stop_point)
+  plain_language_summary: 受入 11(6)①で指定されている「blocked_by.type="commit_stop_point"」の制約が
+    if/then スキーマに実装されておらず、テストクラス SchemaIfThenConstraintTests に対応する無効ケース（失敗テスト）も存在しません。
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:44.642177+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:allOf[3],
+    allOf[4] (run_reopen_pending_gate, run_reopen_drafting)
+  plain_language_summary: '受入 11(6)②③で指定されている「phase/stage が active_gate や drafting
+    単位と一致する」という制約がスキーマから完全に欠落しており、無効ケースのテストもありません。JSON Schema の仕様上クロスフィールドの動的な完全一致検証が困難な場合であっても、少なくとも非null（type:
+    string）の制約や、③における `stage: { "const": "drafting" }` などの静的に表現可能な制約を実装・テストする必要があります。'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:44.721905+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:allOf[2]
+    (① commit_stop_point then)
+  plain_language_summary: The then clause for ① commit_stop_point does not enforce
+    blocked_by.type="commit_stop_point". 受入 11(6)① explicitly requires blocked_by.type="commit_stop_point",
+    but the schema only constrains active_gate/phase/stage to null and leaves blocked_by
+    unconstrained.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:44.801274+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/tools/test_t020_kind_redesign.py:SchemaIfThenConstraintTests
+  plain_language_summary: 'No test verifies that blocked_by.type must equal "commit_stop_point"
+    for required_action=commit_stop_point. The valid-case test (test_commit_stop_point_valid_when_all_null)
+    supplies blocked_by={"type": "commit_stop_point"} but there is no failure test
+    for blocked_by=null or blocked_by.type with a different value under commit_stop_point.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:44.880997+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/schema/next_action_response.schema.json:allOf[3]
+    (② run_reopen_pending_gate then)
+  plain_language_summary: The then clause for ② run_reopen_pending_gate does not enforce
+    that phase and stage are non-null and match active_gate. 受入 11(6)② states phase/stage
+    は active_gate と一致, but the schema only constrains active_gate to string type and
+    blocked_by to null.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.428512+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。静的に表現可能な範囲を対応コミットで補完済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tests/tools/test_t020_kind_redesign.py:SchemaIfThenConstraintTests
+  plain_language_summary: No test covers the case where phase or stage is null when
+    required_action=run_reopen_pending_gate. 受入 11(6)② requires active_gate non-null
+    AND phase/stage matching active_gate. Only active_gate=null and blocked_by non-null
+    failure cases are tested.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.503767+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。静的に表現可能な範囲を対応コミットで補完済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/schema/next_action_response.schema.json:allOf[4]
+    (③ run_reopen_drafting then)
+  plain_language_summary: The then clause for ③ run_reopen_drafting does not enforce
+    that phase and stage match the drafting unit derived from active_gate. 受入 11(6)③
+    states phase/stage はその drafting 単位と一致, but the schema only validates the active_gate
+    pattern.
+  final_label: should-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.578330+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。静的に表現可能な範囲を対応コミットで補完済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.next_action.allOf[2]
+  plain_language_summary: The commit_stop_point if/then constraint omits the required
+    blocked_by.type="commit_stop_point" constraint.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:44.961231+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/tools/test_t020_kind_redesign.py:SchemaIfThenConstraintTests
+  plain_language_summary: SchemaIfThenConstraintTests does not cover commit_stop_point
+    blocked_by.type failure cases.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.040306+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-gpt-5.5-adversarial-003
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.next_action.allOf[3]
+  plain_language_summary: The run_reopen_pending_gate if/then constraint omits phase/stage
+    consistency with active_gate.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.118458+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-gpt-5.5-adversarial-004
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/tools/test_t020_kind_redesign.py:SchemaIfThenConstraintTests
+  plain_language_summary: SchemaIfThenConstraintTests does not cover run_reopen_pending_gate
+    phase/stage mismatch failure cases.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.196344+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-gpt-5.5-adversarial-005
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.next_action.allOf[4]
+  plain_language_summary: The run_reopen_drafting if/then constraint omits phase/stage
+    consistency with the drafting active_gate.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.273466+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run-gpt-5.5-adversarial-006
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/tools/test_t020_kind_redesign.py:SchemaIfThenConstraintTests
+  plain_language_summary: SchemaIfThenConstraintTests does not cover run_reopen_drafting
+    phase/stage mismatch failure cases.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:45.351201+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null

@@ -1,0 +1,134 @@
+round_id: round-1
+purpose: implementation
+invocation_timestamp: '2026-06-27T06:11:04.111948+00:00'
+target_files:
+- path: .reviewcompass/schema/next_action_response.schema.json
+  sha256: 10132957544998f478a68015ec9dcb24640b86d8c9951d00b1c3c2d11cf54b7d
+- path: tests/tools/test_t020_kind_redesign.py
+  sha256: ce0f01bb6eae7b7af2399416f065fc9a2fc3d6bf28ca2014357c9058e81b1713
+criteria: "---\ncriteria_id: wm-implementation-mwp0-ifthen-2026-06-27\nphase: implementation\n\
+  stage: triad-review\n---\n\n# workflow-management implementation review — MWP-0:\
+  \ if/then constraint completeness\n\n## Review Task\n\nReview the target files for:\
+  \ MWP-0 T-020 if/then constraint completeness.\n\nPrimary judgment question:\n\n\
+  Do the if/then constraints added to `next_action_response.schema.json` in allOf\
+  \ entries ①②③⑤ implement all field constraints specified in 受入 11(6)①②③⑤ without\
+  \ omission, weakening, or unsupported addition, and does the test class `SchemaIfThenConstraintTests`\
+  \ sufficiently cover the specified constraints?\n\nDo not combine multiple independent\
+  \ judgments in this prompt. This review covers only if/then constraint completeness.\
+  \ Kind value separation and reason/reasons separation are reviewed in separate criteria.\n\
+  \n## Review Target\n\nThe authoritative target is the file set supplied by the review\
+  \ runner.\n\n- `.reviewcompass/schema/next_action_response.schema.json`\n- `tests/tools/test_t020_kind_redesign.py`\n\
+  \nDo not treat this criteria file or any author-written summary as a substitute\
+  \ for the target files.\n\n## Source Materials\n\n### mwp0-if-then-upstream-intent\n\
+  \nPurpose: Requirement 2 / design / tasks intent for if/then field constraints on\
+  \ required_action values.\nUse as intent-transfer evidence and background only.\
+  \ Do not treat as a replacement for target files.\n\n受入 11(6) — required_action\
+  \ 値ごとのフィールド制約（原文）:\n\n```\n① commit_stop_point の時：active_gate=null・phase=null・stage=null・blocked_by.type=\"\
+  commit_stop_point\"\n② run_reopen_pending_gate の時：active_gate 非 null・phase/stage\
+  \ は active_gate と一致・blocked_by=null\n③ run_reopen_drafting の時：active_gate は stages/<phase>.yaml#drafting\
+  \ 形式・phase/stage はその drafting 単位と一致\n④ repair_workflow_state の時（T-015 実装済み、本レビュー対象外）\n\
+  ⑤ wait_for_human_decision の時：blocked_by.type で停止理由を区別\n⑥ run_maintenance の時（T-015\
+  \ 実装済み、本レビュー対象外）\n\n上記①〜⑥の制約は D-003 §4.2 で確定している制約の全てであり、これ以外の required_action 種別には\n\
+  確定した追加フィールド制約はない（universal 必須フィールドのみが適用される）。\n```\n\n設計 §5.2 — if/then 制約の配置方針:\n\
+  \n```\n受入 11(6) の制約①②③⑤は if/then 構文で next_action の allOf 内に定義する（MWP-0 T-020 の責務）。\n\
+  ```\n\nT-020 先送り事項(a) — 完了条件 3:\n\n```\n(a) 受入 11(6)①②③⑤の required_action 値ごとのフィールド制約を\
+  \ next_action_response.schema.json の\n    if/then 構文で定義する（④の repair_reasons と⑥の\
+  \ action_parameters は T-015 完了条件2で対処済みのため除外）。\n\n完了条件 3: スキーマの if/then 制約（先送り事項(a)）の失敗テストが作成され、実装で通過する。\n\
+  ```\n\n## Required Checks\n\n1. Check each of ①②③⑤ in the allOf section: does the\
+  \ if/then entry enforce all and only the constraints stated in 受入 11(6) for that\
+  \ required_action value?\n2. Check the SchemaIfThenConstraintTests class in the\
+  \ test file: does it cover the failure cases for each constraint clause stated in\
+  \ 受入 11(6)①②③⑤?\n3. Check that the constraints for ④ and ⑥ (T-015 implemented) are\
+  \ present but are not weakened or removed by the new entries.\n4. Check that no\
+  \ if/then entry adds constraints not specified in 受入 11(6) or design §5.2.\n\n##\
+  \ Out Of Scope\n\n- Kind value separation (7 values vs 3 values) — separate criteria\n\
+  - reason vs reasons semantic separation — separate criteria\n- Commit, push, spec.json\
+  \ update, phase completion, or human approval delegation\n\n## Finding Policy\n\n\
+  - Use CRITICAL for a constraint that bypasses a required_action boundary or allows\
+  \ a forbidden state.\n- Use ERROR for a missing constraint clause, a weakened constraint,\
+  \ or a test gap that leaves a constraint unverifiable.\n- Use WARN for meaningful\
+  \ ambiguity, weak traceability between requirement and schema clause, or partial\
+  \ coverage.\n- Use INFO only for minor non-blocking improvements.\n- Use precise\
+  \ target locations such as `path`, `path:allOf[n]`, or `path:class.method`.\n- Return\
+  \ `findings: []` only when every constraint in 受入 11(6)①②③⑤ is fully and accurately\
+  \ implemented and tested.\n"
+prompt_sha256: f76e50af261885c5bc585a7454566d174903ae00471efd3ad2076b9c1bcd5845
+model_results:
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-2.txt
+  raw_sha256: 7742791086abdf36042cc183d471ca3e656f2c96ed7daae6ca02440a54dfc425
+  parsed_path: parsed/claude-sonnet-4-6.round-2.yaml
+  parsed_sha256: 9023aebcd687c3c6e97929eb1e2ae7c413f41e9310442110cbb04229870fa4c5
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-27T05:55:09.543717+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 325.5
+  prompt_path: prompts/claude-sonnet-4-6.round-2.prompt.md
+  prompt_sha256: 0b075ebf441f13d157c63f5f3e34dda2a47b06a7766375a1bcf725a4096c261e
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 45570aef461fa1d220c5d641fb92c44f57bd8741e187de2ef76f74d911aaabbf
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 836d6a8f9aa7ae7446d743f0f71b86dc0366b461f0380f7b870e9ebf4ac17b6a
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-27T06:11:04.111948+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 47.269
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: f76e50af261885c5bc585a7454566d174903ae00471efd3ad2076b9c1bcd5845
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  raw_sha256: 757941ad7c67751e277451fd5528544a9d9189e85718f65ae7c177353d417cff
+  parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  parsed_sha256: 5aa94784c22ebae63b76f59bf645ee85d3d763faeb0b9a2dc5dad3828c3d1384
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-27T06:09:48.516569+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 20.735
+  prompt_path: prompts/claude-sonnet-4-6.round-1.prompt.md
+  prompt_sha256: c9539369dc6fc091f529ceaa415dc08196276e37de5547e1be4f3548c1ecbb82
+- model_id: gpt-5.5
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: 946b34614800f93d6d717ca41374682fb960ea37b2691ee22694c2b5e07d69c2
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: f4ff255a49b6d71758265376b6d8dcc3c61b5b4d367a7b82e28f1bd83adde104
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-27T06:10:16.776776+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 28.188
+  prompt_path: prompts/gpt-5.5.round-1.prompt.md
+  prompt_sha256: 2fbc686183ed75e065ed0261abc230ab903ef04fb2927f958039c2ba1bce0424
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run/review-criteria.md
+criteria_source_sha256: e01db3fce36340e3a6f24ec0561e92de5d254990c63937069a2e5152fd2226cc

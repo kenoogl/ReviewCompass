@@ -1,0 +1,50 @@
+role: adversarial
+provider: openai-api
+model: gpt-5.5
+attempts: 1
+duration_seconds: 28.188
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.next_action.allOf[2]
+  description: The commit_stop_point if/then constraint omits the required blocked_by.type="commit_stop_point"
+    constraint.
+  rationale: 受入 11(6)① requires commit_stop_point to have active_gate=null, phase=null,
+    stage=null, and blocked_by.type="commit_stop_point". The schema only enforces
+    the three null fields, so instances with blocked_by=null or blocked_by.type set
+    to another value can still validate.
+- severity: ERROR
+  target_location: tests/tools/test_t020_kind_redesign.py:SchemaIfThenConstraintTests
+  description: SchemaIfThenConstraintTests does not cover commit_stop_point blocked_by.type
+    failure cases.
+  rationale: The tests cover non-null active_gate, phase, and stage for commit_stop_point,
+    but do not assert invalidity when blocked_by is null, lacks type, or has type
+    other than "commit_stop_point". This leaves the omitted 受入 11(6)① constraint unverifiable.
+- severity: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.next_action.allOf[3]
+  description: The run_reopen_pending_gate if/then constraint omits phase/stage consistency
+    with active_gate.
+  rationale: 受入 11(6)② requires active_gate to be non-null, phase/stage to match active_gate,
+    and blocked_by=null. The schema enforces only active_gate as a string and blocked_by=null,
+    allowing null or mismatched phase/stage values for the active gate.
+- severity: ERROR
+  target_location: tests/tools/test_t020_kind_redesign.py:SchemaIfThenConstraintTests
+  description: SchemaIfThenConstraintTests does not cover run_reopen_pending_gate
+    phase/stage mismatch failure cases.
+  rationale: The tests check active_gate=null and blocked_by non-null, but do not
+    test that phase and stage must match the phase/stage encoded in active_gate. Therefore
+    the 受入 11(6)② consistency clause is not verified.
+- severity: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.next_action.allOf[4]
+  description: The run_reopen_drafting if/then constraint omits phase/stage consistency
+    with the drafting active_gate.
+  rationale: 受入 11(6)③ requires active_gate to be in stages/<phase>.yaml#drafting
+    format and phase/stage to match that drafting unit. The schema only checks the
+    active_gate string pattern, so it permits mismatched or null phase/stage values
+    such as active_gate=stages/implementation.yaml#drafting with phase=null or stage=triad-review.
+- severity: ERROR
+  target_location: tests/tools/test_t020_kind_redesign.py:SchemaIfThenConstraintTests
+  description: SchemaIfThenConstraintTests does not cover run_reopen_drafting phase/stage
+    mismatch failure cases.
+  rationale: The tests check non-drafting and null active_gate values, but do not
+    assert invalidity when phase does not match the phase portion of active_gate or
+    when stage is not drafting. This leaves part of 受入 11(6)③ untested.

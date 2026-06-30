@@ -1,0 +1,412 @@
+run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+triage_status: decided
+generated_at: '2026-06-27T06:12:23.577776+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Review Target — Note on `next --json` implementation
+  plain_language_summary: The note states that `cmd_next` is 'several hundred lines
+    long and is not included as a target,' relying instead on schema enum and tests
+    as 'the primary verification artifacts.' This is a deliberate scope reduction
+    that may be appropriate, but it is stated as a design decision by the prompt author
+    without explicit acknowledgment that it is an assumption or that it trades completeness
+    for practicality.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.724410+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Review Target — Note on delegated functions in the excerpt
+  plain_language_summary: The note pre-instructs the model to use WARN severity for
+    indeterminate delegated function kind values. This partially pre-determines severity
+    labeling before the model has examined the evidence, which is mildly leading.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.809349+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Source Materials — mwp0-kind-separation-upstream-intent
+  plain_language_summary: The upstream intent material is provided as Japanese prose
+    (受入 12 and T-020) without an English translation or structured summary. The kind-value-constants
+    section provides an English enumeration, but the normative acceptance criterion
+    text is Japanese-only.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.895053+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Required Checks — Check 4
+  plain_language_summary: Check 4 asks the model to verify that test classes 'cover
+    the key directions of T-020 completion conditions 1 and 2' without specifying
+    what the key directions are. This leaves the model to infer what constitutes adequate
+    coverage.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.978271+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Required Checks — Check 5
+  plain_language_summary: Check 5 singles out `test_commit_preflight_kind_is_always_commit_related`
+    and asks whether the assertIn condition is 'consistent with the 3-value constraint.'
+    The phrasing 'consistent with' is softer than the finding policy's ERROR threshold
+    for 'a test assertion that contradicts the acceptance criterion.' Consider aligning
+    the check wording with the finding policy language.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.059334+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-adversarial-006
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-3.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Out Of Scope
+  plain_language_summary: The out-of-scope list includes 'Commit, push, spec.json
+    update, phase completion, or human approval delegation' as a single line. These
+    are workflow-action prohibitions rather than topical scope boundaries and could
+    be confused with the topical exclusions above them.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.143860+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: commit-preflight-implementation-excerpt.py:_commit_preflight_next_action
+  plain_language_summary: The implementation explicitly returns 'verification_pending'
+    and 'unknown' kind values in the verification targets and missing specs code paths.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.038656+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: commit-preflight-implementation-excerpt.py:_commit_preflight_next_action
+  plain_language_summary: The code delegates to `build_in_progress_next_action` and
+    `resolve_normal_workflow_commit_stop_point_action`, but their returned kind values
+    are indeterminate.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.228378+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/tools/test_t020_kind_redesign.py:CommitPreflightKindBehaviorTests.test_commit_preflight_kind_is_always_commit_related
+  plain_language_summary: The test's `assertIn` condition incorrectly allows `'post_write_verification'`
+    and `'unknown'` as valid kind values for commit-preflight.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.128226+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-primary-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: commit-preflight-implementation-excerpt.py:_commit_preflight_next_action
+  plain_language_summary: 'The function returns `kind: ''verification_pending''` on
+    line ~4175, which is not one of the 3 permitted commit-preflight kind values (`commit_candidate`,
+    `commit_mixing_risk`, `commit_unit_stale`).'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.213493+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-primary-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: commit-preflight-implementation-excerpt.py:_commit_preflight_next_action
+  plain_language_summary: 'The function returns `kind: ''unknown''` on lines ~4207-4212
+    when `load_all_feature_specs` reports missing specs. `unknown` is not one of the
+    3 permitted commit-preflight kind values.'
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.299140+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-primary-003
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/tools/test_t020_kind_redesign.py:CommitPreflightKindBehaviorTests.test_commit_preflight_kind_is_always_commit_related
+  plain_language_summary: The `assertIn` condition permits `kind` values `'post_write_verification'`
+    and `'unknown'` in addition to the 3 required commit-preflight kind values (`EXPECTED_COMMIT_PREFLIGHT_KIND_VALUES
+    | {'post_write_verification', 'unknown'}`). This contradicts 受入 12, which mandates
+    commit-preflight returns only the 3 specified kind values.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.384431+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-primary-004
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: commit-preflight-implementation-excerpt.py:_commit_preflight_next_action
+  plain_language_summary: The delegated function `build_in_progress_next_action` (called
+    at line ~4154 when `in_progress_files` is non-empty) returns an indeterminate
+    kind value. Its implementation is not included in the review target.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.312252+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-primary-005
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: commit-preflight-implementation-excerpt.py:_commit_preflight_next_action
+  plain_language_summary: The delegated function `resolve_normal_workflow_commit_stop_point_action`
+    (called at lines ~4215-4217 when `commit_stop_point` is truthy) returns an indeterminate
+    kind value. Its implementation is not included in the review target.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.394614+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-claude-sonnet-4-6-primary-006
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: tests/tools/test_t020_kind_redesign.py:NextActionKindBehaviorTests
+  plain_language_summary: The behavioral tests `test_next_does_not_return_commit_unit_stale`
+    and `test_next_does_not_return_commit_mixing_risk` verify only that two specific
+    forbidden values are not returned in specific scenarios, but no test verifies
+    that `next --json` always returns one of the 7 permitted kind values across all
+    code paths. `test_next_returns_only_seven_kind_values` covers only a single scenario
+    (empty git repo / no workflow state).
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.476511+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-gpt-5.5-adversarial-001
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/commit-preflight-implementation-excerpt.py:_commit_preflight_next_action
+  plain_language_summary: commit-preflight can definitively return kind "verification_pending",
+    which is outside the permitted 3 commit-preflight kind values.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.469102+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-gpt-5.5-adversarial-002
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: CRITICAL
+  severity_normalized: CRITICAL
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/commit-preflight-implementation-excerpt.py:_commit_preflight_next_action
+  plain_language_summary: commit-preflight can definitively return kind "unknown",
+    which is outside the permitted 3 commit-preflight kind values.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.555479+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-gpt-5.5-adversarial-003
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/commit-preflight-implementation-excerpt.py:_commit_preflight_next_action
+  plain_language_summary: The in-progress-files path delegates to build_in_progress_next_action,
+    and the returned kind value is indeterminate from the provided target files.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.557690+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-gpt-5.5-adversarial-004
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/commit-preflight-implementation-excerpt.py:_commit_preflight_next_action
+  plain_language_summary: The normal workflow commit stop point path delegates to
+    resolve_normal_workflow_commit_stop_point_action, and the returned kind value
+    is indeterminate from the provided target files.
+  final_label: leave-as-is
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:47.637590+00:00'
+  decision_reason: レビュー品質または補助的な指摘であり、今回の実装修正対象外として記録のみ残す。
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run-gpt-5.5-adversarial-005
+  run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+  source_model: gpt-5.5
+  source_round: round-1
+  source_raw_path: raw/gpt-5.5.round-1.txt
+  source_parsed_path: parsed/gpt-5.5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: tests/tools/test_t020_kind_redesign.py:CommitPreflightKindBehaviorTests.test_commit_preflight_kind_is_always_commit_related
+  plain_language_summary: The test assertion allows commit-preflight kind values outside
+    the required 3-value domain.
+  final_label: must-fix
+  decision_status: decided
+  decision_actor: user
+  decision_actor_type: agent
+  decision_at: '2026-06-30T06:48:46.640077+00:00'
+  decision_reason: 利用者判断「修正」に基づき採用。対応コミットで実装・テストを修正済み。
+  applied_files: []
+  superseded_by: null

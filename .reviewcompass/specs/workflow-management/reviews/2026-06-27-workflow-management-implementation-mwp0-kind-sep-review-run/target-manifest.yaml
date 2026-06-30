@@ -1,0 +1,10 @@
+run_id: 2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run
+target_files:
+- path: .reviewcompass/schema/next_action_response.schema.json
+  sha256: 10132957544998f478a68015ec9dcb24640b86d8c9951d00b1c3c2d11cf54b7d
+- path: .reviewcompass/schema/commit_preflight_response.schema.json
+  sha256: 0ce50e2b11cf1d0a36e40f462b054a86f8428f348bdd6dd0a3f0f3a514ae7dab
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/commit-preflight-implementation-excerpt.py
+  sha256: 8be1b95b22ce8a5fb2764f87a7b93b101e97be17c86db313d0c03dc4701a65e0
+- path: tests/tools/test_t020_kind_redesign.py
+  sha256: ce0f01bb6eae7b7af2399416f065fc9a2fc3d6bf28ca2014357c9058e81b1713

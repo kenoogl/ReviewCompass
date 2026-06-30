@@ -1,0 +1,30 @@
+findings:
+  - severity: CRITICAL
+    target_location: "commit-preflight-implementation-excerpt.py:_commit_preflight_next_action"
+    description: "The function returns `kind: 'verification_pending'` on line ~4175, which is not one of the 3 permitted commit-preflight kind values (`commit_candidate`, `commit_mixing_risk`, `commit_unit_stale`)."
+    rationale: "受入 12 requires commit-preflight to output only the 3 specified kind values. The code path at lines 4167-4181 unconditionally returns `kind: 'verification_pending'` when post-write verification targets exist and are incomplete. This is a definitive violation of the kind value boundary for commit-preflight."
+
+  - severity: CRITICAL
+    target_location: "commit-preflight-implementation-excerpt.py:_commit_preflight_next_action"
+    description: "The function returns `kind: 'unknown'` on lines ~4207-4212 when `load_all_feature_specs` reports missing specs. `unknown` is not one of the 3 permitted commit-preflight kind values."
+    rationale: "受入 12 requires commit-preflight to return only `commit_candidate`, `commit_mixing_risk`, or `commit_unit_stale`. The `unknown` kind is defined as a `next --json` kind value. Returning it from `_commit_preflight_next_action` violates the kind separation boundary."
+
+  - severity: ERROR
+    target_location: "tests/tools/test_t020_kind_redesign.py:CommitPreflightKindBehaviorTests.test_commit_preflight_kind_is_always_commit_related"
+    description: "The `assertIn` condition permits `kind` values `'post_write_verification'` and `'unknown'` in addition to the 3 required commit-preflight kind values (`EXPECTED_COMMIT_PREFLIGHT_KIND_VALUES | {'post_write_verification', 'unknown'}`). This contradicts 受入 12, which mandates commit-preflight returns only the 3 specified kind values."
+    rationale: "T-020 completion condition 2 requires commit-preflight to return only the 3 kind values and no others. By explicitly allowing `post_write_verification` and `unknown` in the assertion set, this test does not verify the constraint stated in 受入 12 and would pass even when the implementation violates the kind boundary. This makes kind separation unverifiable via this test."
+
+  - severity: WARN
+    target_location: "commit-preflight-implementation-excerpt.py:_commit_preflight_next_action"
+    description: "The delegated function `build_in_progress_next_action` (called at line ~4154 when `in_progress_files` is non-empty) returns an indeterminate kind value. Its implementation is not included in the review target."
+    rationale: "If `build_in_progress_next_action` returns a `next --json` kind value (e.g., `in_progress`, `blocking_in_progress`), that would constitute a CRITICAL violation. Since the implementation is not provided, the kind value is indeterminate. Per review policy, this is reported as WARN."
+
+  - severity: WARN
+    target_location: "commit-preflight-implementation-excerpt.py:_commit_preflight_next_action"
+    description: "The delegated function `resolve_normal_workflow_commit_stop_point_action` (called at lines ~4215-4217 when `commit_stop_point` is truthy) returns an indeterminate kind value. Its implementation is not included in the review target."
+    rationale: "Based on the name, this function likely returns a `commit_stop_point`-related action whose kind could be from the `next --json` domain (e.g., `in_progress`, `blocking_in_progress`). If it returns any kind outside the 3 permitted commit-preflight values, it would be a CRITICAL violation. The kind value is indeterminate from the provided material."
+
+  - severity: WARN
+    target_location: "tests/tools/test_t020_kind_redesign.py:NextActionKindBehaviorTests"
+    description: "The behavioral tests `test_next_does_not_return_commit_unit_stale` and `test_next_does_not_return_commit_mixing_risk` verify only that two specific forbidden values are not returned in specific scenarios, but no test verifies that `next --json` always returns one of the 7 permitted kind values across all code paths. `test_next_returns_only_seven_kind_values` covers only a single scenario (empty git repo / no workflow state)."
+    rationale: "T-020 completion condition 1 requires that `next --json` kind values are limited to 7 values. The behavioral test coverage for this condition is narrow. While the schema enum check provides static enforcement, the behavioral coverage gap means dynamic code paths that bypass schema validation are not tested."

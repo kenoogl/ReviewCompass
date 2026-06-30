@@ -1,0 +1,20 @@
+findings:
+  - severity: ERROR
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-reason-review-run/design-section-5-2-5-3-excerpt.md:§5.2 and §5.3"
+    description: "T-020 deferred item (b) is not addressed in the design document. The excerpt explicitly notes that 'The design document does not contain a section that explicitly contrasts next_action.reason with the top-level reasons array.' The responsibility distinction between next_action.reason (human-readable state description, per §5.3 common fields table) and the top-level reasons array (per §5.2 required fields) remains unclarified in both the design and the schema."
+    rationale: "T-020 先送り事項(b) requires clarification of the responsibility difference between the inner reason field and the top-level reasons array in both design and implementation. The design excerpt confirms this clarification is absent from design.md. Neither §5.2 nor §5.3 contains a description distinguishing the semantics of reasons (top-level array) from reason (next_action-level common field). The deferred item is therefore unresolved."
+
+  - severity: ERROR
+    target_location: ".reviewcompass/schema/next_action_response.schema.json:properties.next_action.properties"
+    description: "The schema does not define a reason field anywhere within next_action.properties, yet design §5.3 lists reason as a common field for all kind values (with role: 状態の説明（人間が読む）). The reason field is absent from both next_action.properties and next_action.required, and this omission is not documented as intentional anywhere in the target files."
+    rationale: "Design §5.3 explicitly lists reason as one of three all-kind common fields within next_action. The schema omits it entirely from next_action.properties with no $comment or other annotation explaining the omission. This is an undocumented discrepancy between the design specification and the schema implementation, and it directly prevents verification that the reason vs reasons distinction is correctly implemented."
+
+  - severity: WARN
+    target_location: ".reviewcompass/schema/next_action_response.schema.json:properties.reasons"
+    description: "The top-level reasons field is defined only as { \"type\": \"array\" } with no description, minItems constraint, items schema, or any annotation distinguishing its purpose from next_action.reason. The schema provides no schema-level differentiation between the two fields."
+    rationale: "Even setting aside the missing next_action.reason definition, the top-level reasons array carries no description field, no $comment, and no items type constraint. A reader of the schema alone cannot determine what reasons contains, how it relates to next_action.reason, or under what conditions it is populated. This ambiguity perpetuates the unresolved T-020 deferred item (b) at the implementation level."
+
+  - severity: WARN
+    target_location: ".reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-reason-review-run/design-section-5-2-5-3-excerpt.md:§5.2"
+    description: "The §5.2 next_action required fields list (10 fields) does not include reason, while §5.3 common fields table lists reason as present for all kind values. The design document does not reconcile this: reason could be optional, conditionally required, or simply omitted from the required list by oversight. No note in §5.2 or §5.3 clarifies the intended optionality of next_action.reason."
+    rationale: "The internal inconsistency within the design document between §5.2 (reason absent from next_action required fields) and §5.3 (reason listed as all-kind common field) is unresolved and undocumented. This ambiguity makes it impossible to determine from the target files alone whether the schema's omission of reason from next_action.required is correct or erroneous."

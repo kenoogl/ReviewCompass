@@ -1,0 +1,5 @@
+findings:
+  - severity: WARN
+    target_location: "# Review Task > Primary judgment question"
+    description: "Primary judgment question asks the model to evaluate upstream design documents which are not in the review target."
+    rationale: "The question asks if the semantic distinction is 'sufficiently defined in the schema and upstream design documents'. However, the review target is limited strictly to the `schema.json` file, and upstream design documents are only provided as static background excerpts. This slightly violates the vertical intent transfer requirement to 'limit target judgment to the current phase artifact'. While it mirrors the text of the deferred item, it could confuse the model into trying to judge the completeness of the upstream design excerpts rather than focusing purely on how the target schema implements the required clarification."

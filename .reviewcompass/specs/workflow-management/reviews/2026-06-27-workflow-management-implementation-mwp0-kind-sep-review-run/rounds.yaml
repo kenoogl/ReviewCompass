@@ -1,0 +1,155 @@
+round_id: round-1
+purpose: implementation
+invocation_timestamp: '2026-06-27T06:12:23.545188+00:00'
+target_files:
+- path: .reviewcompass/schema/next_action_response.schema.json
+  sha256: 10132957544998f478a68015ec9dcb24640b86d8c9951d00b1c3c2d11cf54b7d
+- path: .reviewcompass/schema/commit_preflight_response.schema.json
+  sha256: 0ce50e2b11cf1d0a36e40f462b054a86f8428f348bdd6dd0a3f0f3a514ae7dab
+- path: .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/commit-preflight-implementation-excerpt.py
+  sha256: 8be1b95b22ce8a5fb2764f87a7b93b101e97be17c86db313d0c03dc4701a65e0
+- path: tests/tools/test_t020_kind_redesign.py
+  sha256: ce0f01bb6eae7b7af2399416f065fc9a2fc3d6bf28ca2014357c9058e81b1713
+criteria: "---\ncriteria_id: wm-implementation-mwp0-kind-sep-2026-06-27\nphase: implementation\n\
+  stage: triad-review\n---\n\n# workflow-management implementation review — MWP-0:\
+  \ kind value separation\n\n## Review Task\n\nReview the target files for: MWP-0\
+  \ kind value separation between `next --json` and `commit-preflight`.\n\nPrimary\
+  \ judgment question:\n\nDoes the implementation ensure that `next --json` outputs\
+  \ only the 7 specified kind values and `commit-preflight` outputs only the 3 specified\
+  \ kind values, as required by 受入 12 and T-020 completion conditions 1 and 2?\n\n\
+  Do not combine multiple independent judgments in this prompt. This review covers\
+  \ only kind value separation. if/then constraint completeness and reason/reasons\
+  \ separation are reviewed in separate criteria.\n\n## Review Target\n\nThe authoritative\
+  \ target is the file set supplied by the review runner.\n\n- `.reviewcompass/schema/next_action_response.schema.json`\n\
+  - `.reviewcompass/schema/commit_preflight_response.schema.json`\n- `commit-preflight-implementation-excerpt.py`\
+  \ (extracted from `tools/check-workflow-action.py` lines 4151-4223)\n- `tests/tools/test_t020_kind_redesign.py`\n\
+  \n**Note on `next --json` implementation**: The `cmd_next` function in `tools/check-workflow-action.py`\
+  \ is several hundred lines long and is not included as a target. The `next_action_response.schema.json`\
+  \ schema enum and the test classes `NextActionSchemaKindValueTests` and `NextActionKindBehaviorTests`\
+  \ in `test_t020_kind_redesign.py` are the primary verification artifacts for the\
+  \ `next --json` kind constraint. If the schema enum is correct and the tests verify\
+  \ it, that constitutes the implementable scope of check for this review.\n\n**Note\
+  \ on delegated functions in the excerpt**: The excerpt for `_commit_preflight_next_action`\
+  \ contains two function calls whose implementations are not provided — `build_in_progress_next_action`\
+  \ (line 4154) and `resolve_normal_workflow_commit_stop_point_action` (line 4215).\
+  \ When those functions' return kind values cannot be determined from the provided\
+  \ material, report that as WARN rather than ERROR.\n\nDo not treat this criteria\
+  \ file or any author-written summary as a substitute for the target files.\n\n##\
+  \ Source Materials\n\n### mwp0-kind-separation-upstream-intent\n\nPurpose: Requirement\
+  \ 2 受入 12 and T-020 completion conditions 1–2 as upstream intent for kind value\
+  \ separation.\nUse as intent-transfer evidence and background only. Do not treat\
+  \ as a replacement for target files.\n\n受入 12 — kind 値分離の仕様（原文）:\n\n```\n本機能は commit_candidate、commit_mixing_risk、commit_unit_stale\
+  \ の3種類の判定を next --json の\nkind から除外し、commit-preflight サブコマンドの出力にのみ含める。これらの判定は「作業の現在地カテゴリ」\n\
+  ではなく「コミット操作の前確認」であり、next --json の kind は作業の現在地のみを示す7種類\n（completed / in_progress\
+  \ / blocking_in_progress / verification_pending /\n  reopen_in_progress / feature_definition_required\
+  \ / unknown）に限定する。\n```\n\nT-020 完了条件 1–2:\n\n```\n1. next --json の kind 値域が7値に限定され、旧3値が出力されないことを\
+  \ pytest で確認できる。\n2. commit-preflight サブコマンドが3値の kind を返し、他の kind を返さないことを pytest\
+  \ で確認できる。\n```\n\n### kind-value-constants\n\n```\nnext --json の許容 kind 値（7つ）:\n\
+  \  in_progress, blocking_in_progress, verification_pending,\n  reopen_in_progress,\
+  \ feature_definition_required, completed, unknown\n\ncommit-preflight の許容 kind 値（3つ）:\n\
+  \  commit_candidate, commit_mixing_risk, commit_unit_stale\n```\n\n## Required Checks\n\
+  \n1. Check that `next_action_response.schema.json` defines exactly the 7 permitted\
+  \ kind values in the enum.\n2. Check that `commit_preflight_response.schema.json`\
+  \ defines exactly the 3 permitted kind values in the enum.\n3. Check that the `_commit_preflight_next_action`\
+  \ implementation in the excerpt can only return kind values permitted for commit-preflight\
+  \ under 受入 12. Trace all code paths. For delegated functions whose implementation\
+  \ is not in the target, report whether the kind they produce is determinable or\
+  \ indeterminate and use WARN for indeterminate cases.\n4. Check that the test classes\
+  \ `NextActionSchemaKindValueTests`, `CommitPreflightSchemaTests`, `NextActionKindBehaviorTests`,\
+  \ and `CommitPreflightKindBehaviorTests` in `test_t020_kind_redesign.py` cover the\
+  \ key directions of T-020 completion conditions 1 and 2.\n5. Check whether the test\
+  \ `test_commit_preflight_kind_is_always_commit_related` reflects the constraint\
+  \ in 受入 12 that commit-preflight must return only the 3 specified kind values. Specifically,\
+  \ determine whether the assertIn condition in that test is consistent with the 3-value\
+  \ constraint in 受入 12.\n\n## Out Of Scope\n\n- if/then field constraints (①②③⑤)\
+  \ — separate criteria\n- reason vs reasons semantic separation — separate criteria\n\
+  - Commit, push, spec.json update, phase completion, or human approval delegation\n\
+  \n## Finding Policy\n\n- Use CRITICAL for a code path that definitively violates\
+  \ the kind value boundary stated in 受入 12.\n- Use ERROR for a schema enum mismatch,\
+  \ a missing test direction, a test assertion that contradicts the acceptance criterion,\
+  \ or a code path that makes the kind separation unverifiable.\n- Use WARN for meaningful\
+  \ ambiguity, weak test traceability, or a code path where the kind value cannot\
+  \ be determined from the provided material.\n- Use INFO only for minor non-blocking\
+  \ improvements.\n- Use precise target locations such as `path`, `path:function`,\
+  \ or `path:class.method`.\n- Return `findings: []` only when kind separation is\
+  \ fully and correctly implemented and verified.\n"
+prompt_sha256: ad52db2117ea36158aaf15ed27e069e77c4217e1df03a152f6f9dc8156069043
+model_results:
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-3.txt
+  raw_sha256: 0ff62146eb64efc7e50cb418662d05a5d6b51b6f049fd77ed232b1e708afd7b2
+  parsed_path: parsed/claude-sonnet-4-6.round-3.yaml
+  parsed_sha256: 54a94034265b792771aadaa25abe20ad915bfe8c57d6d7551cd604439e134365
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-27T06:07:09.381493+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 330.412
+  prompt_path: prompts/claude-sonnet-4-6.round-3.prompt.md
+  prompt_sha256: 0b0a2f31edc3071cd27780ff05cd3db391f42ea196c7ac70195459a3be23e263
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 30c5d61e875cacccb2cae96c1a2308d1a6e6836e201f367993513f063d8d4f02
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 95e52c42defe17ba74b7a82022ec0ed1d4b80272398b20f808c9b21aa633af88
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-27T06:12:23.545188+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 27.985
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: ad52db2117ea36158aaf15ed27e069e77c4217e1df03a152f6f9dc8156069043
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  raw_sha256: ba3415811ce3cc7b517e0ab500d730a203755fa85dc44d91201c96ff3aabc28a
+  parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  parsed_sha256: de9c1136a6094e9c4feb4e4d7b7a73ad85a2268eda1edc290fe9b07c088b14f6
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-27T06:11:29.791214+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 23.934
+  prompt_path: prompts/claude-sonnet-4-6.round-1.prompt.md
+  prompt_sha256: b9713045f2697fb06adaa716e93059bf8afafcefa35bd1c086bce233975fbc51
+- model_id: gpt-5.5
+  provider: openai-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/gpt-5.5.round-1.txt
+  raw_sha256: 17766956c0d75a4054c0d02dfafe6ee8d88e252994e4de676178ee8b21e5ba59
+  parsed_path: parsed/gpt-5.5.round-1.yaml
+  parsed_sha256: 4d4e378f83c2295ae963096b3e24dd369c4394b87786c61904131fa19d272333
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-06-27T06:11:55.490514+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 25.628
+  prompt_path: prompts/gpt-5.5.round-1.prompt.md
+  prompt_sha256: f68336917d0fcc768859db01d9842f7a055f330b092270df6949ca98fe3fc451
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/review-criteria.md
+criteria_source_sha256: 255578c5b396456e81ca1710ca386f1e9d41d03fbf70153972b11e4e2f1a8c8c

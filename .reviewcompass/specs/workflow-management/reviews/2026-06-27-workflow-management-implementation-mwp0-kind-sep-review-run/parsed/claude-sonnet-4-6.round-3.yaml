@@ -1,0 +1,75 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 330.412
+findings:
+- severity: WARN
+  target_location: Review Target — Note on `next --json` implementation
+  description: The note states that `cmd_next` is 'several hundred lines long and
+    is not included as a target,' relying instead on schema enum and tests as 'the
+    primary verification artifacts.' This is a deliberate scope reduction that may
+    be appropriate, but it is stated as a design decision by the prompt author without
+    explicit acknowledgment that it is an assumption or that it trades completeness
+    for practicality.
+  rationale: Per Source-Material Quality criteria, unresolved or deferred items that
+    affect the target review should be marked explicitly. The note should state that
+    this is an acknowledged limitation/assumption rather than presenting the reduced
+    scope as equivalent to full implementation verification. A model reading this
+    could incorrectly report a passing result when the actual cmd_next code paths
+    produce disallowed kind values not caught by the schema or tests.
+- severity: WARN
+  target_location: Review Target — Note on delegated functions in the excerpt
+  description: The note pre-instructs the model to use WARN severity for indeterminate
+    delegated function kind values. This partially pre-determines severity labeling
+    before the model has examined the evidence, which is mildly leading.
+  rationale: General API Review Prompt Quality criterion 3 requires a non-leading
+    analysis question. Pre-assigning severity to a class of findings before analysis
+    is a mild form of leading. The instruction could instead say 'report whether the
+    kind they produce is determinable or indeterminate' and let the finding policy
+    section govern severity, which it already does via 'Use WARN for meaningful ambiguity
+    … or a code path where the kind value cannot be determined from the provided material.'
+    The duplication creates a minor inconsistency risk if the finding policy is later
+    changed.
+- severity: WARN
+  target_location: Source Materials — mwp0-kind-separation-upstream-intent
+  description: The upstream intent material is provided as Japanese prose (受入 12 and
+    T-020) without an English translation or structured summary. The kind-value-constants
+    section provides an English enumeration, but the normative acceptance criterion
+    text is Japanese-only.
+  rationale: Source-Material Quality criteria require that source material be included
+    'in a model-readable form.' While LLMs can read Japanese, the asymmetry between
+    Japanese normative text and English review checks creates a risk of subtle mistranslation
+    or misinterpretation during model analysis, especially for nuanced constraint
+    phrasing. A parenthetical English gloss of 受入 12's key constraint sentence would
+    reduce this risk.
+- severity: WARN
+  target_location: Required Checks — Check 4
+  description: Check 4 asks the model to verify that test classes 'cover the key directions
+    of T-020 completion conditions 1 and 2' without specifying what the key directions
+    are. This leaves the model to infer what constitutes adequate coverage.
+  rationale: Without explicit coverage directions (e.g., 'verify that old 3 values
+    are asserted absent,' 'verify that all 7 new values are asserted present,' 'verify
+    that kind values outside the 3 cause failures'), the model may apply varying standards,
+    producing inconsistent or underspecified findings. Judgment Granularity criteria
+    require item-specific evidence to be included so the model does not have to guess.
+- severity: INFO
+  target_location: Required Checks — Check 5
+  description: Check 5 singles out `test_commit_preflight_kind_is_always_commit_related`
+    and asks whether the assertIn condition is 'consistent with the 3-value constraint.'
+    The phrasing 'consistent with' is softer than the finding policy's ERROR threshold
+    for 'a test assertion that contradicts the acceptance criterion.' Consider aligning
+    the check wording with the finding policy language.
+  rationale: Minor wording inconsistency between check phrasing and finding policy
+    may cause the model to report a softer finding than warranted if the assertIn
+    check is actually wrong, since 'consistent with' implies a yes/no determination
+    rather than a severity-bearing defect finding.
+- severity: INFO
+  target_location: Out Of Scope
+  description: The out-of-scope list includes 'Commit, push, spec.json update, phase
+    completion, or human approval delegation' as a single line. These are workflow-action
+    prohibitions rather than topical scope boundaries and could be confused with the
+    topical exclusions above them.
+  rationale: 'Minor ergonomics: separating workflow-action prohibitions from topical
+    exclusions (if/then constraints, reason/reasons) would make the scope section
+    easier to parse and reduce the chance that the model treats them as related categories.'

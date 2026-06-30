@@ -1,0 +1,23 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 19.062
+findings:
+- severity: ERROR
+  target_location: .reviewcompass/schema/next_action_response.schema.json:properties.next_action.properties
+  description: The 'reason' field is completely omitted from the schema's next_action
+    properties. This contradicts design §5.3, which defines it as a common field for
+    all kinds, and the omission is not documented as intentional.
+  rationale: An undocumented discrepancy between design §5.3 and the schema violates
+    the implementation requirements. Without the field defined, tools cannot rely
+    on its presence.
+- severity: ERROR
+  target_location: design-section-5-2-5-3-excerpt.md and .reviewcompass/schema/next_action_response.schema.json
+  description: T-020 deferred item (b) is unaddressed. Neither the design document
+    excerpt nor the schema clarifies the responsibility difference between the next_action
+    'reason' field and the top-level 'reasons' array.
+  rationale: The deferred item explicitly requires clarifying the semantic distinction
+    between these fields in both design and implementation. The schema provides no
+    description or $comment for the top-level 'reasons' array, and the design excerpt
+    notes explicitly confirm the absence of this clarification.

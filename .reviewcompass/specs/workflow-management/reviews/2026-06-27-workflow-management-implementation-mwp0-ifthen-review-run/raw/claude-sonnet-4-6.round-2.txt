@@ -1,0 +1,25 @@
+findings:
+  - severity: WARN
+    target_location: "## Source Materials / mwp0-if-then-upstream-intent"
+    description: "Source material is provided as inline text excerpt only; no structured summary or path provenance is given for the upstream design documents (D-003 §4.2, 設計 §5.2) from which the constraints originate."
+    rationale: "The criteria cite D-003 §4.2 and 設計 §5.2 as the authoritative design sources, but these are referenced only by name within the quoted text, not as paths marked as provenance or as structured summaries. If the reviewing model cannot verify that the quoted text faithfully represents those documents, it must take the excerpt on faith, which weakens traceability for Required Check 4 (no unsupported additions)."
+
+  - severity: WARN
+    target_location: "## Required Checks / Check 3"
+    description: "Check 3 asks the model to verify that ④ and ⑥ constraints 'are present but are not weakened or removed,' yet the acceptance criteria (受入 11(6)) explicitly states ④ and ⑥ are out of scope for this review and T-015 is listed as already complete."
+    rationale: "Including a check on out-of-scope items (④ and ⑥) without supplying source material for what those T-015 constraints look like creates an asymmetry: the model is asked to judge correctness of entries it has no specification baseline for. This may cause the model to flag spurious issues or silently skip the check, reducing finding reliability. Either supply the T-015 baseline constraints as source material or narrow Check 3 to 'verify ④ and ⑥ entries are not structurally removed by the new allOf entries' without asserting correctness."
+
+  - severity: WARN
+    target_location: "## Source Materials"
+    description: "受入 11(6)③ specifies that active_gate must match the 'stages/<phase>.yaml#drafting' format and that phase/stage must match the drafting unit, but no example or schema reference for that format is provided in the source materials."
+    rationale: "Without a concrete example or a reference to the stages/<phase>.yaml naming convention, the reviewing model must infer what a valid vs. invalid format looks like. This makes Required Check 1 for entry ③ and Required Check 2 test coverage for ③ partially guesswork, increasing the risk of a WARN-suppressed miss on a format constraint."
+
+  - severity: INFO
+    target_location: "## Review Task / Primary judgment question"
+    description: "The primary judgment question uses circled numerals ①②③⑤ which are non-ASCII characters. These are consistent with the source material but may cause minor parsing or display issues in some API environments."
+    rationale: "Low risk, but replacing with ASCII equivalents such as (1)(2)(3)(5) or using a legend mapping circled numerals to names would improve robustness across API rendering contexts without changing meaning."
+
+  - severity: INFO
+    target_location: "## Finding Policy"
+    description: "'Return findings: [] only when every constraint in 受入 11(6)①②③⑤ is fully and accurately implemented and tested' is correct but does not address the case where Check 3 (④/⑥ non-regression) is inconclusive due to missing baseline. A note clarifying how to label an inconclusive Check 3 result would prevent silent omission."
+    rationale: "Minor ergonomics gap: without guidance, a model that cannot verify ④/⑥ non-regression may either skip the finding or emit an unsupported ERROR, both of which reduce triage usefulness."
