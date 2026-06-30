@@ -5,6 +5,7 @@ tools/check-workflow-action.py and guarded-git-commit.py.
 """
 import hashlib
 import json
+import re
 import secrets
 import subprocess
 from datetime import datetime, timedelta, timezone
@@ -326,7 +327,7 @@ def approval_source_relay(cwd, source_text, target_digest=None):
     "algorithm": CANONICAL_DIGEST_ALGORITHM,
     "digest": current["digest"],
   }
-  return {
+  source_record = {
     "schema_version": 1,
     "source_kind": "user_turn_relay",
     "source_text_redacted": normalized,
@@ -338,6 +339,10 @@ def approval_source_relay(cwd, source_text, target_digest=None):
       for entry in current["target"]["entries"]
     ],
   }
+  autonomous_approval = _candidate_selector_autonomous_approval(normalized)
+  if autonomous_approval is not None:
+    source_record["autonomous_execution_approval"] = autonomous_approval
+  return source_record
 
 
 def _atomic_write_json(path, data):
@@ -384,6 +389,27 @@ def _lower_ascii(text):
   )
 
 
+def _candidate_selector_autonomous_approval(normalized):
+  match = re.fullmatch(r"([1-9][0-9]*)を(pushまで)?自律実行", normalized)
+  if not match:
+    return None
+  raw_index = match.group(1)
+  through_push = match.group(2) == "pushまで"
+  return {
+    "raw_instruction": normalized,
+    "candidate_selector": {
+      "type": "ordinal",
+      "index": int(raw_index),
+      "raw": raw_index,
+    },
+    "operation_id": (
+      "autonomous-through-push" if through_push else "autonomous-through-commit"
+    ),
+    "commit_execution_delegation": "included",
+    "push_execution_delegation": "included" if through_push else "excluded",
+  }
+
+
 def normalize_execution_delegation_instruction(source_text):
   """commit 実行代行承認の stdin を厳密に正規化する。"""
   if isinstance(source_text, bytes):
@@ -417,7 +443,10 @@ def normalize_execution_delegation_instruction(source_text):
   normalized = normalized.strip(" \t\f\v\u3000")
   if not normalized:
     raise ValueError("source text が空です")
-  if normalized not in ALLOWED_EXECUTION_DELEGATION_INSTRUCTIONS:
+  if (
+    normalized not in ALLOWED_EXECUTION_DELEGATION_INSTRUCTIONS
+    and _candidate_selector_autonomous_approval(normalized) is None
+  ):
     raise ValueError("source text が commit 実行代行承認の許可文言ではありません")
   return normalized
 
@@ -612,6 +641,20 @@ def record(cwd, nonce, source_text=None, no_source_text=False, approval_source=N
   }
   if approval_source is not None:
     approval["approval_source"] = approval_source
+  elif source_text is not None:
+    try:
+      normalized_source = normalize_execution_delegation_instruction(source_text)
+    except ValueError:
+      normalized_source = None
+    if (
+      normalized_source is not None
+      and _candidate_selector_autonomous_approval(normalized_source) is not None
+    ):
+      approval["approval_source"] = approval_source_relay(
+        cwd,
+        source_text,
+        approval["target_digest"],
+      )
   if source_omission_reason is not None:
     approval["source_omission_reason"] = source_omission_reason
   if redacted_source is not None:

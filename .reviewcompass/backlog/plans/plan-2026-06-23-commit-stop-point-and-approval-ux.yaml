@@ -89,7 +89,7 @@ remaining_work:
       `次へ` は従来どおり read-only のまま維持した。
   - id: CSUX-5
     title: Autonomous execution through push
-    status: candidate
+    status: completed
     tasks:
       - '利用者指示 `pushまで自律実行` を、次の 1 commit 分の作業、検証、TODO / checklist 更新、commit、push まで進める明示承認として解釈する。'
       - commit 成功後に push preflight を実行し、作業ツリー clean、ローカル先行 commit、push 先、commit 事前検査記録を確認する。
@@ -100,9 +100,14 @@ remaining_work:
       - push preflight が DEVIATION / WARN を返した場合は push せず停止する。
       - commit 成功後に追加の未コミット差分がある場合は push へ進まない。
       - push 先が想定外の場合は停止し、利用者判断を求める。
+    evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-autonomous-execution-through-push.yaml
+    note: >
+      `operation-trigger-resolve --trigger-text pushまで自律実行 --json` が
+      autonomous-through-push metadata、commit / push delegation included、
+      push_preflight_command、post_push_stop_state clean_synced を返すようにした。
   - id: CSUX-6
     title: Candidate selector autonomous execution approval relay
-    status: candidate
+    status: completed
     tasks:
       - '利用者指示 `Nを自律実行` を、候補番号 N の選択と `autonomous-through-commit` の実行モードに分解する。'
       - '利用者指示 `Nをpushまで自律実行` を、候補番号 N の選択と `autonomous-through-push` の実行モードに分解する。'
@@ -115,6 +120,11 @@ remaining_work:
       - commit approval / delegation record には raw instruction、candidate_selector、operation_id、commit_execution_delegation、push_execution_delegation が残る。
       - 許可文言リストへ候補番号ごとの完全一致語を追加しない。
       - 既存の曖昧な自律実行拒否テストを維持する。
+    evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-candidate-selector-autonomous-approval-relay.yaml
+    note: >
+      `Nを自律実行` / `Nをpushまで自律実行` を限定構文として解決し、
+      commit approval / delegation の approval_source に raw instruction、
+      candidate_selector、operation_id、delegation 範囲を残すようにした。
 non_goals:
   - '`pushまで自律実行` の明示なしに push を自動実行しない。'
   - commit guard 自体を緩めない。

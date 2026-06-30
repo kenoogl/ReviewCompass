@@ -1,0 +1,74 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-07-01-autonomous-execution-through-push
+unit_id: main-completed
+title: Add autonomous execution through push
+status: completed
+created_at: '2026-06-30T21:16:46.404426+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-07-01-autonomous-execution-through-push.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: CSUX-5A
+  title: Add red tests for push-through autonomous trigger resolution
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-5B
+  title: Add red tests that push-through includes both commit and push delegation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-5C
+  title: Add red tests for post-push clean/synced stop metadata
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-5D
+  title: Confirm the new tests fail before implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-5E
+  title: Implement push-through autonomous execution trigger metadata
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-5F
+  title: Keep plain autonomous execution push delegation excluded
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-5G
+  title: Run focused tests and confirm workflow next remains clean
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-5-RT-1
+  title: Push-through autonomous trigger includes commit and push delegation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-5-RT-2
+  title: Push-through autonomous trigger uses push preflight before git push
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-5-RT-3
+  title: Plain autonomous execution still excludes push delegation
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-07-01-autonomous-execution-through-push
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-07-01-autonomous-execution-through-push.yaml
+progress:
+  total: 10
+  done: 10
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-30T21:41:34.521933+00:00'
+completion_summary: CSUX-5 autonomous execution through push metadata implemented;
+  focused tests passed with 303 passed.

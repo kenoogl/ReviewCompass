@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-07-01-candidate-selector-autonomous-approval-relay
 kind: todo
 title: Add candidate selector autonomous approval relay
-status: candidate
+status: completed
 source_unit_id: main-completed
 created_at: '2026-06-30T21:29:27.503993+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -10,7 +10,11 @@ provenance:
   created_by: llm
   source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml#CSUX-6
   reason: CSUX-6 を plan から実行可能 TODO に materialize し、runtime checklist 経由で TDD 実行するため
-decisions: []
+decisions:
+- decision: completed
+  decision_ref: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-candidate-selector-autonomous-approval-relay.yaml
+  reason: CSUX-6 実装と focused test 303 passed を確認したため
+  decided_at: '2026-06-30T21:40:58.090337+00:00'
 source_plan_id: plan-2026-06-23-commit-stop-point-and-approval-ux
 source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml
 source_plan_slice:
@@ -31,25 +35,25 @@ implementation_plan:
     tasks:
     - id: CSUX-6A
       title: Add red tests for N-to-autonomous trigger parsing
-      status: pending
+      status: done
     - id: CSUX-6B
       title: Add red tests for candidate selector approval evidence fields
-      status: pending
+      status: done
     - id: CSUX-6C
       title: Add red tests that ambiguous autonomous wording remains rejected
-      status: pending
+      status: done
     - id: CSUX-6D
       title: Confirm red tests fail before implementation
-      status: pending
+      status: done
     - id: CSUX-6E
       title: Implement candidate selector autonomous trigger normalization
-      status: pending
+      status: done
     - id: CSUX-6F
       title: Relay normalized autonomous approval evidence into commit approval records
-      status: pending
+      status: done
     - id: CSUX-6G
       title: Run focused tests and confirm workflow next remains clean
-      status: pending
+      status: done
 acceptance_criteria:
 - '`1を自律実行` と `2を自律実行` は同じ構文規則で candidate_selector だけを変えて解決できる。'
 - '`1をpushまで自律実行` と `2をpushまで自律実行` は同じ構文規則で candidate_selector だけを変えて解決できる。'
@@ -62,18 +66,24 @@ red_tests:
     mode
   expected: operation-trigger-resolve --trigger-text 2を自律実行 --json returns candidate_selector.index
     2 and autonomous-through-commit metadata.
-  status: pending
+  status: done
 - id: CSUX-6-RT-2
   title: Push-through candidate-number autonomous triggers normalize to push mode
   expected: operation-trigger-resolve --trigger-text 2をpushまで自律実行 --json returns candidate_selector.index
     2 and autonomous-through-push metadata.
-  status: pending
+  status: done
 - id: CSUX-6-RT-3
   title: Commit approval evidence records normalized autonomous trigger evidence
   expected: commit approval source/delegation record includes raw_instruction, candidate_selector,
     operation_id, commit_execution_delegation, and push_execution_delegation.
-  status: pending
+  status: done
 non_goals:
 - 候補番号ごとの完全一致承認文言を許可リストへ追加すること。
 - 曖昧な `自律実行して` を commit 実行代行承認に変えること。
 - push preflight を省略して push を許可すること。
+execution_history:
+- checklist_id: checklist-todo-2026-07-01-candidate-selector-autonomous-approval-relay
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-candidate-selector-autonomous-approval-relay.yaml
+  completion_summary: CSUX-6 candidate selector autonomous execution approval relay
+    implemented; focused tests passed with 303 passed.
+  completed_at: '2026-06-30T21:40:49.991022+00:00'

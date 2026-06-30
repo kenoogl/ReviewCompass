@@ -1,0 +1,75 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-07-01-candidate-selector-autonomous-approval-relay
+unit_id: main-completed
+title: Add candidate selector autonomous approval relay
+status: completed
+created_at: '2026-06-30T21:29:35.297228+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-07-01-candidate-selector-autonomous-approval-relay.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: CSUX-6A
+  title: Add red tests for N-to-autonomous trigger parsing
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-6B
+  title: Add red tests for candidate selector approval evidence fields
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-6C
+  title: Add red tests that ambiguous autonomous wording remains rejected
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-6D
+  title: Confirm red tests fail before implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-6E
+  title: Implement candidate selector autonomous trigger normalization
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-6F
+  title: Relay normalized autonomous approval evidence into commit approval records
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-6G
+  title: Run focused tests and confirm workflow next remains clean
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-6-RT-1
+  title: Candidate-number autonomous triggers normalize to structured selector and
+    mode
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-6-RT-2
+  title: Push-through candidate-number autonomous triggers normalize to push mode
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX-6-RT-3
+  title: Commit approval evidence records normalized autonomous trigger evidence
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-07-01-candidate-selector-autonomous-approval-relay
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-07-01-candidate-selector-autonomous-approval-relay.yaml
+progress:
+  total: 10
+  done: 10
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-30T21:40:49.991022+00:00'
+completion_summary: CSUX-6 candidate selector autonomous execution approval relay
+  implemented; focused tests passed with 303 passed.

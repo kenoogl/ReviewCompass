@@ -150,6 +150,26 @@ OPERATION_TRIGGER_ENTRIES = {
     "push_execution_delegation": "excluded",
     "post_commit_stop_action": "プッシュ",
   },
+  "autonomous-through-push": {
+    "operation_id": "autonomous-through-push",
+    "operation_card_path": ".reviewcompass/guidance/COMMIT_OPERATION_CARD.md",
+    "first_readonly_command": ".venv/bin/python3 tools/check-workflow-action.py next --json",
+    "push_preflight_command": ".venv/bin/python3 tools/check-workflow-action.py push --rationale <reason> --json",
+    "mutation_allowed_after": "commit_and_push_preflight_ok",
+    "mutation_commands_after_preflight": [
+      "work through one commit-sized unit",
+      "git add",
+      ".venv/bin/python3 tools/commit-from-current-staged.py",
+      "git push",
+    ],
+    "standard_execution_wrapper": "autonomous-through-push",
+    "fallback_or_low_level_commands": COMMIT_AVOID_DIRECT_INVOCATION + ["git push"],
+    "autonomous_execution_scope": "through_push",
+    "commit_execution_delegation": "included",
+    "push_execution_delegation": "included",
+    "post_push_stop_state": "clean_synced",
+    "post_push_stop_action": "完了",
+  },
   "spec-set": {
     "operation_id": "spec-set",
     "operation_card_path": None,
@@ -174,6 +194,7 @@ OPERATION_TRIGGER_ALIASES = {
   "自律実行": "autonomous-through-commit",
   "じりつじっこう": "autonomous-through-commit",
   "autonomous": "autonomous-through-commit",
+  "pushまで自律実行": "autonomous-through-push",
   "specset": "spec-set",
   "spec-set": "spec-set",
 }
@@ -7272,6 +7293,25 @@ def _normalize_trigger_text(value):
   return re.sub(r"\s+", "", str(value or "")).strip()
 
 
+def _candidate_selector_autonomous_trigger(normalized):
+  match = re.fullmatch(r"([1-9][0-9]*)を(pushまで)?自律実行", normalized)
+  if not match:
+    return None
+  raw_index = match.group(1)
+  through_push = match.group(2) == "pushまで"
+  return {
+    "original_user_instruction": normalized,
+    "candidate_selector": {
+      "type": "ordinal",
+      "index": int(raw_index),
+      "raw": raw_index,
+    },
+    "operation_id": (
+      "autonomous-through-push" if through_push else "autonomous-through-commit"
+    ),
+  }
+
+
 def _plan_has_unmaterialized_slice(data):
   if not isinstance(data, dict) or data.get("kind") != "plan":
     return False
@@ -7343,7 +7383,12 @@ def resolve_operation_prompt_from_trigger(cwd, trigger_text, plan_id=None):
 
 def resolve_operation_trigger_entry(trigger_text):
   normalized = _normalize_trigger_text(trigger_text)
-  operation_id = OPERATION_TRIGGER_ALIASES.get(normalized)
+  candidate_autonomous = _candidate_selector_autonomous_trigger(normalized)
+  operation_id = (
+    candidate_autonomous["operation_id"]
+    if candidate_autonomous
+    else OPERATION_TRIGGER_ALIASES.get(normalized)
+  )
   base = {
     "trigger_text": trigger_text,
     "normalized_trigger_text": normalized,
@@ -7368,6 +7413,11 @@ def resolve_operation_trigger_entry(trigger_text):
 
   entry = dict(OPERATION_TRIGGER_ENTRIES[operation_id])
   base.update(entry)
+  if candidate_autonomous:
+    base.update({
+      "original_user_instruction": candidate_autonomous["original_user_instruction"],
+      "candidate_selector": candidate_autonomous["candidate_selector"],
+    })
   base.update({
     "verdict": "OK",
     "exit_code": 0,
