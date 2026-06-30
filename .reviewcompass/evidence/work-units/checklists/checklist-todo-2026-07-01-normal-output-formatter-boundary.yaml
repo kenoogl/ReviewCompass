@@ -1,0 +1,90 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-07-01-normal-output-formatter-boundary
+unit_id: main-completed
+title: Define shared normal output formatter boundary
+status: completed
+created_at: '2026-07-01T00:00:00+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-07-01-normal-output-formatter-boundary.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: NOM-1A
+  title: Add red tests for shared verdict and mode vocabulary
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1B
+  title: Add red tests for short OK human output
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1C
+  title: Add red tests for WARN / DEVIATION reasons and next action
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1D
+  title: Add red tests for json / verbose detail preservation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1E
+  title: Add red tests for stdout / stderr stream policy
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1F
+  title: Confirm the new tests fail before implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1G
+  title: Implement shared normal output formatter boundary
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1H
+  title: Run focused tests and update checklist evidence
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1-RT-1
+  title: Shared formatter declares verdict and mode vocabulary
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1-RT-2
+  title: OK human output keeps one short line
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1-RT-3
+  title: WARN / DEVIATION output keeps concise reasons and next action
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1-RT-4
+  title: JSON and verbose output preserve details
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: NOM-1-RT-5
+  title: Stream policy routes normal and diagnostic output
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-07-01-normal-output-formatter-boundary
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-07-01-normal-output-formatter-boundary.yaml
+progress:
+  total: 13
+  done: 13
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-07-01T00:00:00+00:00'
+completion_summary: Shared normal output formatter boundary was implemented with
+  verdict/mode vocabulary, concise human rendering, detail-preserving JSON/verbose
+  output, and stream policy helpers; focused and existing consumer tests pass.

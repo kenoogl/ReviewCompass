@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: dc300154a1321131f72e50e235df58be28e31bf70739bdec0dbb878f723a3519
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: dc300154a1321131f72e50e235df58be28e31bf70739bdec0dbb878f723a3519
+notes: >
+  Lightweight self-check for TODO_NEXT_SESSION.md. Confirmed the update records
+  NOM-1 completion, verification commands, and the next NOM-2 follow-up only;
+  no canonical workflow rule or API review judgment was changed.
