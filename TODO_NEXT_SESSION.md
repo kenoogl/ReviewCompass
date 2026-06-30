@@ -5,9 +5,10 @@
 ## 1. 現在状態
 
 - `main` は `origin/main` と同期済み。
-- 最新 push 済みコミット：`eef7cd7a post-write対象判定をworkflow specs除外に整合`
+- 最新 push 済みコミット：`94582f51 TODOとセッション記録を現状反映`
 - `tools/check-workflow-action.py next --json` は `kind: completed` を返す。
 - 全 feature の workflow_state は implementation.approval まで完了済み。
+- 作業ツリーは clean。
 
 ## 2. 直近で完了した作業
 
@@ -20,23 +21,16 @@
 - sandbox / 非TTY 環境の guarded commit issue を完了済み（`102e9611`）。
 - post-write target 判定を workflow specs 除外へ整合済み（`eef7cd7a`）。
 - 旧試行の未追跡 post-write review-run と manifest は削除済み。
+- TODO とセッション記録の現状反映をコミット・push 済み（`94582f51`）。
 
 ## 3. 残っている未コミット変更
 
-現時点で残っている変更は、セッション記録の再生成差分とこの TODO 更新のみ。
-
-- `.reviewcompass/evidence/sessions/2026-06-26-claude-95fb6fbe-f278-4fdb-bd90-d57827478593.md`
-  - front matter の `tool_version` と `source_sha256` 更新のみ。
-- `docs/sessions/auto-2026-06-26-claude-95fb6fbe-f278-4fdb-bd90-d57827478593.md`
-  - front matter の `tool_version` と `source_sha256` 更新のみ。
-- `TODO_NEXT_SESSION.md`
-  - 現状に合わせた引き継ぎメモ更新。
+なし。
 
 ## 4. 次にやること
 
-1. 上記3ファイルだけを確認する。
-2. 問題なければ `TODO/セッション記録の現状反映` としてコミットする。
-3. 必要なら再度 push する。
+1. 新しい作業指示があれば、その範囲で開始する。
+2. 開始時は `git status --short --branch` と `tools/check-workflow-action.py next --json` を再確認する。
 
 ## 5. 参照
 
