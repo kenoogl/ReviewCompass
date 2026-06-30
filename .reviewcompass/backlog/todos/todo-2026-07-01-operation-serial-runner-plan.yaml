@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-07-01-operation-serial-runner-plan
 kind: todo
 title: Add serial-only operation runner plan
-status: candidate
+status: completed
 source_unit_id: main-completed
 created_at: '2026-06-30T20:05:09.857497+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -32,26 +32,26 @@ implementation_plan:
     tasks:
     - id: ORP-3A
       title: Add red tests for serial-only runner plan output
-      status: pending
+      status: done
     - id: ORP-3B
       title: Add red tests that non-serial operations are excluded from serial runner
-      status: pending
+      status: done
     - id: ORP-3C
       title: Add red tests for approval freshness and staged digest checkpoint reporting
-      status: pending
+      status: done
     - id: ORP-3D
       title: Confirm the new tests fail before implementation
-      status: pending
+      status: done
     - id: ORP-3E
       title: Implement read-only serial runner plan resolution
-      status: pending
+      status: done
     - id: ORP-3F
       title: Implement parallel exclusion and checkpoint reporting
-      status: pending
+      status: done
     - id: ORP-3G
       title: Run focused tests and confirm next --json remains completed or reports
         only expected post-write state
-      status: pending
+      status: done
 acceptance_criteria:
 - commit approval chain で手入力順や固定文言を LLM が迷わない。
 - stale approval や staged digest 変更を runner plan が実行前 checkpoint として表示できる。
@@ -63,19 +63,25 @@ red_tests:
   expected: operation-serial-runner-plan --operation-id commit --json returns ordered
     read-only steps for preflight, approval input, guarded commit, and postcondition
     check.
-  status: pending
+  status: done
 - id: ORP-3-RT-2
   title: Non-serial operations are rejected by the serial runner plan
   expected: operation-serial-runner-plan rejects a non-serial operation with DEVIATION
     and a parallel exclusion reason.
-  status: pending
+  status: done
 - id: ORP-3-RT-3
   title: Approval freshness and staged digest checkpoints are reported
   expected: operation-serial-runner-plan reports nonce, ttl, consumed, target_digest,
     staged_file_set_digest, and staged_content_approval_digest checkpoints without
     executing them.
-  status: pending
+  status: done
 non_goals:
 - guarded commit や push などの不可逆操作を自動実行すること。
 - 人間承認入力を runner が生成または代行すること。
 - ORP-4 の workflow mixing preflight を実装すること。
+execution_history:
+- checklist_id: checklist-todo-2026-07-01-operation-serial-runner-plan
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-operation-serial-runner-plan.yaml
+  completion_summary: ORP-3 serial-only runner plan CLI was implemented and verified
+    with focused and adjacent operation tests.
+  completed_at: '2026-06-30T20:16:35.892223+00:00'

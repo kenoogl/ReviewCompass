@@ -1,0 +1,75 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-07-01-operation-serial-runner-plan
+unit_id: main-completed
+title: Add serial-only operation runner plan
+status: completed
+created_at: '2026-06-30T20:06:15.738735+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-07-01-operation-serial-runner-plan.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: ORP-3A
+  title: Add red tests for serial-only runner plan output
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-3B
+  title: Add red tests that non-serial operations are excluded from serial runner
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-3C
+  title: Add red tests for approval freshness and staged digest checkpoint reporting
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-3D
+  title: Confirm the new tests fail before implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-3E
+  title: Implement read-only serial runner plan resolution
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-3F
+  title: Implement parallel exclusion and checkpoint reporting
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-3G
+  title: Run focused tests and confirm next --json remains completed or reports only
+    expected post-write state
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-3-RT-1
+  title: Serial-only runner plan exposes ordered commit approval chain steps
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-3-RT-2
+  title: Non-serial operations are rejected by the serial runner plan
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-3-RT-3
+  title: Approval freshness and staged digest checkpoints are reported
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-07-01-operation-serial-runner-plan
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-07-01-operation-serial-runner-plan.yaml
+progress:
+  total: 10
+  done: 10
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-30T20:16:35.892223+00:00'
+completion_summary: ORP-3 serial-only runner plan CLI was implemented and verified
+  with focused and adjacent operation tests.
