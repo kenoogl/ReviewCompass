@@ -198,6 +198,169 @@ OPERATION_TRIGGER_ALIASES = {
   "specset": "spec-set",
   "spec-set": "spec-set",
 }
+ACTION_EFFECT_KIND_VALUES = [
+  "read",
+  "write",
+  "state_mutation",
+  "external_call",
+  "irreversible_action",
+]
+ACTION_EFFECT_SPEC_SCHEMA_VERSION = "action-effect-spec-v1"
+
+
+def _action_effect(kind, target, description=None):
+  """ActionEffectSpec の effect 要素を作る。"""
+  effect = {
+    "kind": kind,
+    "target": target,
+  }
+  if description:
+    effect["description"] = description
+  return effect
+
+
+def validate_action_effect_spec(spec):
+  """ActionEffectSpec が局所語彙だけを使っているか判定する。"""
+  reasons = []
+  if not isinstance(spec, dict):
+    return {
+      "verdict": "DEVIATION",
+      "reasons": ["ActionEffectSpec must be a mapping"],
+    }
+  if spec.get("schema_version") != ACTION_EFFECT_SPEC_SCHEMA_VERSION:
+    reasons.append(
+      "unknown ActionEffectSpec schema_version: "
+      + str(spec.get("schema_version"))
+    )
+  effects = spec.get("effects")
+  if not isinstance(effects, list):
+    reasons.append("ActionEffectSpec effects must be a list")
+    effects = []
+  allowed = set(ACTION_EFFECT_KIND_VALUES)
+  for effect in effects:
+    if not isinstance(effect, dict):
+      reasons.append("ActionEffectSpec effect must be a mapping")
+      continue
+    kind = effect.get("kind")
+    if kind not in allowed:
+      reasons.append("unknown effect kind: " + str(kind))
+  return {
+    "verdict": "OK" if not reasons else "DEVIATION",
+    "reasons": reasons,
+  }
+
+
+def build_workflow_action_effect_spec(action_id):
+  """主要 workflow action の実行前 effect spec を返す。"""
+  specs = {
+    "next": {
+      "effects": [
+        _action_effect("read", "workflow_state"),
+      ],
+      "read_scope": [
+        ".reviewcompass/",
+        "stages/",
+        "learning/workflow/carry-forward-register/",
+      ],
+      "write_scope": [],
+    },
+    "commit": {
+      "effects": [
+        _action_effect("read", "git_index"),
+        _action_effect("read", "workflow_preflight_state"),
+        _action_effect("write", "runtime_commit_records"),
+        _action_effect("state_mutation", "git_index_and_commit_metadata"),
+        _action_effect("irreversible_action", "git_history"),
+      ],
+      "read_scope": [
+        ".git",
+        ".reviewcompass/",
+        "stages/",
+        "learning/workflow/",
+      ],
+      "write_scope": [
+        "*",
+        ".git",
+      ],
+    },
+    "push": {
+      "effects": [
+        _action_effect("read", "git_history"),
+        _action_effect("external_call", "git_remote"),
+        _action_effect("irreversible_action", "remote_git_history"),
+      ],
+      "read_scope": [
+        ".git",
+      ],
+      "write_scope": [
+        ".git",
+      ],
+    },
+    "reopen-start": {
+      "effects": [
+        _action_effect("read", "workflow_state"),
+        _action_effect("write", "reopen_in_progress_record"),
+        _action_effect("state_mutation", "workflow_reopen_state"),
+      ],
+      "read_scope": [
+        ".reviewcompass/",
+        "stages/",
+      ],
+      "write_scope": [
+        "stages/in-progress/",
+      ],
+    },
+  }
+  if action_id not in specs:
+    return {
+      "schema_version": ACTION_EFFECT_SPEC_SCHEMA_VERSION,
+      "action_id": action_id,
+      "effects": [],
+      "read_scope": [],
+      "write_scope": [],
+      "unknown_action": True,
+    }
+  return {
+    "schema_version": ACTION_EFFECT_SPEC_SCHEMA_VERSION,
+    "action_id": action_id,
+    **specs[action_id],
+  }
+
+
+def _action_effect_path_allowed(path, write_scope):
+  if "*" in write_scope:
+    return True
+  for scope in write_scope:
+    if path == scope:
+      return True
+    if scope.endswith("/") and path.startswith(scope):
+      return True
+  return False
+
+
+def validate_commit_preflight_action_effect_scope(staged_files, action_effect_spec):
+  """staged file が ActionEffectSpec の write_scope 内に収まるか判定する。"""
+  spec_result = validate_action_effect_spec(action_effect_spec)
+  reasons = list(spec_result.get("reasons") or [])
+  write_scope = (
+    action_effect_spec.get("write_scope")
+    if isinstance(action_effect_spec, dict)
+    else []
+  )
+  if not isinstance(write_scope, list):
+    write_scope = []
+    reasons.append("ActionEffectSpec write_scope must be a list")
+  extra_staged_files = [
+    path for path in staged_files
+    if not _action_effect_path_allowed(path, write_scope)
+  ]
+  for path in extra_staged_files:
+    reasons.append("staged file outside ActionEffectSpec write_scope: " + path)
+  return {
+    "verdict": "OK" if not reasons else "DEVIATION",
+    "reasons": reasons,
+    "extra_staged_files": extra_staged_files,
+  }
 DEPLOYMENT_INDEPENDENCE_GUARD_PREFIXES = (
   "config/",
   "docs/operations/",
@@ -4530,6 +4693,11 @@ def build_commit_instruction_preflight(cwd):
     "staged",
   )
   commit_unit_state, commit_unit_errors = validate_commit_unit_record(cwd)
+  action_effect_spec = build_workflow_action_effect_spec("commit")
+  action_effect_scope_state = validate_commit_preflight_action_effect_scope(
+    staged_files,
+    action_effect_spec,
+  )
   reasons = []
   verdict = "OK"
   allowed_to_stage = True
@@ -4583,6 +4751,13 @@ def build_commit_instruction_preflight(cwd):
       allowed_to_delegate_execution = False
     reasons.extend(commit_unit_errors)
 
+  if action_effect_scope_state.get("verdict") == "DEVIATION":
+    verdict = "DEVIATION"
+    allowed_to_stage = False
+    allowed_to_prepare_approval = False
+    allowed_to_delegate_execution = False
+    reasons.extend(action_effect_scope_state.get("reasons") or [])
+
   approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
   execution_delegation_errors = validate_commit_execution_delegation(
     cwd,
@@ -4606,6 +4781,8 @@ def build_commit_instruction_preflight(cwd):
     "execution_delegation_errors": execution_delegation_errors,
     "repair_workflow_state": repair_state,
     "commit_unit": commit_unit_state,
+    "action_effect_spec": action_effect_spec,
+    "action_effect_scope": action_effect_scope_state,
   }
 
   return _build_commit_preflight_response(

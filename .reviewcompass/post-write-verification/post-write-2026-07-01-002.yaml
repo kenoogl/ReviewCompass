@@ -1,0 +1,20 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: d663d612831f0c0a9c32c5905d3ed0c123311958d8f977ba3e2dcef77f01035d
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: d663d612831f0c0a9c32c5905d3ed0c123311958d8f977ba3e2dcef77f01035d
+notes: >
+  Lightweight self-check for TODO_NEXT_SESSION.md. Confirmed the update only
+  records AES-2 completion, verification commands, and the next recommended
+  AES-3 follow-up; no canonical workflow rule or API review judgment was changed.

@@ -34,13 +34,17 @@ remaining_work:
       - API review-run の実行前後で、何を読んで何を書いたかが追跡できる。
   - id: AES-2
     title: ActionEffectSpec for workflow actions
-    status: candidate
+    status: completed
     tasks:
       - next、commit、push、reopen-start などの主要 action で効果列挙を出す。
       - read、write、state_mutation、external_call、irreversible_action の語彙を局所定義する。
       - effect spec 外の staged 変更を commit precheck が検出できるようにする。
     acceptance:
       - 副作用のある workflow action の前に、影響範囲を機械的に確認できる。
+    evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-action-effect-spec.yaml
+    note: >
+      ActionEffectSpec の局所語彙、next / commit / push / reopen-start の effect spec builder、
+      および commit preflight の write_scope 検査入口を実装済み。
   - id: AES-3
     title: Phase boundary and evidence separation
     status: candidate

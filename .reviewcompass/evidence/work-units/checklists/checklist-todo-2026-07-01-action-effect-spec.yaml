@@ -1,0 +1,76 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-07-01-action-effect-spec
+unit_id: main-completed
+title: Add ActionEffectSpec for workflow actions
+status: completed
+created_at: '2026-06-30T20:47:26.738081+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-07-01-action-effect-spec.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: AES-2A
+  title: Add red tests for workflow action effect vocabulary
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-2B
+  title: Add red tests for next, commit, push, and reopen-start action effect specs
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-2C
+  title: Add red tests for commit precheck detecting staged changes outside effect
+    spec
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-2D
+  title: Confirm the new tests fail before implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-2E
+  title: Implement local ActionEffectSpec vocabulary and builders for workflow actions
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-2F
+  title: Connect effect spec scope checks to commit preflight
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-2G
+  title: Run focused tests and confirm next --json remains completed or reports only
+    expected post-write state
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-2-RT-1
+  title: Workflow action effect vocabulary is explicit
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-2-RT-2
+  title: Core workflow actions expose effect specs
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: AES-2-RT-3
+  title: Commit preflight rejects staged files outside effect spec
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-07-01-action-effect-spec
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-07-01-action-effect-spec.yaml
+progress:
+  total: 10
+  done: 10
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-07-01T00:00:00+00:00'
+completion_summary: ActionEffectSpec vocabulary, core workflow action builders,
+  and commit preflight write-scope validation were implemented; focused tests pass.

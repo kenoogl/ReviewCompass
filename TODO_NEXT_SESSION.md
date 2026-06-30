@@ -4,9 +4,7 @@
 
 ## 1. 現在状態
 
-- `main` は `origin/main` と同期済み。
-- 最新 push 済みコミット：`56944d88 Implement workflow mixing preflight`
-- 作業ツリーは clean。
+- 直近作業では `todo-2026-07-01-action-effect-spec.yaml`（AES-2）を完了し、commit 後は push 待ちになる。
 - clean 状態の `tools/check-workflow-action.py next --json` は `kind: completed` を返す。
 - 全 feature の workflow_state は implementation.approval まで完了済み。
 
@@ -22,6 +20,10 @@
   - 赤テストコミット：`072785c4 Add workflow mixing preflight red tests`
   - 実装コミット：`56944d88 Implement workflow mixing preflight`
   - 確認済み：focused 3 tests OK、`tests.tools.test_operation_registry_preflight` 21 tests OK、対象 checklist evidence 監査 OK。
+- action execution spec plan の AES-1 / AES-2 は linked TODO として完了済み。
+  - AES-1：ReviewExecutionSpec for API review-runs 完了。
+  - AES-2：ActionEffectSpec for workflow actions 完了。
+  - AES-2 の確認済み：`tests/tools/test_action_effect_spec.py` 3 tests OK、`tests/tools/test_action_effect_spec.py tests/tools/test_commit_from_current_staged.py` 12 tests OK、`tests/tools/test_check_workflow_action.py` 303 tests OK。
 - 既知の注意点：
   - `work-backlog audit-checklist-bridge` は、既存の別 TODO `todo-2026-06-24-commit-minimal-progress-output` の古い execution_history 由来で DEVIATION を出す。今回 ORP-4 の evidence 自体は OK。
   - `plan-2026-06-23-operation-registry-preflight.yaml` は plan 本体の `remaining_work` 表示に candidate が残っているが、linked TODO は ORP-1〜ORP-4 すべて completed。
@@ -35,8 +37,8 @@
 `.reviewcompass/backlog/plans/` の `status: candidate` から、次に着手する推奨順は以下。
 
 1. `.reviewcompass/backlog/plans/plan-2026-06-23-action-execution-spec.yaml`
-   - 副作用のある操作の実行仕様を固める。
-   - operation registry / preflight が ORP-4 まで進んだため、次の土台作業として自然。
+   - 残りは AES-3：scratch / evidence / canonical_update / approval_gate の境界整理。
+   - AES-1 / AES-2 が完了したため、この plan を閉じる次の実行単位になる。
 2. `.reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml`
    - commit の停止点と承認 UX をさらに機械化する。
    - 現在の commit runner / approval 導線改善に直結する。
