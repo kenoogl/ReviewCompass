@@ -634,5 +634,86 @@ class SchemaIfThenConstraintTests(unittest.TestCase):
                          "wait_for_human_decision で blocked_by に type なしは無効であること（受入 11(6)⑤）")
 
 
+class ReasonVsReasonsContractTests(unittest.TestCase):
+  """T-020 先送り事項(b): next_action.reason と最上位 reasons の責務差を確認"""
+
+  DESIGN_DOC = REPO_ROOT / ".reviewcompass" / "specs" / "workflow-management" / "design.md"
+
+  def _load_schema(self):
+    with open(NEXT_ACTION_SCHEMA, encoding="utf-8") as f:
+      return json.load(f)
+
+  def test_next_action_reason_is_defined_as_human_readable_optional_field(self):
+    """next_action.reason は人間向け説明として定義され、必須 10 フィールドには含めない"""
+    schema = self._load_schema()
+    next_action = schema["properties"]["next_action"]
+    properties = next_action["properties"]
+    self.assertIn(
+      "reason",
+      properties,
+      "next_action.reason は設計 §5.3 の全 kind 共通フィールドとして schema に定義すること。",
+    )
+    self.assertEqual(
+      properties["reason"].get("type"),
+      "string",
+      "next_action.reason は人間向けの状態説明文字列であること。",
+    )
+    self.assertIn(
+      "人間",
+      properties["reason"].get("$comment", ""),
+      "next_action.reason の $comment は人間向け説明であることを明示すること。",
+    )
+    self.assertNotIn(
+      "reason",
+      next_action.get("required", []),
+      "next_action.reason は §5.2 の必須 10 フィールドには含めず、任意フィールドとして扱うこと。",
+    )
+
+  def test_top_level_reasons_schema_documents_machine_readable_verdict_reasons(self):
+    """最上位 reasons は verdict の根拠配列として next_action.reason と区別する"""
+    schema = self._load_schema()
+    reasons = schema["properties"]["reasons"]
+    self.assertEqual(
+      reasons.get("type"),
+      "array",
+      "最上位 reasons は配列であること。",
+    )
+    self.assertEqual(
+      reasons.get("items", {}).get("type"),
+      "string",
+      "最上位 reasons は検査・判定理由の文字列配列であること。",
+    )
+    comment = reasons.get("$comment", "")
+    self.assertIn(
+      "verdict",
+      comment,
+      "最上位 reasons の $comment は verdict の根拠であることを明示すること。",
+    )
+    self.assertIn(
+      "next_action.reason",
+      comment,
+      "最上位 reasons の $comment は next_action.reason との責務差を明示すること。",
+    )
+
+  def test_design_documents_reason_vs_reasons_responsibility_difference(self):
+    """設計書 §5.2/§5.3 は reason と reasons の責務差を明示する"""
+    text = self.DESIGN_DOC.read_text(encoding="utf-8")
+    self.assertIn(
+      "next_action.reason と最上位 reasons の責務差",
+      text,
+      "設計書に T-020 先送り事項(b) の責務差説明を追加すること。",
+    )
+    self.assertIn(
+      "verdict",
+      text,
+      "最上位 reasons が verdict の根拠であることを設計書で説明すること。",
+    )
+    self.assertIn(
+      "人間向け",
+      text,
+      "next_action.reason が人間向け説明であることを設計書で説明すること。",
+    )
+
+
 if __name__ == "__main__":
   unittest.main()
