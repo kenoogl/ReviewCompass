@@ -450,6 +450,32 @@ class SchemaIfThenConstraintTests(unittest.TestCase):
     self._assert_invalid(schema, resolver, self._minimal_valid_response(na),
                          "commit_stop_point で stage が非 null は無効であること（受入 11(6)①）")
 
+  def test_commit_stop_point_invalid_when_blocked_by_null(self):
+    """① commit_stop_point: blocked_by が null なら無効"""
+    schema, resolver = self._make_resolver()
+    na = self._minimal_valid_next_action(
+      "commit_stop_point",
+      active_gate=None,
+      phase=None,
+      stage=None,
+      blocked_by=None,
+    )
+    self._assert_invalid(schema, resolver, self._minimal_valid_response(na),
+                         "commit_stop_point で blocked_by=null は無効であること（受入 11(6)①）")
+
+  def test_commit_stop_point_invalid_when_blocked_by_type_differs(self):
+    """① commit_stop_point: blocked_by.type が commit_stop_point 以外なら無効"""
+    schema, resolver = self._make_resolver()
+    na = self._minimal_valid_next_action(
+      "commit_stop_point",
+      active_gate=None,
+      phase=None,
+      stage=None,
+      blocked_by={"type": "some_blocker"},
+    )
+    self._assert_invalid(schema, resolver, self._minimal_valid_response(na),
+                         "commit_stop_point で blocked_by.type 不一致は無効であること（受入 11(6)①）")
+
   # ② run_reopen_pending_gate の制約
   def test_run_reopen_pending_gate_valid_with_nonnull_active_gate(self):
     """② run_reopen_pending_gate: active_gate が非 null なら有効"""
@@ -489,6 +515,32 @@ class SchemaIfThenConstraintTests(unittest.TestCase):
     self._assert_invalid(schema, resolver, self._minimal_valid_response(na),
                          "run_reopen_pending_gate で blocked_by 非 null は無効であること（受入 11(6)②）")
 
+  def test_run_reopen_pending_gate_invalid_when_phase_null(self):
+    """② run_reopen_pending_gate: phase が null なら無効"""
+    schema, resolver = self._make_resolver()
+    na = self._minimal_valid_next_action(
+      "run_reopen_pending_gate",
+      active_gate="stages/implementation.yaml#triad-review",
+      phase=None,
+      stage="triad-review",
+      blocked_by=None,
+    )
+    self._assert_invalid(schema, resolver, self._minimal_valid_response(na),
+                         "run_reopen_pending_gate で phase=null は無効であること（受入 11(6)②）")
+
+  def test_run_reopen_pending_gate_invalid_when_stage_null(self):
+    """② run_reopen_pending_gate: stage が null なら無効"""
+    schema, resolver = self._make_resolver()
+    na = self._minimal_valid_next_action(
+      "run_reopen_pending_gate",
+      active_gate="stages/implementation.yaml#triad-review",
+      phase="implementation",
+      stage=None,
+      blocked_by=None,
+    )
+    self._assert_invalid(schema, resolver, self._minimal_valid_response(na),
+                         "run_reopen_pending_gate で stage=null は無効であること（受入 11(6)②）")
+
   # ③ run_reopen_drafting の制約
   def test_run_reopen_drafting_valid_with_drafting_active_gate(self):
     """③ run_reopen_drafting: active_gate が stages/<phase>.yaml#drafting 形式なら有効"""
@@ -525,6 +577,30 @@ class SchemaIfThenConstraintTests(unittest.TestCase):
     )
     self._assert_invalid(schema, resolver, self._minimal_valid_response(na),
                          "run_reopen_drafting で active_gate=null は無効であること（受入 11(6)③）")
+
+  def test_run_reopen_drafting_invalid_when_phase_null(self):
+    """③ run_reopen_drafting: phase が null なら無効"""
+    schema, resolver = self._make_resolver()
+    na = self._minimal_valid_next_action(
+      "run_reopen_drafting",
+      active_gate="stages/implementation.yaml#drafting",
+      phase=None,
+      stage="drafting",
+    )
+    self._assert_invalid(schema, resolver, self._minimal_valid_response(na),
+                         "run_reopen_drafting で phase=null は無効であること（受入 11(6)③）")
+
+  def test_run_reopen_drafting_invalid_when_stage_is_not_drafting(self):
+    """③ run_reopen_drafting: stage が drafting 以外なら無効"""
+    schema, resolver = self._make_resolver()
+    na = self._minimal_valid_next_action(
+      "run_reopen_drafting",
+      active_gate="stages/implementation.yaml#drafting",
+      phase="implementation",
+      stage="triad-review",
+    )
+    self._assert_invalid(schema, resolver, self._minimal_valid_response(na),
+                         "run_reopen_drafting で stage が drafting 以外は無効であること（受入 11(6)③）")
 
   # ⑤ wait_for_human_decision の制約
   def test_wait_for_human_decision_valid_with_blocked_by_type(self):
