@@ -1,0 +1,88 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-06-23-plan-todo-bridge-manual-assembly
+unit_id: maintenance-2026-06-23-plan-todo-bridge-manual-assembly
+title: Reduce manual assembly in plan to TODO bridge
+status: completed
+created_at: '2026-06-23T09:26:50.767099+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-06-23-plan-todo-bridge-manual-assembly.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: PTB-RT-1
+  title: Manual TODO body assembly and mapping risks are visible before execution
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTB-RT-2
+  title: Task-quality review setup does not rely on hidden variant choice
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTB-RT-3
+  title: Task-quality criteria generation rejects known prompt-quality failure modes
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTB-RT-4
+  title: Review findings patchback has traceable decision and audit evidence
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTB-1A
+  title: Record every manual step in plan-to-TODO-to-review flow
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTB-1B
+  title: Classify each step as mechanize, explicit gate, or acceptable LLM judgment
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTB-1C
+  title: Define required evidence for each remaining LLM judgment
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTB-2A
+  title: Decide and record whether plan slice to TODO body draft generation is mechanized
+    now or held as an explicit gate
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTB-2B
+  title: Mechanize task-quality criteria draft generation and record generated criteria
+    evidence
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTB-2C
+  title: Configure task-quality review variant default to an existing independent
+    three-system variant
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTB-2D
+  title: Define review finding patchback traceability for TODO and checklist edits
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: PTB-3A
+  title: Record whether this TODO is executed now or deferred before guidance relocation
+    inventory work begins
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-06-23-plan-todo-bridge-manual-assembly
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-06-23-plan-todo-bridge-manual-assembly.yaml
+progress:
+  total: 12
+  done: 12
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-30T12:58:14.768619+00:00'
+completion_summary: checklist-todo-2026-06-23-plan-todo-bridge-manual-assembly completed
+  12/12 items

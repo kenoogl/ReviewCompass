@@ -1,0 +1,90 @@
+schema_version: reviewcompass-work-evidence-v1
+id: plan-todo-bridge-manual-assembly-evidence
+created_at: '2026-06-30T00:00:00+09:00'
+source_backlog_item_id: todo-2026-06-23-plan-todo-bridge-manual-assembly
+source_checklist_id: checklist-todo-2026-06-23-plan-todo-bridge-manual-assembly
+title: Reduce manual assembly in plan to TODO bridge evidence
+decision:
+  status: execute_now
+  reason: 利用者が対象 checklist を先に実行できるか確認し、作業順序をこの TODO に切り替えた。
+manual_step_classification:
+  - id: PTB-MANUAL-1
+    title: Select source plan and slice for execution
+    classification: explicit-gate
+    current_resolution: 利用者が checklist path を明示した場合はその選択をゲート通過証跡とし、複数候補の自動選択はしない。
+    required_evidence:
+      - source checklist path
+      - git clean status before execution
+      - task-quality audit result
+    evidence_refs:
+      - .reviewcompass/runtime/work-units/checklists/checklist-todo-2026-06-23-plan-todo-bridge-manual-assembly.yaml
+  - id: PTB-MANUAL-2
+    title: Assemble TODO body from plan slice
+    classification: explicit-gate
+    current_resolution: plan slice から TODO body draft を完全自動生成する実装は本作業では追加せず、source_ref、observed_manual_steps、red_tests、task-quality audit を必須ゲートとして残す。
+    required_evidence:
+      - backlog TODO source_ref
+      - observed_manual_steps
+      - red_tests
+      - task-quality-check audit OK
+    evidence_refs:
+      - .reviewcompass/backlog/todos/todo-2026-06-23-plan-todo-bridge-manual-assembly.yaml
+  - id: PTB-MANUAL-3
+    title: Build task-quality API review criteria
+    classification: mechanize
+    current_resolution: task-quality-check prepare-review-criteria が review materials から criteria と metadata を生成し、path-only source materials を拒否する。
+    required_evidence:
+      - generated review-criteria.md
+      - generated review-criteria.yaml
+      - focused task-quality-check tests
+    evidence_refs:
+      - .reviewcompass/evidence/task-quality-review-runs/2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way/review-criteria.md
+      - .reviewcompass/evidence/task-quality-review-runs/2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way/review-criteria.yaml
+      - tests/tools/test_task_quality_check_cli.py
+  - id: PTB-MANUAL-4
+    title: Select task-quality API review variant
+    classification: mechanize
+    current_resolution: config/api-settings.yaml の operation_defaults.task_quality_review が implementation_review_independent_3way_codex_operator に固定され、run_review は --default-variant-for task_quality_review から解決する。
+    required_evidence:
+      - operation_defaults.task_quality_review
+      - resolved three-role review summary
+      - config/run_review focused tests
+    evidence_refs:
+      - config/api-settings.yaml
+      - .reviewcompass/evidence/task-quality-review-runs/2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way/review_summary.md
+      - tools/api_providers/tests/test_config_loader.py
+      - tools/api_providers/tests/test_run_review.py
+  - id: PTB-MANUAL-5
+    title: Apply review findings back to TODO and checklist
+    classification: explicit-gate
+    current_resolution: API review findings are not patched back silently; triage.yaml records the decision, target location, and decision reason, followed by task-quality audit OK.
+    required_evidence:
+      - decided triage item
+      - patch target or decision reason
+      - post-change task-quality audit OK
+    evidence_refs:
+      - .reviewcompass/evidence/task-quality-review-runs/2026-06-23-plan-todo-bridge-manual-assembly-task-quality-independent-3way/triage.yaml
+red_test_results:
+  - id: PTB-RT-1
+    status: passed
+    evidence: TODO body assembly and mapping risks are visible in observed_manual_steps, red_tests, and task-quality audit output.
+  - id: PTB-RT-2
+    status: passed
+    evidence: operation_defaults.task_quality_review resolves to implementation_review_independent_3way_codex_operator and review_summary records primary/adversarial/judgment roles.
+  - id: PTB-RT-3
+    status: passed
+    evidence: task-quality-check prepare-review-criteria generates criteria from embedded full_text materials and rejects path-only materials in focused tests.
+  - id: PTB-RT-4
+    status: passed
+    evidence: triage.yaml records decided findings with target locations and decision reasons; task-quality audit reports OK after patchback.
+verification:
+  commands:
+    - command: .venv/bin/python3 tools/check-workflow-action.py task-quality-check audit --backlog-id todo-2026-06-23-plan-todo-bridge-manual-assembly --checklist-id checklist-todo-2026-06-23-plan-todo-bridge-manual-assembly --json
+      result: OK
+    - command: .venv/bin/python3 -m pytest tests/tools/test_task_quality_check_cli.py tools/api_providers/tests/test_config_loader.py tools/api_providers/tests/test_run_review.py -q
+      result: OK
+follow_up_scope:
+  deferred:
+    - plan slice to TODO body draft generator implementation
+    - fully mechanical review finding patch application
+  reason: 本 TODO は実作業前の分類、ゲート、既存機械化導線の固定までを扱い、完全自動生成は別 TODO 化できる範囲として残す。
