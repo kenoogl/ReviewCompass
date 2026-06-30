@@ -1,56 +1,50 @@
 # 次セッション継続用メモ
 
-最終更新：2026-06-27 セッション8（Mac ローカル）。最新状態は必ず `git log --oneline -5`、`git status`、spec.json を直接確認する。
+最終更新：2026-06-30（Codex ローカル）。最新状態は必ず `git log --oneline -5`、`git status --short --branch`、`tools/check-workflow-action.py next --json` を直接確認する。
 
-**重要：`next --json` コマンドは MWP-0 の実装対象そのものであるため、ワークフロー進行の判断に使えない。spec.json の値を直接読んで現在のフェーズを把握すること。**
+## 1. 現在状態
 
-## 1. 今回（2026-06-27 セッション8）の完了作業
+- `main` は `origin/main` と同期済み。
+- 最新 push 済みコミット：`eef7cd7a post-write対象判定をworkflow specs除外に整合`
+- `tools/check-workflow-action.py next --json` は `kind: completed` を返す。
+- 全 feature の workflow_state は implementation.approval まで完了済み。
 
-- **MWP-0 tasks.drafting 完了**（コミット git:d26deab5）
-  - tasks.md に T-015（kind 14値→7値）・T-020（新タスク）・要件追跡2行を追記
-  - spec.json の tasks.drafting = true に更新
-- **MWP-0 tasks.triad-review 完了**（コミット git:82baec61）
-  - 3モデル外部 API 審査（claude-sonnet-4-6・gpt-5.5・gemini-3.1-pro-preview）
-  - 5クラスタを proxy_model（gpt-5.5）で判断、tasks.md に5件修正を適用
-    - α：T-015「テスト変更禁止」に kind 更新分の例外追記
-    - β：完了条件4の根拠参照を reopen 分類文書に差し替え
-    - γ：T-020 先送り事項(a)の担当範囲を ①②③⑤ に整理（④⑥は T-015 対処済み）
-    - δ：T-020 完了条件5（廃止表現統一・手動確認）を追加
-    - ε：要件追跡の受入11行に T-020 担当分を追記
+## 2. 直近で完了した作業
 
-## 2. 次セッションの最初にやること
+- MWP-0 A/B/C 論点は実装・テスト・コミット済み。
+  - A：if/then 制約補完（`80943687` / `b978abd4`）
+  - B：commit-preflight の kind 分離（`c8ead8fb`）
+  - C：`next_action.reason` と最上位 `reasons` の責務差明確化（`e3e5b55a` / `0da4f15a`）
+- workflow-management implementation の review-wave / alignment / approval は完了済み。
+- approval 段の human-only 境界記述を修正済み（`72e2d720`）。
+- sandbox / 非TTY 環境の guarded commit issue を完了済み（`102e9611`）。
+- post-write target 判定を workflow specs 除外へ整合済み（`eef7cd7a`）。
+- 旧試行の未追跡 post-write review-run と manifest は削除済み。
 
-### セッション記録のコミット
+## 3. 残っている未コミット変更
 
-現セッション（`76b4149b`）の記録が untracked のまま。次セッションの SessionStart フックが自動取り込み・コミット可能になる。
+現時点で残っている変更は、セッション記録の再生成差分とこの TODO 更新のみ。
 
-### MWP-0 tasks.review-wave へ進む
+- `.reviewcompass/evidence/sessions/2026-06-26-claude-95fb6fbe-f278-4fdb-bd90-d57827478593.md`
+  - front matter の `tool_version` と `source_sha256` 更新のみ。
+- `docs/sessions/auto-2026-06-26-claude-95fb6fbe-f278-4fdb-bd90-d57827478593.md`
+  - front matter の `tool_version` と `source_sha256` 更新のみ。
+- `TODO_NEXT_SESSION.md`
+  - 現状に合わせた引き継ぎメモ更新。
 
-spec.json の現在値（2026-06-27 時点）：
-```
-tasks:          drafting=true  triad-review=true  review-wave=false  alignment=false  approval=false
-implementation: drafting=true  triad-review=true  review-wave=true   alignment=false  approval=false
-```
+## 4. 次にやること
 
-tasks.review-wave（全機能横断のまとめレビュー）の手順：
+1. 上記3ファイルだけを確認する。
+2. 問題なければ `TODO/セッション記録の現状反映` としてコミットする。
+3. 必要なら再度 push する。
 
-1. review-wave の前提「全機能の drafting＋triad-review 完了」を spec.json で確認する
-2. cross-feature レビューを実施する
-3. 完了後 `tasks.alignment` → `tasks.approval` へ進む
-
-tasks.approval 通過後は implementation フェーズへ。implementation.alignment・implementation.approval が false なので、MWP-0 反映内容を確認してから実装に入ること。
-
-## 3. 横展開の課題（issue 記録済み・未着手）
-
-- `issue-2026-06-24-approval-stage-proxy-actor-boundary-mismatch`：guide の approval 段の承認主体記述が human-only 境界と矛盾の疑い。
-- `issue-2026-06-24-sandbox-guarded-commit-blocked`：WEB サンドボックスでは guarded commit が全方法で拒否される。
-
-## 4. 参照
+## 5. 参照
 
 - commit 手順：`.reviewcompass/guidance/COMMIT_OPERATION_CARD.md`
 - ワークフロー操作ガイド：`.reviewcompass/guidance/WORKFLOW_NAVIGATION.md`
 - kind 再設計メモ：`docs/notes/2026-06-26-next-json-kind-redesign.md`
-- reopen 分類根拠：`docs/reviews/reopen-classification-2026-06-26-wm-next-json-kind-redesign.md`
-- tasks triad-review 記録：`.reviewcompass/evidence/review-runs/2026-06-27-mwp0-tasks-triad-review/`
+- A 観点レビュー記録：`.reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-ifthen-review-run/`
+- B 観点レビュー記録：`.reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-kind-sep-review-run/`
+- C 観点レビュー記録：`.reviewcompass/specs/workflow-management/reviews/2026-06-27-workflow-management-implementation-mwp0-reason-review-run/`
 
 過去の詳細は git log、`docs/notes/`、`docs/sessions/` を正本とする。
