@@ -4427,10 +4427,18 @@ def build_commit_instruction_preflight(cwd):
       allowed_to_stage = False
       allowed_to_prepare_approval = False
       allowed_to_delegate_execution = False
-      reasons.append(
-        "stages/in-progress に進行中ファイルがありますが、現在位置は commit stop point ではありません: "
-        + ", ".join(in_progress_files)
-      )
+      if next_action.get("process_id") == "maintenance":
+        reasons.append(
+          "maintenance 未充足のため commit できません: "
+          + next_action.get("blocking_phase", "maintenance_in_progress")
+          + " / "
+          + ", ".join(in_progress_files)
+        )
+      else:
+        reasons.append(
+          "stages/in-progress に進行中ファイルがありますが、現在位置は commit stop point ではありません: "
+          + ", ".join(in_progress_files)
+        )
 
   if next_action.get("kind") == "verification_pending":
     if repair_state.get("valid") is True:

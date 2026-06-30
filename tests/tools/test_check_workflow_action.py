@@ -7482,6 +7482,44 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(data["next_required_action"], "run_reopen_pending_gate")
     self.assertIn("commit stop point", "\n".join(data["reasons"]))
 
+  def test_commit_preflight_blocks_unmet_maintenance_before_staging(self):
+    """maintenance 未充足なら stage / approval 作成前に不足工程を示して遮断する"""
+    in_progress_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "maintenance-2026-06-30-review.yaml"
+    )
+    in_progress_path.parent.mkdir(parents=True)
+    in_progress_path.write_text(
+      "process_id: maintenance\n"
+      "title: maintenance review pending\n"
+      "work_class: maintenance\n"
+      "control_relation: side-track\n"
+      "required_reviews:\n"
+      "  - id: change-review\n"
+      "    status: pending\n"
+      "    review_type: change_content\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertFalse(data["allowed_to_stage"])
+    self.assertFalse(data["allowed_to_prepare_approval"])
+    self.assertFalse(data["allowed_to_delegate_execution"])
+    self.assertFalse(data["allowed_to_run_guarded_commit"])
+    self.assertEqual(data["next_required_action"], "run_maintenance_review")
+    self.assertEqual(
+      data["next_action"]["blocking_phase"],
+      "maintenance_review_required",
+    )
+    self.assertIn("maintenance 未充足", "\n".join(data["reasons"]))
+
   def test_commit_preflight_allows_reopen_commit_stop_point_before_staging(self):
     """構造化 reopen 停止点なら commit 処理の準備に進める"""
     in_progress_path = (
