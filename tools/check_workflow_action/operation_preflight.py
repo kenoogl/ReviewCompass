@@ -373,6 +373,38 @@ def _git_changed_paths(cwd, target_side):
   return set(line.strip() for line in result.stdout.splitlines() if line.strip())
 
 
+def _git_worktree_changed_paths(cwd):
+  result = subprocess.run(
+    ["git", "diff", "--name-only"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+    timeout=30,
+  )
+  if result.returncode not in (0, 1):
+    return None
+  paths = set(line.strip() for line in result.stdout.splitlines() if line.strip())
+  head_result = subprocess.run(
+    ["git", "rev-parse", "--verify", "HEAD"],
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+    timeout=30,
+  )
+  if head_result.returncode == 0:
+    staged_result = subprocess.run(
+      ["git", "diff", "--cached", "--name-only"],
+      cwd=str(cwd),
+      capture_output=True,
+      text=True,
+      timeout=30,
+    )
+    if staged_result.returncode not in (0, 1):
+      return None
+    paths.update(line.strip() for line in staged_result.stdout.splitlines() if line.strip())
+  return paths
+
+
 def _check_staged_vs_unstaged_target_selection(operation, cwd, _next_action):
   if not operation.get("worktree_policy"):
     return ["worktree_policy がありません"]
@@ -448,6 +480,58 @@ def _input_value(operation, name):
     if isinstance(value, str) and value.startswith(prefix):
       return value[len(prefix):]
   return None
+
+
+def _operation_value(operation, name):
+  value = _input_value(operation, name)
+  if value is not None:
+    return value
+  return _target_identity_value(operation, name)
+
+
+def _workflow_mixing_preflight_data(operation, cwd):
+  allowed_files = sorted(set(_split_csv(_operation_value(operation, "allowed_files"))))
+  changed_paths = _git_worktree_changed_paths(cwd)
+  if changed_paths is None:
+    return {
+      "worktree_state": {
+        "allowed_files": allowed_files,
+        "changed_files": [],
+        "out_of_scope_changed_files": [],
+      },
+      "pending_conflicts": [],
+      "reasons": ["git worktree の変更ファイルを取得できません"],
+    }
+  changed_files = sorted(changed_paths)
+  out_of_scope = sorted(path for path in changed_files if path not in set(allowed_files))
+  reasons = []
+  pending_conflicts = []
+  pending_unit = _operation_value(operation, "pending_unit")
+  if out_of_scope:
+    reasons.append("allowed_files 外の変更があります: " + ", ".join(out_of_scope))
+    pending_conflicts.append({
+      "kind": "workflow_mixing",
+      "pending_unit": pending_unit,
+      "out_of_scope_changed_files": out_of_scope,
+      "resolution_choices": [
+        "complete_pending",
+        "use_separate_worktree",
+        "park_as_blocker_or_side_track",
+      ],
+    })
+  return {
+    "worktree_state": {
+      "allowed_files": allowed_files,
+      "changed_files": changed_files,
+      "out_of_scope_changed_files": out_of_scope,
+    },
+    "pending_conflicts": pending_conflicts,
+    "reasons": reasons,
+  }
+
+
+def _check_workflow_mixing_preflight(operation, cwd, _next_action):
+  return _workflow_mixing_preflight_data(operation, cwd)["reasons"]
 
 
 def _looks_like_repo_file_input(value):
@@ -541,6 +625,7 @@ CHECK_EXECUTORS = {
   "parent_task": _make_required_inputs_check("parent_task"),
   "discovered_issue": _make_required_inputs_check("discovered_issue"),
   "relation": _make_required_inputs_check("relation"),
+  "workflow_mixing_preflight": _check_workflow_mixing_preflight,
   "allowed_files": _make_required_inputs_check("allowed_files"),
   "return_condition": _make_required_inputs_check("return_condition"),
   "nesting_depth": _make_required_inputs_check("return_condition"),
@@ -585,6 +670,7 @@ def _session_state_refs(operation):
 
 def _build_response(
   operation_id,
+  cwd=None,
   operation=None,
   verdict="DEVIATION",
   reasons=None,
@@ -599,6 +685,9 @@ def _build_response(
   response_reasons = reasons + _flatten_check_reasons(checks)
   sequence_mode = (operation or {}).get("sequence_mode")
   session_refs = _session_state_refs(operation)
+  workflow_mixing_data = {"worktree_state": {}, "pending_conflicts": []}
+  if "workflow_mixing_preflight" in ((operation or {}).get("family_required_checks") or []):
+    workflow_mixing_data = _workflow_mixing_preflight_data(operation or {}, cwd or Path.cwd())
   return {
     "schema_version": "operation-preflight-v1",
     "operation_id": operation_id,
@@ -619,8 +708,8 @@ def _build_response(
     "missing_inputs": list(missing_inputs or []),
     "template_available": False,
     "target_identity": list((operation or {}).get("target_identity") or []),
-    "worktree_state": {},
-    "pending_conflicts": [],
+    "worktree_state": workflow_mixing_data["worktree_state"],
+    "pending_conflicts": workflow_mixing_data["pending_conflicts"],
     "integrity_conflicts": [],
     "checks": checks or [{"name": "operation", "status": "ok", "reasons": []}],
     "planned_outputs": list((operation or {}).get("planned_outputs") or []),
@@ -633,11 +722,11 @@ def _build_response(
 def run_preflight(cwd, operation_id):
   registry, registry_errors = load_registry(cwd)
   if registry_errors:
-    return _build_response(operation_id, verdict="DEVIATION", reasons=registry_errors)
+    return _build_response(operation_id, cwd=cwd, verdict="DEVIATION", reasons=registry_errors)
 
   operation = find_operation(registry, operation_id)
   if operation is None:
-    return _build_response(operation_id, verdict="DEVIATION", reasons=[f"operation_id が未登録です: {operation_id}"])
+    return _build_response(operation_id, cwd=cwd, verdict="DEVIATION", reasons=[f"operation_id が未登録です: {operation_id}"])
 
   validation_reasons = []
   validation_reasons.extend(validate_operation(operation))
@@ -658,6 +747,7 @@ def run_preflight(cwd, operation_id):
   verdict = "DEVIATION" if validation_reasons or check_reasons else "OK"
   return _build_response(
     operation_id,
+    cwd=cwd,
     operation=operation,
     verdict=verdict,
     reasons=validation_reasons,

@@ -1,0 +1,76 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-07-01-operation-workflow-mixing-preflight
+unit_id: main-completed
+title: Add workflow mixing preflight checks
+status: completed
+created_at: '2026-06-30T20:19:28.562209+00:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-07-01-operation-workflow-mixing-preflight.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: ORP-4A
+  title: Add red tests for allowed files vs actual diff mixing detection
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-4B
+  title: Add red tests for pending workflow conflict choices
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-4C
+  title: Add red tests for clean matching scope acceptance
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-4D
+  title: Confirm the new tests fail before implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-4E
+  title: Implement read-only workflow mixing preflight checks
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-4F
+  title: Implement recommended next choices and diff reporting
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-4G
+  title: Run focused tests and confirm next --json remains completed or reports only
+    expected post-write state
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-4-RT-1
+  title: Workflow mixing preflight reports files outside allowed scope
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-4-RT-2
+  title: Workflow mixing preflight returns conflict resolution choices
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: ORP-4-RT-3
+  title: Workflow mixing preflight accepts matching dirty scope
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-07-01-operation-workflow-mixing-preflight
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-07-01-operation-workflow-mixing-preflight.yaml
+progress:
+  total: 10
+  done: 10
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-06-30T20:26:35.051930+00:00'
+completion_summary: Implemented workflow mixing preflight reporting for allowed files,
+  dirty scope differences, and resolution choices; focused and operation preflight
+  unittest coverage pass.
