@@ -2,7 +2,7 @@ schema_version: reviewcompass-backlog-item-v1
 id: todo-2026-06-30-operation-creation-preflight
 kind: todo
 title: Add operation creation preflight checks
-status: candidate
+status: completed
 source_unit_id: main-completed
 created_at: '2026-06-30T14:23:47.918913+00:00'
 index_path: .reviewcompass/backlog/index.yaml
@@ -10,7 +10,11 @@ provenance:
   created_by: llm
   source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-operation-registry-preflight.yaml#ORP-2
   reason: ORP-2 を plan から実行可能 TODO に materialize し、runtime checklist 経由で TDD 実行するため
-decisions: []
+decisions:
+- decision: completed
+  decision_ref: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-30-operation-creation-preflight.yaml
+  reason: ORP-2 creation preflight implementation and focused verification completed
+  decided_at: '2026-06-30T20:02:03.968397+00:00'
 source_plan_id: plan-2026-06-23-operation-registry-preflight
 source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-operation-registry-preflight.yaml
 source_plan_slice:
@@ -32,34 +36,34 @@ implementation_plan:
     tasks:
     - id: ORP-2A
       title: Add red tests for review-run output collision preflight
-      status: pending
+      status: done
     - id: ORP-2B
       title: Add red tests for manifest, bundle, and approval record collision preflight
-      status: pending
+      status: done
     - id: ORP-2C
       title: Add red tests for staged / unstaged target mismatch and empty bundle
         rejection
-      status: pending
+      status: done
     - id: ORP-2D
       title: Add red tests for target set consistency across approval, raw response,
         triage, and manifest
-      status: pending
+      status: done
     - id: ORP-2E
       title: Confirm the new tests fail before implementation
-      status: pending
+      status: done
     - id: ORP-2F
       title: Implement read-only creation preflight checks for output path collisions
-      status: pending
+      status: done
     - id: ORP-2G
       title: Implement staged / unstaged and empty target validation for bundle preflight
-      status: pending
+      status: done
     - id: ORP-2H
       title: Implement target set consistency validation for related artifacts
-      status: pending
+      status: done
     - id: ORP-2I
       title: Run focused tests and confirm next --json remains completed or reports
         only expected post-write state
-      status: pending
+      status: done
 acceptance_criteria:
 - 不要な review-run / manifest を作ってから削除する経路を通常運用から除去できる。
 - staged / unstaged の取り違えで空 review bundle を作らない。
@@ -71,24 +75,31 @@ red_tests:
   title: Existing review-run output path is rejected before creation
   expected: operation creation preflight returns DEVIATION when the requested review-run
     directory already exists.
-  status: pending
+  status: done
 - id: ORP-2-RT-2
   title: Existing manifest, bundle, or approval record path is rejected before creation
   expected: operation creation preflight returns DEVIATION for existing manifest,
     bundle, or approval record output paths.
-  status: pending
+  status: done
 - id: ORP-2-RT-3
   title: Empty or wrong-side bundle target set is rejected
   expected: operation creation preflight returns DEVIATION when requested bundle targets
     are empty or do not match the selected staged / unstaged side.
-  status: pending
+  status: done
 - id: ORP-2-RT-4
   title: Related artifact target sets must match
   expected: operation creation preflight returns DEVIATION when approval record, raw
     response, triage, and manifest target sets differ.
-  status: pending
+  status: done
 non_goals:
 - ORP-3 の serial-only operation runner を実装すること。
 - ORP-4 の workflow mixing preflight を実装すること。
 - review-run や manifest を実際に作成する副作用 runner を追加すること。
 - 人間承認が必要な不可逆操作を自動承認すること。
+execution_history:
+- checklist_id: checklist-todo-2026-06-30-operation-creation-preflight
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-06-30-operation-creation-preflight.yaml
+  completion_summary: ORP-2 operation creation preflight checks implemented for output
+    path collisions, staged/unstaged bundle target validation, and related artifact
+    target set consistency; focused tests passed.
+  completed_at: '2026-06-30T20:01:57.397693+00:00'

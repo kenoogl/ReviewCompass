@@ -6,6 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import yaml
+
 from .operation_registry import (
   find_operation,
   load_registry,
@@ -312,10 +314,132 @@ def _check_existing_artifact_drift(operation, _cwd, _next_action):
   return ["artifact_policy がありません"]
 
 
-def _check_staged_vs_unstaged_target_selection(operation, _cwd, _next_action):
-  if operation.get("worktree_policy"):
+def _relative_repo_path(cwd, value):
+  if not isinstance(value, str) or not value:
+    return None
+  path = Path(value)
+  if path.is_absolute():
+    try:
+      return str(path.resolve().relative_to(Path(cwd).resolve()))
+    except ValueError:
+      return None
+  if ".." in path.parts:
+    return None
+  return str(path)
+
+
+def _check_output_path_collision(operation, cwd, _next_action):
+  reasons = []
+  for output in operation.get("planned_outputs") or []:
+    rel_path = _relative_repo_path(cwd, str(output))
+    if rel_path is None:
+      reasons.append(f"planned output path が作業 root 外です: {output}")
+      continue
+    if (Path(cwd) / rel_path).exists():
+      reasons.append(f"planned output already exists: {rel_path}")
+  return reasons
+
+
+def _target_identity_value(operation, name):
+  prefix = f"{name}="
+  for value in operation.get("target_identity") or []:
+    if isinstance(value, str) and value.startswith(prefix):
+      return value[len(prefix):]
+  return None
+
+
+def _split_csv(value):
+  if not isinstance(value, str):
     return []
-  return ["worktree_policy がありません"]
+  return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def _git_changed_paths(cwd, target_side):
+  if target_side == "staged":
+    args = ["git", "diff", "--cached", "--name-only"]
+  elif target_side == "unstaged":
+    args = ["git", "diff", "--name-only"]
+  else:
+    return None
+  result = subprocess.run(
+    args,
+    cwd=str(cwd),
+    capture_output=True,
+    text=True,
+    timeout=30,
+  )
+  if result.returncode not in (0, 1):
+    return None
+  return set(line.strip() for line in result.stdout.splitlines() if line.strip())
+
+
+def _check_staged_vs_unstaged_target_selection(operation, cwd, _next_action):
+  if not operation.get("worktree_policy"):
+    return ["worktree_policy がありません"]
+  target_files = _split_csv(_target_identity_value(operation, "target_files"))
+  if not target_files:
+    return ["bundle target set is empty"]
+  target_side = _target_identity_value(operation, "target_side")
+  if target_side not in ("staged", "unstaged"):
+    return ["target_side は staged または unstaged である必要があります"]
+  changed_paths = _git_changed_paths(cwd, target_side)
+  if changed_paths is None:
+    return []
+  missing = sorted(path for path in target_files if path not in changed_paths)
+  if missing:
+    return [
+      f"{target_side} target set does not include changed files on the selected side: "
+      + ", ".join(missing)
+    ]
+  return []
+
+
+def _read_target_set_file(cwd, path_value):
+  rel_path = _relative_repo_path(cwd, path_value)
+  if rel_path is None:
+    return None, [f"target set artifact path が作業 root 外です: {path_value}"]
+  path = Path(cwd) / rel_path
+  if not path.exists():
+    return None, [f"target set artifact が存在しません: {rel_path}"]
+  try:
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+  except (OSError, UnicodeDecodeError, yaml.YAMLError) as exc:
+    return None, [f"target set artifact を読めません: {rel_path}: {exc}"]
+  if not isinstance(data, dict):
+    return None, [f"target set artifact は mapping である必要があります: {rel_path}"]
+  target_files = data.get("target_files")
+  if target_files is None:
+    target_files = data.get("targets")
+  if not isinstance(target_files, list):
+    return None, [f"target set artifact に target_files list がありません: {rel_path}"]
+  return set(str(value) for value in target_files), []
+
+
+def _check_related_artifact_target_set_consistency(operation, cwd, _next_action):
+  target_sets = {}
+  reasons = []
+  for field in ["approval_record", "raw_response", "triage", "manifest"]:
+    path_value = _input_value(operation, field)
+    if path_value is None:
+      continue
+    target_set, target_reasons = _read_target_set_file(cwd, path_value)
+    reasons.extend(target_reasons)
+    if target_set is not None:
+      target_sets[field] = target_set
+  if reasons:
+    return reasons
+  if len(target_sets) < 2:
+    return []
+  baseline_field, baseline = next(iter(target_sets.items()))
+  mismatches = []
+  for field, target_set in target_sets.items():
+    if target_set != baseline:
+      mismatches.append(
+        f"{field}={sorted(target_set)} differs from {baseline_field}={sorted(baseline)}"
+      )
+  if mismatches:
+    return ["related artifact target set mismatch: " + "; ".join(mismatches)]
+  return []
 
 
 def _input_value(operation, name):
@@ -396,6 +520,8 @@ CHECK_EXECUTORS = {
   "approval_record_alignment": _check_approval_record_alignment,
   "existing_artifact_drift": _check_existing_artifact_drift,
   "staged-vs-unstaged_target_selection": _check_staged_vs_unstaged_target_selection,
+  "output_path_collision": _check_output_path_collision,
+  "related_artifact_target_set_consistency": _check_related_artifact_target_set_consistency,
   "planned_outputs": _check_planned_outputs,
   "overwrite_policy": _check_overwrite_policy,
   "external_output_root": _check_external_output_root,

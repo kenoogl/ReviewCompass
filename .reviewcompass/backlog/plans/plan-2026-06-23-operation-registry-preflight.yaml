@@ -36,7 +36,7 @@ remaining_work:
       - 登録済み operation の command path が存在しない場合にテストで検出できる。
   - id: ORP-2
     title: Creation preflight for review-run, bundle, manifest, and approval records
-    status: candidate
+    status: completed
     tasks:
       - review-run dir、manifest path、bundle path、approval record の既存衝突を作成前に検査する。
       - staged / unstaged の差分所在を判定し、空 bundle や対象ずれ bundle を拒否する。
