@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- TODO_NEXT_SESSION.md
+target_sha256:
+  TODO_NEXT_SESSION.md: 2af2f9f670584ff154141fd37d42ed7dd3c5556d2d5ae15771b3e66ca12f6355
+required_verifiers:
+- lightweight_self_check
+completed_verifiers:
+- lightweight_self_check
+unresolved_substantive_findings: 0
+verifications:
+- verifier: lightweight_self_check
+  target_files:
+  - TODO_NEXT_SESSION.md
+  target_sha256:
+    TODO_NEXT_SESSION.md: 2af2f9f670584ff154141fd37d42ed7dd3c5556d2d5ae15771b3e66ca12f6355
+  result: no_substantive_findings
+  checklist:
+  - 利用者指示「Todo更新」を TODO_NEXT_SESSION.md に反映した。
+  - 最新 push 済みコミット、clean 状態、next --json completed、ORP-1〜ORP-4 完了を事実として記録した。
+  - 既知の注意点と次タスク候補を区別し、未実装事項を完了済みとして扱っていない。
+  - 次の判断材料として、最優先候補を action execution spec plan に更新した。
+  - API post-write verification が必要な正本文書ではなく、単独の TODO_NEXT_SESSION.md 更新として扱った。
+notes: Lightweight self-check for refreshing next-session TODO after completing and pushing ORP-4.
