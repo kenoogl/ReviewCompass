@@ -1,0 +1,66 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-07-01-tdd-red-test-evidence-single-commit
+kind: todo
+title: Change TDD red-test handling from mandatory red-test commit to evidence-only before implementation commit
+status: candidate
+source_unit_id: main-side-conversation
+created_at: '2026-07-01T00:00:00+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: 'conversation:user:変更案: 赤テスト失敗確認は証跡に残すが、commit は実装完了後にまとめる'
+  reason: >
+    利用者が、赤テスト失敗確認と実装を別 commit にする現行 TDD 運用の細切れ化を見直し、
+    失敗確認は証跡に残しつつ commit は実装完了後にまとめる案を提示したため。
+decisions:
+- date: '2026-07-01'
+  decision: >
+    現時点では運用変更を直接実装せず、まず backlog TODO として追跡する。
+  rationale: >
+    現行 AGENTS.md は「テストが正しいことを確認できた段階でコミットする」と明示しており、
+    変更には AGENTS.md、workflow guidance、commit/autonomous 実行導線、証跡形式の整合が必要なため。
+summary: >
+  TDD の赤テスト段階で必ず commit する現行契約を見直し、赤テスト失敗確認は
+  checklist / evidence / test output summary に保存したうえで、実装完了後に
+  赤テストと実装を 1 commit にまとめられる運用へ変更する。
+problem_statement:
+- 現行 AGENTS.md は、赤テスト失敗確認後に commit することを要求しており、1 つの小さな実装単位が赤テスト commit と実装 commit に分かれる。
+- 自律実行では commit / push 停止点が増え、利用者との往復が多くなる。
+- 一方で、赤テストが本当に失敗した証跡を失うと TDD の安全性が下がる。
+implementation_plan:
+  phases:
+  - id: TDD-CB-1
+    title: Inventory current TDD commit-boundary references
+    tasks:
+    - AGENTS.md の TDD 契約を確認する。
+    - .reviewcompass/guidance 配下で赤テスト commit を前提にしている記述を洗い出す。
+    - 自律実行 / commit wrapper / TODO checklist 導線で red-test commit を前提にした箇所を確認する。
+  - id: TDD-CB-2
+    title: Define evidence-only red-test proof contract
+    tasks:
+    - 赤テスト失敗確認に必要な証跡項目を定義する。
+    - 保存先を checklist evidence、TODO execution_history、または dedicated evidence file のどれにするか決める。
+    - 証跡には command、exit_code、失敗数、代表 failure、対象テストファイル、実行時刻を含める。
+  - id: TDD-CB-3
+    title: Update workflow guidance and AGENTS contract
+    tasks:
+    - AGENTS.md の「赤テスト確認後に commit」を「赤テスト証跡保存後、実装完了時にまとめて commit 可」へ改める。
+    - .reviewcompass/guidance の作業完了・自律実行・commit 停止点説明を更新する。
+    - 利用者向け停止点の文言を、赤テスト commit 必須ではなく実装完了 commit 待ちに合わせる。
+  - id: TDD-CB-4
+    title: Add guard or audit checks for red-test evidence
+    tasks:
+    - 実装 commit に、対応する赤テスト失敗証跡があることを検査できるか検討する。
+    - red-test evidence がない場合の WARN / DEVIATION 方針を決める。
+    - 自律実行時に赤テスト失敗確認の証跡を自動で checklist / TODO へ残す導線を追加する。
+acceptance_criteria:
+- 赤テスト失敗確認は commit しなくても、機械可読な証跡として残る。
+- 実装完了後の 1 commit に赤テストと実装をまとめられる。
+- TDD の「テストが先」「失敗確認後に実装」という順序は維持される。
+- 自律実行時の停止点が不要に増えない。
+- AGENTS.md と workflow guidance の契約が矛盾しない。
+non_goals:
+- TDD 自体を廃止しない。
+- 赤テスト失敗確認を省略しない。
+- 証跡なしで実装 commit を許す方向にはしない。
+- 既存の過去 commit 履歴を書き換えない。
