@@ -61,6 +61,7 @@ from check_workflow_action.implementation_phases import check_phase_plan, load_p
 from check_workflow_action.operation_preflight import run_preflight
 from check_workflow_action.operation_contracts import load_contracts, run_contract_check
 from check_workflow_action.operation_list import (
+  build_serial_runner_plan,
   build_operation_list,
   build_operation_registry_inventory,
   build_operation_registry_schema,
@@ -9076,6 +9077,18 @@ def cmd_operation_list(args):
   return result.get("exit_code", 2)
 
 
+def cmd_operation_serial_runner_plan(args):
+  """serial-only operation runner plan を read-only として返す（ORP-3）"""
+  result = build_serial_runner_plan(Path.cwd(), args.operation_id)
+  if args.json:
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+  else:
+    print(f"[VERDICT] {result.get('verdict')}")
+    print(f"[OPERATION] {result.get('operation_id')}")
+    print(f"[NEXT] {result.get('next_step')}")
+  return result.get("exit_code", 2)
+
+
 def cmd_operation_registry_schema(args):
   """operation registry schema を read-only として返す（ORP-1）"""
   result = build_operation_registry_schema(Path.cwd())
@@ -9948,6 +9961,13 @@ def main():
     parents=[common_parser],
   )
 
+  osrp = sub.add_parser(
+    "operation-serial-runner-plan",
+    help="serial-only operation runner plan を read-only として出力する（ORP-3）",
+    parents=[common_parser],
+  )
+  osrp.add_argument("--operation-id", required=True, help="対象 operation id")
+
   sub.add_parser(
     "operation-registry-schema",
     help="operation registry schema を read-only として出力する（ORP-1）",
@@ -10133,6 +10153,8 @@ def main():
     sys.exit(cmd_implementation_phase_check(args))
   elif args.subcommand == "operation-list":
     sys.exit(cmd_operation_list(args))
+  elif args.subcommand == "operation-serial-runner-plan":
+    sys.exit(cmd_operation_serial_runner_plan(args))
   elif args.subcommand == "operation-registry-schema":
     sys.exit(cmd_operation_registry_schema(args))
   elif args.subcommand == "operation-registry-inventory":

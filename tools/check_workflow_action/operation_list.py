@@ -190,6 +190,53 @@ def validate_operation_registry(
   }
 
 
+def build_serial_runner_plan(cwd: str | Path, operation_id: str) -> Dict[str, Any]:
+  """Return a read-only execution plan for serial-only operations."""
+  _ = Path(cwd)
+  operation = _core_operation_by_id(operation_id)
+  if operation is None:
+    reason = f"{operation_id}: operation registry に存在しません"
+    return {
+      "verdict": "DEVIATION",
+      "exit_code": 2,
+      "operation_mode": "read_only",
+      "operation_id": operation_id,
+      "sequence_mode": None,
+      "steps": [],
+      "checkpoints": [],
+      "findings": [{
+        "kind": "unknown_operation",
+        "severity": "DEVIATION",
+        "operation_id": operation_id,
+        "message": reason,
+      }],
+      "reasons": [reason],
+      "next_step": "stop",
+    }
+  if not operation.get("serial_only"):
+    reason = f"{operation_id}: serial_only operation ではないため parallel 対象から除外して停止します"
+    return {
+      "verdict": "DEVIATION",
+      "exit_code": 2,
+      "operation_mode": "read_only",
+      "operation_id": operation_id,
+      "sequence_mode": "parallel_ok",
+      "steps": [],
+      "checkpoints": [],
+      "findings": [{
+        "kind": "serial_only_required",
+        "severity": "DEVIATION",
+        "operation_id": operation_id,
+        "message": reason,
+      }],
+      "reasons": [reason],
+      "next_step": "stop",
+    }
+  if operation_id == "commit":
+    return _commit_serial_runner_plan(operation_id)
+  return _generic_serial_runner_plan(operation)
+
+
 def _operation_entry(contract: Dict[str, Any]) -> Dict[str, Any]:
   return {
     "operation_id": contract.get("operation_id"),
@@ -199,6 +246,105 @@ def _operation_entry(contract: Dict[str, Any]) -> Dict[str, Any]:
     "sequence": contract.get("sequence"),
     "pending_conflicts": [],
     "pending_conflicts_status": "none_detected",
+  }
+
+
+def _core_operation_by_id(operation_id: str) -> Dict[str, Any] | None:
+  for operation in CORE_OPERATION_INVENTORY:
+    if operation["operation_id"] == operation_id:
+      return operation
+  return None
+
+
+def _commit_serial_runner_plan(operation_id: str) -> Dict[str, Any]:
+  return {
+    "verdict": "OK",
+    "exit_code": 0,
+    "operation_mode": "read_only",
+    "operation_id": operation_id,
+    "sequence_mode": "serial_only",
+    "steps": [
+      _plan_step(
+        "commit-preflight",
+        ".venv/bin/python3 tools/check-workflow-action.py commit-preflight --json",
+        "read-only commit preflight",
+      ),
+      _plan_step(
+        "approval-input",
+        "TTY user approval line",
+        "stop for user-provided approval relay",
+      ),
+      _plan_step(
+        "guarded-commit",
+        ".venv/bin/python3 tools/commit-from-current-staged.py",
+        "guarded commit through standard runner",
+      ),
+      _plan_step(
+        "postcondition-check",
+        "git status --short --branch",
+        "confirm commit result and repository state",
+      ),
+    ],
+    "checkpoints": [
+      _checkpoint("nonce", "commit approval nonce exists and matches staged target"),
+      _checkpoint("ttl", "commit approval challenge has not expired"),
+      _checkpoint("consumed", "approval and delegation are not already consumed"),
+      _checkpoint("target_digest", "approval target digest matches staged content"),
+      _checkpoint("staged_file_set_digest", "delegation staged file set digest matches"),
+      _checkpoint("staged_content_approval_digest", "delegation content digest matches"),
+    ],
+    "findings": [],
+    "reasons": [],
+    "next_step": "stop_for_user_approval",
+  }
+
+
+def _generic_serial_runner_plan(operation: Dict[str, Any]) -> Dict[str, Any]:
+  operation_id = operation["operation_id"]
+  return {
+    "verdict": "OK",
+    "exit_code": 0,
+    "operation_mode": "read_only",
+    "operation_id": operation_id,
+    "sequence_mode": "serial_only",
+    "steps": [
+      _plan_step(
+        "operation-preflight",
+        f".venv/bin/python3 tools/check-workflow-action.py operation-preflight --operation-id {operation_id} --json",
+        "read-only operation preflight",
+      ),
+      _plan_step(
+        "canonical-command",
+        operation["canonical_commands"][0],
+        "standard operation command",
+      ),
+      _plan_step(
+        "postcondition-check",
+        "git status --short --branch",
+        "confirm operation result and repository state",
+      ),
+    ],
+    "checkpoints": [],
+    "findings": [],
+    "reasons": [],
+    "next_step": "stop_for_user_approval",
+  }
+
+
+def _plan_step(step_id: str, command: str, purpose: str) -> Dict[str, Any]:
+  return {
+    "id": step_id,
+    "command": command,
+    "purpose": purpose,
+    "execution_mode": "not_executed",
+  }
+
+
+def _checkpoint(checkpoint_id: str, description: str) -> Dict[str, Any]:
+  return {
+    "id": checkpoint_id,
+    "description": description,
+    "execution_mode": "not_executed",
   }
 
 
