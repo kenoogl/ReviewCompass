@@ -1,0 +1,81 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-07-01-action-effect-spec
+kind: todo
+title: Add ActionEffectSpec for workflow actions
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-06-30T20:47:17.710403+00:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-06-23-action-execution-spec.yaml#AES-2
+  reason: AES-2 を plan から実行可能 TODO に materialize し、runtime checklist 経由で TDD 実行するため
+decisions: []
+source_plan_id: plan-2026-06-23-action-execution-spec
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-06-23-action-execution-spec.yaml
+source_plan_slice:
+  phase_id: AES-2
+  title: ActionEffectSpec for workflow actions
+summary: 'action execution spec plan の第 2 実行単位として、next、commit、push、 reopen-start などの主要
+  workflow action で read/write/state_mutation/ external_call/irreversible_action を列挙する
+  ActionEffectSpec を扱えるようにする。
+
+  '
+problem_statement:
+- 副作用のある workflow action の前に、何を読むか、何を書くか、状態更新や外部呼び出しがあるかを同じ語彙で確認できない。
+- commit precheck が staged 変更と action effect spec の想定範囲を照合する導線が不足している。
+- irreversible action の影響範囲が利用者承認前に機械可読な形で残りにくい。
+implementation_plan:
+  phases:
+  - id: AES-2
+    title: ActionEffectSpec for workflow actions
+    tasks:
+    - id: AES-2A
+      title: Add red tests for workflow action effect vocabulary
+      status: pending
+    - id: AES-2B
+      title: Add red tests for next, commit, push, and reopen-start action effect
+        specs
+      status: pending
+    - id: AES-2C
+      title: Add red tests for commit precheck detecting staged changes outside effect
+        spec
+      status: pending
+    - id: AES-2D
+      title: Confirm the new tests fail before implementation
+      status: pending
+    - id: AES-2E
+      title: Implement local ActionEffectSpec vocabulary and builders for workflow
+        actions
+      status: pending
+    - id: AES-2F
+      title: Connect effect spec scope checks to commit preflight
+      status: pending
+    - id: AES-2G
+      title: Run focused tests and confirm next --json remains completed or reports
+        only expected post-write state
+      status: pending
+acceptance_criteria:
+- 副作用のある workflow action の前に、影響範囲を機械的に確認できる。
+- ActionEffectSpec が read、write、state_mutation、external_call、irreversible_action の局所語彙を使う。
+- commit precheck が effect spec 外の staged 変更を検出できる。
+red_tests:
+- id: AES-2-RT-1
+  title: Workflow action effect vocabulary is explicit
+  expected: ActionEffectSpec accepts exactly the local effect vocabulary and rejects
+    unknown effect kinds.
+  status: pending
+- id: AES-2-RT-2
+  title: Core workflow actions expose effect specs
+  expected: next, commit, push, and reopen-start return machine-readable effect specs
+    before action execution.
+  status: pending
+- id: AES-2-RT-3
+  title: Commit preflight rejects staged files outside effect spec
+  expected: commit preflight reports DEVIATION when staged files are outside the active
+    ActionEffectSpec write scope.
+  status: pending
+non_goals:
+- workflow action 全体を新しい runner に置き換えること。
+- すべての operation registry entry をこの TODO で完全移行すること。
+- API review-run の ReviewExecutionSpec を再設計すること。
