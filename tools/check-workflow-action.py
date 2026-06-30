@@ -4269,6 +4269,11 @@ def _build_commit_operation_guidance(
     and allowed_to_delegate_execution
     and not allowed_to_run_guarded_commit
   )
+  sandbox_retry_reuses_approval = bool(
+    allowed_to_run_guarded_commit
+    and approval_state.get("valid") is True
+    and not execution_delegation_errors
+  )
   return {
     "standard_runner": COMMIT_STANDARD_RUNNER,
     "standard_sequence": COMMIT_STANDARD_SEQUENCE,
@@ -4277,6 +4282,13 @@ def _build_commit_operation_guidance(
     "requires_approval": requires_approval,
     "requires_reapproval": requires_reapproval,
     "internal_reprepare_allowed": can_reprepare_internally,
+    "sandbox_git_write_preflight": "guarded_commit_index_lock_check",
+    "sandbox_retry_reuses_approval": sandbox_retry_reuses_approval,
+    "sandbox_retry_required_action": (
+      "rerun_commit_with_escalation"
+      if sandbox_retry_reuses_approval
+      else None
+    ),
     "recommended_runner": (
       COMMIT_STANDARD_RUNNER
       if can_reprepare_internally or requires_reapproval

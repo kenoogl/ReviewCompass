@@ -7658,6 +7658,26 @@ class CommitExitCodeTests(unittest.TestCase):
     )
     self.assertLessEqual(len(data["human_summary"]["reasons"]), 3)
 
+  def test_commit_preflight_marks_sandbox_retry_as_reapproval_free(self):
+    """有効承認後の sandbox git 書き込み拒否では再承認不要と示す"""
+    _stage_file(self.tmpdir, "notes.md", "# notes")
+    _write_commit_approval(self.tmpdir, ["notes.md"])
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertTrue(data["allowed_to_run_guarded_commit"])
+    self.assertTrue(
+      data["commit_operation"]["sandbox_retry_reuses_approval"],
+    )
+    self.assertEqual(
+      data["commit_operation"]["sandbox_retry_required_action"],
+      "rerun_commit_with_escalation",
+    )
+    self.assertFalse(data["commit_operation"]["requires_reapproval"])
+
   def test_commit_preflight_distinguishes_first_approval_from_reapproval(self):
     """初回承認待ちと対象変更による再承認待ちを分ける"""
     _stage_file(self.tmpdir, "notes.md", "# notes")
