@@ -250,9 +250,25 @@ red_tests:
 implementation_targets:
   - id: RPMR-IMPL-1
     command_or_area: reopen-start
+    status: completed
     required_change: >
       分類と修正対象 phase から `edited_phases` と downstream impact confirmation scope を初期化できるようにする。
       requirements 起点の場合、design/tasks/implementation の確認予定を欠いた開始を拒否または明示的不足として記録する。
+    evidence:
+      red_test: >
+        `ReopenStartTests::test_reopen_start_initializes_edited_phase_downstream_scope`
+        は実装前に `--edited-phase` が未定義引数として拒否されるため失敗した。
+      implementation: >
+        `reopen-start` に `--edited-phase` を追加し、指定された編集 phase から
+        `edited_phases`、`impacted_downstream_phases`、空の `downstream_impact_decisions`
+        を in-progress YAML へ初期記録するようにした。
+      verification:
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenStartTests::test_reopen_start_initializes_edited_phase_downstream_scope -q`
+          が成功。
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenStartTests -q`
+          が成功。
   - id: RPMR-IMPL-2
     command_or_area: next --json
     required_change: >

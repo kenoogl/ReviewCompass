@@ -7999,7 +7999,7 @@ def cmd_operation_prompt(args):
 
 def build_reopen_in_progress_data(args, pending_gates):
   """reopen-start で生成する in-progress データを作る"""
-  return {
+  data = {
     "process_id": "reopen-procedure",
     "feature": args.feature,
     "classification": args.classification,
@@ -8012,6 +8012,14 @@ def build_reopen_in_progress_data(args, pending_gates):
     "pending_gates": pending_gates,
     "current_blocker": None,
   }
+  edited_phases = args.edited_phase or []
+  if edited_phases:
+    data["edited_phases"] = edited_phases
+    data["impacted_downstream_phases"] = _required_downstream_impact_phases_for_edited_phases(
+      edited_phases,
+    )
+    data["downstream_impact_decisions"] = []
+  return data
 
 
 def write_reopen_in_progress(cwd, date, data):
@@ -10008,6 +10016,13 @@ def main():
   rs.add_argument("--basis", required=True, help="種別判定根拠ファイル")
   rs.add_argument("--date", required=True, help="in-progress ファイル名に使う日付（YYYY-MM-DD）")
   rs.add_argument("--trigger", required=True, help="reopen 起動理由")
+  rs.add_argument(
+    "--edited-phase",
+    action="append",
+    choices=PHASE_ORDER,
+    default=[],
+    help="実質編集する phase。指定時は下流確認対象を初期化する。複数指定可",
+  )
 
   ras = sub.add_parser(
     "reopen-advance-step",

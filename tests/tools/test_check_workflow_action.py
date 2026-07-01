@@ -5345,6 +5345,36 @@ class ReopenStartTests(unittest.TestCase):
     self.assertEqual(generated["feature"], "runtime")
     self.assertEqual(generated["next_step"], "第1過程：判定とフラグ差し戻し")
 
+  def test_reopen_start_initializes_edited_phase_downstream_scope(self):
+    """reopen-start は編集対象 phase から下流確認対象を初期化する"""
+    cwd = Path(self.tmpdir)
+    result = run_script(
+      [
+        "reopen-start",
+        "--classification", "R-0",
+        "--feature", "workflow-management",
+        "--basis", "docs/reviews/reopen-classification-2026-07-01.md",
+        "--date", "2026-07-01",
+        "--trigger", "requirements の正本本文を修正する",
+        "--edited-phase", "requirements",
+        "--json",
+      ],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "OK")
+    in_progress = cwd / "stages" / "in-progress" / "reopen-procedure-2026-07-01.yaml"
+    generated = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    self.assertEqual(generated["edited_phases"], ["requirements"])
+    self.assertEqual(
+      generated["impacted_downstream_phases"],
+      ["design", "tasks", "implementation"],
+    )
+    self.assertEqual(generated["downstream_impact_decisions"], [])
+
   def test_reopen_start_invalid_classification_returns_deviation(self):
     """未定義 classification は fail-closed で逸脱"""
     cwd = Path(self.tmpdir)

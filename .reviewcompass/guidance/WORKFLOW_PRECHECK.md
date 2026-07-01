@@ -164,7 +164,7 @@ plan の `checklist_evidence_path` と TODO の `execution_history[].evidence_pa
 
 ### 4.5 reopen-start
 
-reopen 開始時は、上流正本変更の影響範囲を分類し、必要な reopen 手続き記録を作成してから通常ワークフローへ戻す。commit 時には、reopen 手続き記録と spec.json の recheck 状態の整合を検査する。詳細は [REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md) と [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#commit) を参照する。
+reopen 開始時は、上流正本変更の影響範囲を分類し、必要な reopen 手続き記録を作成してから通常ワークフローへ戻す。正本本文を実質編集する phase が分かっている場合は `--edited-phase` を指定し、`edited_phases` と下流確認対象を in-progress 記録に初期化する。commit 時には、reopen 手続き記録と spec.json の recheck 状態の整合を検査する。詳細は [REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md) と [WORKFLOW_PRECHECK_DETAILS.md](WORKFLOW_PRECHECK_DETAILS.md#reopen-start) を参照する。
 
 <a id="reopen-advance-step"></a>
 

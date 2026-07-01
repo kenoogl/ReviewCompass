@@ -212,9 +212,34 @@ Codex の `workspace-write` sandbox では、`commit-from-current-staged.py` ま
 
 この監査は、対象 commit 時点に manifest が存在したことを証明するものではない。現在のリポジトリ状態で、その commit 内容に対応する検証記録が存在するかを確認する是正監査である。
 
+<a id="reopen-start"></a>
+
+## 6. reopen-start
+
+`reopen-start` は、reopen classification から `stages/in-progress/reopen-procedure-<date>.yaml` を生成する。正本本文を実質編集する phase が分かっている場合は `--edited-phase` を指定し、後続の fail-closed 検査が参照する `edited_phases` と `impacted_downstream_phases` を初期化する。
+
+引数：
+
+| 引数 | 必須 | 説明 |
+|---|---|---|
+| `--classification` | 必須 | 手戻り種別。trigger_map に存在する値だけを許可する |
+| `--feature` | 必須 | 対象 feature 名 |
+| `--basis` | 必須 | 種別判定根拠ファイル |
+| `--date` | 必須 | in-progress ファイル名に使う日付（YYYY-MM-DD） |
+| `--trigger` | 必須 | reopen 起動理由 |
+| `--edited-phase` | 任意 | 実質編集する phase。複数指定可。指定時は下流確認対象を自動初期化する |
+
+判定と更新：
+
+- `--classification` が trigger_map に存在しない場合は DEVIATION とする
+- trigger_map から `pending_gates` を解決し、`process_id: reopen-procedure` の in-progress YAML を生成する
+- `--edited-phase requirements` を指定した場合、`edited_phases: [requirements]`、`impacted_downstream_phases: [design, tasks, implementation]`、`downstream_impact_decisions: []` を保存する
+- `--edited-phase design` は `tasks` と `implementation`、`--edited-phase tasks` は `implementation` を下流確認対象として保存する
+- 成功時は exit 0、上記の前提違反や入力不正は DEVIATION として exit 2 を返す
+
 <a id="reopen-advance-step"></a>
 
-## 6. reopen-advance-step
+## 7. reopen-advance-step
 
 `reopen-advance-step` は、reopen 手続きファイルの第1過程・第2過程を機械的に進める更新コマンドである。第1過程の完了では第2過程の正本修正へ進め、第2過程の完了では停止点コミット状態へ進める。
 
@@ -243,7 +268,7 @@ Codex の `workspace-write` sandbox では、`commit-from-current-staged.py` ま
 
 <a id="reopen-advance-gate"></a>
 
-## 7. reopen-advance-gate
+## 8. reopen-advance-gate
 
 `reopen-advance-gate` は、reopen 手続きファイルの `pending_gates` を 1 件進める更新コマンドである。`spec-set` は in-progress reopen が存在する状態を通常作業として遮断するため、reopen 第3過程の gate 完了更新では本コマンドを使う。
 
@@ -277,7 +302,7 @@ Codex の `workspace-write` sandbox では、`commit-from-current-staged.py` ま
 
 <a id="reopen-set-blocker"></a>
 
-## 8. reopen-set-blocker
+## 9. reopen-set-blocker
 
 `reopen-set-blocker` は、reopen 第3過程で approval gate の承認待ちに到達したとき、`current_blocker` を構造化して設定する更新コマンドである。承認待ちを自由記述で手編集する代わりに、対象 gate、承認主体、理由、根拠を機械可読に保存する。
 
@@ -304,7 +329,7 @@ Codex の `workspace-write` sandbox では、`commit-from-current-staged.py` ま
 
 <a id="reopen-finalize"></a>
 
-## 9. reopen-finalize
+## 10. reopen-finalize
 
 `reopen-finalize` は、reopen 第4過程で `stages/in-progress/` の手続き YAML を `stages/completed/` へ移す更新コマンドである。完了 YAML の必須項目を手編集で埋める代わりに、構造化引数から `feature_impact_decisions`、`new_feature_decision`、`impacted_downstream_phases`、`completed_steps` を更新する。対象 feature の `spec.json` が存在する場合は、同じ操作で `recheck.upstream_change_pending=false`、`recheck.impacted_downstream_phases=[]` にクリアし、第4過程完了の `reopen_step_records` も追加する。
 
@@ -336,7 +361,7 @@ Codex の `workspace-write` sandbox では、`commit-from-current-staged.py` ま
 <a id="autonomous-plan-record-integration"></a>
 <a id="autonomous-ledger-audit"></a>
 
-## 10. autonomous-plan 系
+## 11. autonomous-plan 系
 
 `autonomous-plan` は実行計画 YAML を fail-closed で検査する。最低限、次を確認する。
 
@@ -354,7 +379,7 @@ Codex の `workspace-write` sandbox では、`commit-from-current-staged.py` ま
 
 `autonomous-plan-template` は最小テンプレートを生成する。`autonomous-plan-record-integration` は統合後に既存の履歴台帳へ `integration_result` を追記する。
 
-## 11. 出力形式
+## 12. 出力形式
 
 終了コード：
 
@@ -379,7 +404,7 @@ JSON 出力は、少なくとも次のキーを含む。
 }
 ```
 
-## 12. ログ
+## 13. ログ
 
 判定ログは JSON Lines 形式で記録する。`--json` 出力と同等の構造に `timestamp` を追加する。
 
@@ -420,7 +445,7 @@ commit 承認レコード（`.reviewcompass/runtime/approvals/commit-approval.js
    旧配置を追跡している構成（対象アプリ等）に限る。未追跡の旧成果物の凍結は書き込み経路のテスト
    （`tests/tools/test_runtime_placement_freeze.py`）で担保する。
 
-## 13. テスト観点
+## 14. テスト観点
 
 主要な判定条件は `tests/tools/test_check_workflow_action.py` で検証する。最低限、次を覆う。
 
