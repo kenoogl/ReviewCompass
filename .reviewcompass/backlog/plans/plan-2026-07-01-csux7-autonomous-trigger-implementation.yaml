@@ -1,0 +1,146 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-07-01-csux7-autonomous-trigger-implementation
+kind: plan
+title: Implement CSUX-7 autonomous trigger wording
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-07-01T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:前のターンのものと合わせてplanに起草
+  reason: >
+    The user observed that "1をプッシュまで自律実行" did not resolve as expected,
+    then asked whether similar issues remain. This plan combines the direct
+    failure with the related CSUX-7 implementation gaps found in the resolver,
+    approval source handling, and tests.
+summary: >
+  Bring the implemented autonomous execution trigger grammar into alignment
+  with CSUX-7: explicit commit/push boundary wording is required for single
+  candidates, range execution implies push-through execution, and the ambiguous
+  short form is rejected.
+related:
+  - .reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml
+  - tools/check-workflow-action.py
+  - tools/check_workflow_action/commit_approval.py
+  - tests/tools/test_check_workflow_action.py
+current_problem:
+  - >
+    `1をプッシュまで自律実行` currently resolves to `unknown_operation`, although
+    CSUX-7 defines it as `autonomous-through-push`.
+  - >
+    `1をコミットまで自律実行` currently resolves to `unknown_operation`, although
+    CSUX-7 defines it as `autonomous-through-commit`.
+  - >
+    `1を自律実行` is still accepted as `autonomous-through-commit`, although
+    CSUX-7 makes the short form invalid because the stop point is ambiguous.
+  - >
+    `1から3まで自律実行` is not recognized, although CSUX-7 defines range execution
+    as push-through autonomous execution for each selected candidate.
+  - >
+    `tools/check-workflow-action.py` and
+    `tools/check_workflow_action/commit_approval.py` both still use the older
+    regex shape `([1-9][0-9]*)を(pushまで)?自律実行`.
+  - >
+    Existing tests still encode the old behavior for `Nを自律実行` and
+    `Nをpushまで自律実行`, so the test contract does not yet protect the CSUX-7
+    wording.
+decisions:
+  - id: CSUX7-D1
+    summary: >
+      Keep `自律実行` as the operation word. Do not add `自動実行` as a synonym in
+      this plan, because that is a separate wording decision.
+  - id: CSUX7-D2
+    summary: >
+      Treat `commit` and `コミット` as synonyms, and treat `push` and `プッシュ`
+      as synonyms.
+  - id: CSUX7-D3
+    summary: >
+      `Nをコミットまで自律実行` includes the commit operation. `Nをプッシュまで自律実行`
+      includes the push operation.
+  - id: CSUX7-D4
+    summary: >
+      `MからNまで自律実行` means push-through autonomous execution for each
+      candidate from M through N.
+remaining_work:
+  - id: CSUX7-1
+    title: Add red tests for the CSUX-7 trigger grammar
+    status: pending
+    details:
+      - >
+        Add resolver tests proving that `1を自律実行` is rejected with an
+        actionable unknown-operation or invalid-operation response.
+      - >
+        Add resolver tests for `1をコミットまで自律実行` and
+        `1をcommitまで自律実行`, expecting `autonomous-through-commit`.
+      - >
+        Add resolver tests for `1をプッシュまで自律実行` and
+        `1をpushまで自律実行`, expecting `autonomous-through-push`.
+      - >
+        Add resolver tests for `1から3まで自律実行`, expecting range selection and
+        push-through execution semantics.
+      - >
+        Add approval-source tests for the same accepted and rejected forms,
+        including raw instruction, normalized instruction, selector or range,
+        operation id, and delegation range evidence.
+  - id: CSUX7-2
+    title: Update operation trigger resolution
+    status: pending
+    details:
+      - >
+        Replace the old optional `pushまで` matcher in
+        `tools/check-workflow-action.py` with explicit single-candidate
+        commit-through and push-through forms.
+      - >
+        Add the candidate-range form for `MからNまで自律実行`, with push-through
+        execution semantics.
+      - >
+        Reject the short `Nを自律実行` form so the user must specify the boundary
+        for single-candidate autonomous execution.
+  - id: CSUX7-3
+    title: Update commit approval source handling
+    status: pending
+    details:
+      - >
+        Mirror the CSUX-7 grammar in
+        `tools/check_workflow_action/commit_approval.py` so approval source
+        handling does not accept or record a different operation contract than
+        the resolver.
+      - >
+        Preserve evidence fields for raw input, normalized input, operation id,
+        selected candidate or candidate range, and whether push delegation is
+        included.
+  - id: CSUX7-4
+    title: Refresh documentation and evidence
+    status: pending
+    details:
+      - >
+        Update the existing CSUX plan, todo, or checklist evidence only as
+        needed to point to the implemented grammar and verification results.
+      - >
+        Include post-write verification that covers resolver behavior, approval
+        source behavior, tests, and the plan/guidance contract.
+acceptance_criteria:
+  - >
+    `1をコミットまで自律実行` and `1をcommitまで自律実行` resolve to
+    `autonomous-through-commit`.
+  - >
+    `1をプッシュまで自律実行` and `1をpushまで自律実行` resolve to
+    `autonomous-through-push`.
+  - >
+    `1から3まで自律実行` resolves as a candidate range with push-through
+    autonomous execution semantics.
+  - >
+    `1を自律実行` is rejected and no longer starts commit-through autonomous
+    execution implicitly.
+  - >
+    Resolver tests and approval-source tests both protect the same wording
+    contract.
+non_goals:
+  - >
+    Do not add `自動実行` as a synonym for `自律実行` in this plan.
+  - >
+    Do not bypass existing commit or push preflight checks.
+  - >
+    Do not start autonomous execution from candidate text without first passing
+    through the operation resolver and approval-source contract.
