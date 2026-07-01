@@ -2304,6 +2304,99 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["next_action"]["reason"], "すべての workflow_state が完了しています")
     self.assertFalse((REPO_ROOT / ".reviewcompass" / "specs" / "external-app").exists())
 
+  def test_next_completed_outputs_backlog_task_candidates(self):
+    """completed 状態は backlog 由来の次作業候補を read-only で返す"""
+    cwd = Path(self.tmpdir)
+    done = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_specs_for_next(cwd, {feature: done for feature in FEATURE_ORDER})
+    _write_completed_phase_artifacts(cwd)
+    backlog_dir = cwd / ".reviewcompass" / "backlog"
+    plan_dir = backlog_dir / "plans"
+    plan_dir.mkdir(parents=True, exist_ok=True)
+    plan_path = plan_dir / "plan-candidate-one.yaml"
+    plan_path.write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "reviewcompass-backlog-item-v1",
+          "id": "plan-candidate-one",
+          "kind": "plan",
+          "title": "Candidate one",
+          "status": "candidate",
+          "summary": "候補 1 の説明",
+          "remaining_work": [
+            {
+              "id": "C1",
+              "title": "Implement candidate output",
+              "status": "candidate",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+    (backlog_dir / "index.yaml").write_text(
+      yaml.safe_dump(
+        {
+          "schema_version": "reviewcompass-backlog-index-v1",
+          "items": [
+            {
+              "id": "plan-candidate-one",
+              "kind": "plan",
+              "title": "Candidate one",
+              "status": "candidate",
+              "path": ".reviewcompass/backlog/plans/plan-candidate-one.yaml",
+              "source_unit_id": "main-completed",
+              "created_at": "2026-07-01T00:00:00+09:00",
+            },
+            {
+              "id": "plan-done",
+              "kind": "plan",
+              "title": "Done plan",
+              "status": "completed",
+              "path": ".reviewcompass/backlog/plans/plan-done.yaml",
+            },
+          ],
+        },
+        allow_unicode=True,
+        sort_keys=False,
+      ),
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["next_action"]["kind"], "completed")
+    candidates = data["next_action"]["next_task_candidates"]
+    self.assertEqual(1, len(candidates))
+    self.assertEqual("plan-candidate-one", candidates[0]["id"])
+    self.assertEqual(
+      ".reviewcompass/backlog/plans/plan-candidate-one.yaml",
+      candidates[0]["path"],
+    )
+    self.assertEqual("候補 1 の説明", candidates[0]["short_description"])
+    self.assertEqual("manual_decision_required", candidates[0]["recommended_lane"])
+    self.assertEqual("候補選択", data["next_action"]["required_next_operation"])
+    self.assertEqual(
+      "plan-candidate-one",
+      data["next_action"]["recommended_candidate"]["id"],
+    )
+    self.assertEqual(
+      ".reviewcompass/backlog/index.yaml",
+      data["next_action"]["selection_basis"]["index_path"],
+    )
+    self.assertEqual(1, data["next_action"]["selection_basis"]["candidate_count"])
+
   def test_next_detects_intent_update_requires_reopen_classification(self):
     """完了済み workflow で intent が新しければ reopen 分類を要求する"""
     cwd = Path(self.tmpdir)

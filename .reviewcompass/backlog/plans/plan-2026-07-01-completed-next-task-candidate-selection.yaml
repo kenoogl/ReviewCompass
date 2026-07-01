@@ -96,7 +96,7 @@ ranking_rules:
 remaining_work:
   - id: CNT-1
     title: Add completed-state candidate selection read-only output
-    status: candidate
+    status: completed
     tasks:
       - '`next --json` の completed 出力に `next_task_candidates`、`recommended_candidate`、`selection_basis` を追加する。'
       - backlog index と backlog item YAML から候補を抽出する read-only helper を追加する。
@@ -105,6 +105,18 @@ remaining_work:
       - completed 状態で `next --json` が候補 5 件程度と推奨 1 件を JSON で返す。
       - 候補の path / status / lane / start operation / 除外理由が機械可読に残る。
       - TODO_NEXT_SESSION.md が空または古くても backlog から候補を返せる。
+    evidence:
+      red_test:
+        command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::NextNavigationTests::test_next_completed_outputs_backlog_task_candidates -q
+        result: failed as expected before implementation
+        failure_summary: "KeyError: 'next_task_candidates'"
+      verification:
+        - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::NextNavigationTests::test_next_completed_outputs_backlog_task_candidates -q
+          result: 1 passed
+        - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::NextNavigationTests -q
+          result: 77 passed
+        - command: .venv/bin/python3 tools/check-workflow-action.py next --json
+          result: completed next_action includes next_task_candidates and recommended_candidate
   - id: CNT-2
     title: Classify candidate start lane and operation
     status: candidate

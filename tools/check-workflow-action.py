@@ -7031,6 +7031,175 @@ def augment_cross_feature_next_action(cwd, specs, next_action):
   return augmented
 
 
+def _relative_path_exists(cwd, value):
+  """cwd 相対 path が実在するかを返す"""
+  if not isinstance(value, str) or not value:
+    return False
+  path = Path(value)
+  if path.is_absolute():
+    return path.exists()
+  return (Path(cwd) / path).exists()
+
+
+def _read_backlog_candidate_item(cwd, entry):
+  """backlog index entry から item YAML を読む"""
+  path_value = entry.get("path")
+  if not isinstance(path_value, str) or not path_value:
+    return None
+  path = Path(path_value)
+  if not path.is_absolute():
+    path = Path(cwd) / path
+  try:
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+  except (OSError, yaml.YAMLError):
+    return None
+  return data if isinstance(data, dict) else None
+
+
+def _first_pending_remaining_work(item):
+  """plan item の未完了 remaining_work を 1 件返す"""
+  completed = {"completed", "done", "deferred", "not_required", "rejected"}
+  remaining_work = item.get("remaining_work")
+  if not isinstance(remaining_work, list):
+    return None
+  for entry in remaining_work:
+    if not isinstance(entry, dict):
+      continue
+    status = str(entry.get("status") or "").lower()
+    if status not in completed:
+      return {
+        "id": entry.get("id"),
+        "title": entry.get("title"),
+        "status": entry.get("status"),
+      }
+  return None
+
+
+def _candidate_short_description(item, entry):
+  """候補表示用の短い説明を返す"""
+  for key in ("summary", "problem_statement", "reason"):
+    value = item.get(key)
+    if isinstance(value, str) and value.strip():
+      return value.strip()
+    if isinstance(value, list) and value:
+      first = value[0]
+      if isinstance(first, str) and first.strip():
+        return first.strip()
+  return entry.get("title") or item.get("title") or item.get("id")
+
+
+def _build_completed_next_task_candidate(cwd, entry):
+  """completed 状態で表示する backlog 候補を作る"""
+  item = _read_backlog_candidate_item(cwd, entry)
+  if item is None:
+    return None
+  pending_work = _first_pending_remaining_work(item)
+  candidate = {
+    "id": entry.get("id") or item.get("id"),
+    "kind": entry.get("kind") or item.get("kind"),
+    "title": entry.get("title") or item.get("title"),
+    "path": entry.get("path"),
+    "status": entry.get("status") or item.get("status"),
+    "short_description": _candidate_short_description(item, entry),
+    "recommended_lane": "manual_decision_required",
+    "start_operation": "candidate_selection_required",
+    "reason": "backlog index の candidate item です",
+    "blockers": [],
+  }
+  if pending_work:
+    candidate["pending_work"] = pending_work
+  return candidate
+
+
+def build_completed_next_task_candidates(cwd, limit=5):
+  """completed 状態用の次作業候補を backlog から read-only で抽出する"""
+  index_path = Path(cwd) / ".reviewcompass" / "backlog" / "index.yaml"
+  selection_basis = {
+    "index_path": ".reviewcompass/backlog/index.yaml",
+    "source": "backlog_index",
+    "candidate_count": 0,
+    "excluded_count": 0,
+    "ranking_rules": [
+      "status: candidate の plan / issue を backlog index 順で最大 5 件返す",
+      "completed / rejected / superseded / archived は除外する",
+      "TODO_NEXT_SESSION.md は候補選定の正本にしない",
+    ],
+    "excluded": [],
+  }
+  if not index_path.is_file():
+    selection_basis["missing_index"] = True
+    return {
+      "next_task_candidates": [],
+      "recommended_candidate": None,
+      "selection_basis": selection_basis,
+      "required_next_operation": "なし",
+    }
+  try:
+    index = yaml.safe_load(index_path.read_text(encoding="utf-8")) or {}
+  except (OSError, yaml.YAMLError):
+    selection_basis["unreadable_index"] = True
+    return {
+      "next_task_candidates": [],
+      "recommended_candidate": None,
+      "selection_basis": selection_basis,
+      "required_next_operation": "なし",
+    }
+  items = index.get("items")
+  if not isinstance(items, list):
+    items = []
+  candidates = []
+  terminal = {"completed", "rejected", "superseded", "archived"}
+  for entry in items:
+    if len(candidates) >= limit:
+      break
+    if not isinstance(entry, dict):
+      continue
+    item_id = entry.get("id")
+    kind = entry.get("kind")
+    status = str(entry.get("status") or "").lower()
+    path = entry.get("path")
+    if kind not in {"plan", "issue"}:
+      continue
+    if status in terminal or status != "candidate":
+      selection_basis["excluded"].append({
+        "id": item_id,
+        "reason": f"status is {entry.get('status')}",
+      })
+      continue
+    if not _relative_path_exists(cwd, path):
+      selection_basis["excluded"].append({
+        "id": item_id,
+        "reason": "item file missing",
+      })
+      continue
+    candidate = _build_completed_next_task_candidate(cwd, entry)
+    if candidate is None:
+      selection_basis["excluded"].append({
+        "id": item_id,
+        "reason": "item file unreadable",
+      })
+      continue
+    candidates.append(candidate)
+
+  selection_basis["candidate_count"] = len(candidates)
+  selection_basis["excluded_count"] = len(selection_basis["excluded"])
+  return {
+    "next_task_candidates": candidates,
+    "recommended_candidate": candidates[0] if candidates else None,
+    "selection_basis": selection_basis,
+    "required_next_operation": "候補選択" if candidates else "なし",
+  }
+
+
+def attach_completed_next_task_candidates(cwd, next_action):
+  """completed next_action に backlog 候補を付与する"""
+  if next_action.get("kind") != "completed":
+    return next_action
+  augmented = dict(next_action)
+  augmented.update(build_completed_next_task_candidates(cwd))
+  return augmented
+
+
 def resolve_next_action(specs):
   """ReviewCompass 現行 workflow_state から次に許可される作業を決める"""
   for phase in PHASE_ORDER:
@@ -7435,6 +7604,7 @@ def cmd_next(args):
             reasons.extend(side_track_reasons)
             verdict, exit_code = "OK", 0
 
+  next_action = attach_completed_next_task_candidates(cwd, next_action)
   next_action = attach_required_context(cwd, next_action)
   effective_prompt = next_action.get("effective_prompt")
   if (
