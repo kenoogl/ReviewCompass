@@ -12,10 +12,10 @@ completed_steps:
 - 第3過程：scope 分離により requirements 受入13を routing discipline に絞り直し、maintenance cleanup
   plan を別候補として追加
 - 第3過程：requirements alignment 完了（scope 分離後の backlog routing discipline を整合確認）
-next_step: 第3過程：requirements approval
-step_number: 3
-pending_gates:
-- stages/requirements.yaml#approval
+- 第3過程：requirements approval 完了（scope 分離後の backlog routing discipline を利用者承認）
+next_step: 第4過程：完了
+step_number: 4
+pending_gates: []
 current_blocker: null
 reopen_step_records:
 - from_step: 1
@@ -62,8 +62,19 @@ commit_stop_point_records:
   evidence:
   - .reviewcompass/specs/workflow-management/requirements.md
   - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- step: 3
+  kind: alignment_complete
+  gate: stages/requirements.yaml#alignment
+  reason: requirements alignment 完了時点の停止点
+  head: a460664a1f825fd0e521f76dadb9d29c4ec9aef8
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-entry-lane-routing.yaml
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-routing-maintenance-cleanup.yaml
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
 completed_gates:
 - stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#alignment
   feature_scope: workflow-management
@@ -77,8 +88,19 @@ downstream_impact_decisions:
   - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-entry-lane-routing.yaml
   - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-routing-maintenance-cleanup.yaml
   - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- gate: stages/requirements.yaml#approval
+  feature_scope: workflow-management
+  decision: approved
+  rationale: 利用者が scope 分離後の requirements approval gate を承認したため、backlog routing discipline
+    受入13を requirements approved として確定する。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-entry-lane-routing.yaml
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-routing-maintenance-cleanup.yaml
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+  - .reviewcompass/runtime/approvals/req-backlog-routing-scope-split-approval-2026-07-01.yaml
 commit_stop_point: true
-commit_stop_point_step: 3
-commit_stop_point_kind: alignment_complete
-commit_stop_point_gate: stages/requirements.yaml#alignment
-commit_stop_point_reason: requirements alignment 完了時点の停止点
+commit_stop_point_step: 4
+commit_stop_point_kind: approval_complete
+commit_stop_point_gate: stages/requirements.yaml#approval
+commit_stop_point_reason: requirements approval 完了時点の停止点
