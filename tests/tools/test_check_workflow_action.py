@@ -8108,6 +8108,71 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertTrue(data["allowed_to_prepare_approval"])
     self.assertEqual(data["next_required_action"], "prepare_completed_maintenance_commit")
 
+  def test_commit_preflight_blocks_completed_reopen_missing_downstream_phase_decision(self):
+    """commit-preflight は不完全な completed reopen を commit 前に遮断する"""
+    feature_impact_decisions = "".join(
+      f"  - feature: {feature}\n"
+      "    decision: reopen_existing_feature\n"
+      "    impact_basis: implementation_ownership\n"
+      "    rationale: 既存 feature で受けるため reopen 対象にする。\n"
+      "    evidence:\n"
+      f"      - .reviewcompass/specs/{feature}/requirements.md\n"
+      for feature in FEATURE_ORDER
+    )
+    completed_path = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-07-01.yaml"
+    )
+    completed_path.parent.mkdir(parents=True)
+    completed_path.write_text(
+      "process_id: reopen-procedure\n"
+      "step_number: 4\n"
+      "pending_gates: []\n"
+      "completed_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n"
+      "impacted_downstream_phases:\n"
+      "  - design\n"
+      "  - tasks\n"
+      "  - implementation\n"
+      "feature_impact_decisions:\n"
+      f"{feature_impact_decisions}"
+      "new_feature_decision:\n"
+      "  decision: no_new_feature\n"
+      "  rationale: 既存 feature で受けられる。\n"
+      "  evidence:\n"
+      "    - stages/feature-partitioning/2026-05-24-proposal.md\n"
+      "downstream_impact_decisions:\n"
+      "  - gate: stages/requirements.yaml#triad-review\n"
+      "    feature_scope: all_features\n"
+      "    decision: approved\n"
+      "    rationale: requirements triad-review は完了している。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/_cross_feature/reviews/summary.md\n"
+      "next_step: 完了\n",
+      encoding="utf-8",
+    )
+    subprocess.run(
+      ["git", "add", "stages/completed/reopen-procedure-2026-07-01.yaml"],
+      cwd=str(self.tmpdir),
+      check=True,
+      capture_output=True,
+    )
+
+    result = run_script(["commit-preflight", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    data = json.loads(result.stdout)
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertFalse(data["allowed_to_prepare_approval"])
+    reason_text = "\n".join(data["reasons"])
+    self.assertIn("impacted_downstream_phases", reason_text)
+    self.assertIn("design", reason_text)
+    self.assertIn("tasks", reason_text)
+    self.assertIn("implementation", reason_text)
+
   def test_commit_preflight_blocks_post_write_pending_before_staging(self):
     """post-write 未完了なら stage / approval 作成前に遮断する"""
     target = Path(self.tmpdir) / "docs" / "operations" / "policy.md"

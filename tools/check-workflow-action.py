@@ -4831,6 +4831,17 @@ def build_commit_instruction_preflight(cwd):
     allowed_to_delegate_execution = False
     reasons.extend(action_effect_scope_state.get("reasons") or [])
 
+  reopen_completion_errors = validate_reopen_completion_impact_decisions(
+    cwd,
+    staged_files,
+  )
+  if reopen_completion_errors:
+    verdict = "DEVIATION"
+    allowed_to_stage = False
+    allowed_to_prepare_approval = False
+    allowed_to_delegate_execution = False
+    reasons.extend(reopen_completion_errors)
+
   approval_state, approval_errors = validate_commit_approval(cwd, staged_files)
   execution_delegation_errors = validate_commit_execution_delegation(
     cwd,

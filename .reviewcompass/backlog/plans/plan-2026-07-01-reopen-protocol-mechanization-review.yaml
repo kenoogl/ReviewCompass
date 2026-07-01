@@ -214,9 +214,28 @@ red_tests:
   - id: RPMR-T5
     title: commit preflight は同じ不足を検出するが初検出にしない
     target: tests/tools/test_check_workflow_action.py
+    status: completed
     expected: >
       `reopen-finalize` を迂回して不完全な completed reopen 記録が staged された場合、
       commit preflight も DEVIATION にする。
+    evidence:
+      red_test: >
+        `CommitExitCodeTests::test_commit_preflight_blocks_completed_reopen_missing_downstream_phase_decision`
+        は実装前に `commit-preflight --json` が不完全な completed reopen を OK として返すため失敗した。
+      implementation: >
+        `commit-preflight` が staged completed reopen に対して
+        `validate_reopen_completion_impact_decisions` を実行し、downstream impact decision
+        の不足を commit 前に DEVIATION として返すようにした。
+      verification:
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::CommitExitCodeTests::test_commit_preflight_blocks_completed_reopen_missing_downstream_phase_decision -q`
+          が成功。
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::CommitExitCodeTests -q`
+          が成功。
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenFinalizeTests -q`
+          が成功。
 implementation_targets:
   - id: RPMR-IMPL-1
     command_or_area: reopen-start
