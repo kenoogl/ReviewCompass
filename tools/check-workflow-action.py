@@ -30,6 +30,11 @@ from pathlib import Path
 
 import yaml
 
+from api_providers.config_loader import (
+  load_config as load_api_config,
+  resolve_default_variant_name,
+  resolve_variant,
+)
 from deployment_independence_lint import lint_text
 from document_link_lint import lint_path_texts as lint_document_link_texts
 
@@ -5504,6 +5509,10 @@ TRIAD_REVIEW_PROTOCOL_BLOCKED_OPERATIONS = [
 ]
 
 
+TRIAD_REVIEW_RUN_DEFAULT_OPERATION = "implementation_review"
+TRIAD_REVIEW_RUN_CONFIG_PATH = "config/api-settings.yaml"
+
+
 PROXY_DECISION_PROHIBITED_OPERATION_FIELDS = [
   "commit_authorized",
   "push_authorized",
@@ -5619,6 +5628,59 @@ def _user_visible_triage_presented(triage_record):
   return triage_record.get("stopped_before_proxy_spec_or_gate") is True
 
 
+def _resolve_triad_review_run_assignment(cwd):
+  """実 triad-review run の既定 variant と role/provider/model を機械解決する"""
+  try:
+    config = load_api_config(Path(cwd) / TRIAD_REVIEW_RUN_CONFIG_PATH)
+    variant_name = resolve_default_variant_name(
+      config,
+      TRIAD_REVIEW_RUN_DEFAULT_OPERATION,
+    )
+    variant = resolve_variant(config, variant_name)
+  except (OSError, KeyError, TypeError, yaml.YAMLError) as exc:
+    return {
+      "status": "unresolved",
+      "source": f"operation_defaults.{TRIAD_REVIEW_RUN_DEFAULT_OPERATION}",
+      "config_path": TRIAD_REVIEW_RUN_CONFIG_PATH,
+      "error": f"{type(exc).__name__}: {exc}",
+      "required_fields": ["role", "provider", "model", "prompt_path"],
+    }
+
+  required_roles = variant.get("required_roles")
+  if not isinstance(required_roles, list):
+    required_roles = ["primary", "adversarial", "judgment"]
+  roles = []
+  for role in required_roles:
+    role_config = variant.get(role)
+    if not isinstance(role_config, dict):
+      return {
+        "status": "unresolved",
+        "source": f"operation_defaults.{TRIAD_REVIEW_RUN_DEFAULT_OPERATION}",
+        "config_path": TRIAD_REVIEW_RUN_CONFIG_PATH,
+        "variant": variant_name,
+        "error": f"role '{role}' is missing from variant config",
+        "required_fields": ["role", "provider", "model", "prompt_path"],
+      }
+    roles.append({
+      "role": role,
+      "path": role_config.get("path"),
+      "provider": role_config.get("provider"),
+      "model": role_config.get("model"),
+    })
+
+  return {
+    "status": "resolved",
+    "source": f"operation_defaults.{TRIAD_REVIEW_RUN_DEFAULT_OPERATION}",
+    "config_path": TRIAD_REVIEW_RUN_CONFIG_PATH,
+    "variant": variant_name,
+    "run_review_args": [
+      "--default-variant-for",
+      TRIAD_REVIEW_RUN_DEFAULT_OPERATION,
+    ],
+    "roles": roles,
+  }
+
+
 def _proxy_decision_valid(proxy_decision_record):
   if not isinstance(proxy_decision_record, dict) or not proxy_decision_record:
     return False
@@ -5682,6 +5744,14 @@ def build_triad_review_protocol_status(data, gate):
   """next --json に載せる triad-review protocol 状態を作る"""
   record = _triad_review_protocol_gate_record(data, gate)
   state = resolve_triad_review_protocol_state(data, gate)
+  variant_role_assignment = record.get("variant_role_assignment")
+  if not variant_role_assignment and state == "actual_review_run_required":
+    variant_role_assignment = _resolve_triad_review_run_assignment(Path.cwd())
+  if not variant_role_assignment:
+    variant_role_assignment = {
+      "status": "required",
+      "required_fields": ["role", "provider", "model", "prompt_path"],
+    }
   return {
     "gate": gate,
     "state": state,
@@ -5701,10 +5771,7 @@ def build_triad_review_protocol_status(data, gate):
       "review_run",
       "user_visible_triage",
     ],
-    "variant_role_assignment": record.get("variant_role_assignment", {
-      "status": "required",
-      "required_fields": ["role", "provider", "model", "prompt_path"],
-    }),
+    "variant_role_assignment": variant_role_assignment,
     "blocked_operations": (
       TRIAD_REVIEW_PROTOCOL_BLOCKED_OPERATIONS
       if state != "reopen_advance_gate_allowed"

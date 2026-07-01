@@ -12030,6 +12030,31 @@ class ReopenTriadReviewProtocolTests(unittest.TestCase):
   def _write_reopen_triad_review_state(self, protocol_record=""):
     cwd = Path(self.tmpdir)
     _write_specs_for_next(cwd, {})
+    config_path = cwd / "config" / "api-settings.yaml"
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(
+      "operation_defaults:\n"
+      "  implementation_review:\n"
+      "    variant: implementation_review_independent_3way_codex_operator\n"
+      "variants:\n"
+      "  implementation_review_independent_3way_codex_operator:\n"
+      "    context: triad_review\n"
+      "    variant_type: triad\n"
+      "    required_roles: [primary, adversarial, judgment]\n"
+      "    primary:\n"
+      "      path: api\n"
+      "      provider: openai-api\n"
+      "      model: gpt-5.4\n"
+      "    adversarial:\n"
+      "      path: api\n"
+      "      provider: anthropic-api\n"
+      "      model: claude-sonnet-4-6\n"
+      "    judgment:\n"
+      "      path: api\n"
+      "      provider: gemini-api\n"
+      "      model: gemini-3.1-pro-preview\n",
+      encoding="utf-8",
+    )
     in_progress = (
       cwd
       / "stages"
@@ -12140,6 +12165,75 @@ class ReopenTriadReviewProtocolTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     protocol = json.loads(result.stdout)["next_action"]["triad_review_protocol"]
     self.assertEqual(protocol["state"], "reopen_advance_gate_allowed")
+
+  def test_next_resolves_actual_review_run_variant_from_operation_defaults(self):
+    """実 review-run 直前は既定 variant と role/provider/model を機械解決する"""
+    self._write_reopen_triad_review_state(
+      "triad_review_protocol:\n"
+      "  gates:\n"
+      "    \"stages/requirements.yaml#triad-review\":\n"
+      "      main_preanalysis:\n"
+      "        path: reviews/main-preanalysis.md\n"
+      "      preanalysis_sufficiency_audit:\n"
+      "        status: passed\n"
+      "        required_prompt_changes: []\n"
+      "        required_prompt_changes_applied: true\n"
+      "      criteria_draft:\n"
+      "        path: reviews/api-review-criteria.md\n"
+      "        user_review_requirements_mapped: true\n"
+      "        required_checks_mapped: true\n"
+      "        target_criteria_separated: true\n"
+      "        output_contract_present: true\n"
+      "        prohibited_actions_reflected: true\n"
+      "        source_materials_path_only: false\n"
+      "      prompt_quality_review:\n"
+      "        adversarial: reviews/prompt-quality-adversarial.yaml\n"
+      "        main_revision: reviews/api-review-criteria-v2.md\n"
+      "        judgment: reviews/prompt-quality-judgment.yaml\n"
+      "        approved: true\n"
+      "        judgment_findings: []\n"
+    )
+
+    result = run_script(["next", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    protocol = json.loads(result.stdout)["next_action"]["triad_review_protocol"]
+    self.assertEqual(protocol["state"], "actual_review_run_required")
+    assignment = protocol["variant_role_assignment"]
+    self.assertEqual(assignment["status"], "resolved")
+    self.assertEqual(
+      assignment["variant"],
+      "implementation_review_independent_3way_codex_operator",
+    )
+    self.assertEqual(assignment["source"], "operation_defaults.implementation_review")
+    self.assertEqual(
+      assignment["run_review_args"][:2],
+      ["--default-variant-for", "implementation_review"],
+    )
+    self.assertEqual(
+      assignment["roles"],
+      [
+        {
+          "role": "primary",
+          "path": "api",
+          "provider": "openai-api",
+          "model": "gpt-5.4",
+        },
+        {
+          "role": "adversarial",
+          "path": "api",
+          "provider": "anthropic-api",
+          "model": "claude-sonnet-4-6",
+        },
+        {
+          "role": "judgment",
+          "path": "api",
+          "provider": "gemini-api",
+          "model": "gemini-3.1-pro-preview",
+        },
+      ],
+    )
 
 
 class ReopenReviewPromptQualityGuardTests(unittest.TestCase):
