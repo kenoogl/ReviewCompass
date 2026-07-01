@@ -1,0 +1,59 @@
+```yaml
+verdict: sufficient_with_revisions
+independent_reconstruction:
+  judgment_items:
+    - item_id: "workflow-design-reopen-protocol-vertical-transfer"
+      question: "Does design.md accurately carry over the requirements for the reopen protocol mechanization (Req 5 acceptance 7, Req 16, and Req 3 acceptance 5), including edited phase gates, downstream impact decisions, fail-closed order, and superseding reopen records, without omitting scope constraints or authorizing out-of-scope actions?"
+      target_files:
+        - ".reviewcompass/specs/workflow-management/design.md"
+      source_materials:
+        - "requirements.md (Requirement 5 acc 7, Requirement 16, Requirement 3 acc 5)"
+        - "reopen-protocol-mechanization-plan"
+        - "reopen-procedure-guidance"
+        - "vertical-intent-transfer-guidance"
+        - "behavior-path-source-summary"
+      out_of_scope:
+        - "tasks.md correctness"
+        - "implementation code correctness"
+        - "spec.json updates"
+        - "phase transition or commit execution"
+        - "proxy_model authorization decisions"
+      rationale: "This is a vertical intent transfer review specifically checking if the workflow-management design accurately implements upstream reopen-protocol requirements before downstream tasks begin."
+preanalysis_assessment:
+  supported_parts:
+    - "Clear separation of target (design.md) from out-of-scope targets (tasks, implementation, spec.json)."
+    - "Identification of key design judgment areas (fail-closed order, downstream evidence, superseding reopen policy)."
+    - "Explicit prohibition against reviewer authorization of irreversible actions."
+  missing_perspectives:
+    - "Explicit incorporation of raw upstream requirements text (Req 5, 16, 3) instead of relying entirely on structured summaries."
+    - "The summary's list of 'Proposed judgment claims' omits explicit tracking of Req 16 (active-scope) and Req 3 (proxy limits)."
+  unsupported_or_overconfident_parts: []
+  bias_risks:
+    - "Using structured summaries for canonical source documents (like requirements.md) instead of their raw text introduces summary bias and risks missing subtle requirement nuances during a vertical transfer review."
+prompt_sufficiency:
+  information: revisions_needed
+  question: sufficient
+  scope: sufficient
+  sensitivity_check: sufficient
+  notes:
+    - "Primary question effectively targets vertical transfer and mentions proxy-boundary/active-scope."
+    - "The enumerated checklist (1-6) misses dedicated checks for Req 16 and Req 3, causing a slight narrowing from the primary question."
+    - "Output contract for the automated runner is completely absent from the Proposed Criteria Seed."
+required_prompt_changes:
+  - "Add explicit checks for Req 16 (active reopen scope vs consumer feature scope) and Req 3 acceptance 5 (proxy_model limits) to the numbered list in the Proposed Criteria Seed."
+  - "Define the expected output contract for the runner (e.g., structured YAML findings, severity values)."
+  - "Ensure the final review prompt embeds the exact raw text of the relevant upstream requirements and guidance, rather than just the 'structured_summary' blocks."
+findings:
+  - severity: WARN
+    target_location: "Proposed Criteria Seed - Required Checks"
+    description: "Numbered checklist omits explicit checks for active-scope (Req 16) and proxy limits (Req 3)."
+    rationale: "Although the primary question mentions these contracts generically, failing to enumerate them in the explicit checklist increases the risk that the reviewer model will gloss over them during the detailed design verification."
+  - severity: WARN
+    target_location: "Proposed Criteria Seed"
+    description: "Absence of expected output contract instructions."
+    rationale: "The proposed criteria seed does not specify how the reviewer should format its response (e.g., YAML schema, findings list), which is necessary to prevent unstructured prose and ensure compatibility with the automated review runner."
+  - severity: WARN
+    target_location: "Source Materials / Proposed Criteria Seed"
+    description: "Source materials rely on structured summaries instead of raw text."
+    rationale: "Vertical intent transfer reviews require exact upstream text to reliably detect omissions or weakenings in the downstream target. Using summaries introduces framing bias and potential context gaps."
+```

@@ -79,6 +79,50 @@ def test_anthropic_send_request_extracts_text_from_response(monkeypatch):
   assert result == "回答テキスト"
 
 
+@respx.mock
+def test_anthropic_send_request_extracts_first_text_part(monkeypatch):
+  """Anthropic 応答で先頭 part が text でない場合も text part を返す"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  respx.post("https://api.anthropic.com/v1/messages").mock(
+    return_value=httpx.Response(
+      200,
+      json={
+        "content": [
+          {"type": "thinking", "thinking": "internal"},
+          {"type": "text", "text": "回答テキスト"},
+        ],
+      },
+    )
+  )
+  provider = AnthropicProvider(model="claude-sonnet-5")
+  result = provider.send_request("質問")
+  assert result == "回答テキスト"
+
+
+@respx.mock
+def test_anthropic_send_request_reports_missing_text_parts(monkeypatch):
+  """Anthropic 応答に text part がない場合は構造情報つきで失敗する"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  respx.post("https://api.anthropic.com/v1/messages").mock(
+    return_value=httpx.Response(
+      200,
+      json={
+        "stop_reason": "max_tokens",
+        "content": [
+          {"type": "thinking", "thinking": "internal"},
+        ],
+      },
+    )
+  )
+  provider = AnthropicProvider(model="claude-sonnet-5")
+  with pytest.raises(ValueError) as excinfo:
+    provider.send_request("質問")
+  message = str(excinfo.value)
+  assert "Anthropic response has no text part" in message
+  assert "stop_reason=max_tokens" in message
+  assert "part_types=thinking" in message
+
+
 # --- OpenAI 関連（4 件） ---
 
 

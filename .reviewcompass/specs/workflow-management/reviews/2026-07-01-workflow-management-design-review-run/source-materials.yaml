@@ -1,0 +1,92 @@
+source_materials:
+  - key: requirements-contract
+    purpose: Upstream canonical requirements that design.md must carry into the design layer.
+    source_paths:
+      - .reviewcompass/specs/workflow-management/requirements.md
+    purpose_field: >
+      Verify that design.md carries the reopen protocol mechanization contract from
+      requirements.md into design without omission, weakening, contradiction,
+      unsupported addition, target/source confusion, or authorization drift.
+    responsibility_boundaries:
+      - design.md is the review target; requirements.md is source material.
+      - tasks.md, implementation code, runner behavior, spec.json update, gate completion, commit, and push are out of scope for correctness judgment at this design gate.
+      - "`next --json` is the normal early detector; `reopen-finalize` is the completion guard; commit preflight is only the final guard."
+      - proxy_model may assist finding triage but must not authorize human-only decisions or irreversible operations.
+    acceptance_criteria:
+      - Requirement 5 acceptance 7 requires `edited_phases` and `impacted_downstream_phases` in reopen state.
+      - Each phase in `edited_phases` must rerun `triad-review`, `review-wave`, `alignment`, and `approval`.
+      - Downstream `no_impact` and `existing_sufficient` decisions still require gate, feature scope, decision, rationale, and evidence.
+      - "`next --json` must detect missing edited phase gates or downstream decisions before normal completion."
+      - "`reopen-finalize` must recompute required gates and decisions before creating a completed reopen record."
+      - Already-pushed incomplete completed reopen records are handled by superseding reopen records, not silent history rewriting.
+      - >
+        Requirement 12 acceptance 13 exact field list: 「現在の本線、次に実行すべき
+        `required_action`、phase、stage、reopen scope、impact review scope、
+        direct features、indirect features、flag policy、`next_pending_gate`、
+        `next_drafting_gate`、`pending_gates`、`completed_gates`、superseded gate
+        の有無、参照した state files」.
+      - Requirement 12 requires WARN or DEVIATION, not OK, when reopen scope or impact review scope is missing, contradictory, stale, or inconsistent with feature_impact_decisions, spec.json, pending_gates, drafting_completed_gates, or downstream_impact_decisions.
+      - Requirement 14 acceptance 11 keeps commit, push, spec.json update, phase approval, reopen finalize, and approval_required irreversible operation authorization human-only.
+      - Requirement 16 acceptance 13-14 makes evidence completeness, finding/cluster coverage, approval gate record, approval_required operation contract, review-wave impact evidence, and human-only boundary determine proxy applicability.
+      - Human-only decision boundary, unresolved approval gate, approval_required:true operations, and unresolved review-wave impact evidence take priority over proxy applicability; triage leave-as-is or proxy approved cannot cancel human-required evidence.
+    forbidden_actions:
+      - Do not treat design target excerpts or preanalysis claims as proof that design.md satisfies the requirements.
+      - Do not allow proxy_model to authorize commit, push, spec.json update, phase/gate completion, reopen finalize, or human approval delegation.
+      - Do not use current implementation behavior as normative source unless criteria embeds approved code/test excerpts for a supporting behavior-path question.
+    unresolved_or_deferred:
+      - The actual correctness of tasks.md, implementation code, runner behavior, and current tests is deferred to downstream gates.
+    intended_target_phase_transfer:
+      - design.md must define the design model for edited phase full gate chains, downstream impact decision evidence, fail-closed detection surfaces, active reopen/impact scope separation, Requirement 12 next output, and proxy/human-only authorization boundaries.
+  - key: reopen-procedure-and-review-guidance
+    purpose: Workflow guidance governing reopen and design triad-review scope.
+    source_paths:
+      - .reviewcompass/guidance/REOPEN_PROCEDURE.md
+      - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
+      - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+      - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+    purpose_field: >
+      Preserve the protocol order and review-scope boundaries while drafting and
+      reviewing design-stage criteria for the active reopen.
+    responsibility_boundaries:
+      - A phase whose canonical text was substantially changed must rerun triad-review, review-wave, alignment, and approval.
+      - Design review checks requirements.md to design.md transfer; downstream artifact correctness is not judged.
+      - Source materials must not be path-only and must separate purpose, boundaries, acceptance criteria, forbidden actions, unresolved items, and target-phase transfer.
+      - After actual review-run, user-visible triage is required before proxy_model, implementation edits, spec.json update, or phase movement.
+    acceptance_criteria:
+      - REOPEN_PROCEDURE 第3過程 requires drafting before triad-review when canonical text is edited and triad-review is the first pending review gate.
+      - REOPEN_PROCEDURE 第3過程 requires downstream impact decisions for requirements, design, tasks, and implementation edits, including no-change decisions.
+      - REOPEN_PROCEDURE 第4過程 requires feature_impact_decisions, new_feature_decision, impacted_downstream_phases, and downstream_impact_decisions covering pending gates before completion.
+      - SESSION_WORKFLOW_GUIDE vertical review requires checking upstream purpose, responsibility boundaries, acceptance criteria, and forbidden actions for omission, weakening, drift, or unsupported additions.
+      - API_REVIEW_PROMPT_QUALITY requires main preanalysis, preanalysis sufficiency audit, criteria draft, prompt quality review, actual review-run, and user-visible triage in order.
+    forbidden_actions:
+      - Do not start actual review-run before criteria draft and prompt quality review.
+      - Do not treat prompt-quality-run or preanalysis audit as gate completion.
+      - Do not call proxy_model or update spec.json before the user-visible triage gate after actual review-run.
+    unresolved_or_deferred:
+      - Actual design review findings are deferred until prompt-quality-approved criteria are used in the actual review-run.
+    intended_target_phase_transfer:
+      - The criteria must preserve design target/source/out-of-scope separation and must prevent premature gate completion or irreversible operation authorization.
+  - key: active-reopen-state
+    purpose: Current machine state for the active reopen design triad-review.
+    source_paths:
+      - stages/in-progress/reopen-procedure-2026-07-01.yaml
+      - .reviewcompass/specs/workflow-management/spec.json
+    purpose_field: >
+      Provide active scope and state context for the design criteria without turning
+      state files into review targets.
+    responsibility_boundaries:
+      - Active gate is `stages/design.yaml#triad-review`.
+      - Requirements gates are completed; design drafting is completed.
+      - Design/tasks/implementation triad-review, review-wave, alignment, and approval remain pending.
+      - spec.json design/tasks/implementation workflow flags remain false through approval.
+    acceptance_criteria:
+      - "The criteria must treat `.reviewcompass/specs/workflow-management/design.md` as the only actual design review target."
+      - The criteria must keep active reopen scope distinct from historical `spec.json.reopened`.
+      - The criteria must check active reopen scope and impact review scope only as source context for design transfer.
+    forbidden_actions:
+      - Do not mutate workflow_state, spec.json, pending_gates, or completed_gates from criteria generation.
+      - Do not advance `stages/design.yaml#triad-review` from criteria generation.
+    unresolved_or_deferred:
+      - Whether design.md passes actual triad-review remains unresolved until actual review-run and user-visible triage.
+    intended_target_phase_transfer:
+      - The criteria should direct reviewers to inspect design.md for active scope, downstream impact decision, next output, and human-only authorization design responsibilities.

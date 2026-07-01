@@ -1,0 +1,258 @@
+run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+triage_status: draft
+generated_at: '2026-07-01T12:26:44.214862+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Main Preanalysis claims list / Proposed Criteria Seed content checks
+  plain_language_summary: Requirement 12 acceptance 13-14 output-field contract is
+    embedded as source material but has no corresponding named preanalysis claim and
+    no dedicated criteria seed content check. The full output-field list (active gate,
+    required action, reopen scope, impact review scope, pending gates, completed gates,
+    state references, LLM-reselection prevention) and the preflight non-duplication
+    rule are normative requirements that must transfer to design.md and must be independently
+    verifiable by the later reviewer.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: A later reviewer given only the proposed criteria seed would not
+    be instructed to check whether design.md §Req 12 設計モデル §11 carries the full Requirement
+    12 acceptance 13-14 output-field contract. This is a scope omission that could
+    let a partial or missing transfer go undetected.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Main Preanalysis claims list / Proposed Criteria Seed item 7 /
+    design.md target manifest
+  plain_language_summary: The proxy_model / human-only authorization boundary check
+    (Requirement 14 acceptance 11) has no identified target section in design.md.
+    The proposed criteria seed item 7 asks whether 'proxy_model is explicitly kept
+    out of...' but no design.md section is named as the target location. If no such
+    section exists in design.md, the criteria must instruct the reviewer to treat
+    its absence as a potential finding, not to skip the check.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without a target location, the later reviewer cannot determine
+    whether this requirement transferred to the design layer or was simply omitted.
+    An unchecked omission of a human-only authorization boundary in design.md is a
+    design completeness defect that this review must be able to surface.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Main Preanalysis Claim 4 source attribution / Proposed Criteria
+    Seed item 4
+  plain_language_summary: Claim 4 and criteria seed item 4 list behavior-path tools
+    (check-workflow-action.py) and tests as source materials for the fail-closed detection
+    order claim. The structured source summary explicitly marks these as supporting
+    context only and states the later design review must not treat unapproved implementation
+    behavior as the standard. This caveat is not propagated into the preanalysis claim
+    or the criteria seed.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If the later criteria runner reads Claim 4 source attribution without
+    the caveat, they may treat tool/test behavior as normative evidence of design
+    correctness, reversing the intended normative hierarchy where requirements.md
+    and REOPEN_PROCEDURE.md are the standard.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Source Materials section / reopen-procedure-guidance and vertical-intent-transfer-guidance
+    keys
+  plain_language_summary: REOPEN_PROCEDURE.md and SESSION_WORKFLOW_GUIDE#vertical-intent-transfer-review
+    are referenced with structured summaries but without embedded exact text excerpts.
+    All other primary normative sources (requirements.md, design.md) have exact text
+    embedded. These two sources are normative for scope control and review-method
+    rules.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Path-plus-summary references introduce a gap: if the summary omits
+    or softens a detail, the later criteria prompt will silently lose that constraint.
+    Exact excerpts or a confirmed-complete verbatim summary should be embedded to
+    close this gap before criteria drafting.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Design Target Excerpts section
+  plain_language_summary: 'design.md target excerpts are embedded in the bundle alongside
+    source materials. Although labeled ''not source material,'' their proximity to
+    source materials creates an anchoring risk: a later criteria drafter or runner
+    may unconsciously treat the excerpts as confirming correct transfer, reducing
+    the adversarial independence of the review.'
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The criteria draft should include an explicit instruction that
+    these excerpts are target-location anchors only and that the later reviewer must
+    judge independently whether the target content satisfies the requirements, not
+    infer confirmation from the excerpt's existence.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4-claude-sonnet-4-6-adversarial-006
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Main Preanalysis open note (final line)
+  plain_language_summary: The preanalysis leaves unresolved whether Claim 4 (behavior-path)
+    should be split into a separate prompt. This open question is not answered in
+    the bundle or the proposed criteria seed, leaving the bundling decision to the
+    criteria drafter without guidance.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If Claim 4 is kept in the same criteria prompt as the other five
+    claims, the criteria must include an explicit scope note that tool/test behavior
+    is not being judged. If split, the behavior-path prompt needs its own source material
+    set and authority boundary. The ambiguity must be resolved before criteria drafting
+    to avoid a misscoped prompt.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4-claude-sonnet-4-6-adversarial-007
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Structured Source Summary / reopen-protocol-mechanization-plan
+    key
+  plain_language_summary: The structured summary for the mechanization plan resolves
+    RPMR-Q3 inline as 'superseded_by_requirements' and instructs auditors to treat
+    it as historical context. This resolution is correct per Requirement 5 acceptance
+    7, but embedding it as a directive inside a source summary rather than as an explicit
+    preanalysis claim may cause future auditors to miss that this resolution needs
+    to be reflected in design.md's superseding reopen record section.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Minor ergonomics issue: making the RPMR-Q3 resolution an explicit
+    preanalysis claim (rather than an inline note in the source summary) would make
+    it easier to verify that the later criteria check covers it.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4-claude-sonnet-4-6-adversarial-008
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Proposed Criteria Seed / meta/process checks item 3
+  plain_language_summary: Meta check item 3 states 'The criteria contains the output
+    contract expected by run_review.py.' The bundle does not embed the run_review.py
+    output contract requirements, so the later criteria drafter must know these externally
+    or locate them. A reference to the governing API review protocol guidance source
+    would improve completeness.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Minor: the api-review-protocol-guidance structured summary mentions
+    required artifacts (raw, parsed, rounds, model summary, triage, target manifest)
+    but the output contract shape (verdict, reviewed_target, source_materials_used,
+    findings, out_of_scope_not_judged) is only stated in the proposed seed itself,
+    not cross-referenced to its governing source.'
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Main Preanalysis Under Audit > Claim 4
+  plain_language_summary: Preanalysis treats implementation tests as source material
+    for design verification.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Claim 4 lists 'behavior-path source summary, focused tests' as
+    a Source. The structured summary explicitly forbids treating unapproved implementation
+    behavior as the standard for design. This creates a framing bias risk that anchors
+    the design review to the current implementation state rather than upstream requirements.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Main Preanalysis Under Audit
+  plain_language_summary: Missing claim for Requirement 14 proxy boundaries.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The Proposed Criteria Seed correctly includes Check 7 for proxy_model
+    boundaries, but the Main Preanalysis omits this entirely from its Claims list.
+    Aligning the preanalysis with the seed ensures comprehensive coverage and prevents
+    reviewer confusion.
+  applied_files: []
+  superseded_by: null

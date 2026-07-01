@@ -16,6 +16,7 @@ completed_steps:
 - 第3過程：requirements review-wave 完了（横断影響なし、carry-forward 未消化 0 件）
 - 第3過程：requirements alignment 完了（requirements 正本・review 対処・workflow_state・reopen 記録の整合確認）
 - 第3過程：requirements approval 完了（利用者承認済み）
+- 第3過程：design drafting 完了（Requirement 5 受入 7 の設計反映を確認）
 next_step: 第3過程：design triad-review
 step_number: 3
 pending_gates:
@@ -90,6 +91,7 @@ downstream_impact_decisions:
   - stages/in-progress/reopen-procedure-2026-07-01.yaml
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
+- stages/design.yaml#drafting
 reopen_step_records:
 - from_step: 1
   completed_step: 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements triad-review/review-wave/alignment/approval
@@ -123,6 +125,17 @@ drafting_records:
   evidence:
   - .reviewcompass/specs/workflow-management/requirements.md
   - .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
+- gate: stages/design.yaml#drafting
+  feature_scope: workflow-management
+  phase: design
+  rationale: requirements Requirement 5 受入 7 の追加契約を design 正本へ連鎖反映し、
+    edited_phases の full gate chain、impacted_downstream_phases の判断証跡、
+    next/reopen-finalize/commit-preflight の不足検出順、superseding reopen 方針を
+    reopen 機械強制モデルに追記したため、design drafting を完了扱いにする。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/design.md
+  - stages/in-progress/reopen-procedure-2026-07-01.yaml
 commit_stop_point_records:
 - step: 2
   kind: canonical_update_complete
@@ -155,6 +168,14 @@ commit_stop_point_records:
   head: 0c44d3c8ff4a82bdf4b58cceb32ed18d2b299abe
   evidence:
   - 0c44d3c8ff4a82bdf4b58cceb32ed18d2b299abe
+  - stages/in-progress/reopen-procedure-2026-07-01.yaml
+- step: 3
+  kind: approval_complete
+  gate: stages/requirements.yaml#approval
+  reason: requirements approval 完了時点の停止点
+  head: 0607e5737a46c086562aef8aad9c54a8d632d2eb
+  evidence:
+  - 0607e5737a46c086562aef8aad9c54a8d632d2eb
   - stages/in-progress/reopen-procedure-2026-07-01.yaml
 triad_review_protocol:
   gates:
@@ -309,13 +330,85 @@ triad_review_protocol:
           - C4 feature-scope traceability
         reflected_files:
         - .reviewcompass/specs/workflow-management/requirements.md
+    stages/design.yaml#triad-review:
+      main_preanalysis:
+        status: completed
+        path: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/main-preanalysis.md
+        target:
+        - .reviewcompass/specs/workflow-management/design.md
+        source_materials:
+        - .reviewcompass/specs/workflow-management/requirements.md
+        - .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
+        - stages/in-progress/reopen-procedure-2026-07-01.yaml
+        - .reviewcompass/specs/workflow-management/spec.json
+        - .reviewcompass/guidance/REOPEN_PROCEDURE.md
+        - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
+        - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+        - .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+        - tools/check-workflow-action.py
+        - tests/tools/test_check_workflow_action.py
+        claims:
+        - requirements_to_design_vertical_transfer
+        - edited_phase_full_gate_chain
+        - downstream_impact_decision_evidence
+        - fail_closed_surface_order
+        - superseding_reopen_policy
+        - review_target_boundary
+        next_protocol_state: preanalysis_sufficiency_audit_required
+      preanalysis_sufficiency_audit:
+        status: completed
+        review_run_dir: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-preanalysis-audit-rerun-7
+        bundle_path: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/preanalysis-audit-bundle.md
+        criteria_file: templates/review/main_preanalysis_sufficiency_audit_criteria_template.md
+        review_execution_spec: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-preanalysis-audit-rerun-7/review-execution-spec.yaml
+        review_execution_spec_sha256: 7194127f181f9a56f2f4371d1921c7194abdeda55708dc9fe2d2a96ce33222e1
+        verdicts:
+          adversarial: sufficient_with_revisions
+          judgment: sufficient
+        raw:
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-preanalysis-audit-rerun-7/raw/claude-sonnet-4-6.round-1.txt
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-preanalysis-audit-rerun-7/raw/gemini-3.1-pro-preview.round-1.txt
+        parsed:
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-preanalysis-audit-rerun-7/parsed/claude-sonnet-4-6.round-1.yaml
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-preanalysis-audit-rerun-7/parsed/gemini-3.1-pro-preview.round-1.yaml
+        model_result_summary: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-preanalysis-audit-rerun-7/model-result-summary.yaml
+        triage: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-preanalysis-audit-rerun-7/triage.yaml
+        required_prompt_changes:
+        - PROHIBITED ACTIONS block を criteria に構造化して入れる。
+        - design.md target excerpt presence は正しい requirements transfer の証拠ではないことを明示する。
+        - missing-section finding condition を全 required design sections に一般化する。
+        - Requirement 12 acceptance 13 の日本語 field enumeration を criteria に原文として入れる。
+        - Requirement 16 acceptance 13-14 の priority ordering finding condition を明示する。
+        - behavior-path source summary を co-equal normative source から降格し、provenance hint として扱う。
+        - run_review.py output contract を criteria file に明示する。
+        - preanalysis claim list は hypothesis context であり checklist / answer key / coverage proof ではないことを明示する。
+        required_prompt_changes_applied: true
+        applied_change_evidence:
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/main-preanalysis.md
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/preanalysis-audit-bundle.md
+        - 308a167e21393988b1ddc7fdf3e21b53d608d486
+        next_protocol_state: criteria_draft_required
+      criteria_draft:
+        status: completed
+        path: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/review-criteria.md
+        metadata: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/review-criteria.yaml
+        criteria_file_sha256: 5222fefec03c8d39fdc59dd96a74387d954f48ed14f92dd80176e34442b18184
+        source_materials_file: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/source-materials.yaml
+        next_action_file: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/next-action-for-criteria.json
+        preanalysis_audit_record: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-preanalysis-audit-rerun-7/parsed/claude-sonnet-4-6.round-1.yaml
+        required_prompt_changes_count: 8
+        user_review_requirements_mapped: true
+        required_checks_mapped: true
+        target_criteria_separated: true
+        output_contract_present: true
+        prohibited_actions_reflected: true
+        source_materials_path_only: false
+        generated_by: tools/api_providers/prepare_api_review_criteria.py
+        generated_with_required_prompt_changes: true
+        next_protocol_state: prompt_quality_review_required
 completed_gates:
 - stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
 - stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
-commit_stop_point: true
-commit_stop_point_step: 3
-commit_stop_point_kind: approval_complete
-commit_stop_point_gate: stages/requirements.yaml#approval
-commit_stop_point_reason: requirements approval 完了時点の停止点

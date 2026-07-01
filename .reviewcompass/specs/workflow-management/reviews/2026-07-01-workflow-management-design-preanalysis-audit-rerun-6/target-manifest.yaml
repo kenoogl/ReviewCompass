@@ -1,0 +1,6 @@
+run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-6
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/preanalysis-audit-bundle.md
+  sha256: 61228973bcbf4314e547afc592d7365c273c5dd36de839cc7f80a77f6409cdc8
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: 31b35ce1e9d52c914262cb9a6f0c5033568ce63e09d81d3de1285fa6b2cf34be

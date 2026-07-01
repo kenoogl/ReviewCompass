@@ -1,0 +1,206 @@
+run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7
+triage_status: draft
+generated_at: '2026-07-01T12:54:21.266024+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Main Preanalysis / Claim 4 source list
+  plain_language_summary: Claim 4 lists 'behavior-path source summary' as a co-equal
+    source alongside normative documents (Requirement 5 acceptance 7, REOPEN_PROCEDURE).
+    The bundle explicitly states tool/test paths are provenance hints only and no
+    finding may depend on current implementation behavior if excerpts are not embedded.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Listing non-embedded implementation paths as sources in the preanalysis
+    risks the criteria drafter treating unapproved tool behavior as normative input,
+    which the bundle's own source policy prohibits.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Main Preanalysis / Claim 8 finding condition
+  plain_language_summary: The missing-section finding condition ('該当箇所が存在しない場合は、欠落を
+    finding 候補として扱う') is stated only for Claim 8. Other claims have no equivalent
+    instruction, implying section absence is only a concern for proxy_model sections.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If required design sections for Claims 1-7 are absent or renamed,
+    the later reviewer needs the same instruction to avoid treating vacuous absence
+    as a pass.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed Criteria Seed / meta-check 4
+  plain_language_summary: The instruction that the preanalysis claim list must not
+    be treated as a checklist or answer key appears only in meta-check 4 (prose).
+    It is not structurally enforced in the criteria prompt itself, creating anchoring
+    risk for the later reviewer.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: A reviewer who reads the preanalysis before the criteria instructions
+    may anchor on the 8-claim structure as an exhaustive scope definition, missing
+    findings outside those claims.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed Criteria Seed / meta-check 7 and output contract
+  plain_language_summary: The run_review.py output contract is referenced in meta-check
+    7 but not embedded in the criteria seed. The final criteria must include the full
+    output contract so the runner produces machine-parseable output.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: A criteria file without an embedded output contract cannot guarantee
+    the review-run output is compatible with downstream tooling.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed Criteria Seed / prohibition of out-of-scope operations
+  plain_language_summary: Prohibited operations (commit, push, spec.json update, phase
+    completion, proxy_model decision authorization, etc.) are listed only in prose
+    at the end of the criteria seed. There is no structurally distinct block that
+    a runner cannot miss.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Prose-only prohibitions placed after substantive checks are at
+    higher risk of being overlooked by an LLM reviewer compared to a prominently marked
+    PROHIBITED ACTIONS section.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7-claude-sonnet-4-6-adversarial-006
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Design Target Excerpts section disclaimer
+  plain_language_summary: The bundle's disclaimer ('Excerpt presence only proves that
+    the proposed criteria points to concrete target locations') appears in the bundle
+    but is not reproduced in the proposed criteria seed. The later reviewer sees only
+    the criteria, not the bundle.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without a prominent disclaimer in the criteria itself, the later
+    reviewer may treat the presence of excerpts in the criteria as implicit confirmation
+    that the design already satisfies the requirements.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7-claude-sonnet-4-6-adversarial-007
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Proposed Criteria Seed / item 8
+  plain_language_summary: Item 8 paraphrases the Requirement 12 acceptance 13 output
+    field list rather than quoting the exact Japanese enumeration from the embedded
+    excerpt. Paraphrase drift between the seed and the final criteria could cause
+    the later reviewer to accept a design that omits a listed field.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Verbatim quoting of the normative field list prevents ambiguity
+    about which fields are required in the next --json reopen output contract.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7-claude-sonnet-4-6-adversarial-008
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Proposed Criteria Seed / item 10
+  plain_language_summary: Item 10 (Requirement 16 acceptance 13-14 priority ordering)
+    does not include an explicit finding condition comparable to the conditions stated
+    for items 8 and 9. The criteria should specify what the reviewer should flag if
+    the priority order or conflict-resolution rule is absent or incomplete in design.md.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without an explicit finding condition, the later reviewer may apply
+    weaker scrutiny to this check than to checks with stated conditions.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7-claude-sonnet-4-6-adversarial-009
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-7
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Main Preanalysis / Resolved split decision
+  plain_language_summary: The 'Resolved split decision' is stated as a concluded fact
+    in the preanalysis before the audit. The auditor independently confirms single-prompt
+    is appropriate, but the framing is mildly overconfident for a pre-audit document.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Minor: does not affect audit outcome but should be reworded as
+    a recommendation subject to audit confirmation in any revised preanalysis.'
+  applied_files: []
+  superseded_by: null

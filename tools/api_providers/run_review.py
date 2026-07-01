@@ -598,6 +598,54 @@ def validate_post_write_prompt_manifest_preflight(args: argparse.Namespace) -> L
   return errors
 
 
+def validate_api_review_prompt_quality_preflight(args: argparse.Namespace) -> List[str]:
+  """prompt-quality 既定経路は topic 単位 criteria builder の成果物だけを許可する。"""
+  if args.default_variant_for != "api_review_prompt_quality":
+    return []
+
+  errors = []
+  if not args.criteria_file:
+    errors.append("api_review_prompt_quality requires --criteria-file")
+    return errors
+
+  criteria_path = Path(args.criteria_file)
+  if not criteria_path.is_absolute():
+    criteria_path = Path.cwd() / criteria_path
+  standard_preanalysis_audit = (
+    Path.cwd()
+    / "templates"
+    / "review"
+    / "main_preanalysis_sufficiency_audit_criteria_template.md"
+  )
+  if criteria_path.resolve() == standard_preanalysis_audit.resolve():
+    return []
+
+  review_run_dir = Path(args.review_run_dir)
+  metadata_path = review_run_dir / "review-criteria.yaml"
+  if not metadata_path.is_file():
+    errors.append("review-criteria.yaml missing")
+    return errors
+
+  metadata = _load_yaml_dict(metadata_path)
+  metadata_criteria = metadata.get("criteria_file")
+  if not isinstance(metadata_criteria, str) or not metadata_criteria:
+    errors.append("review-criteria.yaml criteria_file missing")
+  else:
+    metadata_criteria_path = Path(metadata_criteria)
+    if not metadata_criteria_path.is_absolute():
+      metadata_criteria_path = Path.cwd() / metadata_criteria_path
+    if criteria_path.resolve() != metadata_criteria_path.resolve():
+      errors.append("criteria_file does not match review-criteria.yaml")
+
+  expected_sha = metadata.get("criteria_file_sha256")
+  if not isinstance(expected_sha, str) or not expected_sha:
+    errors.append("review-criteria.yaml criteria_file_sha256 missing")
+  elif _sha256_file(Path(args.criteria_file)) != expected_sha:
+    errors.append("criteria_file sha256 mismatch")
+
+  return errors
+
+
 def _select_variant_name(args: argparse.Namespace, config: Dict[str, Any]) -> Optional[str]:
   """phase に応じた実効 variant 名を返す。"""
   if args.variant and args.default_variant_for:
@@ -777,6 +825,12 @@ def main(argv: Optional[List[str]] = None) -> int:
     if post_write_preflight_errors:
       sys.stderr.write("エラー：post-write review prompt preflight failed\n")
       for error in post_write_preflight_errors:
+        sys.stderr.write(f"  - {error}\n")
+      return 1
+    prompt_quality_preflight_errors = validate_api_review_prompt_quality_preflight(args)
+    if prompt_quality_preflight_errors:
+      sys.stderr.write("エラー：api review prompt quality preflight failed\n")
+      for error in prompt_quality_preflight_errors:
         sys.stderr.write(f"  - {error}\n")
       return 1
 

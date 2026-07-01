@@ -1,0 +1,17 @@
+run_id: 2026-07-01-workflow-management-design-review-run
+feature: workflow-management
+workflow_phase: design
+review_stage: triad-review
+criteria_file: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/review-criteria.md
+criteria_file_sha256: 5222fefec03c8d39fdc59dd96a74387d954f48ed14f92dd80176e34442b18184
+source_materials_file: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/source-materials.yaml
+generated_at: '2026-07-01T13:08:26.700598+00:00'
+required_prompt_changes_count: 8
+recommended_run_review_args:
+  criteria_file: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/review-criteria.md
+  phase: triad-review
+  effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+  effective_prompt_sha256: e044d5b9a44dec0e3e21f8f23a4e0fcf53de3d74d81790b83d8c8fbbeb11a1ae
+preanalysis_audit_record: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-preanalysis-audit-rerun-7/parsed/claude-sonnet-4-6.round-1.yaml
+effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+effective_prompt_sha256: e044d5b9a44dec0e3e21f8f23a4e0fcf53de3d74d81790b83d8c8fbbeb11a1ae

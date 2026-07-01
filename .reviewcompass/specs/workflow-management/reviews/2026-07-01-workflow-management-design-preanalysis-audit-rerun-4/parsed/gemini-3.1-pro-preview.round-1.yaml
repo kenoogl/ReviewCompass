@@ -1,0 +1,74 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 33.959
+verdict: sufficient_with_revisions
+independent_reconstruction:
+  judgment_items:
+  - item_id: workflow-management-design-reopen-mechanization
+    question: Does design.md correctly capture and apply the reopening protocol requirements
+      (Req 5.7, Req 12.13-14, Req 14.11, and Req 16.11-12) regarding full gate chains,
+      downstream impact decisions, fail-closed detection order, superseding records,
+      scope distinctions, and proxy-model restrictions without omitting context or
+      treating implementation as ground truth?
+    target_files:
+    - .reviewcompass/specs/workflow-management/design.md
+    source_materials:
+    - requirements-contract (Requirement 5 acc 7, Requirement 12 acc 13-14, Requirement
+      14 acc 11, Requirement 16 acc 11-12)
+    - reopen-procedure-guidance
+    - vertical-intent-transfer-guidance
+    - api-review-protocol-guidance
+    out_of_scope:
+    - tasks.md correctness
+    - implementation code and tests correctness
+    - execution of phase transition, commit, push, proxy_model decision, or spec.json
+      updates
+    rationale: This item verifies the vertical transfer of canonical reopening requirements
+      into the design layer before proceeding to downstream phase execution.
+preanalysis_assessment:
+  supported_parts:
+  - Claims 1, 2, 3, 5, and 6 properly align target design sections with canonical
+    requirements.
+  - Clear and accurate distinction between target (design.md) and out-of-scope materials
+    (tasks/implementation).
+  missing_perspectives:
+  - The Main Preanalysis claims list omits Requirement 14 (proxy_model human-only
+    boundaries), which is present in sources and the Proposed Criteria Seed.
+  unsupported_or_overconfident_parts: []
+  bias_risks:
+  - Claim 4 anchors fail-closed order evaluation to 'behavior-path source summary,
+    focused tests' instead of solely canonical requirements, violating guidance that
+    implementation must not be treated as the standard for design.
+prompt_sufficiency:
+  information: revisions_needed
+  question: sufficient
+  scope: sufficient
+  sensitivity_check: sufficient
+  notes:
+  - Criteria seed correctly defines bounds, non-leading questions, and prohibitions,
+    but the final criteria must explicitly warn against using behavior tests as design
+    requirements and ensure all source texts are embedded.
+required_prompt_changes:
+- Explicitly instruct the model to judge fail-closed detection order based on Requirement
+  5.7 and workflow guidance, preventing the reviewer from using behavior-path code
+  or tests as the canonical standard for design completeness.
+- Ensure the actual criteria explicitly embeds the source text for Requirement 14
+  acceptance 11 to support Check 7 (proxy_model boundaries).
+findings:
+- severity: WARN
+  target_location: Main Preanalysis Under Audit > Claim 4
+  description: Preanalysis treats implementation tests as source material for design
+    verification.
+  rationale: Claim 4 lists 'behavior-path source summary, focused tests' as a Source.
+    The structured summary explicitly forbids treating unapproved implementation behavior
+    as the standard for design. This creates a framing bias risk that anchors the
+    design review to the current implementation state rather than upstream requirements.
+- severity: INFO
+  target_location: Main Preanalysis Under Audit
+  description: Missing claim for Requirement 14 proxy boundaries.
+  rationale: The Proposed Criteria Seed correctly includes Check 7 for proxy_model
+    boundaries, but the Main Preanalysis omits this entirely from its Claims list.
+    Aligning the preanalysis with the seed ensures comprehensive coverage and prevents
+    reviewer confusion.

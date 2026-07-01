@@ -174,7 +174,19 @@ class AnthropicProvider(ProviderBase):
     return self.URL, headers, body
 
   def _extract_text(self, response_json: dict) -> str:
-    return response_json["content"][0]["text"]
+    content = response_json["content"]
+    part_types = []
+    for part in content:
+      if isinstance(part, dict) and part.get("type"):
+        part_types.append(str(part["type"]))
+      if isinstance(part, dict) and isinstance(part.get("text"), str):
+        return part["text"]
+    stop_reason = response_json.get("stop_reason")
+    raise ValueError(
+      "Anthropic response has no text part: "
+      f"stop_reason={stop_reason}; "
+      f"part_types={','.join(part_types) if part_types else 'unknown'}"
+    )
 
 
 class OpenAIProvider(ProviderBase):

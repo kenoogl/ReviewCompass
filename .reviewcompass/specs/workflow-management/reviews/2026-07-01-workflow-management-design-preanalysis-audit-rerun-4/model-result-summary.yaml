@@ -1,0 +1,29 @@
+run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-4
+models:
+- model_id: claude-sonnet-4-6
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  parse_status: parsed
+  triage_status: triage_pending
+  findings_count: 8
+  findings_count_by_severity:
+    ERROR: 2
+    WARN: 4
+    INFO: 2
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0
+- model_id: gemini-3.1-pro-preview
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  parse_status: parsed
+  triage_status: triage_pending
+  findings_count: 2
+  findings_count_by_severity:
+    WARN: 1
+    INFO: 1
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: c0f405a62ba657304c46346bb3e2dee55c1cede7d2dfbbfef3facec6f03a41f8

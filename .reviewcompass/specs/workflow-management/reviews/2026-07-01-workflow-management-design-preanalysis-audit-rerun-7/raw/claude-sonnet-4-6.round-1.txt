@@ -1,0 +1,127 @@
+verdict: sufficient_with_revisions
+
+independent_reconstruction:
+  judgment_items:
+    - item_id: "workflow-management-design-triad-review-preanalysis-sufficiency"
+      question: "Is the main preanalysis, together with the embedded source materials, sufficient to support a later design triad-review API prompt that independently judges whether design.md carries Requirement 5 acceptance 7 and related reopen-protocol, scope-separation, and proxy/human-authorization contracts into the design layer without omission, weakening, unsupported addition, or out-of-scope authorization?"
+      target_files:
+        - ".reviewcompass/specs/workflow-management/design.md (later review-run target only; not judged here)"
+      source_materials:
+        - "requirements.md Requirement 5 acceptance 7 (embedded)"
+        - "requirements.md Requirement 12 acceptance 13-14 (embedded)"
+        - "requirements.md Requirement 14 acceptance 11 (embedded)"
+        - "requirements.md Requirement 16 acceptance 11-12 (embedded)"
+        - "requirements.md Requirement 16 acceptance 13-14 (embedded)"
+        - "plan-2026-07-01-reopen-protocol-mechanization-review.yaml invariants RPMR-I1 through RPMR-I7 and RPMR-Q3 (embedded)"
+        - "REOPEN_PROCEDURE.md 第3過程 and 第4過程 (embedded)"
+        - "SESSION_WORKFLOW_GUIDE.md vertical-intent-transfer-review (embedded)"
+        - "SESSION_WORKFLOW_GUIDE.md §3.3(a-2) proxy_model gate (embedded)"
+        - "stages/in-progress/reopen-procedure-2026-07-01.yaml structured state (embedded)"
+        - "spec.json structured state (embedded)"
+        - "design.md target-location excerpts (target anchors only, not source evidence)"
+      out_of_scope:
+        - "Actual correctness of design.md"
+        - "tasks.md correctness"
+        - "implementation code correctness"
+        - "runner/test behavior normative judgment"
+        - "spec.json update, phase transition, commit, push"
+        - "proxy_model decision or human approval delegation"
+        - "gate completion or phase completion"
+        - "past completed reopen record content modification"
+      rationale: "The user requirement is to verify the main preanalysis and proposed criteria seed are sufficient for a subsequent design triad-review. The source materials embedded in the bundle are the upstream contracts (requirements.md excerpts), planning invariants, workflow guidance, and current reopen state. The design.md excerpts are target-location anchors only. A single judgment item covers this: can the proposed criteria derive an independent review judgment from these materials without relying on the preanalysis as an answer key?"
+
+preanalysis_assessment:
+  supported_parts:
+    - "Claim 1 (requirements-to-design vertical transfer): well grounded in Requirement 5 acceptance 7 and REOPEN_PROCEDURE 第3過程 embedded excerpts."
+    - "Claim 2 (edited phase full gate chain): supported by Requirement 5 acceptance 7, RPMR-I1/I2, and current reopen state showing full pending gate list."
+    - "Claim 3 (downstream impact decision evidence): supported by Requirement 5 acceptance 7, Requirement 16 acceptance 11-12, and REOPEN_PROCEDURE 第3〜4過程 embedded excerpts."
+    - "Claim 4 (fail-closed detection order): supported by Requirement 5 acceptance 7 detection-order language and RPMR-I5/I6/I7."
+    - "Claim 5 (superseding reopen policy): supported by Requirement 5 acceptance 7 and the bundle's explicit annotation that RPMR-Q3 is historical context superseded by normative requirements."
+    - "Claim 6 (review target boundary): well grounded in SESSION_WORKFLOW_GUIDE vertical intent transfer guidance."
+    - "Claim 7 (next --json reopen output and preflight boundary): supported by Requirement 12 acceptance 13-14 embedded excerpts."
+    - "Claim 8 (proxy_model and human-only authorization boundary): supported by Requirement 14 acceptance 11, Requirement 16 acceptance 13-14, and SESSION_WORKFLOW_GUIDE §3.3(a-2) embedded excerpts."
+    - "The resolved split decision (single prompt, behavior-path as auxiliary only) is appropriate given the source structure."
+    - "The RPMR-Q3 superseded-context annotation prevents the later reviewer from treating an open planning question as a live policy dispute."
+  missing_perspectives:
+    - "The preanalysis does not explicitly address what the later reviewer should do if design.md target sections are absent or structurally reorganized such that the named section anchors do not exist. A missing-section handling note would close a gap between the claimed target locations and reality."
+    - "The preanalysis does not address the Requirement 16 acceptance 13-14 priority-ordering rule (human-only decision boundary, unresolved approval gate, approval_required:true, unresolved review-wave impact evidence taking priority over proxy applicability) as a distinct claim. The proposed criteria seed item 10 covers it, but the preanalysis body conflates it with Claim 8 without extracting the priority/conflict-resolution sub-question explicitly."
+    - "The preanalysis does not note that design.md must make the equivalence explicit if it uses terminology other than 'direct features' / 'indirect features' from Requirement 12 acceptance 13. The proposed criteria seed mentions this but the preanalysis body does not flag it as a finding condition, creating a coverage gap between the hypothesis and the proposed checks."
+  unsupported_or_overconfident_parts:
+    - "Claim 4 cites 'behavior-path source summary' as a source. The bundle marks tool/test paths as provenance hints only and states no finding may depend on current implementation behavior if excerpts are not embedded. The preanalysis should not list behavior-path source summary as a co-equal source alongside normative documents; it risks the later criteria writer treating unapproved implementation as a normative reference."
+    - "The 'Resolved split decision' section states the resolution as a concluded fact without noting that the auditor must independently confirm single-prompt is appropriate. Framing it as resolved before audit is mildly overconfident."
+  bias_risks:
+    - "The preanalysis presents claims 1-8 as a structured checklist. The proposed criteria seed must explicitly instruct the later reviewer not to treat this list as an exhaustive coverage proof or answer key. The bundle's meta-check 4 includes this instruction, but the preanalysis itself does not hedge, creating anchoring risk for the criteria drafter."
+    - "The design.md excerpts are included in the bundle under 'Design Target Excerpts.' Their presence with headings matching the claimed target locations creates an implicit suggestion that the design already satisfies the requirements. The bundle's disclaimer ('Excerpt presence only proves that the proposed criteria points to concrete target locations') partially mitigates this, but the criteria must repeat this disclaimer prominently to prevent the later reviewer from treating excerpt inclusion as confirmation of correct transfer."
+    - "Claim 8 finding condition language ('該当箇所が存在しない場合は、欠落を finding 候補として扱う') is appropriate but applies equally to all claims. Only Claim 8 states it, creating an implicit suggestion that section absence is only a concern for proxy_model sections. The criteria must generalize this."
+
+prompt_sufficiency:
+  information: revisions_needed
+  question: sufficient
+  scope: revisions_needed
+  sensitivity_check: revisions_needed
+  notes:
+    - "The proposed criteria seed primary question is non-leading and correctly scoped to requirements-to-design vertical transfer."
+    - "Embedded source materials cover all normative contracts needed for independent judgment. No required source is path-only."
+    - "The behavior-path source summary entry lists tool/test paths without embedded excerpts and instructs the criteria not to base findings on them. This is correct policy but must be reproduced verbatim in the final criteria, not left implicit in the bundle."
+    - "The criteria seed does not yet include the run_review.py output contract fields. Meta-check 7 notes this requirement but does not embed the contract. The final criteria must embed the output contract explicitly."
+    - "The criteria seed does not explicitly prohibit the reviewer from treating design.md target excerpt presence as evidence of correct transfer. This prohibition must appear in the criteria instructions, not only in the bundle disclaimer."
+    - "Sensitivity check: the criteria seed's meta-check list does prohibit commit, push, phase completion, human approval delegation, proxy_model decision, implementation edits, and unapproved specification changes. However, the prohibition is listed in prose only. The final criteria must include a machine-readable or structurally distinct 'PROHIBITED ACTIONS' block so the runner cannot miss it."
+    - "The criteria seed does not specify how the later reviewer should handle design.md sections that are missing, renamed, or restructured relative to the named anchors. An explicit instruction is required."
+    - "Requirement 16 acceptance 13-14 priority-ordering (item 10 in the seed) is partially covered but not given a distinct finding condition the way Claim 7 and Claim 8 are in the preanalysis. The final criteria must make the finding condition explicit."
+    - "The criteria seed does not embed the exact Requirement 12 output field list verbatim. Item 8 paraphrases it. The final criteria should quote the exact Japanese field enumeration from the embedded requirement excerpt to prevent the later reviewer from relying on a paraphrase."
+
+required_prompt_changes:
+  - "Add a structurally distinct PROHIBITED ACTIONS block to the criteria that explicitly lists: commit, push, spec.json update, phase approval, gate completion, phase completion, reopen finalize, proxy_model decision authorization, human approval delegation, and unapproved specification changes. Do not rely on prose-only prohibition buried in meta-checks."
+  - "Add an explicit instruction that design.md target excerpt presence in the bundle is not evidence of correct requirements transfer; the later reviewer must judge the full target file independently and must not treat excerpt inclusion as confirmation."
+  - "Generalize the missing-section finding condition (currently only stated for Claim 8 / proxy_model) to all required design sections. If a required design section is absent or cannot be located, the reviewer must treat absence as a potential finding rather than treating the check as vacuously satisfied."
+  - "Embed the exact Requirement 12 acceptance 13 Japanese field enumeration verbatim in the criteria rather than paraphrasing it, to prevent paraphrase drift in the later review-run."
+  - "Add an explicit finding condition for Requirement 16 acceptance 13-14 priority ordering: the later reviewer must check whether design.md states that human-only decision boundary, unresolved approval gate, approval_required:true operations, and unresolved review-wave impact evidence each take priority over proxy applicability, and that triage leave-as-is or proxy approved cannot cancel human-required evidence."
+  - "Remove or demote 'behavior-path source summary' from co-equal source status in Claim 4 of the preanalysis before criteria draft, or add an explicit note in the criteria that behavior-path paths are provenance hints only and no finding may depend on unapproved implementation behavior."
+  - "Embed the run_review.py output contract (verdict, reviewed_target, source_materials_used, findings, out_of_scope_not_judged; findings fields: severity, target_location, description, rationale, source_materials) explicitly in the criteria file, not only referenced in a meta-check."
+  - "Add a direct instruction in the criteria that the preanalysis claim list is hypothesis context only and must not be used as an exhaustive checklist, coverage proof, or answer key by the later reviewer."
+
+findings:
+  - severity: WARN
+    target_location: "Main Preanalysis / Claim 4 source list"
+    description: "Claim 4 lists 'behavior-path source summary' as a co-equal source alongside normative documents (Requirement 5 acceptance 7, REOPEN_PROCEDURE). The bundle explicitly states tool/test paths are provenance hints only and no finding may depend on current implementation behavior if excerpts are not embedded."
+    rationale: "Listing non-embedded implementation paths as sources in the preanalysis risks the criteria drafter treating unapproved tool behavior as normative input, which the bundle's own source policy prohibits."
+
+  - severity: WARN
+    target_location: "Main Preanalysis / Claim 8 finding condition"
+    description: "The missing-section finding condition ('該当箇所が存在しない場合は、欠落を finding 候補として扱う') is stated only for Claim 8. Other claims have no equivalent instruction, implying section absence is only a concern for proxy_model sections."
+    rationale: "If required design sections for Claims 1-7 are absent or renamed, the later reviewer needs the same instruction to avoid treating vacuous absence as a pass."
+
+  - severity: WARN
+    target_location: "Proposed Criteria Seed / meta-check 4"
+    description: "The instruction that the preanalysis claim list must not be treated as a checklist or answer key appears only in meta-check 4 (prose). It is not structurally enforced in the criteria prompt itself, creating anchoring risk for the later reviewer."
+    rationale: "A reviewer who reads the preanalysis before the criteria instructions may anchor on the 8-claim structure as an exhaustive scope definition, missing findings outside those claims."
+
+  - severity: WARN
+    target_location: "Proposed Criteria Seed / meta-check 7 and output contract"
+    description: "The run_review.py output contract is referenced in meta-check 7 but not embedded in the criteria seed. The final criteria must include the full output contract so the runner produces machine-parseable output."
+    rationale: "A criteria file without an embedded output contract cannot guarantee the review-run output is compatible with downstream tooling."
+
+  - severity: WARN
+    target_location: "Proposed Criteria Seed / prohibition of out-of-scope operations"
+    description: "Prohibited operations (commit, push, spec.json update, phase completion, proxy_model decision authorization, etc.) are listed only in prose at the end of the criteria seed. There is no structurally distinct block that a runner cannot miss."
+    rationale: "Prose-only prohibitions placed after substantive checks are at higher risk of being overlooked by an LLM reviewer compared to a prominently marked PROHIBITED ACTIONS section."
+
+  - severity: WARN
+    target_location: "Design Target Excerpts section disclaimer"
+    description: "The bundle's disclaimer ('Excerpt presence only proves that the proposed criteria points to concrete target locations') appears in the bundle but is not reproduced in the proposed criteria seed. The later reviewer sees only the criteria, not the bundle."
+    rationale: "Without a prominent disclaimer in the criteria itself, the later reviewer may treat the presence of excerpts in the criteria as implicit confirmation that the design already satisfies the requirements."
+
+  - severity: INFO
+    target_location: "Proposed Criteria Seed / item 8"
+    description: "Item 8 paraphrases the Requirement 12 acceptance 13 output field list rather than quoting the exact Japanese enumeration from the embedded excerpt. Paraphrase drift between the seed and the final criteria could cause the later reviewer to accept a design that omits a listed field."
+    rationale: "Verbatim quoting of the normative field list prevents ambiguity about which fields are required in the next --json reopen output contract."
+
+  - severity: INFO
+    target_location: "Proposed Criteria Seed / item 10"
+    description: "Item 10 (Requirement 16 acceptance 13-14 priority ordering) does not include an explicit finding condition comparable to the conditions stated for items 8 and 9. The criteria should specify what the reviewer should flag if the priority order or conflict-resolution rule is absent or incomplete in design.md."
+    rationale: "Without an explicit finding condition, the later reviewer may apply weaker scrutiny to this check than to checks with stated conditions."
+
+  - severity: INFO
+    target_location: "Main Preanalysis / Resolved split decision"
+    description: "The 'Resolved split decision' is stated as a concluded fact in the preanalysis before the audit. The auditor independently confirms single-prompt is appropriate, but the framing is mildly overconfident for a pre-audit document."
+    rationale: "Minor: does not affect audit outcome but should be reworded as a recommendation subject to audit confirmation in any revised preanalysis."

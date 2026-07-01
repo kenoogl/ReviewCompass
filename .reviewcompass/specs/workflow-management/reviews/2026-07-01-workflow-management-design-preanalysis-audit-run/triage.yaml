@@ -1,0 +1,229 @@
+run_id: 2026-07-01-workflow-management-design-preanalysis-audit-run
+triage_status: draft
+generated_at: '2026-07-01T11:50:00.134288+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-run-claude-sonnet-5-adversarial-001
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-run
+  source_model: claude-sonnet-5
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-5.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Main Preanalysis Under Audit section
+  plain_language_summary: Only a paraphrased summary of main-preanalysis.md is included
+    in the bundle; the actual preanalysis document content is not embedded.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The audit criteria requires the bundle to contain 'the main session
+    LLM preanalysis' so it can be independently compared against the source-material
+    reconstruction; a summary prevents verifying whether specific preanalysis claims
+    are grounded, overstated, or biased.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-run-claude-sonnet-5-adversarial-002
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-run
+  source_model: claude-sonnet-5
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-5.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Review Target Manifest > Expected relevant target locations (design.md
+    §Req 12 設計モデル §11)
+  plain_language_summary: Requirement 12 is listed as an expected design.md target
+    location but is never described in any embedded source material (requirements-contract
+    or elsewhere).
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without source content for Requirement 12, a reviewer cannot judge
+    whether this design.md section faithfully transfers that requirement, making this
+    target location unauditable as currently sourced.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-run-claude-sonnet-5-adversarial-003
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-run
+  source_model: claude-sonnet-5
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-5.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-5.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Source Materials > reopen-protocol-mechanization-plan.open_policy_question
+    (RPMR-Q3) vs requirements-contract.structured_summary
+  plain_language_summary: The plan explicitly marks the superseding-reopen-record
+    handling as an unresolved 'open_policy_question' (RPMR-Q3), while the requirements-contract
+    summary states the same content as a settled must-requirement, with no reconciling
+    citation or requirement/acceptance ID.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: If the policy is genuinely still open, the future review question
+    must not hold design.md to a standard that has not been formally adopted; this
+    contradiction must be resolved before the real review-run to avoid penalizing
+    design.md for an unsettled requirement.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-run-claude-sonnet-5-adversarial-004
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-run
+  source_model: claude-sonnet-5
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-5.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed Criteria Seed > required checks item 5 (superseding reopen
+    record policy)
+  plain_language_summary: None of the five listed 'Expected relevant target locations'
+    in the Review Target Manifest clearly corresponds to the superseding-reopen-record-policy
+    checklist item.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Without a mapped target location, the future reviewer may not know
+    where in design.md to look for this content, risking either a false 'missing'
+    finding or an unfocused search across the whole file.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-run-claude-sonnet-5-adversarial-005
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-run
+  source_model: claude-sonnet-5
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-5.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed Criteria Seed > primary question wording
+  plain_language_summary: Requirement 3 acceptance 5 (proxy_model authorization boundary)
+    is only referenced inside the compound primary question ('related active-scope/proxy-boundary
+    contracts') and has no dedicated numbered checklist item like the other five focus
+    areas.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Leaving this check implicit increases the risk it is skipped or
+    under-verified relative to the explicitly enumerated checklist items.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-run-claude-sonnet-5-adversarial-006
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-run
+  source_model: claude-sonnet-5
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-5.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-5.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Source Materials > behavior-path-source-summary
+  plain_language_summary: Fail-closed detection order is sourced partly from current
+    implementation code (tools/check-workflow-action.py), while current-reopen-state
+    shows implementation triad-review as a still-pending gate.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Using not-yet-approved implementation code as a normative source
+    for what design.md 'should' specify risks anchoring the review to existing code
+    behavior instead of the requirements contract, especially if the implementation
+    itself needs to change under this reopen.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-run-claude-sonnet-5-adversarial-007
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-run
+  source_model: claude-sonnet-5
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-5.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-5.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Proposed Criteria Seed > required checks item 6
+  plain_language_summary: Item 6 ('design-stage target/source/out-of-scope separation')
+    is a meta-check about the reviewer's own scope discipline, mixed into a numbered
+    list otherwise composed of design.md content-transfer checks.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Separating meta/process checks from content-transfer checks in
+    the eventual criteria draft would reduce ambiguity for whoever formalizes the
+    prompt.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-run-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed Criteria Seed - Required Checks
+  plain_language_summary: Numbered checklist omits explicit checks for active-scope
+    (Req 16) and proxy limits (Req 3).
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Although the primary question mentions these contracts generically,
+    failing to enumerate them in the explicit checklist increases the risk that the
+    reviewer model will gloss over them during the detailed design verification.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-run-gemini-3.1-pro-preview-judgment-002
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed Criteria Seed
+  plain_language_summary: Absence of expected output contract instructions.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: The proposed criteria seed does not specify how the reviewer should
+    format its response (e.g., YAML schema, findings list), which is necessary to
+    prevent unstructured prose and ensure compatibility with the automated review
+    runner.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-run-gemini-3.1-pro-preview-judgment-003
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-run
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Source Materials / Proposed Criteria Seed
+  plain_language_summary: Source materials rely on structured summaries instead of
+    raw text.
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Vertical intent transfer reviews require exact upstream text to
+    reliably detect omissions or weakenings in the downstream target. Using summaries
+    introduces framing bias and potential context gaps.
+  applied_files: []
+  superseded_by: null

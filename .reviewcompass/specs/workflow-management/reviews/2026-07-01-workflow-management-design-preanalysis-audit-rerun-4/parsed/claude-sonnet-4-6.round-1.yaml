@@ -1,0 +1,284 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 88.238
+verdict: sufficient_with_revisions
+independent_reconstruction:
+  judgment_items:
+  - item_id: preanalysis-audit-reopen-protocol-design-triad
+    question: Does the main preanalysis provide sufficient source material, scope
+      control, judgment-item separation, and authority boundaries to support drafting
+      a valid design triad-review criteria prompt for design.md, and does the proposed
+      criteria seed ask one non-leading primary question grounded in embedded source
+      materials without depending on the preanalysis as an answer key?
+    target_files:
+    - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/main-preanalysis.md
+    - Proposed Criteria Seed section of preanalysis-audit-bundle.md
+    source_materials:
+    - requirements.md Requirement 5 acceptance 7 (embedded)
+    - requirements.md Requirement 12 acceptance 13-14 (embedded)
+    - requirements.md Requirement 14 acceptance 11 (embedded)
+    - requirements.md Requirement 16 acceptance 11-12 (embedded)
+    - design.md target excerpts (embedded for anchor-point verification only)
+    - 'structured source summary: requirements-contract key'
+    - 'structured source summary: reopen-protocol-mechanization-plan key'
+    - 'structured source summary: current-reopen-state key'
+    - 'structured source summary: current-spec-state key'
+    - 'structured source summary: reopen-procedure-guidance key'
+    - 'structured source summary: vertical-intent-transfer-guidance key'
+    - 'structured source summary: api-review-protocol-guidance key'
+    - 'structured source summary: behavior-path-source-summary key'
+    out_of_scope:
+    - Correctness of tasks.md
+    - Correctness of implementation code
+    - runner behavior judgment
+    - spec.json update authorization
+    - phase or gate completion
+    - commit or push authorization
+    - proxy_model decision authorization
+    - human approval delegation
+    - actual design.md correctness judgment (reserved for later review-run)
+    - past completed reopen record content modification
+    rationale: 'The bundle''s stated purpose is to audit whether the preanalysis and
+      proposed criteria seed are ready to support a later design triad-review. The
+      judgment is therefore meta: is the preparation material sufficient and correctly
+      bounded, not whether design.md itself is correct. The source materials embedded
+      in the bundle supply the upstream requirement contracts needed to independently
+      check each preanalysis claim. The design.md excerpts are present only to confirm
+      that the proposed criteria seed points to real, locatable target sections. This
+      is a single, coherent judgment item and does not need to be split.'
+preanalysis_assessment:
+  supported_parts:
+  - Claim 1 (requirements-to-design vertical transfer) is grounded in Requirement
+    5 acceptance 7 and the embedded REOPEN_PROCEDURE summary.
+  - Claim 2 (edited phase full gate chain) is directly supported by Requirement 5
+    acceptance 7 text requiring triad-review, review-wave, alignment, and approval.
+  - Claim 3 (downstream impact decision evidence) maps correctly to Requirement 5
+    acceptance 7 five-field record requirement and Requirement 16 acceptance 11-12
+    scope distinction.
+  - 'Claim 4 (fail-closed detection order: next --json first, reopen-finalize as completion
+    guard, commit preflight as final) is verbatim from Requirement 5 acceptance 7.'
+  - Claim 5 (superseding reopen policy) is grounded in Requirement 5 acceptance 7
+    and the structured source summary correctly demotes RPMR-Q3 to historical context.
+  - 'Claim 6 (review target boundary: design.md only, tasks/implementation out of
+    scope) aligns with SESSION_WORKFLOW_GUIDE vertical-intent-transfer guidance.'
+  - The preanalysis explicitly tags itself as hypothesis and not ground truth, consistent
+    with required method.
+  - proxy_model / human-only authorization boundary appears in the proposed criteria
+    seed item 7, grounded in Requirement 14 acceptance 11.
+  - The structured source summary correctly flags behavior-path material (tools/tests)
+    as supporting context only, not normative standard.
+  missing_perspectives:
+  - 'The preanalysis claims list does not explicitly include a Requirement 12 acceptance
+    13-14 vertical transfer check as a named claim. Requirement 12 output contract
+    (exposed fields: active gate, required action, reopen scope, impact review scope,
+    pending gates, completed gates, state references, LLM-reselection prevention)
+    is embedded in the bundle as a source but has no corresponding numbered claim
+    in the preanalysis body. The proposed criteria seed item 4 partially covers fail-closed
+    for next --json but does not surface the full output-field contract from Requirement
+    12.'
+  - Requirement 14 acceptance 11 is embedded as a source but is referenced only in
+    the proposed criteria seed (item 7). The preanalysis claim list has no explicit
+    Claim 7 for proxy_model boundary. This leaves the proxy/human-only transfer check
+    supported in the seed but unrepresented as a named preanalysis claim, creating
+    a gap if the auditor compares claims to seeds.
+  - The reopen-procedure-guidance source (REOPEN_PROCEDURE.md) is summarized but the
+    bundle does not embed its exact text. For the later review-run criteria, this
+    means the criteria draft will need either embedded REOPEN_PROCEDURE text or an
+    explicit note that its summary in the structured source section is the operative
+    content.
+  - SESSION_WORKFLOW_GUIDE vertical-intent-transfer section is referenced by path
+    fragment only (path#vertical-intent-transfer-review) with a summary but no exact
+    text excerpt, creating a path-only risk for the later criteria prompt if the summary
+    omits details.
+  unsupported_or_overconfident_parts:
+  - Claim 4 uses 'behavior-path source summary' and 'focused tests' as source material.
+    The structured source summary explicitly states these are supporting context only
+    and that unapproved implementation behavior must not be treated as the standard.
+    The preanalysis lists them as sources for Claim 4 without this caveat, which risks
+    the later criteria treating tool/test behavior as normative evidence of design
+    correctness.
+  - 'The open note at the end of the preanalysis (''Open: prompt を 1 本にするか、behavior-path
+    claim を分割するか'') is unresolved in the bundle. The bundle does not answer this question,
+    which means the proposed criteria seed may inadvertently bundle a behavior-path
+    judgment (Claim 4) with a pure requirements-transfer judgment in a way that depends
+    on unapproved implementation as evidence.'
+  - The proposed criteria seed asks whether 'proxy_model is explicitly kept out of...
+    human-only authorization' but design.md's target excerpts do not include a section
+    corresponding to proxy_model boundary. The preanalysis and seed both assert this
+    check is needed but do not identify which specific design.md section would carry
+    this content, leaving the target location for this check undefined.
+  bias_risks:
+  - 'The design.md target excerpts are embedded in the bundle under a label noting
+    they are ''not source material'' but their presence alongside source material
+    creates an anchoring risk: an auditor or later criteria reviewer may unconsciously
+    treat the design excerpts as confirming that the transfer is already correct,
+    reducing adversarial scrutiny.'
+  - The structured source summary for reopen-protocol-mechanization-plan explicitly
+    resolves RPMR-Q3 as 'superseded by requirements' and instructs auditors to treat
+    it as historical context. This resolution is correct per Requirement 5 acceptance
+    7, but embedding the resolution as a directive inside source material rather than
+    as a preanalysis claim may cause a later criteria runner to skip independent verification
+    of whether design.md's superseding reopen record treatment actually matches Requirement
+    5 acceptance 7.
+  - All six preanalysis claims point to design.md §reopen 機械強制モデル §5 as a target.
+    This concentration may cause a later reviewer to under-examine the session-spanning
+    state model (§1), Req 12 model (§11), and Req 16 model (§2) sections, which carry
+    scope-distinction and output-field contracts that are equally normative.
+prompt_sufficiency:
+  information: revisions_needed
+  question: sufficient
+  scope: revisions_needed
+  sensitivity_check: sufficient
+  notes:
+  - The primary question in the proposed criteria seed is non-leading and correctly
+    framed around Requirement 5 acceptance 7 and related contracts.
+  - 'Source material coverage is largely sufficient for Claims 1, 2, 3, 5: exact requirement
+    text is embedded and requirements-contract structured summary is present.'
+  - 'Claim 4 (fail-closed) source mapping is weak: behavior-path tools and tests are
+    listed as sources but the structured summary flags them as supporting context
+    only, not normative. The criteria draft must clarify that Requirement 5 acceptance
+    7 is the normative source for detection-order claims and tools/tests are corroborating
+    context at most.'
+  - Requirement 12 acceptance 13-14 output-field contract (full field list, LLM-reselection
+    prevention) is embedded but not surfaced as a named content check in the proposed
+    criteria seed. Item 4 covers detection order but not the output field completeness
+    contract.
+  - 'The target location for the proxy_model / human-only boundary check (criteria
+    seed item 7) is undefined: no design.md section is identified as carrying this
+    content. The criteria draft must either identify the target section or note that
+    absence of a proxy_model boundary section in design.md is itself a finding category.'
+  - REOPEN_PROCEDURE.md and SESSION_WORKFLOW_GUIDE sections are path-referenced with
+    summaries but without exact text embeds. The later criteria prompt must either
+    embed exact excerpts or confirm the structured summaries are complete enough to
+    serve as operative content.
+  - The proposed criteria seed's output contract (verdict, reviewed_target, source_materials_used,
+    findings, out_of_scope_not_judged) is sufficient and correctly does not include
+    commit/push/phase-completion authorization fields.
+  - The criteria seed explicitly prohibits authorizing commit, push, phase completion,
+    human approval delegation, proxy_model decision, implementation edits, and unapproved
+    specification changes. This is sufficient for sensitivity.
+  - The bundle correctly separates design.md target excerpts from source materials
+    in labeling, but the co-location creates scope-confusion risk for criteria drafting
+    (see bias_risks).
+required_prompt_changes:
+- Add a named claim or content check for Requirement 12 acceptance 13-14 output-field
+  contract (full field enumeration and LLM-reselection prevention) as a distinct check
+  item in the criteria, targeting design.md §Req 12 設計モデル §11.
+- Add a named claim or content check for proxy_model / human-only authorization boundary
+  (Requirement 14 acceptance 11) and identify which design.md section is the target,
+  or instruct the reviewer to flag absence of such a section as a finding.
+- Revise the Claim 4 / criteria seed item 4 source attribution to state explicitly
+  that Requirement 5 acceptance 7 is the normative source for fail-closed detection
+  order, and that behavior-path tool/test material is corroborating context only,
+  not the standard against which design.md is judged.
+- Embed exact text from REOPEN_PROCEDURE.md relevant sections (or confirm the structured
+  summary is complete and authoritative) so the later criteria prompt does not rely
+  on a path-only reference.
+- Embed exact text or a complete verbatim excerpt from SESSION_WORKFLOW_GUIDE#vertical-intent-transfer-review
+  so the criteria prompt does not rely on a path-fragment-only reference.
+- Add an explicit instruction in the criteria that design.md target excerpts embedded
+  in the bundle are anchor-point helpers only and must not be treated as confirming
+  that transfer is already correct.
+- Resolve the open question about whether Claim 4 behavior-path judgment should be
+  split into a separate criteria prompt. If kept together, add a scope note stating
+  that tool/test behavior is not being judged, only whether design.md's stated detection-order
+  model matches requirements.
+findings:
+- severity: ERROR
+  target_location: Main Preanalysis claims list / Proposed Criteria Seed content checks
+  description: Requirement 12 acceptance 13-14 output-field contract is embedded as
+    source material but has no corresponding named preanalysis claim and no dedicated
+    criteria seed content check. The full output-field list (active gate, required
+    action, reopen scope, impact review scope, pending gates, completed gates, state
+    references, LLM-reselection prevention) and the preflight non-duplication rule
+    are normative requirements that must transfer to design.md and must be independently
+    verifiable by the later reviewer.
+  rationale: A later reviewer given only the proposed criteria seed would not be instructed
+    to check whether design.md §Req 12 設計モデル §11 carries the full Requirement 12 acceptance
+    13-14 output-field contract. This is a scope omission that could let a partial
+    or missing transfer go undetected.
+- severity: ERROR
+  target_location: Main Preanalysis claims list / Proposed Criteria Seed item 7 /
+    design.md target manifest
+  description: The proxy_model / human-only authorization boundary check (Requirement
+    14 acceptance 11) has no identified target section in design.md. The proposed
+    criteria seed item 7 asks whether 'proxy_model is explicitly kept out of...' but
+    no design.md section is named as the target location. If no such section exists
+    in design.md, the criteria must instruct the reviewer to treat its absence as
+    a potential finding, not to skip the check.
+  rationale: Without a target location, the later reviewer cannot determine whether
+    this requirement transferred to the design layer or was simply omitted. An unchecked
+    omission of a human-only authorization boundary in design.md is a design completeness
+    defect that this review must be able to surface.
+- severity: WARN
+  target_location: Main Preanalysis Claim 4 source attribution / Proposed Criteria
+    Seed item 4
+  description: Claim 4 and criteria seed item 4 list behavior-path tools (check-workflow-action.py)
+    and tests as source materials for the fail-closed detection order claim. The structured
+    source summary explicitly marks these as supporting context only and states the
+    later design review must not treat unapproved implementation behavior as the standard.
+    This caveat is not propagated into the preanalysis claim or the criteria seed.
+  rationale: If the later criteria runner reads Claim 4 source attribution without
+    the caveat, they may treat tool/test behavior as normative evidence of design
+    correctness, reversing the intended normative hierarchy where requirements.md
+    and REOPEN_PROCEDURE.md are the standard.
+- severity: WARN
+  target_location: Source Materials section / reopen-procedure-guidance and vertical-intent-transfer-guidance
+    keys
+  description: REOPEN_PROCEDURE.md and SESSION_WORKFLOW_GUIDE#vertical-intent-transfer-review
+    are referenced with structured summaries but without embedded exact text excerpts.
+    All other primary normative sources (requirements.md, design.md) have exact text
+    embedded. These two sources are normative for scope control and review-method
+    rules.
+  rationale: 'Path-plus-summary references introduce a gap: if the summary omits or
+    softens a detail, the later criteria prompt will silently lose that constraint.
+    Exact excerpts or a confirmed-complete verbatim summary should be embedded to
+    close this gap before criteria drafting.'
+- severity: WARN
+  target_location: Design Target Excerpts section
+  description: 'design.md target excerpts are embedded in the bundle alongside source
+    materials. Although labeled ''not source material,'' their proximity to source
+    materials creates an anchoring risk: a later criteria drafter or runner may unconsciously
+    treat the excerpts as confirming correct transfer, reducing the adversarial independence
+    of the review.'
+  rationale: The criteria draft should include an explicit instruction that these
+    excerpts are target-location anchors only and that the later reviewer must judge
+    independently whether the target content satisfies the requirements, not infer
+    confirmation from the excerpt's existence.
+- severity: WARN
+  target_location: Main Preanalysis open note (final line)
+  description: The preanalysis leaves unresolved whether Claim 4 (behavior-path) should
+    be split into a separate prompt. This open question is not answered in the bundle
+    or the proposed criteria seed, leaving the bundling decision to the criteria drafter
+    without guidance.
+  rationale: If Claim 4 is kept in the same criteria prompt as the other five claims,
+    the criteria must include an explicit scope note that tool/test behavior is not
+    being judged. If split, the behavior-path prompt needs its own source material
+    set and authority boundary. The ambiguity must be resolved before criteria drafting
+    to avoid a misscoped prompt.
+- severity: INFO
+  target_location: Structured Source Summary / reopen-protocol-mechanization-plan
+    key
+  description: The structured summary for the mechanization plan resolves RPMR-Q3
+    inline as 'superseded_by_requirements' and instructs auditors to treat it as historical
+    context. This resolution is correct per Requirement 5 acceptance 7, but embedding
+    it as a directive inside a source summary rather than as an explicit preanalysis
+    claim may cause future auditors to miss that this resolution needs to be reflected
+    in design.md's superseding reopen record section.
+  rationale: 'Minor ergonomics issue: making the RPMR-Q3 resolution an explicit preanalysis
+    claim (rather than an inline note in the source summary) would make it easier
+    to verify that the later criteria check covers it.'
+- severity: INFO
+  target_location: Proposed Criteria Seed / meta/process checks item 3
+  description: Meta check item 3 states 'The criteria contains the output contract
+    expected by run_review.py.' The bundle does not embed the run_review.py output
+    contract requirements, so the later criteria drafter must know these externally
+    or locate them. A reference to the governing API review protocol guidance source
+    would improve completeness.
+  rationale: 'Minor: the api-review-protocol-guidance structured summary mentions
+    required artifacts (raw, parsed, rounds, model summary, triage, target manifest)
+    but the output contract shape (verdict, reviewed_target, source_materials_used,
+    findings, out_of_scope_not_judged) is only stated in the proposed seed itself,
+    not cross-referenced to its governing source.'

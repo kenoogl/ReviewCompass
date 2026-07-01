@@ -1,0 +1,252 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 75.049
+verdict: sufficient_with_revisions
+independent_reconstruction:
+  judgment_items:
+  - item_id: design-reopen-protocol-transfer-audit
+    question: Does the main preanalysis and proposed criteria seed provide sufficient
+      source material, scope control, judgment-item separation, and authority boundaries
+      to support a later design triad-review of design.md for reopen protocol mechanization
+      requirements?
+    target_files:
+    - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/preanalysis-audit-bundle.md
+    source_materials:
+    - Requirement 5 acceptance 7 (embedded)
+    - Requirement 12 acceptance 13-14 (embedded)
+    - Requirement 14 acceptance 11 (embedded)
+    - Requirement 16 acceptance 11-12 (embedded)
+    - Requirement 16 acceptance 13-14 (embedded)
+    - REOPEN_PROCEDURE 第3過程 (embedded)
+    - REOPEN_PROCEDURE 第4過程 (embedded)
+    - SESSION_WORKFLOW_GUIDE vertical-intent-transfer-review (embedded)
+    - SESSION_WORKFLOW_GUIDE §3.3(a-2) proxy_model gate (embedded)
+    - design.md target excerpts (embedded as anchor locations only)
+    - Structured source summary (embedded)
+    - Main preanalysis (embedded)
+    - Proposed criteria seed (embedded)
+    out_of_scope:
+    - Actual correctness of design.md itself
+    - tasks.md correctness
+    - implementation code correctness
+    - spec.json update
+    - phase transition or gate completion
+    - commit or push authorization
+    - proxy_model decision execution
+    - runner or test behavior correctness
+    rationale: The bundle is a preanalysis sufficiency audit target. The judgment
+      item is whether the preanalysis and criteria seed are adequate for a later design
+      review, not whether design.md is correct. All source materials needed to reconstruct
+      the judgment item are embedded. The review requirement, target manifest, source
+      materials, main preanalysis, and criteria seed are all present.
+preanalysis_assessment:
+  supported_parts:
+  - Claim 1 (requirements-to-design vertical transfer) is grounded in Requirement
+    5 acceptance 7, REOPEN_PROCEDURE, and SESSION_WORKFLOW_GUIDE vertical intent transfer
+    guidance.
+  - Claim 2 (edited phase full gate chain) correctly cites Requirement 5 acceptance
+    7 and plan invariants RPMR-I1/I2, which are both present in embedded source.
+  - Claim 3 (downstream impact decision evidence) maps to Requirement 5 acceptance
+    7 and Requirement 16 acceptance 11-12 correctly.
+  - Claim 4 (fail-closed surface order) correctly identifies next --json, reopen-finalize,
+    and commit preflight as the three detection surfaces, matching Requirement 5 acceptance
+    7 and REOPEN_PROCEDURE 第3〜4過程.
+  - Claim 5 (superseding reopen policy) correctly treats RPMR-Q3 as superseded historical
+    context and cites Requirement 5 acceptance 7 as normative.
+  - Claim 7 (next --json reopen output and preflight boundary) correctly maps to Requirement
+    12 acceptance 13-14 and related requirements.
+  - Claim 8 (proxy_model and human-only authorization boundary) correctly cites Requirement
+    14 acceptance 11, Requirement 16 acceptance 13-14, and SESSION_WORKFLOW_GUIDE
+    §3.3(a-2).
+  - The resolved split decision (1 prompt, behavior-path as supplemental only) is
+    consistent with the source guidance and scope constraints.
+  - The out-of-scope exclusions (tasks, implementation, code correctness, current
+    runner behavior) are correctly identified and consistent with SESSION_WORKFLOW_GUIDE
+    vertical intent transfer.
+  - The preanalysis correctly notes that design target excerpts are target-location
+    anchors, not source materials.
+  missing_perspectives:
+  - 'The main preanalysis does not explicitly address whether design.md covers the
+    case where reopen scope and impact review scope are missing, contradictory, or
+    stale (Requirement 12 acceptance 13, second paragraph: next returns WARN or DEVIATION
+    rather than OK). Claim 7 references Requirement 12 but does not surface this specific
+    failure-mode path.'
+  - The main preanalysis does not separately call out the Requirement 16 acceptance
+    13-14 human-required predicate priority and conflict-resolution rule as a distinct
+    claim. It is folded into Claim 8 but the specific ordering rule (human-only decision
+    boundary > unresolved approval gate > approval_required:true operation > unresolved
+    review-wave impact evidence > proxy applicability) is not explicitly reconstructed
+    as a check item.
+  - 'The behavior-path source summary references tools/check-workflow-action.py and
+    tests, but the preanalysis does not explicitly note that no embedded content from
+    those paths is present in the bundle. This creates a minor source-coverage ambiguity:
+    the criteria seed refers to behavior-path context, but if the later reviewer cannot
+    access those files, the criteria must be self-sufficient without them.'
+  unsupported_or_overconfident_parts:
+  - Claim 6 (review target boundary) lists 'next required inputs' and 'requirements.md'
+    as source but 'next required inputs' is not a labeled source key in the structured
+    source summary and is not a distinct embedded artifact. This reference is undefined
+    and could confuse a later reviewer.
+  - The structured source summary key 'reopen-protocol-mechanization-plan' references
+    source_path '.reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml'
+    but no embedded content from this file is present in the bundle. The summary content
+    is provided inline, but the path-only reference for the plan file itself is not
+    resolved to embedded text. This is a source coverage gap for the later review.
+  - The proposed criteria seed check item 8 lists 'direct/indirect features' as required
+    fields in next --json output. Requirement 12 acceptance 13 uses the terms 'direct
+    features' and 'indirect features', but the criteria seed does not clarify whether
+    these map to design.md's terminology. This is a minor terminological ambiguity
+    but not a blocking gap given the embedded requirement text.
+  bias_risks:
+  - The preanalysis structure (Claims 1-8 with target/source mappings) may anchor
+    the later reviewer to the preanalysis claim structure rather than prompting independent
+    source-to-target inspection. The criteria seed should explicitly instruct the
+    reviewer to derive findings from source materials independently and not to treat
+    the preanalysis claim list as a checklist.
+  - The design target excerpts are embedded in the bundle alongside source materials.
+    Although the bundle states they are 'not source material', their presence creates
+    a risk that a reviewer performing the later design review (not the audit) might
+    treat excerpt existence as partial confirmation that requirements are met. The
+    criteria seed addresses this but the warning should be more prominent.
+prompt_sufficiency:
+  information: revisions_needed
+  question: sufficient
+  scope: sufficient
+  sensitivity_check: sufficient
+  notes:
+  - The primary question in the criteria seed is non-leading and correctly scoped
+    to requirements-to-design transfer.
+  - 'The sensitivity check is adequate: the criteria seed explicitly prohibits the
+    reviewer from authorizing commit, push, phase completion, human approval delegation,
+    proxy_model decision, or unapproved specification changes.'
+  - Source information is mostly sufficient via embedding, but the reopen-protocol-mechanization-plan
+    path is referenced without embedded content, creating a potential source gap for
+    the later review criteria draft.
+  - The behavior-path source paths (tools/check-workflow-action.py, tests/) are listed
+    as supporting context but no embedded content is provided. The criteria draft
+    must either embed representative excerpts or explicitly instruct the reviewer
+    that these paths are supplemental and unavailable during review-run, so findings
+    must not depend on them.
+  - Claim 6 references 'next required inputs' as a source without a corresponding
+    embedded artifact or source key. This undefined reference must be resolved before
+    criteria draft.
+  - The Requirement 12 acceptance 13 WARN/DEVIATION failure mode for missing/contradictory
+    scope is not surfaced as an explicit check item in the criteria seed. It should
+    be added.
+  - The Requirement 16 acceptance 13-14 human-required predicate priority ordering
+    is not a distinct check item. It should be added or explicitly folded into check
+    item 7 with sufficient specificity.
+  - The output contract for the later review-run is well-defined in the criteria seed
+    and covers verdict, reviewed_target, source_materials_used, findings, and out_of_scope_not_judged
+    with the required finding sub-fields.
+required_prompt_changes:
+- Remove or resolve the undefined 'next required inputs' source reference in Claim
+  6 of the main preanalysis. Either map it to an existing embedded source key or remove
+  it.
+- 'Add an explicit check item to the criteria seed covering Requirement 12 acceptance
+  13: when reopen_scope or impact_review_scope is missing, contradictory, or inconsistent
+  with feature_impact_decisions/spec.json/pending_gates, next --json must return WARN
+  or DEVIATION rather than OK. This is a distinct failure-mode contract not currently
+  surfaced.'
+- 'Add or expand a check item in the criteria seed to explicitly cover Requirement
+  16 acceptance 13-14 human-required predicate priority ordering: human-only decision
+  boundary > unresolved approval gate > approval_required:true operation > unresolved
+  review-wave impact evidence overrides proxy applicability, and triage leave-as-is
+  or proxy approved cannot cancel these.'
+- Either embed representative excerpts from tools/check-workflow-action.py and tests/tools/test_check_workflow_action.py,
+  or add explicit criteria instructions that behavior-path paths are supplemental
+  context only and that the reviewer must not require access to them to complete the
+  review or cite current implementation behavior as normative.
+- Embed or inline the relevant content from .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
+  that is referenced in the structured source summary. Path-only references without
+  embedded content are not sufficient as source material for the later reviewer.
+- Add an explicit instruction in the criteria seed that the reviewer must not use
+  the preanalysis claim structure as a checklist. The reviewer must derive findings
+  independently from embedded source materials and the target document.
+- Strengthen the warning in the criteria seed that design target excerpts are target-location
+  anchors only and that excerpt presence in the bundle must not be treated as evidence
+  of correct requirements transfer.
+findings:
+- severity: ERROR
+  target_location: 'Structured source summary / source key: reopen-protocol-mechanization-plan'
+  description: The source key 'reopen-protocol-mechanization-plan' references source_path
+    '.reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml'
+    but no embedded content from this file is present in the bundle. The structured
+    summary provides an inline paraphrase but the underlying plan document is path-only.
+  rationale: Path-only references without embedded content cannot serve as evidence
+    for the later reviewer. If the plan invariants (RPMR-I1 through RPMR-I7, RPMR-Q3)
+    are material to the criteria, their source content must be embedded or the criteria
+    must note that the normative authority is requirements.md alone and remove the
+    plan path reference.
+- severity: ERROR
+  target_location: 'Main preanalysis, Claim 6: review target boundary / source field'
+  description: Claim 6 lists 'next required inputs' as a source alongside SESSION_WORKFLOW_GUIDE
+    and requirements.md. 'Next required inputs' does not correspond to any labeled
+    source key in the structured source summary and no embedded artifact by that name
+    exists in the bundle.
+  rationale: An undefined source reference in the preanalysis will propagate into
+    the criteria draft as an ambiguous or unresolvable source citation. The later
+    reviewer cannot locate or evaluate material that has no embedded content and no
+    defined path.
+- severity: WARN
+  target_location: Proposed criteria seed, check items 1-8
+  description: 'The criteria seed does not include an explicit check item for Requirement
+    12 acceptance 13''s WARN/DEVIATION failure mode: when reopen_scope or impact_review_scope
+    is missing, contradictory, or stale relative to feature_impact_decisions/spec.json/pending_gates,
+    next --json must not return OK.'
+  rationale: This is a distinct behavioral contract in the upstream requirement. Without
+    an explicit check item, the later reviewer may inspect the happy-path output contract
+    but miss the failure-mode branch, producing an incomplete review judgment.
+- severity: WARN
+  target_location: Proposed criteria seed, check item 7 / proxy_model boundary
+  description: The criteria seed check item 7 covers proxy_model exclusions but does
+    not explicitly surface the Requirement 16 acceptance 13-14 human-required predicate
+    priority ordering rule or the rule that triage leave-as-is and proxy approved
+    cannot cancel human-required evidence.
+  rationale: The priority ordering is a normative design contract. Without it as an
+    explicit check item, the later reviewer may confirm that the human-only set is
+    listed in design.md without verifying that the priority and conflict-resolution
+    logic is also present.
+- severity: WARN
+  target_location: Behavior-path source summary / source paths
+  description: The behavior-path source paths (tools/check-workflow-action.py, tests/tools/test_check_workflow_action.py)
+    are listed in the structured source summary as supporting context but no embedded
+    content is provided. The criteria seed instructs the reviewer to use these as
+    supplemental context only, but if the reviewer cannot access these paths during
+    review-run, any behavior-path claims become unverifiable.
+  rationale: If the review-run environment does not provide file access to these paths,
+    the reviewer will either skip the behavior-path context entirely or make unsupported
+    inferences. The criteria must either embed excerpts or explicitly state that these
+    paths are unavailable and that no finding may depend on them.
+- severity: WARN
+  target_location: Main preanalysis structure / Claims 1-8 format
+  description: The preanalysis presents claims in a structured target/source/out-of-scope
+    format that closely mirrors the check items in the proposed criteria seed. This
+    creates an anchoring risk where the later reviewer treats the preanalysis claim
+    list as a de facto checklist rather than performing independent source-to-target
+    inspection.
+  rationale: The criteria must explicitly instruct the reviewer to derive findings
+    from embedded source materials and the target document independently, and must
+    state that the preanalysis is hypothesis context only and must not be treated
+    as an answer key or a coverage checklist.
+- severity: INFO
+  target_location: Bundle preamble / Design target excerpts section
+  description: The bundle states that design target excerpts 'are not source material'
+    but they are embedded in the same document as source materials without strong
+    visual or structural separation. The criteria seed addresses this with a meta/process
+    check but the warning could be made more prominent.
+  rationale: A later reviewer reading the bundle could inadvertently treat the design.md
+    excerpts as source evidence for correct requirements transfer. Stronger labeling
+    or structural separation would reduce this risk.
+- severity: INFO
+  target_location: Proposed criteria seed, check item 8 / terminology
+  description: Check item 8 lists 'direct/indirect features' as required fields in
+    the next --json reopen output contract. Requirement 12 acceptance 13 uses these
+    terms, but the criteria seed does not clarify whether design.md uses the same
+    terminology or equivalent terms. A terminological mismatch could cause the reviewer
+    to flag a false gap.
+  rationale: Minor clarification. The criteria should either quote the exact requirement
+    terms and instruct the reviewer to check for semantic equivalence, or note that
+    terminology alignment is itself a transfer-fidelity check.

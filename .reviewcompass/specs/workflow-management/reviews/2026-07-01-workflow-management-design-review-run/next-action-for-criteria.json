@@ -1,0 +1,50 @@
+{
+  "verdict": "OK",
+  "next_action": {
+    "kind": "stage",
+    "feature": "workflow-management",
+    "phase": "design",
+    "stage": "triad-review",
+    "required_inputs": [
+      {
+        "id": "target_feature_documents",
+        "paths": [
+          ".reviewcompass/specs/workflow-management/spec.json",
+          ".reviewcompass/specs/workflow-management/requirements.md",
+          ".reviewcompass/specs/workflow-management/design.md",
+          ".reviewcompass/specs/workflow-management/tasks.md"
+        ]
+      },
+      {
+        "id": "vertical_intent_transfer_check",
+        "phase_chains": {
+          "design": [
+            "requirements.md",
+            "design.md"
+          ]
+        },
+        "prompt_materialization_contract": {
+          "source_materials_must_not_be_path_only": true,
+          "required_prompt_material": [
+            "upstream_excerpt_or_structured_summary",
+            "target_phase_artifact_excerpt",
+            "review_target",
+            "out_of_scope"
+          ],
+          "upstream_summary_fields": [
+            "purpose",
+            "responsibility_boundaries",
+            "acceptance_criteria",
+            "forbidden_actions",
+            "unresolved_or_design_deferred_items",
+            "intended_target_phase_transfer"
+          ]
+        }
+      }
+    ],
+    "effective_prompt": {
+      "effective_prompt_path": ".reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md",
+      "effective_prompt_sha256": "e044d5b9a44dec0e3e21f8f23a4e0fcf53de3d74d81790b83d8c8fbbeb11a1ae"
+    }
+  }
+}

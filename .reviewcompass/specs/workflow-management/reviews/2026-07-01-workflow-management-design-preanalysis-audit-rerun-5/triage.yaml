@@ -1,0 +1,252 @@
+run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5
+triage_status: draft
+generated_at: '2026-07-01T12:31:32.918307+00:00'
+decision_actor: null
+decision_actor_type: human
+items:
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5-claude-sonnet-4-6-adversarial-001
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Proposed Criteria Seed / Claim 8 source list; Structured Source
+    Summary behavior-path entry
+  plain_language_summary: 'Requirement 16 acceptance 13-14 is referenced as a source
+    for the proxy_model / human-only boundary check but the text is not embedded in
+    the source materials. A reviewer running the later criteria prompt cannot apply
+    the unembedded acceptance criteria to make an independent judgment.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'A path-only or name-only reference without embedded content is
+    a source-coverage gap under the finding policy. The reviewer would need to rely
+    on the preanalysis framing rather than the source text itself, violating the independent-judgment
+    requirement.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5-claude-sonnet-4-6-adversarial-002
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: ERROR
+  severity_normalized: ERROR
+  target_location: Claim 4 source list; Proposed Criteria Seed content check 4
+  plain_language_summary: 'REOPEN_PROCEDURE 第4過程 is listed as a source for the fail-closed
+    detection order check but only 第3過程 is embedded. The missing process text may
+    contain normative language about reopen-finalize or commit preflight behavior
+    that the later reviewer cannot access.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Missing embedded source for a named process step in a normative
+    guidance document is an ERROR-level coverage gap. If 第4過程 adds no relevant content,
+    that must be confirmed and documented; otherwise the criteria prompt is under-supported
+    for content check 4.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5-claude-sonnet-4-6-adversarial-003
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Structured Source Summary / api-review-protocol-guidance; Claim
+    8 source list
+  plain_language_summary: 'SESSION_WORKFLOW_GUIDE §3.3(a-2) is listed as a source
+    for the proxy_model authorization boundary but no excerpt is embedded. The reviewer
+    cannot determine whether this section adds constraints beyond Requirement 14 acceptance
+    11.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Unembedded path reference creates ambiguity. If the section is
+    redundant with Req 14 acc 11, it can be removed from the source list. If it adds
+    constraints, it must be embedded. Either resolution is required before the real
+    review-run.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5-claude-sonnet-4-6-adversarial-004
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Review Target Manifest; Proposed Criteria Seed (no corresponding
+    content check)
+  plain_language_summary: 'The 変更履歴 2026-07-01 entry is listed as a review target
+    location and referenced in Claims 1 and 5 but no corresponding content check appears
+    in the criteria seed and no source material defines what the changelog must contain
+    to satisfy the requirements.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'An implied check without a defined source anchor and explicit
+    criteria question creates an unverifiable judgment item. The later reviewer may
+    skip it, over-weight it, or misapply it without guidance.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5-claude-sonnet-4-6-adversarial-005
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Claim 7 target location list; Proposed Criteria Seed content check
+    8
+  plain_language_summary: '''§軽量版検査スクリプトモデル §4〜5'' is named as a target location for
+    the Requirement 12 acceptance 13-14 transfer check but no design excerpt for this
+    section is embedded as a target-location anchor. The reviewer cannot locate or
+    verify this section from the provided material.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Missing target-location anchor for a named section leaves the
+    reviewer unable to confirm the target independently. This weakens target/source
+    separation and risks skipping or misidentifying the relevant design section.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5-claude-sonnet-4-6-adversarial-006
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Proposed Criteria Seed structure; Main Preanalysis eight-claim
+    structure
+  plain_language_summary: 'The criteria seed''s eight content checks mirror the eight
+    claims of the preanalysis in order and scope. A reviewer reading both documents
+    may use the preanalysis as a structural decomposition guide rather than forming
+    an independent judgment from the source materials.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Structural mirroring between the preanalysis and the criteria
+    prompt creates anchoring bias risk. The criteria prompt should derive its check
+    structure from the requirements and guidance directly, using different framing
+    and ordering, to prevent the preanalysis from functioning as an answer key.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5-claude-sonnet-4-6-adversarial-007
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: WARN
+  severity_normalized: WARN
+  target_location: Structured Source Summary / behavior-path-source-summary
+  plain_language_summary: 'The behavior-path structured summary states specific behavioral
+    properties of tools and tests as facts (e.g., ''next --json reports missing drafting
+    or missing downstream impact decisions before normal gate completion'') without
+    embedding the actual code or test content. If the criteria prompt includes this
+    summary text, a reviewer may treat unapproved implementation behavior as normative.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: 'Behavioral assertions in a summary without source backing can
+    shift the normative frame from requirements.md and REOPEN_PROCEDURE.md to the
+    current implementation. The criteria must explicitly prohibit this and must not
+    embed the behavioral assertions as if they are requirements.
+
+    '
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5-claude-sonnet-4-6-adversarial-008
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5
+  source_model: claude-sonnet-4-6
+  source_round: round-1
+  source_raw_path: raw/claude-sonnet-4-6.round-1.txt
+  source_parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Proposed Criteria Seed / later review-run output contract
+  plain_language_summary: 'The output contract specifies the required top-level YAML
+    keys but does not define the structure of individual findings (severity values,
+    required per-finding keys). This may produce inconsistent output from different
+    runner instances.
+
+    '
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: Defining the findings structure (severity enum, required keys per
+    finding) in the output contract reduces ambiguity for the runner and simplifies
+    downstream parsing by run_review.py.
+  applied_files: []
+  superseded_by: null
+- finding_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5-gemini-3.1-pro-preview-judgment-001
+  run_id: 2026-07-01-workflow-management-design-preanalysis-audit-rerun-5
+  source_model: gemini-3.1-pro-preview
+  source_round: round-1
+  source_raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  source_parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  severity_original: INFO
+  severity_normalized: INFO
+  target_location: Proposed Criteria Seed > Output contract
+  plain_language_summary: Specify the internal key structure for items in the 'findings'
+    array (e.g., severity, target_location, description, rationale).
+  final_label: null
+  decision_status: human_required
+  decision_actor: null
+  decision_actor_type: human
+  decision_at: null
+  decision_reason: While the seed correctly requires a 'findings' key, explicitly
+    defining its expected sub-keys ensures consistent schema generation for later
+    parsing by run_review.py.
+  applied_files: []
+  superseded_by: null

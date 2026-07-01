@@ -176,6 +176,21 @@ def _write_prompt_manifest(
   return path
 
 
+def _write_api_review_criteria_metadata(review_run_dir, criteria_file):
+  metadata = {
+    "criteria_file": str(criteria_file),
+    "criteria_file_sha256": hashlib.sha256(
+      criteria_file.read_bytes()
+    ).hexdigest(),
+  }
+  metadata_path = review_run_dir / "review-criteria.yaml"
+  metadata_path.write_text(
+    yaml.safe_dump(metadata, allow_unicode=True, sort_keys=False),
+    encoding="utf-8",
+  )
+  return metadata_path
+
+
 def test_run_review_executes_three_roles_and_creates_summary_and_triage(tmp_path, monkeypatch, capsys):
   """3 役を同じ review-run に集約し、summary と triage 下書きを生成する。"""
   monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
@@ -267,6 +282,19 @@ def test_run_review_uses_default_variant_for_operation(
   target.write_text("API review criteria draft\n", encoding="utf-8")
   config_path = _make_config(tmp_path)
   review_run_dir = tmp_path / "prompt-quality-run"
+  review_run_dir.mkdir()
+  criteria_file = review_run_dir / "review-criteria.md"
+  criteria_file.write_text(
+    "criteria_id: workflow-management-design-topic-review-criteria\n"
+    "\n"
+    "# Topic Review Criteria\n"
+    "\n"
+    "Primary judgment question:\n"
+    "\n"
+    "Does the target satisfy this single topic?\n",
+    encoding="utf-8",
+  )
+  _write_api_review_criteria_metadata(review_run_dir, criteria_file)
   responses = {
     "anthropic-api": "findings: []\n",
     "gemini-api": "findings: []\n",
@@ -281,7 +309,7 @@ def test_run_review_uses_default_variant_for_operation(
         "--default-variant-for", "api_review_prompt_quality",
         "--target", str(target),
         "--phase", "prompt-quality",
-        "--criteria", "prompt quality",
+        "--criteria-file", str(criteria_file),
         "--review-run-dir", str(review_run_dir),
         "--config", str(config_path),
       ]
@@ -305,6 +333,93 @@ def test_run_review_uses_default_variant_for_operation(
   assert "| judgment | api | gemini-api | gemini-3.1-pro-preview |" in review_summary
   assert "proxy_model" in review_summary
   assert "利用者提示ゲート" in review_summary
+
+
+def test_run_review_blocks_prompt_quality_without_builder_metadata(
+  tmp_path,
+  monkeypatch,
+  capsys,
+):
+  """prompt-quality 既定経路は topic 単位 criteria builder の metadata なしでは送信しない。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "criteria-draft.md"
+  target.write_text("API review criteria draft\n", encoding="utf-8")
+  criteria_file = tmp_path / "manual-criteria.md"
+  criteria_file.write_text("manual prompt quality criteria\n", encoding="utf-8")
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "prompt-quality-run"
+  provider_factory = _make_provider_factory({
+    "anthropic-api": "findings: []\n",
+    "gemini-api": "findings: []\n",
+  })
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=provider_factory,
+  ) as get_provider:
+    exit_code = main(
+      [
+        "--default-variant-for", "api_review_prompt_quality",
+        "--target", str(target),
+        "--phase", "prompt-quality",
+        "--criteria-file", str(criteria_file),
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+      ]
+    )
+
+  captured = capsys.readouterr()
+  assert exit_code == 1
+  assert "api review prompt quality preflight failed" in captured.err
+  assert "review-criteria.yaml missing" in captured.err
+  assert not get_provider.called
+  assert not (review_run_dir / "prompts").exists()
+
+
+def test_run_review_allows_standard_preanalysis_sufficiency_audit_template(
+  tmp_path,
+  monkeypatch,
+  capsys,
+):
+  """preanalysis sufficiency audit の標準テンプレートは metadata なしで使える。"""
+  monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+  monkeypatch.setenv("GEMINI_API_KEY", "test-key")
+  target = tmp_path / "preanalysis-audit-bundle.md"
+  target.write_text("preanalysis audit bundle\n", encoding="utf-8")
+  criteria_file = (
+    _PROJECT_ROOT
+    / "templates"
+    / "review"
+    / "main_preanalysis_sufficiency_audit_criteria_template.md"
+  )
+  config_path = _make_config(tmp_path)
+  review_run_dir = tmp_path / "preanalysis-audit-run"
+  provider_factory = _make_provider_factory({
+    "anthropic-api": "findings: []\n",
+    "gemini-api": "findings: []\n",
+  })
+
+  with patch(
+    "tools.api_providers.run_review.get_provider",
+    side_effect=provider_factory,
+  ) as get_provider:
+    exit_code = main(
+      [
+        "--default-variant-for", "api_review_prompt_quality",
+        "--target", str(target),
+        "--phase", "prompt-quality",
+        "--criteria-file", str(criteria_file),
+        "--review-run-dir", str(review_run_dir),
+        "--config", str(config_path),
+      ]
+    )
+
+  captured = capsys.readouterr()
+  assert exit_code == 0
+  assert "api review prompt quality preflight failed" not in captured.err
+  assert get_provider.called
+  assert (review_run_dir / "prompts").is_dir()
 
 
 def test_run_review_uses_default_variant_for_implementation_review(

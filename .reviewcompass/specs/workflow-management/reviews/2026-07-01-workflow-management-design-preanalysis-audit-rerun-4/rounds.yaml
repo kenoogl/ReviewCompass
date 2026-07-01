@@ -1,0 +1,117 @@
+round_id: round-1
+purpose: prompt-quality
+invocation_timestamp: '2026-07-01T12:26:44.178584+00:00'
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-design-review-run/preanalysis-audit-bundle.md
+  sha256: 42fefbaa8c41992cc103cab53bb1d40660251e65e126a43d03640d4b235fa90a
+criteria: "---\ncriteria_id: main-preanalysis-sufficiency-audit\nphase: prompt-quality\n\
+  review_target: <preanalysis-audit-bundle.md>\nstatus: template\n---\n\n# Main Preanalysis\
+  \ Sufficiency Audit Criteria\n\nReview the target bundle before the actual API review-run.\n\
+  \nThe target bundle must contain:\n\n- the user or workflow review requirement\n\
+  - the source materials needed for the judgment item\n- the main session LLM preanalysis\n\
+  - the proposed API review criteria or prompt\n\nThe review question is:\n\nCan the\
+  \ proposed API review prompt derive the needed review judgment from the provided\
+  \ source materials, without relying on the main preanalysis as an answer key, and\
+  \ does the main preanalysis reveal any missing viewpoints, unsupported claims, or\
+  \ framing bias that must be corrected before the real review-run?\n\n## Required\
+  \ Method\n\nPerform the audit in this order:\n\n1. Independently reconstruct the\
+  \ judgment item from the source materials and user or workflow requirement.\n2.\
+  \ Compare that reconstruction with the main preanalysis.\n3. Judge whether the proposed\
+  \ API review prompt gives enough source material, scope, question, and output instructions\
+  \ for the actual reviewer.\n4. Identify required prompt changes before any real\
+  \ review-run.\n\nTreat the main preanalysis as a hypothesis and source-discovery\
+  \ aid. Do not treat it as ground truth.\n\n## Required Checks\n\n### Independent\
+  \ Reconstruction\n\nFrom the source materials alone, identify:\n\n- the judgment\
+  \ item ID\n- the exact review question\n- the target artifact or section\n- the\
+  \ source materials that are necessary\n- the material that is out of scope\n- the\
+  \ rationale connecting the source materials to the review question\n\nIf multiple\
+  \ independent judgment items are present, report that the proposed review prompt\
+  \ must be split.\n\n### Main Preanalysis Assessment\n\nCompare the main preanalysis\
+  \ against the independent reconstruction.\n\nCheck for:\n\n- supported parts that\
+  \ are well grounded in the sources\n- missing perspectives or missing source materials\n\
+  - unsupported, overconfident, or overstated parts\n- framing bias, including treating\
+  \ a draft answer as established fact\n- source coverage gaps caused by path-only\
+  \ references, summaries without source basis, or omitted upstream context\n\n###\
+  \ Prompt Sufficiency\n\nJudge whether the proposed API review prompt:\n\n- includes\
+  \ enough model-readable source material\n- asks one non-leading primary question\n\
+  - keeps target, source materials, and out-of-scope material distinct\n- preserves\
+  \ user or workflow requirements without narrowing, broadening, or replacing them\n\
+  - defines the expected output clearly enough for the runner\n- prevents the reviewer\
+  \ from authorizing commit, push, phase completion, human approval delegation, or\
+  \ unapproved specification changes\n\n## Finding Policy\n\n- Report `CRITICAL` if\
+  \ the prompt would authorize or imply authorization of irreversible operations,\
+  \ human-only approval, phase completion, or unapproved repository changes.\n- Report\
+  \ `ERROR` if the prompt cannot support the requested review because source materials\
+  \ are missing, path-only, wrong, or treated as target material.\n- Report `ERROR`\
+  \ if multiple independent judgments are bundled into one prompt.\n- Report `ERROR`\
+  \ if the prompt depends on the main preanalysis as the answer instead of requiring\
+  \ source-based independent judgment.\n- Report `ERROR` if user or workflow review\
+  \ requirements are omitted, narrowed, broadened, or replaced.\n- Report `WARN` for\
+  \ usable prompts with avoidable ambiguity, incomplete source mapping, weak target/source\
+  \ separation, or bias risk.\n- Report `INFO` for minor clarity or ergonomics improvements.\n\
+  \n## Output Contract\n\nReturn YAML only. Do not wrap it in Markdown fences.\n\n\
+  The response must include these top-level keys:\n\n- `verdict`\n- `independent_reconstruction`\n\
+  - `preanalysis_assessment`\n- `prompt_sufficiency`\n- `required_prompt_changes`\n\
+  - `findings`\n\nUse one of these `verdict` values:\n\n- `sufficient`\n- `sufficient_with_revisions`\n\
+  - `insufficient`\n\nUse this shape:\n\nverdict: sufficient_with_revisions\nindependent_reconstruction:\n\
+  \  judgment_items:\n    - item_id: \"<stable-id>\"\n      question: \"<source-derived\
+  \ review question>\"\n      target_files:\n        - \"<path or section>\"\n   \
+  \   source_materials:\n        - \"<path, section, or embedded source label>\"\n\
+  \      out_of_scope:\n        - \"<material or action not judged>\"\n      rationale:\
+  \ \"<why this is the right judgment item>\"\npreanalysis_assessment:\n  supported_parts:\n\
+  \    - \"<grounded part>\"\n  missing_perspectives:\n    - \"<missing viewpoint\
+  \ or source>\"\n  unsupported_or_overconfident_parts:\n    - \"<claim that needs\
+  \ source support or softening>\"\n  bias_risks:\n    - \"<framing or anchoring risk>\"\
+  \nprompt_sufficiency:\n  information: \"sufficient | revisions_needed | insufficient\"\
+  \n  question: \"sufficient | revisions_needed | insufficient\"\n  scope: \"sufficient\
+  \ | revisions_needed | insufficient\"\n  sensitivity_check: \"sufficient | revisions_needed\
+  \ | insufficient\"\n  notes:\n    - \"<short note>\"\nrequired_prompt_changes:\n\
+  \  - \"<required change before actual review-run>\"\nfindings:\n  - severity: WARN\n\
+  \    target_location: \"<section in proposed prompt or bundle>\"\n    description:\
+  \ \"<concise finding>\"\n    rationale: \"<why this matters>\"\n\nIf there are no\
+  \ defects, return `verdict: sufficient`, complete the assessment keys with empty\
+  \ lists where appropriate, and return:\n\nfindings: []\n"
+prompt_sha256: 31d915dbaf9450a40727216d6f7f1bc5c893eb043ee18b68cfd050c1c34b3a1b
+model_results:
+- model_id: claude-sonnet-4-6
+  provider: anthropic-api
+  role: adversarial
+  treatment: adversarial
+  invocation_path: api
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  raw_sha256: e588095684235c6acf9aea78c0b18a4aefce628a3f675d9c49bc069aaef55327
+  parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  parsed_sha256: 30d0757f24db8a3c5684e8b48885da7d84f6113b47d2a93ebec45eb5fc12761c
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-07-01T12:26:10.202729+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 88.238
+  prompt_path: prompts/claude-sonnet-4-6.round-1.prompt.md
+  prompt_sha256: ea041a4d07c5418dbb1a22964b04b02dce8c1ffd0b52fe54a94101045ebd417c
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: judgment
+  treatment: judgment
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 3ba042baf7625b7d3b0f6e368e762e43e909aab8e46e4df907c307fdc8d1b59e
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: b247b8dc33d1c156acb6f234a526d80058619c392896693a290453876ae80704
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-07-01T12:26:44.178584+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 33.959
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: 31d915dbaf9450a40727216d6f7f1bc5c893eb043ee18b68cfd050c1c34b3a1b
+criteria_source_path: templates/review/main_preanalysis_sufficiency_audit_criteria_template.md
+criteria_source_sha256: efc18565121cc0eeceb5156431f7ddf129609809ac83b79f11ef356d23870712
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: c0f405a62ba657304c46346bb3e2dee55c1cede7d2dfbbfef3facec6f03a41f8
