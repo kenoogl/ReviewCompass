@@ -1,0 +1,150 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-07-01-completed-next-task-candidate-selection
+kind: plan
+title: Mechanize completed-state next-task candidate selection
+status: candidate
+source_unit_id: main-completed
+created_at: '2026-07-01T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:completed 時の next-task candidate selection を機械化する plan を起草する
+  reason: >
+    `next --json` が completed を返した後、次作業候補の取得・順位付け・推奨判断が
+    TODO_NEXT_SESSION.md と LLM 判断に残っており、「次へ」指示で作業者が迷う状態に
+    なっているため。completed 後の候補選定も workflow の一部として機械化する。
+summary: >
+  通常 SDD workflow が completed の場合でも、`next --json` が backlog / plan / TODO
+  の構造化状態から次作業候補を抽出し、候補 5 件程度、推奨 1 件、選定根拠、
+  実行レーン、次の許可操作を機械可読に返せるようにする。TODO_NEXT_SESSION.md は
+  セッション引き継ぎメモであり、候補選定の正本にはしない。
+related:
+  - .reviewcompass/backlog/plans/plan-2026-07-01-next-task-list-display.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-22-user-initiated-backlog-checklist-effective-prompt.yaml
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-entry-lane-routing.yaml
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  - .reviewcompass/backlog/index.yaml
+  - tools/check-workflow-action.py
+background:
+  - >
+    `plan-2026-07-01-next-task-list-display` は completed 時の完了報告で
+    候補を 5 件ほど表示する規律を定めたが、候補の取得と順位付けは
+    機械出力に固定されていない。
+  - >
+    現状の `next --json` は `next_action.kind: completed` までで止まり、
+    backlog から次候補を選ぶための candidate list を返さない。
+  - >
+    `operation-trigger-resolve --trigger-text 次へ` は read-only の `next` に解決されるが、
+    completed 後の候補選定 operation には接続されていない。
+problem:
+  - completed 状態で「次へ」と言われた時、作業者が TODO_NEXT_SESSION.md、backlog plan、TODO を読み比べて候補を判断している。
+  - TODO_NEXT_SESSION.md の候補欄が、構造化 backlog より強い正本のように扱われる危険がある。
+  - plan の `remaining_work`、linked TODO、checklist evidence、completed / candidate の不整合を機械的に見ずに候補表示してしまう。
+  - 候補が maintenance / reopen / SDD workflow のどのレーンに送るべきかが `next --json` から分からない。
+  - 「表示候補」と「実行開始してよい候補」の区別が弱く、軽量 backlog 入口を多用して review を抜ける危険が残る。
+policy:
+  - completed は終端ではなく、通常 SDD workflow が完了した後の候補選定状態として扱う。
+  - 候補選定の正本は `.reviewcompass/backlog/index.yaml` と各 backlog item の構造化 YAML とする。
+  - TODO_NEXT_SESSION.md は補助メモとして参照してよいが、候補の存在・順位・実行可否の正本にはしない。
+  - candidate list は read-only で生成し、作業開始・TODO/checklist 作成・reopen 開始などの mutation は別操作にする。
+  - 候補ごとに、表示用説明だけでなく、次に必要な入口操作を明示する。
+  - 設計判断、分割判断、利用者判断、review が必要なものは直接 maintenance 実装へ送らない。
+candidate_selection_contract:
+  command:
+    primary: .venv/bin/python3 tools/check-workflow-action.py next --json
+    completed_behavior: >
+      `next_action.kind: completed` に加えて `next_task_candidates` を返す。
+  output_fields:
+    - name: next_task_candidates
+      type: list
+      detail: 候補を優先順に最大 5 件返す。候補が 5 件未満なら存在分だけ返す。
+    - name: recommended_candidate
+      type: object_or_null
+      detail: 候補リスト先頭と同じ item を返す。候補がない場合は null。
+    - name: selection_basis
+      type: object
+      detail: 読んだ backlog index、対象件数、除外理由、順位付けルールを返す。
+    - name: required_next_operation
+      type: string
+      detail: 候補がある場合は `候補選択`、ない場合は `なし` など、利用者が返せる操作語を返す。
+  candidate_fields:
+    - id
+    - kind
+    - title
+    - path
+    - status
+    - short_description
+    - recommended_lane
+    - start_operation
+    - reason
+    - blockers
+ranking_rules:
+  - >
+    backlog index の `status: candidate` かつ実体ファイルが存在する plan / issue を候補対象にする。
+  - >
+    completed / rejected / superseded / archived は候補から除外する。
+  - >
+    plan の `remaining_work` に未完了 slice がある場合、その slice を候補説明へ含める。
+  - >
+    linked TODO と checklist evidence が completed の slice は残作業候補として扱わない。
+  - >
+    lane 判定は backlog item の内容から conservative に行う。局所・既存仕様境界内なら maintenance、
+    仕様境界・workflow 機構・レビューが必要なら SDD workflow または reopen へ送る。
+  - >
+    順位は、明示 priority がある場合はそれを優先し、ない場合は backlog index の順序と
+    `remaining_work` の未完了度、直近の関連作業との接続性を説明つきで使う。
+remaining_work:
+  - id: CNT-1
+    title: Add completed-state candidate selection read-only output
+    status: candidate
+    tasks:
+      - '`next --json` の completed 出力に `next_task_candidates`、`recommended_candidate`、`selection_basis` を追加する。'
+      - backlog index と backlog item YAML から候補を抽出する read-only helper を追加する。
+      - TODO_NEXT_SESSION.md を候補選定の正本にしないことをテストに固定する。
+    acceptance:
+      - completed 状態で `next --json` が候補 5 件程度と推奨 1 件を JSON で返す。
+      - 候補の path / status / lane / start operation / 除外理由が機械可読に残る。
+      - TODO_NEXT_SESSION.md が空または古くても backlog から候補を返せる。
+  - id: CNT-2
+    title: Classify candidate start lane and operation
+    status: candidate
+    tasks:
+      - 候補ごとに `recommended_lane` を `maintenance`、`reopen`、`sdd_workflow`、`manual_decision_required` から返す。
+      - 候補ごとに `start_operation` を `maintenance_start`、`reopen_start`、`plan_materialization_required` などから返す。
+      - 直接実装できる候補と、plan / checklist / review への分解が必要な候補を分ける。
+    acceptance:
+      - 「次へ」後の候補表示だけでなく、次に利用者が選ぶべき操作入口が分かる。
+      - review なしの backlog 入口が中核変更を直接実装しないよう fail-closed に分類できる。
+  - id: CNT-3
+    title: Connect trigger resolution and effective prompt
+    status: candidate
+    tasks:
+      - '`次へ` が completed 状態の場合、read-only next に加えて completed candidate selection effective prompt を読むようにする。'
+      - effective prompt に候補取得・表示・停止条件・候補選択後の mutation 境界を明記する。
+      - 候補リストを表示した後、作業開始せず利用者選択で停止する規律を固定する。
+    acceptance:
+      - '`次へ` の後に LLM が TODO / backlog を手読みして迷わず、機械出力に基づいて候補を示せる。'
+      - 候補選択前に mutation が発生しない。
+  - id: CNT-4
+    title: Add audits for stale or inconsistent candidate sources
+    status: candidate
+    tasks:
+      - backlog index にある item と実体ファイルの不一致を candidate selection で warning / exclusion として返す。
+      - plan の `status`、`remaining_work`、linked TODO、checklist evidence の矛盾を candidate selection の blockers に出す。
+      - 既存の completed plan に未完了 slice が残る場合、候補ではなく修復候補として表示する。
+    acceptance:
+      - completed 時の候補表示が、古い TODO_NEXT_SESSION.md や未反映 plan 状態に引きずられない。
+      - 候補に出せない理由が利用者に説明できる。
+non_goals:
+  - 候補を自動開始すること。
+  - backlog item の意味判断を完全自動化すること。
+  - SDD workflow / reopen / maintenance の既存手順を置き換えること。
+  - TODO_NEXT_SESSION.md を削除すること。
+decisions:
+  - id: CNT-D1
+    decision: >
+      completed 時の次候補選定は、完了報告の文章規律ではなく `next --json` の
+      read-only 機械出力として扱う。
+    rationale: >
+      候補取得が LLM の手読みや TODO_NEXT_SESSION.md 依存に残ると、
+      「次へ」で作業者が迷い、workflow が正しく動作していない状態が再発するため。
