@@ -1,0 +1,17 @@
+findings:
+  - severity: INFO
+    target_location: "docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md ## 現在の停止点"
+    description: "「第2過程『正本修正完了』の停止点コミット待ち」という記述は現在の状態を正確に反映しており、stages/in-progress/reopen-procedure-2026-07-01.yaml の next_step および commit_stop_point: true と整合している。"
+    rationale: "in-progress ファイル・spec.json・分類記録の三者が同一の停止状態（第2過程停止点コミット待ち）を指し示しており、矛盾は検出されない。"
+
+  - severity: INFO
+    target_location: "docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md ## feature impact 判定"
+    description: "runtime / self-improvement / conformance-evaluation の indirect_check_only 確認タイミングが「design 段または review-wave/alignment で確認する」と明記されており、仕様書 requirements.md の recheck.impacted_downstream_phases（design/tasks/implementation）と整合している。"
+    rationale: "確認タイミングの明示により、後続フェーズで二重判断が生じるリスクが低減されている。過剰主張も欠落もない。"
+
+  - severity: INFO
+    target_location: "docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md ## 第1過程停止点 / ## 現在の停止点"
+    description: "第1過程停止点（spec.json フラグ差し戻し・利用者承認待ち）と第2過程停止点（正本修正完了・コミット待ち）が明確に分離して記述されており、in-progress ファイルの reopen_step_records[0]/[1] と対応している。"
+    rationale: "post-write 所見への修正意図（二つの停止点を分ける）が正しく反映されており、後続のコミット判断に必要な情報が揃っている。"
+
+findings: []

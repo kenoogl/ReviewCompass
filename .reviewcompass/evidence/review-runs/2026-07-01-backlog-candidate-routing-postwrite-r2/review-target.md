@@ -1,3 +1,403 @@
+# Post-write Review Target
+
+criteria_id: backlog_candidate_routing_reopen_classification_post_write
+phase: post_write_verification
+generated_at: 2026-07-01T03:10:35.001826+00:00
+
+## Change Summary
+
+post-write 所見を受け、候補1の reopen 分類記録で第1過程停止点と現在の第2過程停止点を分け、spec.json の差し戻し範囲と indirect check の確認タイミングを明確化した。
+
+## Review Question
+
+修正後の分類記録が利用者の合意、対象 plan、spec.json 差し戻し、reopen 手続き記録と矛盾せず、重要な欠落や過剰主張がないかを確認してください。
+
+## Target Files
+
+- docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md sha256=acd998e3d0f7304fdc15baa484319887c5bf1b4548bce054baaf67dcebcd4b0f
+
+## Source Materials
+
+### .reviewcompass/backlog/plans/plan-2026-07-01-backlog-entry-lane-routing.yaml
+
+content_mode: full_text
+content_sha256: c2c5d07acbfa086a7fa31e6c58521bd5d830cc3578edff5bb12deeac239c559a
+
+```text
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-07-01-backlog-entry-lane-routing
+kind: plan
+title: Define backlog candidate routing and resilient plan format discipline
+status: candidate
+plan_level: executable
+materialization_required: true
+source_unit_id: main-completed
+created_at: '2026-07-01T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+supersedes:
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-text-format-resilience.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:採用
+  reason: >
+    The discussion clarified that backlog is not a work lane or entry point. It
+    is a candidate holding area. User-visible work lanes for this discipline are
+    SDD workflow, reopen, and maintenance. TODO should not be used as the
+    backlog materialization step; maintenance candidates that are small and
+    local go directly to checklist, while other candidates are routed to SDD
+    workflow or reopen. The older text-format resilience plan is absorbed here
+    because plan/checklist format safety must be handled together with backlog
+    routing.
+summary: >
+  Establish a backlog candidate routing discipline and resilient record format:
+  backlog holds candidates only, candidates are routed to SDD workflow, reopen,
+  or maintenance, TODO is not used as the backlog materialization step, and only
+  maintenance work that is small, local, and checklist-ready may proceed
+  directly. This plan also absorbs the text-format resilience work so natural
+  language fields do not break machine-readable backlog records.
+lane_model:
+  work_lanes:
+    - id: sdd_workflow
+      title: SDD workflow
+      meaning: >
+        The normal requirements, design, tasking, review, and implementation
+        workflow. Candidates that need new design, work breakdown, or a new
+        product/workflow decision are routed here unless they are clearly reopen
+        work.
+    - id: reopen
+      title: Reopen
+      meaning: >
+        The lane for reopening completed artifacts, decisions, plans,
+        checklists, or implementation outcomes when prior completed work may
+        need reconsideration. The exact boundary between SDD workflow and reopen
+        requires additional design in this plan.
+    - id: maintenance
+      title: Maintenance
+      meaning: >
+        The lane for small, local workflow upkeep that does not change existing
+        product intent, completed decisions, or broad process structure. A
+        maintenance candidate may proceed directly to checklist when evidence
+        can be recorded clearly.
+  candidate_holding_area:
+    id: backlog
+    title: Backlog
+    meaning: >
+      Backlog is not a work lane and not an execution entry point. It is a place
+      to hold candidates until they are routed to SDD workflow, reopen,
+      maintenance, deferred, or record-only status.
+  procedures_not_work_lanes:
+    - id: operation_entry
+      title: Operation entry
+      meaning: >
+        Short user operations such as commit, push, and autonomous execution
+        triggers choose an action for the current state, but do not define a
+        work lane by themselves.
+    - id: verification_post_write
+      title: Verification and post-write procedures
+      meaning: >
+        Checks that arise inside a work lane after changes are made. They do not
+        replace SDD workflow, reopen, or maintenance.
+    - id: session_handoff
+      title: Session and handoff procedures
+      meaning: >
+        System-level continuity operations such as session records and handoff
+        notes. They are not user-visible product work lanes.
+routing_model:
+  candidate_routes:
+    - id: maintenance
+      use_when: >
+        The candidate is small, local, does not need design or splitting, does
+        not alter prior completed decisions, and can be expressed directly as a
+        checklist with evidence.
+      materialization: checklist
+      direct_execution_allowed: true
+    - id: sdd_workflow
+      use_when: >
+        The candidate needs design, work breakdown, new requirements,
+        implementation planning, or user/product judgment that is not simply
+        reopening a completed artifact. The exact boundary with reopen is part
+        of this plan's investigation.
+      materialization: sdd_artifacts
+      direct_execution_allowed: false
+    - id: reopen
+      use_when: >
+        The candidate may change, invalidate, or reinterpret completed
+        artifacts, decisions, checklists, or implementation outcomes. The exact
+        boundary with SDD workflow is part of this plan's investigation.
+      materialization: reopen_artifacts
+      direct_execution_allowed: false
+    - id: deferred
+      use_when: >
+        The candidate is valid but should not be routed yet.
+      materialization: none
+      direct_execution_allowed: false
+    - id: record_only
+      use_when: >
+        The candidate is useful as a note but does not currently request work.
+      materialization: none
+      direct_execution_allowed: false
+  todo_policy:
+    summary: >
+      TODO is not used as the backlog materialization step for this discipline.
+      Maintenance candidates go directly to checklist. Candidates that cannot be
+      expressed directly as maintenance checklist work are routed to SDD workflow
+      or reopen instead of being parked in TODO.
+format_resilience_model:
+  source_absorbed: plan-2026-07-01-backlog-text-format-resilience
+  principles:
+    - >
+      Separate machine-readable metadata from natural-language narrative fields.
+    - >
+      Use block scalars for long natural-language text, Markdown-like content,
+      bullets, colons, and backticks.
+    - >
+      Run YAML parse and minimal schema checks immediately after creating or
+      updating backlog plans, checklists, and index records.
+    - >
+      Prefer generated or structured update paths over LLM-authored raw YAML
+      when a safer tool exists.
+current_problem:
+  - >
+    Backlog has been treated like an executable entry lane, which allows
+    candidates to bypass SDD workflow or reopen judgment.
+  - >
+    The previous plan-to-TODO-to-checklist path creates an extra object that is
+    not needed for small maintenance work and can make backlog execution feel
+    safer than it is.
+  - >
+    The boundary between SDD workflow and reopen is not yet precise enough for
+    reliable machine routing.
+  - >
+    Existing implementation may still contain functions, workflow rules, and
+    machine processing that assume backlog-to-TODO materialization or backlog as
+    an execution lane.
+  - >
+    Existing backlog TODO files may contain candidates that do not have
+    corresponding plan records. Since TODO is no longer the backlog
+    materialization step, TODO-only candidates need to be returned to plan
+    records, while content already represented in plans needs no duplicate work.
+  - >
+    Natural-language backlog records can break YAML syntax when long text,
+    Markdown notation, colons, or backticks are embedded directly in plain
+    scalars.
+decisions:
+  - id: BELR-D1
+    summary: >
+      Treat the work lanes for this discipline as SDD workflow, reopen, and
+      maintenance.
+  - id: BELR-D2
+    summary: >
+      Treat backlog as a candidate holding area, not a work lane and not an
+      execution entry point.
+  - id: BELR-D3
+    summary: >
+      Do not use TODO as the backlog materialization step. Maintenance
+      candidates that qualify go directly to checklist; other candidates are
+      routed to SDD workflow or reopen.
+  - id: BELR-D4
+    summary: >
+      Direct implementation is allowed only for maintenance candidates that are
+      small, local, and checklist-ready.
+  - id: BELR-D5
+    summary: >
+      Treat SDD workflow versus reopen classification as a design target of this
+      plan, not as already finalized.
+  - id: BELR-D6
+    summary: >
+      Absorb the text-format resilience plan into this plan and remove the old
+      standalone candidate after its requirements are represented here.
+  - id: BELR-D7
+    summary: >
+      Migrate existing TODO-only backlog candidates back to plan records. If the
+      same content already exists in a plan, no additional work is required for
+      that TODO.
+implementation_plan:
+  - id: BELR-1
+    title: Document backlog as candidate holding area
+    goal: >
+      Update guidance so backlog is described as a candidate holding area, while
+      SDD workflow, reopen, and maintenance are the work lanes.
+    deliverables:
+      - >
+        Guidance names SDD workflow, reopen, and maintenance as the lanes.
+      - >
+        Guidance states that backlog is not a lane and not an execution entry
+        point.
+      - >
+        Guidance states that operation, verification/post-write, and
+        session/handoff are procedures, not lanes.
+  - id: BELR-2
+    title: Design SDD workflow versus reopen classification
+    goal: >
+      Investigate and define how candidates that are not maintenance should be
+      routed between SDD workflow and reopen.
+    deliverables:
+      - >
+        Classification criteria cover new design, work breakdown, user
+        judgment, completed-artifact reopening, and prior-decision impact.
+      - >
+        Ambiguous cases are documented with expected routing.
+      - >
+        Machine-readable route values are defined without treating backlog as a
+        route to execution.
+  - id: BELR-3
+    title: Remove TODO from backlog materialization
+    goal: >
+      Replace backlog-to-TODO assumptions with backlog-candidate routing and
+      maintenance-to-checklist materialization.
+    deliverables:
+      - >
+        Operational guidance states that maintenance candidates go directly to
+        checklist when they qualify.
+      - >
+        Guidance states that candidates requiring design, splitting, or user
+        judgment route to SDD workflow or reopen.
+      - >
+        Any remaining TODO dependency is either removed or explicitly justified
+        outside this backlog routing discipline.
+  - id: BELR-4
+    title: Investigate existing implementation impact
+    goal: >
+      Find and revise implemented functions, workflow rules, and machine
+      processing that still assume backlog is an entry lane or TODO is required.
+    deliverables:
+      - >
+        Inventory functions that create, inspect, or enforce plan/TODO/checklist
+        materialization.
+      - >
+        Identify unused functions after TODO removal.
+      - >
+        Update next-task display, autonomous trigger handling, and commit
+        preflight where they conflict with the new discipline.
+  - id: BELR-5
+    title: Return existing TODO-only candidates to plans
+    goal: >
+      Clean up the existing backlog TODO directory so TODO-only candidates are
+      represented as plan records instead of remaining as standalone backlog
+      work.
+    deliverables:
+      - >
+        Inventory existing TODO files and match them against existing plans.
+      - >
+        Mark TODO content that is already represented in a plan as requiring no
+        additional plan creation.
+      - >
+        Create or update plan records for TODO-only candidates that still
+        represent valid backlog candidates.
+      - >
+        Remove or retire TODO files after their content is represented by plans
+        or explicitly determined to need no work.
+  - id: BELR-6
+    title: Absorb resilient record format rules
+    goal: >
+      Fold the standalone text-format resilience work into the backlog routing
+      discipline.
+    deliverables:
+      - >
+        Natural-language fields use block scalars or structured text fields.
+      - >
+        Machine-readable route/materialization fields are separate from
+        narrative text.
+      - >
+        Plan/checklist/index updates run YAML parse and minimal schema checks.
+      - >
+        The superseded text-format resilience plan is removed from plans and
+        index after absorption.
+  - id: BELR-7
+    title: Verify routing and record safety
+    goal: >
+      Prove the new discipline with focused checks before implementation is
+      considered complete.
+    deliverables:
+      - >
+        Tests or audits cover maintenance checklist routing, SDD/reopen routing
+        candidates, absence of TODO materialization, and old-text-plan removal.
+      - >
+        YAML parse/schema checks pass for the updated plan and backlog index.
+      - >
+        `next --json`, autonomous execution, and commit preflight behavior are
+        checked against the revised discipline.
+execution_slices:
+  - phase_id: BELR-1
+    title: Document backlog as candidate holding area
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-2
+    title: Design SDD workflow versus reopen classification
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-3
+    title: Remove TODO from backlog materialization
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-4
+    title: Investigate existing implementation impact
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-5
+    title: Return existing TODO-only candidates to plans
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-6
+    title: Absorb resilient record format rules
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-7
+    title: Verify routing and record safety
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+acceptance_criteria:
+  - >
+    Backlog is documented as a candidate holding area, not a lane or execution
+    entry point.
+  - >
+    The work lanes are documented as SDD workflow, reopen, and maintenance.
+  - >
+    Maintenance is the only direct-execution path, and only after a candidate is
+    small, local, and checklist-ready.
+  - >
+    TODO is not required or used as backlog materialization in this discipline.
+  - >
+    The SDD workflow versus reopen boundary is investigated and represented in
+    guidance or machine-readable routing rules.
+  - >
+    Existing functions, operational rules, and machine processing that assume
+    backlog-to-TODO materialization are identified and updated or removed.
+  - >
+    Existing TODO files are inventoried, and TODO-only candidates are returned
+    to plan records while TODO content already represented in plans is treated
+    as requiring no duplicate work.
+  - >
+    Natural-language backlog record fields are resilient to YAML syntax hazards.
+  - >
+    The superseded text-format resilience plan is removed from the backlog index
+    and from the plans directory after its requirements are absorbed.
+non_goals:
+  - >
+    Do not replace or duplicate SDD review stages.
+  - >
+    Do not treat operation triggers, post-write verification, or session handoff
+    as work lanes.
+  - >
+    Do not preserve TODO as a required backlog materialization object.
+  - >
+    Do not complete a bulk migration of every historical backlog item in this
+    plan unless a later slice explicitly scopes that work.
+```
+
+### .reviewcompass/specs/workflow-management/requirements.md
+
+content_mode: full_text
+content_sha256: 1de563a12fd422083ad09e78eee6b46641484c5a78efa2cfbd8c40008ed8fe3d
+
+```text
 # Requirements Document：workflow-management
 
 ## Introduction
@@ -353,3 +753,212 @@ ReviewCompass 固有の追加：
 - `XDI-WM-002`：既存システムへの後追い intent 追加時に、受け皿 feature の reopen、下流工程の修正要否判定、既存設計との衝突確認、conformance-evaluation 評価記録の正式手続きへの取り込み、衝突候補発見時の停止・承認・記録を行う契約は Requirement 9 の外部可視要件に含める。詳細な設計・タスク化は design／tasks 段で確定する。
 - `XDI-WM-004`：operation registry / preflight は、Requirement 12 の外部可視要件に含める。既存の `next`、post-write verification、commit approval、reopen、decision-source-lint、session-record guard などの部分対応を、操作単位の contract / preflight として束ねる。詳細な設計・タスク化は design／tasks 段で確定する。
 - `XDI-WM-005`：統合設計メモ由来の選択層／実行層接続は、Requirement 13〜16 の外部可視要件に含める。`required_action` と operation contract の対応、承認ゲート、側道スタック、状態スナップショット、構造化有効プロンプト、Phase 0〜6 の段階的実装順序を要件層から追跡可能にする。詳細な設計・タスク化は design／tasks 段で確定する。
+```
+
+### .reviewcompass/specs/workflow-management/spec.json
+
+content_mode: full_text
+content_sha256: 0e22edd1545ede2a3f164958b22ecf8e92322ec3b523ab1096830e41b9b92424
+
+```text
+{
+  "feature_name": "workflow-management",
+  "language": "ja",
+  "created_at": "2026-05-24T00:00:00+09:00",
+  "updated_at": "2026-06-20T00:00:00+09:00",
+  "workflow_state": {
+    "intent": {
+      "drafting": true,
+      "review": true,
+      "approval": true,
+      "reference": "stages/intent.yaml"
+    },
+    "feature-partitioning": {
+      "candidate-proposal": true,
+      "approval": true,
+      "reference": "stages/feature-partitioning/2026-05-24-proposal.md"
+    },
+    "requirements": {
+      "drafting": true,
+      "triad-review": true,
+      "review-wave": true,
+      "alignment": false,
+      "approval": false
+    },
+    "design": {
+      "drafting": true,
+      "triad-review": true,
+      "review-wave": true,
+      "alignment": true,
+      "approval": true
+    },
+    "tasks": {
+      "drafting": true,
+      "triad-review": true,
+      "review-wave": true,
+      "alignment": true,
+      "approval": true
+    },
+    "implementation": {
+      "drafting": true,
+      "triad-review": true,
+      "review-wave": true,
+      "alignment": true,
+      "approval": true
+    }
+  },
+  "reopened": {
+    "intent": true,
+    "feature-partitioning": true,
+    "requirements": true,
+    "design": true,
+    "tasks": true,
+    "implementation": true
+  },
+  "recheck": {
+    "upstream_change_pending": true,
+    "impacted_downstream_phases": [
+      "design",
+      "tasks",
+      "implementation"
+    ]
+  }
+}
+```
+
+### stages/in-progress/reopen-procedure-2026-07-01.yaml
+
+content_mode: full_text
+content_sha256: fff01e2948a3f85fda265fee5526d1d26c8495498357b611a77c8980b6068f35
+
+```text
+process_id: reopen-procedure
+feature: workflow-management
+classification: R-0
+started_at: '2026-07-01T00:00:00+09:00'
+trigger: 候補1 backlog candidate routing discipline を reopen として開始
+classification_basis: docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+completed_steps:
+- 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements alignment/approval → false、recheck=upstream_change_pending
+  → true）
+- 第2過程：正本修正完了（requirements.md に backlog candidate routing 受入13を追加）
+next_step: 第2過程：停止点コミット
+step_number: 2
+pending_gates:
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+current_blocker: null
+reopen_step_records:
+- from_step: 1
+  completed_step: 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements alignment/approval
+    → false、recheck=upstream_change_pending → true）
+  rationale: docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+    で R-0（workflow-management）と分類。候補1は backlog/TODO/checklist 運用前提の開き直しであり requirements
+    起点で扱う。
+  evidence:
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+  - .reviewcompass/specs/workflow-management/spec.json
+- from_step: 2
+  completed_step: 第2過程：正本修正完了（requirements.md に backlog candidate routing 受入13を追加）
+  rationale: workflow-management requirements に backlog は候補置き場、work lane は SDD workflow/reopen/maintenance、TODO
+    は標準中間物にしない、既存 TODO-only 候補を plan record に戻す、関連機械処理を整合させる要件を追加した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+commit_stop_point: true
+commit_stop_point_step: 2
+commit_stop_point_kind: canonical_update_complete
+commit_stop_point_reason: 第2過程の正本修正完了
+```
+
+
+## Target File Contents
+
+### docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+
+content_mode: full_text
+content_sha256: acd998e3d0f7304fdc15baa484319887c5bf1b4548bce054baaf67dcebcd4b0f
+
+```text
+---
+date: 2026-07-01
+classifier: codex
+classification: R-0（workflow-management）
+trigger_source: 利用者指示「reopen開始」。候補1 `plan-2026-07-01-backlog-entry-lane-routing` は、backlog を entry lane と見なした既存判断、plan -> TODO -> checklist の既存導線、TODO を backlog materialization として扱う運用を開き直すもの。
+feature: workflow-management
+finding: backlog-candidate-routing
+---
+
+## 分類根拠
+
+候補1は、backlog / TODO / checklist / reopen / maintenance / autonomous execution / `next --json` / commit preflight の運用前提を見直す。具体的には、backlog を作業レーンまたは実行入口として扱わず「候補置き場」とし、作業レーンを SDD workflow / reopen / maintenance として再整理する。また、TODO を backlog materialization の標準中間物として使わず、maintenance は checklist 直行、それ以外は SDD workflow または reopen に送る方針を検討する。
+
+手戻り種別：**R-0（requirements 起点。intent・feature-partitioning へは遡らない）**。
+
+- intent（意図）：workflow-management の意図は、ワークフロー進行、不可逆操作、状態遷移、手続き記録、機械的な事前検査を扱うことである。backlog 候補の扱いと TODO 導線の見直しは、この既存意図内の運用契約変更であり、新しい意図を導入しない。
+- feature-partitioning（機能分割）：対象は workflow-management が所有する backlog 候補、操作導線、reopen/maintenance 手続き、`next --json`、commit preflight 周辺の契約であり、既存 feature 境界で受けられる。新 feature は不要。
+
+## 事実
+
+- 対象 plan：`.reviewcompass/backlog/plans/plan-2026-07-01-backlog-entry-lane-routing.yaml`
+- 同 plan は、旧 `plan-2026-07-01-backlog-text-format-resilience.yaml` を吸収済みである。
+- 同 plan は、backlog を candidate holding area、作業レーンを SDD workflow / reopen / maintenance と定義している。
+- 同 plan は、TODO を backlog materialization step として使わない方針を含む。
+- 同 plan は、既存 TODO-only 候補を plan record に戻す作業、既実装の TODO 前提関数・運用規律・機械処理の調査修正を含む。
+- 利用者確認により、候補1は maintenance 直行ではなく、既存判断の開き直しとして reopen に送る方が自然と判断した。
+
+## feature impact 判定
+
+| feature | decision | impact_basis | rationale |
+| --- | --- | --- | --- |
+| workflow-management | reopen_existing_feature | contract_ownership | backlog 候補、TODO/checklist 導線、reopen/maintenance 手続き、`next --json`、commit preflight、自律実行トリガーの運用契約を所有する。 |
+| foundation | no_reopen_existing_feature | no_implementation_impact | 共通基盤の意図・機能境界を変更しない。 |
+| runtime | indirect_check_only | consumer_or_derivative_only | session/handoff は手続きとして言及されるが、runtime の契約変更は現時点で不要。design 段または review-wave/alignment で、session/handoff の正本変更が不要であることを確認する。 |
+| evaluation | no_reopen_existing_feature | no_implementation_impact | 評価・レビュー評価契約に変更なし。 |
+| analysis | no_reopen_existing_feature | no_implementation_impact | 分析・可視化・報告機能に変更なし。 |
+| self-improvement | indirect_check_only | consumer_or_derivative_only | 自律実行の証跡・候補提示に関係し得るが、主契約は workflow-management 側で扱う。design 段または review-wave/alignment で、self-improvement 正本変更が不要であることを確認する。 |
+| conformance-evaluation | indirect_check_only | consumer_or_derivative_only | 逸脱検出や照合観点で確認対象になり得るが、主契約は workflow-management 側で扱う。design 段または review-wave/alignment で、conformance-evaluation 正本変更が不要であることを確認する。 |
+
+新 feature 判定：no_new_feature。
+
+## 再実施対象
+
+- **workflow-management（R-0）**：requirements に backlog 候補置き場、SDD workflow / reopen / maintenance のレーン整理、TODO 非使用、maintenance checklist 直行条件、TODO-only 候補の plan 返却、既実装影響調査の受入基準を追加または更新する。
+- **design**：SDD workflow と reopen の分類規則、backlog candidate routing、TODO 廃止後の機械処理、`next --json` / autonomous trigger / commit preflight との接続を設計する。
+- **tasks**：既存 TODO 棚卸し、旧 TODO 前提関数の調査、不要関数・変更すべき運用規律・機械処理の修正タスクを定義する。
+- **implementation**：TDD に従い、必要なテスト・実装修正・移行処理を行う。
+
+impacted_downstream_phases：design／tasks／implementation。
+
+## 第1過程停止点
+
+reopen-start により in-progress ファイルを発行し、spec.json のフラグ差し戻し（workflow-management：requirements の alignment・approval を false、recheck＝upstream_change_pending を true・impacted_downstream_phases に design／tasks／implementation を設定）を行ったうえで、第1過程停止点として差し戻し内容の利用者承認を待つ。
+
+## 現在の停止点
+
+利用者承認後、requirements.md に backlog candidate routing の受入基準を追加した。現在は in-progress ファイル `stages/in-progress/reopen-procedure-2026-07-01.yaml` の `next_step` が示すとおり、第2過程「正本修正完了」の停止点コミット待ちである。
+```
+
+
+## Scope
+
+- Check whether the changed target files clearly state the intended contract.
+- Check whether related instructions are mutually consistent across targets.
+- Check whether the documented procedure is actionable before API review, triage, manifest, or commit steps continue.
+
+## Out Of Scope
+
+- Do not request unrelated refactors or style-only rewrites.
+- Do not judge files that are not listed in Target Files.
+- Do not treat missing implementation work as a document defect unless the target text claims it already exists.
+
+## Finding Policy
+
+- Report must-fix findings for contradictions, missing required gates, or instructions that would allow an unsafe workflow action.
+- Report should-fix findings for ambiguity that could cause repeated manual judgment or unnecessary API review loops.
+- Return findings: [] when the target files are internally consistent for this review question.
+
+## Sensitive Information Check
+
+- status: passed
+- External API review must not proceed if this section reports potential secrets.

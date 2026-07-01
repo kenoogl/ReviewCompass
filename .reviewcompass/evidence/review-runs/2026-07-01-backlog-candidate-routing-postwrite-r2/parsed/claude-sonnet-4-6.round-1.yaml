@@ -1,0 +1,6 @@
+role: primary
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 11.39
+findings: []

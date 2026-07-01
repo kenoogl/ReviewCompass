@@ -1,0 +1,6 @@
+run_id: 2026-07-01-backlog-candidate-routing-postwrite-r2
+target_files:
+- path: docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+  sha256: acd998e3d0f7304fdc15baa484319887c5bf1b4548bce054baaf67dcebcd4b0f
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: ef39ea216cb991e3c0dfb81d2343be2c980081fb2dabfca93caa9b64c4141646

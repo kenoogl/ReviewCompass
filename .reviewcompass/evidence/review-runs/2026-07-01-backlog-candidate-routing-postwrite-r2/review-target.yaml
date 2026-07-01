@@ -1,0 +1,36 @@
+run_id: 2026-07-01-backlog-candidate-routing-postwrite-r2
+phase: post_write_verification
+criteria_id: backlog_candidate_routing_reopen_classification_post_write
+criteria_file: .reviewcompass/evidence/review-runs/2026-07-01-backlog-candidate-routing-postwrite-r2/review-target.md
+criteria_file_sha256: 77c8931a2acefb93c29d14a87d310616783623ab0a7b8095ee02ec8b337bf129
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-07-01-backlog-candidate-routing-postwrite-r2/prompt-manifest.yaml
+prompt_manifest_sha256: 4e00915d2c0409dc6f26f14bf48b4f783410631cc980d0703a4924001b4495c6
+target_files:
+- path: docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+  sha256: acd998e3d0f7304fdc15baa484319887c5bf1b4548bce054baaf67dcebcd4b0f
+  content_mode: full_text
+  content_sha256: acd998e3d0f7304fdc15baa484319887c5bf1b4548bce054baaf67dcebcd4b0f
+source_materials:
+- path: .reviewcompass/backlog/plans/plan-2026-07-01-backlog-entry-lane-routing.yaml
+  sha256: c2c5d07acbfa086a7fa31e6c58521bd5d830cc3578edff5bb12deeac239c559a
+  content_mode: full_text
+  content_sha256: c2c5d07acbfa086a7fa31e6c58521bd5d830cc3578edff5bb12deeac239c559a
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: 1de563a12fd422083ad09e78eee6b46641484c5a78efa2cfbd8c40008ed8fe3d
+  content_mode: full_text
+  content_sha256: 1de563a12fd422083ad09e78eee6b46641484c5a78efa2cfbd8c40008ed8fe3d
+- path: .reviewcompass/specs/workflow-management/spec.json
+  sha256: 0e22edd1545ede2a3f164958b22ecf8e92322ec3b523ab1096830e41b9b92424
+  content_mode: full_text
+  content_sha256: 0e22edd1545ede2a3f164958b22ecf8e92322ec3b523ab1096830e41b9b92424
+- path: stages/in-progress/reopen-procedure-2026-07-01.yaml
+  sha256: fff01e2948a3f85fda265fee5526d1d26c8495498357b611a77c8980b6068f35
+  content_mode: full_text
+  content_sha256: fff01e2948a3f85fda265fee5526d1d26c8495498357b611a77c8980b6068f35
+sensitive_information_check:
+  status: passed
+  checked_at: '2026-07-01T03:10:35.001826+00:00'
+recommended_run_review_args:
+  criteria_file: .reviewcompass/evidence/review-runs/2026-07-01-backlog-candidate-routing-postwrite-r2/review-target.md
+  phase: post_write_verification
+  prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-07-01-backlog-candidate-routing-postwrite-r2/prompt-manifest.yaml

@@ -1,0 +1,37 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: R-0
+started_at: '2026-07-01T00:00:00+09:00'
+trigger: 候補1 backlog candidate routing discipline を reopen として開始
+classification_basis: docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+completed_steps:
+- 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements alignment/approval → false、recheck=upstream_change_pending
+  → true）
+- 第2過程：正本修正完了（requirements.md に backlog candidate routing 受入13を追加）
+next_step: 第2過程：停止点コミット
+step_number: 2
+pending_gates:
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+current_blocker: null
+reopen_step_records:
+- from_step: 1
+  completed_step: 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements alignment/approval
+    → false、recheck=upstream_change_pending → true）
+  rationale: docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+    で R-0（workflow-management）と分類。候補1は backlog/TODO/checklist 運用前提の開き直しであり requirements
+    起点で扱う。
+  evidence:
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+  - .reviewcompass/specs/workflow-management/spec.json
+- from_step: 2
+  completed_step: 第2過程：正本修正完了（requirements.md に backlog candidate routing 受入13を追加）
+  rationale: workflow-management requirements に backlog は候補置き場、work lane は SDD workflow/reopen/maintenance、TODO
+    は標準中間物にしない、既存 TODO-only 候補を plan record に戻す、関連機械処理を整合させる要件を追加した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+commit_stop_point: true
+commit_stop_point_step: 2
+commit_stop_point_kind: canonical_update_complete
+commit_stop_point_reason: 第2過程の正本修正完了
