@@ -1,183 +1,366 @@
 schema_version: reviewcompass-backlog-item-v1
 id: plan-2026-07-01-backlog-entry-lane-routing
 kind: plan
-title: Define backlog entry lane routing discipline
+title: Define backlog candidate routing and resilient plan format discipline
 status: candidate
 plan_level: executable
 materialization_required: true
 source_unit_id: main-completed
 created_at: '2026-07-01T00:00:00+09:00'
 index_path: .reviewcompass/backlog/index.yaml
+supersedes:
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-text-format-resilience.yaml
 provenance:
   created_by: llm
-  source_ref: conversation:user:起草して
+  source_ref: conversation:user:採用
   reason: >
-    The previous CSUX-7 plan was implemented directly from a backlog plan before
-    it was materialized into a TODO and checklist. The discussion clarified that
-    user-visible work lanes should be limited to the main SDD workflow, reopen,
-    and backlog entry, while operation, verification, and session handoff are
-    procedures inside those lanes rather than standalone work lanes.
+    The discussion clarified that backlog is not a work lane or entry point. It
+    is a candidate holding area. User-visible work lanes for this discipline are
+    SDD workflow, reopen, and maintenance. TODO should not be used as the
+    backlog materialization step; maintenance candidates that are small and
+    local go directly to checklist, while other candidates are routed to SDD
+    workflow or reopen. The older text-format resilience plan is absorbed here
+    because plan/checklist format safety must be handled together with backlog
+    routing.
 summary: >
-  Establish a backlog-entry routing discipline so a backlog plan is classified
-  before execution: record-only notes stay as backlog candidates, design-needed
-  items are routed to design/detailing work, and executable items are
-  materialized into TODO/checklist evidence before implementation starts.
+  Establish a backlog candidate routing discipline and resilient record format:
+  backlog holds candidates only, candidates are routed to SDD workflow, reopen,
+  or maintenance, TODO is not used as the backlog materialization step, and only
+  maintenance work that is small, local, and checklist-ready may proceed
+  directly. This plan also absorbs the text-format resilience work so natural
+  language fields do not break machine-readable backlog records.
 lane_model:
-  user_visible_work_lanes:
+  work_lanes:
     - id: sdd_workflow
-      title: Main SDD workflow
+      title: SDD workflow
       meaning: >
-        The normal requirements, design, tasks, and implementation workflow.
+        The normal requirements, design, tasking, review, and implementation
+        workflow. Candidates that need new design, work breakdown, or a new
+        product/workflow decision are routed here unless they are clearly reopen
+        work.
     - id: reopen
-      title: Reopen lane
+      title: Reopen
       meaning: >
-        The lane for reopening completed SDD artifacts or decisions when a
-        change, reconsideration, or downstream impact appears.
-    - id: backlog_entry
-      title: Backlog entry lane
+        The lane for reopening completed artifacts, decisions, plans,
+        checklists, or implementation outcomes when prior completed work may
+        need reconsideration. The exact boundary between SDD workflow and reopen
+        requires additional design in this plan.
+    - id: maintenance
+      title: Maintenance
       meaning: >
-        The lane entered from backlog plans, TODOs, and checklists.
+        The lane for small, local workflow upkeep that does not change existing
+        product intent, completed decisions, or broad process structure. A
+        maintenance candidate may proceed directly to checklist when evidence
+        can be recorded clearly.
+  candidate_holding_area:
+    id: backlog
+    title: Backlog
+    meaning: >
+      Backlog is not a work lane and not an execution entry point. It is a place
+      to hold candidates until they are routed to SDD workflow, reopen,
+      maintenance, deferred, or record-only status.
   procedures_not_work_lanes:
     - id: operation_entry
       title: Operation entry
       meaning: >
-        Short user operations such as `コミット`, `プッシュ`, and autonomous
-        execution triggers. These choose an action for the current state, but do
-        not define a user-visible work lane by themselves.
+        Short user operations such as commit, push, and autonomous execution
+        triggers choose an action for the current state, but do not define a
+        work lane by themselves.
     - id: verification_post_write
       title: Verification and post-write procedures
       meaning: >
         Checks that arise inside a work lane after changes are made. They do not
-        replace the SDD workflow or backlog-entry lane.
+        replace SDD workflow, reopen, or maintenance.
     - id: session_handoff
       title: Session and handoff procedures
       meaning: >
         System-level continuity operations such as session records and handoff
         notes. They are not user-visible product work lanes.
+routing_model:
+  candidate_routes:
+    - id: maintenance
+      use_when: >
+        The candidate is small, local, does not need design or splitting, does
+        not alter prior completed decisions, and can be expressed directly as a
+        checklist with evidence.
+      materialization: checklist
+      direct_execution_allowed: true
+    - id: sdd_workflow
+      use_when: >
+        The candidate needs design, work breakdown, new requirements,
+        implementation planning, or user/product judgment that is not simply
+        reopening a completed artifact. The exact boundary with reopen is part
+        of this plan's investigation.
+      materialization: sdd_artifacts
+      direct_execution_allowed: false
+    - id: reopen
+      use_when: >
+        The candidate may change, invalidate, or reinterpret completed
+        artifacts, decisions, checklists, or implementation outcomes. The exact
+        boundary with SDD workflow is part of this plan's investigation.
+      materialization: reopen_artifacts
+      direct_execution_allowed: false
+    - id: deferred
+      use_when: >
+        The candidate is valid but should not be routed yet.
+      materialization: none
+      direct_execution_allowed: false
+    - id: record_only
+      use_when: >
+        The candidate is useful as a note but does not currently request work.
+      materialization: none
+      direct_execution_allowed: false
+  todo_policy:
+    summary: >
+      TODO is not used as the backlog materialization step for this discipline.
+      Maintenance candidates go directly to checklist. Candidates that cannot be
+      expressed directly as maintenance checklist work are routed to SDD workflow
+      or reopen instead of being parked in TODO.
+format_resilience_model:
+  source_absorbed: plan-2026-07-01-backlog-text-format-resilience
+  principles:
+    - >
+      Separate machine-readable metadata from natural-language narrative fields.
+    - >
+      Use block scalars for long natural-language text, Markdown-like content,
+      bullets, colons, and backticks.
+    - >
+      Run YAML parse and minimal schema checks immediately after creating or
+      updating backlog plans, checklists, and index records.
+    - >
+      Prefer generated or structured update paths over LLM-authored raw YAML
+      when a safer tool exists.
 current_problem:
   - >
-    Backlog plans can currently contain human-readable work lists such as
-    `remaining_work`, but the plan may still lack machine-readable routing
-    metadata that says whether it is a problem note, design-needed item, or
-    executable work.
+    Backlog has been treated like an executable entry lane, which allows
+    candidates to bypass SDD workflow or reopen judgment.
   - >
-    Existing plan materialization rules describe `execution_slices`, but plan
-    drafting does not consistently require a maturity/routing classification
-    before later implementation starts.
+    The previous plan-to-TODO-to-checklist path creates an extra object that is
+    not needed for small maintenance work and can make backlog execution feel
+    safer than it is.
   - >
-    Without that routing classification, an LLM can read a plan as executable
-    and start implementation directly, even though the backlog-entry lane should
-    first materialize executable work into TODO/checklist evidence.
+    The boundary between SDD workflow and reopen is not yet precise enough for
+    reliable machine routing.
+  - >
+    Existing implementation may still contain functions, workflow rules, and
+    machine processing that assume backlog-to-TODO materialization or backlog as
+    an execution lane.
+  - >
+    Existing backlog TODO files may contain candidates that do not have
+    corresponding plan records. Since TODO is no longer the backlog
+    materialization step, TODO-only candidates need to be returned to plan
+    records, while content already represented in plans needs no duplicate work.
+  - >
+    Natural-language backlog records can break YAML syntax when long text,
+    Markdown notation, colons, or backticks are embedded directly in plain
+    scalars.
 decisions:
   - id: BELR-D1
     summary: >
-      Treat the user-visible work lanes as exactly three categories for this
-      discipline: main SDD workflow, reopen, and backlog entry.
+      Treat the work lanes for this discipline as SDD workflow, reopen, and
+      maintenance.
   - id: BELR-D2
     summary: >
-      Do not introduce a new review process inside backlog entry. Use routing,
-      classification, and gates as lightweight intake procedures so this does
-      not overlap with SDD review stages.
+      Treat backlog as a candidate holding area, not a work lane and not an
+      execution entry point.
   - id: BELR-D3
     summary: >
-      Treat operation entry, verification/post-write, and session/handoff as
-      procedures that occur within or around work lanes, not as standalone
-      user-visible work lanes.
+      Do not use TODO as the backlog materialization step. Maintenance
+      candidates that qualify go directly to checklist; other candidates are
+      routed to SDD workflow or reopen.
   - id: BELR-D4
     summary: >
-      Backlog-entry plans that are executable must carry `execution_slices` and
-      must not be implemented until corresponding TODO/checklist evidence exists
-      or the slice is explicitly deferred/not required.
+      Direct implementation is allowed only for maintenance candidates that are
+      small, local, and checklist-ready.
+  - id: BELR-D5
+    summary: >
+      Treat SDD workflow versus reopen classification as a design target of this
+      plan, not as already finalized.
+  - id: BELR-D6
+    summary: >
+      Absorb the text-format resilience plan into this plan and remove the old
+      standalone candidate after its requirements are represented here.
+  - id: BELR-D7
+    summary: >
+      Migrate existing TODO-only backlog candidates back to plan records. If the
+      same content already exists in a plan, no additional work is required for
+      that TODO.
 implementation_plan:
   - id: BELR-1
-    title: Document backlog-entry routing vocabulary
+    title: Document backlog as candidate holding area
     goal: >
-      Add guidance that distinguishes the three user-visible work lanes from
-      procedural operation/verification/session actions.
+      Update guidance so backlog is described as a candidate holding area, while
+      SDD workflow, reopen, and maintenance are the work lanes.
     deliverables:
       - >
-        Guidance text defines `sdd_workflow`, `reopen`, and `backlog_entry` as
-        the user-visible lanes.
+        Guidance names SDD workflow, reopen, and maintenance as the lanes.
       - >
-        Guidance text states that operation, verification/post-write, and
-        session/handoff are procedures, not standalone work lanes.
+        Guidance states that backlog is not a lane and not an execution entry
+        point.
+      - >
+        Guidance states that operation, verification/post-write, and
+        session/handoff are procedures, not lanes.
   - id: BELR-2
-    title: Define plan routing metadata
+    title: Design SDD workflow versus reopen classification
     goal: >
-      Make backlog plan drafting classify the plan before execution.
+      Investigate and define how candidates that are not maintenance should be
+      routed between SDD workflow and reopen.
     deliverables:
       - >
-        Define `plan_level` values such as `problem_note`, `design_required`,
-        and `executable`.
+        Classification criteria cover new design, work breakdown, user
+        judgment, completed-artifact reopening, and prior-decision impact.
       - >
-        Define `materialization_required` and the conditions under which
-        `execution_slices` are mandatory.
+        Ambiguous cases are documented with expected routing.
       - >
-        Define the route for `design_required` plans as design/detailing work,
-        not direct implementation.
+        Machine-readable route values are defined without treating backlog as a
+        route to execution.
   - id: BELR-3
-    title: Add guard behavior for direct plan execution
+    title: Remove TODO from backlog materialization
     goal: >
-      Prevent a user instruction such as "implement this plan" from bypassing
-      TODO/checklist materialization when the plan is executable but not yet
-      materialized.
+      Replace backlog-to-TODO assumptions with backlog-candidate routing and
+      maintenance-to-checklist materialization.
     deliverables:
       - >
-        Operation resolution or preflight reports a stop condition when an
-        executable backlog plan has unmaterialized execution slices.
+        Operational guidance states that maintenance candidates go directly to
+        checklist when they qualify.
       - >
-        The stop condition tells the operator to materialize TODO/checklist
-        before implementation.
+        Guidance states that candidates requiring design, splitting, or user
+        judgment route to SDD workflow or reopen.
+      - >
+        Any remaining TODO dependency is either removed or explicitly justified
+        outside this backlog routing discipline.
   - id: BELR-4
-    title: Verify backlog-entry routing behavior
+    title: Investigate existing implementation impact
     goal: >
-      Prove the routing discipline with focused tests and workflow checks.
+      Find and revise implemented functions, workflow rules, and machine
+      processing that still assume backlog is an entry lane or TODO is required.
     deliverables:
       - >
-        Tests cover problem-note, design-required, executable/materialized, and
-        executable/unmaterialized plan cases.
+        Inventory functions that create, inspect, or enforce plan/TODO/checklist
+        materialization.
       - >
-        `next --json` and commit preflight remain consistent with the new
-        backlog-entry routing contract.
+        Identify unused functions after TODO removal.
+      - >
+        Update next-task display, autonomous trigger handling, and commit
+        preflight where they conflict with the new discipline.
+  - id: BELR-5
+    title: Return existing TODO-only candidates to plans
+    goal: >
+      Clean up the existing backlog TODO directory so TODO-only candidates are
+      represented as plan records instead of remaining as standalone backlog
+      work.
+    deliverables:
+      - >
+        Inventory existing TODO files and match them against existing plans.
+      - >
+        Mark TODO content that is already represented in a plan as requiring no
+        additional plan creation.
+      - >
+        Create or update plan records for TODO-only candidates that still
+        represent valid backlog candidates.
+      - >
+        Remove or retire TODO files after their content is represented by plans
+        or explicitly determined to need no work.
+  - id: BELR-6
+    title: Absorb resilient record format rules
+    goal: >
+      Fold the standalone text-format resilience work into the backlog routing
+      discipline.
+    deliverables:
+      - >
+        Natural-language fields use block scalars or structured text fields.
+      - >
+        Machine-readable route/materialization fields are separate from
+        narrative text.
+      - >
+        Plan/checklist/index updates run YAML parse and minimal schema checks.
+      - >
+        The superseded text-format resilience plan is removed from plans and
+        index after absorption.
+  - id: BELR-7
+    title: Verify routing and record safety
+    goal: >
+      Prove the new discipline with focused checks before implementation is
+      considered complete.
+    deliverables:
+      - >
+        Tests or audits cover maintenance checklist routing, SDD/reopen routing
+        candidates, absence of TODO materialization, and old-text-plan removal.
+      - >
+        YAML parse/schema checks pass for the updated plan and backlog index.
+      - >
+        `next --json`, autonomous execution, and commit preflight behavior are
+        checked against the revised discipline.
 execution_slices:
   - phase_id: BELR-1
-    title: Document backlog-entry routing vocabulary
+    title: Document backlog as candidate holding area
     status: not_materialized
     todo_id: null
     checklist_id: null
   - phase_id: BELR-2
-    title: Define plan routing metadata
+    title: Design SDD workflow versus reopen classification
     status: not_materialized
     todo_id: null
     checklist_id: null
   - phase_id: BELR-3
-    title: Add guard behavior for direct plan execution
+    title: Remove TODO from backlog materialization
     status: not_materialized
     todo_id: null
     checklist_id: null
   - phase_id: BELR-4
-    title: Verify backlog-entry routing behavior
+    title: Investigate existing implementation impact
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-5
+    title: Return existing TODO-only candidates to plans
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-6
+    title: Absorb resilient record format rules
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-7
+    title: Verify routing and record safety
     status: not_materialized
     todo_id: null
     checklist_id: null
 acceptance_criteria:
   - >
-    Backlog-entry guidance names only the main SDD workflow, reopen, and backlog
-    entry as user-visible work lanes.
+    Backlog is documented as a candidate holding area, not a lane or execution
+    entry point.
   - >
-    Backlog plan drafting guidance requires routing metadata that distinguishes
-    record-only/problem notes, design-required plans, and executable plans.
+    The work lanes are documented as SDD workflow, reopen, and maintenance.
   - >
-    Executable backlog plans require materialization metadata and cannot be
-    implemented directly while an execution slice is not materialized.
+    Maintenance is the only direct-execution path, and only after a candidate is
+    small, local, and checklist-ready.
   - >
-    The workflow avoids introducing a backlog-entry review process that overlaps
-    with SDD review stages.
+    TODO is not required or used as backlog materialization in this discipline.
+  - >
+    The SDD workflow versus reopen boundary is investigated and represented in
+    guidance or machine-readable routing rules.
+  - >
+    Existing functions, operational rules, and machine processing that assume
+    backlog-to-TODO materialization are identified and updated or removed.
+  - >
+    Existing TODO files are inventoried, and TODO-only candidates are returned
+    to plan records while TODO content already represented in plans is treated
+    as requiring no duplicate work.
+  - >
+    Natural-language backlog record fields are resilient to YAML syntax hazards.
+  - >
+    The superseded text-format resilience plan is removed from the backlog index
+    and from the plans directory after its requirements are absorbed.
 non_goals:
   - >
     Do not replace or duplicate SDD review stages.
   - >
     Do not treat operation triggers, post-write verification, or session handoff
-    as new user-visible work lanes.
+    as work lanes.
   - >
-    Do not require every backlog problem note to become a TODO/checklist.
+    Do not preserve TODO as a required backlog materialization object.
+  - >
+    Do not complete a bulk migration of every historical backlog item in this
+    plan unless a later slice explicitly scopes that work.
