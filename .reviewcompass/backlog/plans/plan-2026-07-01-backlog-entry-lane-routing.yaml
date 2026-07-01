@@ -1,0 +1,183 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-07-01-backlog-entry-lane-routing
+kind: plan
+title: Define backlog entry lane routing discipline
+status: candidate
+plan_level: executable
+materialization_required: true
+source_unit_id: main-completed
+created_at: '2026-07-01T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:起草して
+  reason: >
+    The previous CSUX-7 plan was implemented directly from a backlog plan before
+    it was materialized into a TODO and checklist. The discussion clarified that
+    user-visible work lanes should be limited to the main SDD workflow, reopen,
+    and backlog entry, while operation, verification, and session handoff are
+    procedures inside those lanes rather than standalone work lanes.
+summary: >
+  Establish a backlog-entry routing discipline so a backlog plan is classified
+  before execution: record-only notes stay as backlog candidates, design-needed
+  items are routed to design/detailing work, and executable items are
+  materialized into TODO/checklist evidence before implementation starts.
+lane_model:
+  user_visible_work_lanes:
+    - id: sdd_workflow
+      title: Main SDD workflow
+      meaning: >
+        The normal requirements, design, tasks, and implementation workflow.
+    - id: reopen
+      title: Reopen lane
+      meaning: >
+        The lane for reopening completed SDD artifacts or decisions when a
+        change, reconsideration, or downstream impact appears.
+    - id: backlog_entry
+      title: Backlog entry lane
+      meaning: >
+        The lane entered from backlog plans, TODOs, and checklists.
+  procedures_not_work_lanes:
+    - id: operation_entry
+      title: Operation entry
+      meaning: >
+        Short user operations such as `コミット`, `プッシュ`, and autonomous
+        execution triggers. These choose an action for the current state, but do
+        not define a user-visible work lane by themselves.
+    - id: verification_post_write
+      title: Verification and post-write procedures
+      meaning: >
+        Checks that arise inside a work lane after changes are made. They do not
+        replace the SDD workflow or backlog-entry lane.
+    - id: session_handoff
+      title: Session and handoff procedures
+      meaning: >
+        System-level continuity operations such as session records and handoff
+        notes. They are not user-visible product work lanes.
+current_problem:
+  - >
+    Backlog plans can currently contain human-readable work lists such as
+    `remaining_work`, but the plan may still lack machine-readable routing
+    metadata that says whether it is a problem note, design-needed item, or
+    executable work.
+  - >
+    Existing plan materialization rules describe `execution_slices`, but plan
+    drafting does not consistently require a maturity/routing classification
+    before later implementation starts.
+  - >
+    Without that routing classification, an LLM can read a plan as executable
+    and start implementation directly, even though the backlog-entry lane should
+    first materialize executable work into TODO/checklist evidence.
+decisions:
+  - id: BELR-D1
+    summary: >
+      Treat the user-visible work lanes as exactly three categories for this
+      discipline: main SDD workflow, reopen, and backlog entry.
+  - id: BELR-D2
+    summary: >
+      Do not introduce a new review process inside backlog entry. Use routing,
+      classification, and gates as lightweight intake procedures so this does
+      not overlap with SDD review stages.
+  - id: BELR-D3
+    summary: >
+      Treat operation entry, verification/post-write, and session/handoff as
+      procedures that occur within or around work lanes, not as standalone
+      user-visible work lanes.
+  - id: BELR-D4
+    summary: >
+      Backlog-entry plans that are executable must carry `execution_slices` and
+      must not be implemented until corresponding TODO/checklist evidence exists
+      or the slice is explicitly deferred/not required.
+implementation_plan:
+  - id: BELR-1
+    title: Document backlog-entry routing vocabulary
+    goal: >
+      Add guidance that distinguishes the three user-visible work lanes from
+      procedural operation/verification/session actions.
+    deliverables:
+      - >
+        Guidance text defines `sdd_workflow`, `reopen`, and `backlog_entry` as
+        the user-visible lanes.
+      - >
+        Guidance text states that operation, verification/post-write, and
+        session/handoff are procedures, not standalone work lanes.
+  - id: BELR-2
+    title: Define plan routing metadata
+    goal: >
+      Make backlog plan drafting classify the plan before execution.
+    deliverables:
+      - >
+        Define `plan_level` values such as `problem_note`, `design_required`,
+        and `executable`.
+      - >
+        Define `materialization_required` and the conditions under which
+        `execution_slices` are mandatory.
+      - >
+        Define the route for `design_required` plans as design/detailing work,
+        not direct implementation.
+  - id: BELR-3
+    title: Add guard behavior for direct plan execution
+    goal: >
+      Prevent a user instruction such as "implement this plan" from bypassing
+      TODO/checklist materialization when the plan is executable but not yet
+      materialized.
+    deliverables:
+      - >
+        Operation resolution or preflight reports a stop condition when an
+        executable backlog plan has unmaterialized execution slices.
+      - >
+        The stop condition tells the operator to materialize TODO/checklist
+        before implementation.
+  - id: BELR-4
+    title: Verify backlog-entry routing behavior
+    goal: >
+      Prove the routing discipline with focused tests and workflow checks.
+    deliverables:
+      - >
+        Tests cover problem-note, design-required, executable/materialized, and
+        executable/unmaterialized plan cases.
+      - >
+        `next --json` and commit preflight remain consistent with the new
+        backlog-entry routing contract.
+execution_slices:
+  - phase_id: BELR-1
+    title: Document backlog-entry routing vocabulary
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-2
+    title: Define plan routing metadata
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-3
+    title: Add guard behavior for direct plan execution
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+  - phase_id: BELR-4
+    title: Verify backlog-entry routing behavior
+    status: not_materialized
+    todo_id: null
+    checklist_id: null
+acceptance_criteria:
+  - >
+    Backlog-entry guidance names only the main SDD workflow, reopen, and backlog
+    entry as user-visible work lanes.
+  - >
+    Backlog plan drafting guidance requires routing metadata that distinguishes
+    record-only/problem notes, design-required plans, and executable plans.
+  - >
+    Executable backlog plans require materialization metadata and cannot be
+    implemented directly while an execution slice is not materialized.
+  - >
+    The workflow avoids introducing a backlog-entry review process that overlaps
+    with SDD review stages.
+non_goals:
+  - >
+    Do not replace or duplicate SDD review stages.
+  - >
+    Do not treat operation triggers, post-write verification, or session handoff
+    as new user-visible work lanes.
+  - >
+    Do not require every backlog problem note to become a TODO/checklist.
