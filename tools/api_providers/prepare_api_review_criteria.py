@@ -83,6 +83,22 @@ def _load_source_materials(path: Path) -> List[SourceMaterial]:
   return materials
 
 
+def _load_required_prompt_changes(path: Optional[str]) -> List[str]:
+  if not path:
+    return []
+  data = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+  if not isinstance(data, dict):
+    raise ValueError("preanalysis audit record must be an object")
+  changes = data.get("required_prompt_changes")
+  if changes is None:
+    changes = data.get("required_changes")
+  if changes is None:
+    return []
+  if not isinstance(changes, list):
+    raise ValueError("preanalysis audit required_prompt_changes must be a list")
+  return [str(item) for item in changes]
+
+
 def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
   parser = argparse.ArgumentParser(
     description="workflow next_action から API review criteria を生成する。",
@@ -93,6 +109,10 @@ def _parse_argv(argv: Optional[List[str]]) -> argparse.Namespace:
     "--source-materials-file",
     required=True,
     help="構造化 source materials YAML",
+  )
+  parser.add_argument(
+    "--preanalysis-audit-record",
+    help="preanalysis sufficiency audit の parsed YAML。required_prompt_changes を criteria に反映する。",
   )
   parser.add_argument("--topic", required=True, help="criteria topic")
   parser.add_argument("--target", required=True, action="append", help="review target")
@@ -110,6 +130,9 @@ def main(argv: Optional[List[str]] = None) -> int:
   try:
     next_action = _load_next_action(Path(args.next_action_file))
     source_materials = _load_source_materials(Path(args.source_materials_file))
+    required_prompt_changes = _load_required_prompt_changes(
+      args.preanalysis_audit_record
+    )
     criteria = build_api_review_criteria_from_next_action(
       next_action=next_action,
       topic=args.topic,
@@ -123,6 +146,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "out_of_scope": args.out_of_scope,
       },
       source_materials=source_materials,
+      preanalysis_audit_changes=required_prompt_changes,
     )
   except Exception as exc:
     sys.stderr.write(f"エラー：prepare_api_review_criteria failed: {exc}\n")
@@ -145,11 +169,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     "criteria_file_sha256": _sha256_file(criteria_path),
     "source_materials_file": str(Path(args.source_materials_file)),
     "generated_at": generated_at,
+    "required_prompt_changes_count": len(required_prompt_changes),
     "recommended_run_review_args": {
       "criteria_file": str(criteria_path),
       "phase": next_action.get("stage") or next_action.get("phase"),
     },
   }
+  if args.preanalysis_audit_record:
+    metadata["preanalysis_audit_record"] = str(Path(args.preanalysis_audit_record))
   if effective_prompt.get("effective_prompt_path"):
     metadata["effective_prompt_path"] = effective_prompt["effective_prompt_path"]
     metadata["recommended_run_review_args"]["effective_prompt_path"] = (

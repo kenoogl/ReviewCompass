@@ -92,6 +92,7 @@ def build_api_review_criteria(
   source_materials: Sequence[SourceMaterial],
   user_requirements: UserReviewRequirements | None = None,
   vertical_intent: VerticalIntentTransfer | None = None,
+  preanalysis_audit_changes: Sequence[str] | None = None,
 ) -> str:
   """Build an API review criteria document.
 
@@ -168,6 +169,8 @@ def build_api_review_criteria(
     lines.extend(_render_source_material(material, vertical=bool(vertical_intent)))
   if vertical_intent:
     lines.extend(_render_vertical_customization(vertical_intent))
+  if preanalysis_audit_changes:
+    lines.extend(_render_preanalysis_audit_changes(preanalysis_audit_changes))
   lines.extend([
     "",
     "## Required Checks",
@@ -217,6 +220,7 @@ def build_api_review_criteria_from_next_action(
   scope_boundaries: Dict[str, Sequence[str]],
   source_materials: Sequence[SourceMaterial],
   user_requirements: UserReviewRequirements | None = None,
+  preanalysis_audit_changes: Sequence[str] | None = None,
 ) -> str:
   """Build criteria using the workflow next-action point as the customization source."""
   feature = _required_next_action_str(next_action, "feature")
@@ -239,6 +243,7 @@ def build_api_review_criteria_from_next_action(
     source_materials=source_materials,
     user_requirements=user_requirements,
     vertical_intent=vertical_intent,
+    preanalysis_audit_changes=preanalysis_audit_changes,
   )
 
 
@@ -378,6 +383,70 @@ def _render_vertical_customization(vertical_intent: VerticalIntentTransfer) -> L
     "",
     "Use upstream materials only for background and transfer checking. Limit target judgment to the current phase artifact.",
   ]
+
+
+def _render_preanalysis_audit_changes(changes: Sequence[str]) -> List[str]:
+  lines = [
+    "",
+    "## Required Prompt Changes From Preanalysis Audit",
+    "",
+    "The preanalysis sufficiency audit required the following prompt changes. Treat these as mandatory criteria-draft constraints, not optional advice.",
+    "",
+  ]
+  lines.extend(_bullet_lines(changes))
+  lines.extend([
+    "",
+    "## Missing Section Handling",
+    "",
+    "- If a named target section is absent, renamed, or structurally reorganized, search the full target file for equivalent design responsibility.",
+    "- If the responsibility cannot be located, report a finding instead of treating the missing anchor as a pass.",
+    "- Do not use absence of a named anchor as a reason to skip the check.",
+    "",
+    "## Target Excerpt Handling",
+    "",
+    "- Any target excerpt presence is not evidence of correct requirements transfer.",
+    "- Judge the full target file independently.",
+    "- Do not treat excerpt inclusion in preparation materials as confirmation that the target satisfies the source contract.",
+    "",
+    "## Preanalysis Handling",
+    "",
+    "- Treat the preanalysis claim list as hypothesis context only.",
+    "- Do not use the preanalysis as an exhaustive checklist, answer key, or coverage proof.",
+    "- Derive findings independently from source materials and the full target.",
+    "",
+    "## PROHIBITED ACTIONS",
+    "",
+    "- commit",
+    "- push",
+    "- spec.json update",
+    "- phase approval",
+    "- gate completion",
+    "- phase completion",
+    "- reopen finalize",
+    "- proxy_model decision authorization",
+    "- human approval delegation",
+    "- implementation edits",
+    "- unapproved specification changes",
+    "",
+    "## Output Contract",
+    "",
+    "Return YAML with these top-level fields:",
+    "",
+    "- `verdict`",
+    "- `reviewed_target`",
+    "- `source_materials_used`",
+    "- `findings`",
+    "- `out_of_scope_not_judged`",
+    "",
+    "Each `findings` item must contain:",
+    "",
+    "- `severity`: one of `CRITICAL`, `ERROR`, `WARN`, `INFO`",
+    "- `target_location`",
+    "- `description`",
+    "- `rationale`",
+    "- `source_materials`",
+  ])
+  return lines
 
 
 def _validate_vertical_source_materials(source_materials: Sequence[SourceMaterial]) -> None:

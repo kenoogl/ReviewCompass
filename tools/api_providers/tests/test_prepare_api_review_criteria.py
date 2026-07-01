@@ -185,3 +185,95 @@ def test_prepare_api_review_criteria_fails_when_source_material_is_unstructured(
 
   assert exit_code == 1
   assert "path-only" in capsys.readouterr().err
+
+
+def test_prepare_api_review_criteria_reflects_preanalysis_audit_changes(
+  tmp_path,
+  capsys,
+):
+  next_action_file = tmp_path / "next.json"
+  next_action_file.write_text(
+    json.dumps(NEXT_ACTION_RESPONSE, ensure_ascii=False),
+    encoding="utf-8",
+  )
+  source_materials_file = tmp_path / "source-materials.yaml"
+  source_materials_file.write_text(
+    yaml.safe_dump(
+      {
+        "source_materials": [
+          {
+            "key": "workflow-management-upstream",
+            "purpose": "implementation triad-review upstream intent",
+            "purpose_field": "preserve approval and proxy boundaries",
+            "responsibility_boundaries": [
+              "proxy_model cannot satisfy human_only approval"
+            ],
+            "acceptance_criteria": [
+              "criteria includes model-readable upstream intent"
+            ],
+            "forbidden_actions": ["do not pass only paths as evidence"],
+            "unresolved_or_design_deferred_items": ["none"],
+            "intended_target_phase_transfer": [
+              "implementation keeps approval/proxy separation"
+            ],
+          }
+        ]
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  audit_record = tmp_path / "preanalysis-audit.yaml"
+  audit_record.write_text(
+    yaml.safe_dump(
+      {
+        "verdict": "sufficient_with_revisions",
+        "required_prompt_changes": [
+          "Add a structurally distinct PROHIBITED ACTIONS block.",
+          "Add an explicit instruction that design.md target excerpt presence is not evidence.",
+          "Embed the run_review.py output contract explicitly.",
+        ],
+      },
+      allow_unicode=True,
+      sort_keys=False,
+    ),
+    encoding="utf-8",
+  )
+  review_run_dir = tmp_path / "review-run"
+
+  exit_code = main(
+    [
+      "--next-action-file", str(next_action_file),
+      "--review-run-dir", str(review_run_dir),
+      "--source-materials-file", str(source_materials_file),
+      "--preanalysis-audit-record", str(audit_record),
+      "--topic", "approval-gate-transfer",
+      "--target", "tools/check-workflow-action.py",
+      "--judgment-item", "approval gate upstream transfer",
+      "--review-purpose", "upstream transfer check",
+      "--review-object", "implementation artifact",
+      "--review-focus", "vertical intent transfer",
+      "--in-scope", "approval gate implementation",
+      "--out-of-scope", "spec.json phase movement",
+    ]
+  )
+
+  assert exit_code == 0
+  captured = capsys.readouterr()
+  assert captured.out.startswith("[OK] prepare_api_review_criteria ")
+  criteria = (review_run_dir / "review-criteria.md").read_text(encoding="utf-8")
+  assert "## Required Prompt Changes From Preanalysis Audit" in criteria
+  assert "Add a structurally distinct PROHIBITED ACTIONS block." in criteria
+  assert "## PROHIBITED ACTIONS" in criteria
+  assert "- commit" in criteria
+  assert "- push" in criteria
+  assert "## Missing Section Handling" in criteria
+  assert "target excerpt presence is not evidence" in criteria
+  assert "## Output Contract" in criteria
+  assert "- `verdict`" in criteria
+  metadata = yaml.safe_load(
+    (review_run_dir / "review-criteria.yaml").read_text(encoding="utf-8")
+  )
+  assert metadata["preanalysis_audit_record"] == str(audit_record)
+  assert metadata["required_prompt_changes_count"] == 3

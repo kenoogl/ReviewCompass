@@ -1,0 +1,80 @@
+process_id: maintenance
+title: required_prompt_changes criteria reflection mechanization
+started_at: '2026-07-01T00:00:00+09:00'
+completed_at: '2026-07-01T00:00:00+09:00'
+trigger: >
+  design triad-review の preanalysis sufficiency audit 後、required_prompt_changes を
+  main LLM が手で preanalysis / audit bundle / criteria seed へ反映しており、
+  criteria draft へ移す工程が機械化されていないことが判明したため。
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-07-01.yaml
+work_class: maintenance
+control_relation: side-track
+status: completed
+scope:
+  included:
+    - >
+      preanalysis sufficiency audit の required_prompt_changes または findings から、
+      criteria draft に必ず反映すべき制約を機械的に読み込めるようにする。
+    - >
+      criteria 生成結果に、required prompt changes の反映ブロック、禁止操作、
+      missing-section handling、target excerpt handling、preanalysis handling、
+      output contract を構造化して出す。
+    - >
+      既存の criteria generator と focused tests の範囲で実装する。
+  excluded:
+    - 本線 design triad-review の実 review-run を開始すること。
+    - 本線 reopen gate を進めること。
+    - proxy_model 判断、spec.json 更新、commit、push。
+checklist:
+  - id: RPCM-1
+    title: 既存 criteria generator と audit 記録の入力形式を確認する
+    status: completed
+    evidence:
+      - tools/api_providers/prepare_api_review_criteria.py
+      - tools/api_providers/api_review_prompt_builder.py
+      - tools/api_providers/tests/test_prepare_api_review_criteria.py
+      - stages/in-progress/reopen-procedure-2026-07-01.yaml
+  - id: RPCM-2
+    title: required prompt changes を criteria に反映する赤テストを追加する
+    status: completed
+    evidence:
+      red_test: >
+        `.venv/bin/python3 -m pytest tools/api_providers/tests/test_prepare_api_review_criteria.py -q`
+        が `--preanalysis-audit-record` 未対応により失敗した。
+  - id: RPCM-3
+    title: criteria generator に audit changes 入力と構造化出力を実装する
+    status: completed
+    evidence:
+      - tools/api_providers/prepare_api_review_criteria.py
+      - tools/api_providers/api_review_prompt_builder.py
+  - id: RPCM-4
+    title: focused tests を通す
+    status: completed
+    evidence:
+      - >
+        `.venv/bin/python3 -m pytest tools/api_providers/tests/test_prepare_api_review_criteria.py -q`
+        -> 3 passed
+      - >
+        `.venv/bin/python3 -m pytest tools/api_providers/tests/test_api_review_prompt_builder.py tools/api_providers/tests/test_prepare_api_review_criteria.py -q`
+        -> 12 passed
+  - id: RPCM-5
+    title: maintenance 完了記録へ移す
+    status: completed
+    evidence:
+      - stages/completed/maintenance-2026-07-01-required-prompt-changes-criteria-mechanization.yaml
+post_write_verification:
+  status: completed
+  commands:
+    - command: .venv/bin/python3 -m pytest tools/api_providers/tests/test_prepare_api_review_criteria.py -q
+      result: 3 passed
+    - command: .venv/bin/python3 -m pytest tools/api_providers/tests/test_api_review_prompt_builder.py tools/api_providers/tests/test_prepare_api_review_criteria.py -q
+      result: 12 passed
+completion_conditions:
+  - focused tests pass
+  - completed maintenance record preserves mainline_blocked_by
+  - 本線 reopen state は gate 進行させない
+changed_files:
+  - tools/api_providers/api_review_prompt_builder.py
+  - tools/api_providers/prepare_api_review_criteria.py
+  - tools/api_providers/tests/test_prepare_api_review_criteria.py
+  - stages/completed/maintenance-2026-07-01-required-prompt-changes-criteria-mechanization.yaml
