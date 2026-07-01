@@ -206,6 +206,13 @@ items:
   source_unit_id: main-completed
   created_at: '2026-07-01T00:00:00+09:00'
   completed_at: '2026-07-01T00:00:00+09:00'
+- id: plan-2026-07-01-user-facing-output-minimality-policy
+  kind: plan
+  title: Enforce user-facing output minimality across assistant workflows
+  status: candidate
+  path: .reviewcompass/backlog/plans/plan-2026-07-01-user-facing-output-minimality-policy.yaml
+  source_unit_id: main-side-conversation
+  created_at: '2026-07-01T00:00:00+09:00'
 - id: plan-2026-07-01-csux7-autonomous-trigger-implementation
   kind: plan
   title: Implement CSUX-7 autonomous trigger wording

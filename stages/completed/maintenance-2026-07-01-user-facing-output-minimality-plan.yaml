@@ -1,0 +1,46 @@
+process_id: maintenance
+started_at: '2026-07-01T00:00:00+09:00'
+completed_at: '2026-07-01T00:00:00+09:00'
+trigger: >
+  requirements reopen 本線の進行中に、副線の会話から
+  user-facing output minimality policy の backlog plan と index 更新が生成された。
+  利用者が「副線でplan等2つのファイルを生成したので、分けてコミット」と指示したため、
+  本線 reopen の spec / state 変更とは混ぜず、副線の backlog 追加だけを maintenance 完了
+  コミットとして分離する。
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-07-01.yaml
+mainline_blocked_by_reason: >
+  本線 reopen は requirements approval 完了後の commit stop point にある。
+  本記録は本線の requirements / design / tasks / implementation 内容、spec.json の判断、
+  reopen state の判断内容を変更せず、横断的なユーザ向け出力最小化方針を backlog 候補に
+  登録するだけの副線 maintenance 作業として扱う。
+allowed_scope:
+  - user-facing output minimality policy を backlog plan 候補として記録する
+  - backlog index に同 plan の候補エントリを追加する
+  - 本線 reopen の spec / state 変更は本コミットから除外する
+allowed_files:
+  - .reviewcompass/backlog/index.yaml
+  - .reviewcompass/backlog/plans/plan-2026-07-01-user-facing-output-minimality-policy.yaml
+  - stages/completed/maintenance-2026-07-01-user-facing-output-minimality-plan.yaml
+change_classification: 局所
+classification_reason: >
+  backlog 候補の登録と、その maintenance 完了記録だけであり、workflow-management の
+  SDD 正本、reopen phase/gate 判定、API review 実行結果には影響しない。
+procedure: >
+  既に生成済みの backlog plan と index 更新を確認し、進行中の reopen state を
+  mainline_blocked_by で明示した maintenance 完了記録を追加して、対象ファイルを
+  副線コミットとして分離する。
+completion_conditions:
+  - backlog plan が candidate として存在する
+  - backlog index が同 plan を指している
+  - staged files が allowed_files に限定されている
+  - 本線 reopen の spec.json / in-progress state は本コミットに含めない
+completed_steps:
+  - user-facing output minimality policy の backlog plan 内容を確認した
+  - backlog index の候補エントリ追加を確認した
+  - 本線 reopen と分離する maintenance 完了記録を追加した
+verification:
+  - command: git diff --cached --name-status
+    result: >
+      backlog index と user-facing output minimality policy plan のみが
+      maintenance 完了記録追加前の staged 対象だった。
+current_status: completed
