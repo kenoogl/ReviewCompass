@@ -86,6 +86,136 @@ design_questions:
   - id: RPMR-Q4
     question: >
       直接の reopen 範囲と、間接的な影響確認範囲を区別する正本フィールドは何にするべきか。
+mechanization_gaps:
+  - id: RPMR-G1
+    summary: >
+      規律としては、正本本文を実質修正した phase は triad-review、review-wave、
+      alignment、approval を再実施する必要がある。しかし、reopen state が
+      「どの phase を実質編集したか」を機械的な必須入力として保持していないため、
+      pending_gates が alignment/approval だけでも早期に止めにくい。
+  - id: RPMR-G2
+    summary: >
+      requirements 変更後の design/tasks/implementation 影響判断は必須だが、
+      `reopen-start` や `next --json` が「下流 phase ごとの判断予定」を一貫して要求していない。
+      そのため、不足が `reopen-finalize` や commit preflight まで遅れて見つかりうる。
+  - id: RPMR-G3
+    summary: >
+      `reopen-finalize` は pending_gates が空であることを確認するが、必要な gate 集合そのものを
+      edited phase と downstream phase から再計算して照合する契約が弱い。
+  - id: RPMR-G4
+    summary: >
+      downstream が「変更不要」または「既存成果物で十分」と判断された場合も、
+      gate、feature_scope、decision、rationale、evidence を持つ判断証跡が必須である。
+      これが不足している状態を `next --json` 段階で次作業として返す機械処理が不足している。
+fail_closed_invariants:
+  - id: RPMR-I1
+    statement: >
+      reopen state は、実質編集した phase を `edited_phases` または同等の正本フィールドで
+      機械可読に保持する。値は requirements/design/tasks/implementation などの既知 phase に限定する。
+  - id: RPMR-I2
+    statement: >
+      `edited_phases` に含まれる各 phase は、required gates として
+      `triad-review`、`review-wave`、`alignment`、`approval` をすべて要求する。
+      drafting が必要な phase は `drafting_completed_gates` または `completed_gates` で drafting 完了も確認する。
+  - id: RPMR-I3
+    statement: >
+      上流 phase が編集された場合、下流 phase ごとの影響判断予定を
+      `impacted_downstream_phases` と `downstream_impact_decisions` で覆う。
+      requirements 編集なら design/tasks/implementation、design 編集なら tasks/implementation、
+      tasks 編集なら implementation を最低確認対象に含める。
+  - id: RPMR-I4
+    statement: >
+      下流 phase を実際に修正しない場合でも、`existing_sufficient` または `no_impact` の
+      downstream impact decision を gate 単位で記録する。判断証跡なしの省略は不可とする。
+  - id: RPMR-I5
+    statement: >
+      `next --json` は、edited phase の required gates または downstream impact decision が不足している場合、
+      completed や通常作業を返さず、reopen の不足作業を返す。
+  - id: RPMR-I6
+    statement: >
+      `reopen-finalize` は、pending_gates が空であっても、edited phase と downstream phase から
+      必須 gate / 必須 decision を再計算し、不足があれば completed 記録を生成しない。
+  - id: RPMR-I7
+    statement: >
+      commit preflight は最後の保険として同じ不足を検出する。ただし初検出地点を commit に置かず、
+      `next --json` と `reopen-finalize` で先に fail-closed させる。
+red_tests:
+  - id: RPMR-T1
+    title: requirements 編集 phase が alignment/approval だけなら finalize を拒否する
+    target: tests/tools/test_check_workflow_action.py
+    expected: >
+      reopen state に `edited_phases: [requirements]` があり、requirements の
+      triad-review/review-wave が completed_gates にない場合、`reopen-finalize` は DEVIATION になる。
+  - id: RPMR-T2
+    title: requirements 編集後に design/tasks/implementation 判断がなければ next が不足作業を返す
+    target: tests/tools/test_check_workflow_action.py
+    expected: >
+      requirements が edited phase で、downstream impact decision が design/tasks/implementation を
+      覆っていない場合、`next --json` は completed ではなく reopen の downstream 判断不足を返す。
+  - id: RPMR-T3
+    title: downstream 変更不要でも判断証跡なしなら finalize を拒否する
+    target: tests/tools/test_check_workflow_action.py
+    expected: >
+      `impacted_downstream_phases` に design/tasks/implementation が含まれていても、
+      各 phase に対応する `downstream_impact_decisions` がなければ `reopen-finalize` は失敗する。
+  - id: RPMR-T4
+    title: existing_sufficient/no_impact の証跡があれば downstream 変更なしで進める
+    target: tests/tools/test_check_workflow_action.py
+    expected: >
+      各 downstream phase に gate、feature_scope、decision、rationale、evidence を持つ
+      decision がある場合、本文変更なしの downstream phase は finalize 条件を満たす。
+  - id: RPMR-T5
+    title: commit preflight は同じ不足を検出するが初検出にしない
+    target: tests/tools/test_check_workflow_action.py
+    expected: >
+      `reopen-finalize` を迂回して不完全な completed reopen 記録が staged された場合、
+      commit preflight も DEVIATION にする。
+implementation_targets:
+  - id: RPMR-IMPL-1
+    command_or_area: reopen-start
+    required_change: >
+      分類と修正対象 phase から `edited_phases` と downstream impact confirmation scope を初期化できるようにする。
+      requirements 起点の場合、design/tasks/implementation の確認予定を欠いた開始を拒否または明示的不足として記録する。
+  - id: RPMR-IMPL-2
+    command_or_area: next --json
+    required_change: >
+      edited phase の required gates と downstream impact decisions の不足を読み、
+      `run_reopen_pending_gate` または downstream 判断不足を表す required_action を返す。
+  - id: RPMR-IMPL-3
+    command_or_area: reopen-advance-gate
+    required_change: >
+      completed gate 追加時に、該当 gate の decision が downstream 影響判断なのか、edited phase の
+      review gate 完了なのかを区別して記録できるようにする。
+  - id: RPMR-IMPL-4
+    command_or_area: reopen-finalize
+    required_change: >
+      edited phase と downstream phase から必須 gate / decision を再計算し、
+      pending_gates が空でも不足があれば completed 記録を生成しない。
+  - id: RPMR-IMPL-5
+    command_or_area: commit preflight
+    required_change: >
+      completed reopen 記録に対して同じ不変条件を検査し、手編集や古い completed 記録の混入を防ぐ。
+repair_route_candidates:
+  - id: RPMR-R1
+    title: pushed completed reopen を superseding reopen で置き換える
+    status: candidate
+    rationale: >
+      既に push 済みの completed 記録を履歴から消さず、手続き不備を明示したうえで新しい reopen 記録を作る。
+  - id: RPMR-R2
+    title: workflow-state repair record で completed reopen を補修する
+    status: candidate
+    rationale: >
+      completed 記録自体を修復対象として扱い、修復理由と不足 gate を evidence として残す。
+  - id: RPMR-R3
+    title: completed reopen を再 reopen する
+    status: candidate
+    rationale: >
+      手続き不備を「完了済み成果物の再検討」として扱い、通常 reopen の枠に乗せる。
+selected_repair_route:
+  status: undecided
+  required_before_implementation: true
+  note: >
+    修復経路は実装前に決める。ただし、どの経路を選んでも fail-closed 不変条件と赤テストは必要である。
 proposed_work:
   - id: RPMR-1
     title: プロトコルと実装の監査
