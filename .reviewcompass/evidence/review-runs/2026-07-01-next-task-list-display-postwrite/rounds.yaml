@@ -1,0 +1,1242 @@
+round_id: round-1
+purpose: post_write_verification
+invocation_timestamp: '2026-07-01T00:27:59.135446+00:00'
+target_files:
+- path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  sha256: 49044ad500177cd2bd401ebce77b0b8de88293d570c5bdeaa319614d1b01ca1f
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: f264a762f6bde2e6a2702a5c9219d89b611ced5328be4db65e66ccba23a4c269
+criteria: "# Post-write Review Target\n\ncriteria_id: next_task_list_display_guidance\n\
+  phase: post_write_verification\ngenerated_at: 2026-07-01T00:27:34.773214+00:00\n\
+  \n## Change Summary\n\ncompleted状態の完了報告で次タスク候補を5件ほど、短い説明つきで表示する規律へ変更する。\n\n## Review\
+  \ Question\n\n利用者合意どおり、completed状態の次タスク表示が5件ほどの説明つき候補リストになっており、1件表示は明示された場合だけに限定され、next\
+  \ --jsonのcompleted解釈やbacklog candidate確認規律と矛盾していないか。\n\n## Target Files\n\n- .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md\
+  \ sha256=49044ad500177cd2bd401ebce77b0b8de88293d570c5bdeaa319614d1b01ca1f\n- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md\
+  \ sha256=f264a762f6bde2e6a2702a5c9219d89b611ced5328be4db65e66ccba23a4c269\n\n##\
+  \ Source Materials\n\n### .reviewcompass/backlog/plans/plan-2026-07-01-next-task-list-display.yaml\n\
+  \ncontent_mode: full_text\ncontent_sha256: 681f634ab29b2cade2040d44beefaabde5574f02bb4e4ac5f975dbe83e489191\n\
+  \n```text\nschema_version: reviewcompass-backlog-item-v1\nid: plan-2026-07-01-next-task-list-display\n\
+  kind: plan\ntitle: Show completed-state next-task candidates as a short list\nstatus:\
+  \ completed\nsource_unit_id: main-completed\ncreated_at: '2026-07-01T00:00:00+09:00'\n\
+  completed_at: '2026-07-01T00:00:00+09:00'\nindex_path: .reviewcompass/backlog/index.yaml\n\
+  provenance:\n  created_by: llm\n  source_ref: conversation:user:次タスクの表示が期待していたものとは違う\n\
+  \  reason: >\n    completed 状態の完了報告で次タスクを 1 件だけ示すと、利用者が期待する\n    候補選択の導線にならないため、候補を\
+  \ 5 件ほど説明つきで表示する規律へ\n    修正する。\nsummary: >\n  `next --json` が completed の場合、通常 workflow\
+  \ 上の次 action はないが、\n  完了報告では `TODO_NEXT_SESSION.md` と backlog の candidate 状態を照合し、\n\
+  \  次に選べる作業候補を 5 件ほど、短い説明つきで表示するように規律を更新する。\nrelated:\n  - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md\n\
+  \  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md\n  - TODO_NEXT_SESSION.md\n\
+  remaining_work:\n  - id: NTL-1\n    title: Clarify completed-state next-task list\
+  \ display\n    status: completed\n    tasks:\n      - SESSION_WORKFLOW_GUIDE.md\
+  \ の completed 時の次タスク取得規律を、候補 5 件ほどのリスト表示に変更する。\n      - 1 件表示は、利用者が明示的に 1 件だけを求めた場合に限る。\n\
+  \      - WORKFLOW_NAVIGATION.md の completed 節も、候補提示は選択肢リストであることを補足する。\n    acceptance:\n\
+  \      - completed 状態の完了報告で、次候補を 5 件ほど短い説明つきで表示する規律になっている。\n      - 候補は `TODO_NEXT_SESSION.md`\
+  \ の推奨順を起点にし、backlog で `status: candidate` を確認してから表示する。\n      - 候補は開始済み作業ではなく、利用者が次に選べる作業として説明される。\n\
+  \    note: >\n      SESSION_WORKFLOW_GUIDE.md の completed 時次タスク取得規律を 5 件ほどの\n  \
+  \    説明つきリスト表示へ変更し、WORKFLOW_NAVIGATION.md の completed 節から\n      表示件数と候補確認規律を参照するようにした。\n\
+  non_goals:\n  - '`next --json` の機械状態を変更しない。'\n  - backlog 候補の自動開始はしない。\n  - '`TODO_NEXT_SESSION.md`\
+  \ の候補順そのものは変更しない。'\ndecisions: []\n```\n\n### .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md\n\
+  \ncontent_mode: full_text\ncontent_sha256: 49044ad500177cd2bd401ebce77b0b8de88293d570c5bdeaa319614d1b01ca1f\n\
+  \n```text\n# SESSION_WORKFLOW_GUIDE：セッション運営ガイドライン\n\n最終更新：2026-06-10（現行のセッション運営契約として整理）\n\
+  \n本文書は ReviewCompass の開発セッションを確実に回すための運用ガイドラインである。作業開始、レビュー、利用者判断、コミット、完了報告の共通手順を定める。\n\
+  \n本文書は運用文書（`docs/operations/` 配下）であり、ReviewCompass の実行時手順を定める。仕様・設計・タスクの正本と矛盾する場合は、該当正本を確認し、必要に応じて\
+  \ reopen 手続きに乗せる。\n\n## 1. セッション開始時の必読フロー（5 分以内）\n\nセッション開始時は **作業着手前に必ず**次を順番に確認する。記憶や前回会話だけを根拠に作業へ入らない。\n\
+  \n### 1.1 必読 5 件\n\n順序は重要：\n\n1. **`TODO_NEXT_SESSION.md`**（最新進捗）\n   - 前セッション末尾の到達点、次の作業候補、未消化所見\n\
+  \   - 「§0 重要事項」「§1 起動手順」「§3 次の作業候補」を最低限読む\n   - 直近の `docs/sessions/session-*.md`\
+  \ も併読し、TODO に圧縮された経緯の詳細を確認する\n\n2. **`.reviewcompass/guidance/WORKFLOW_NAVIGATION.md`**（次\
+  \ action 判定）\n   - `tools/check-workflow-action.py next --json` の読み方\n   - 判定点ごとの\
+  \ required disciplines / required inputs / effective prompt の扱い\n\n3. **`.reviewcompass/guidance/WORKFLOW_PRECHECK.md`**（機械判定の入口）\n\
+  \   - `spec-set`、`commit`、`push`、`next`、`reopen-start` の実行前条件\n   - 機械判定で停止した場合の扱い\n\
+  \n4. **`learning/workflow/carry-forward-register/reviewcompass-import.yaml`**（持ち越し所見の正本）\n\
+  \   - 機能横断波及所見の未消化件数と内容を把握\n   - 正本と履歴 source を混同しない\n\n5. **`docs/extraction-mapping.md`**（抽出進捗）\n\
+  \   - 各機能の状態（未着手／抽出中／抽出済／確認済）\n   - 機能ごとの実施履歴\n\n### 1.2 確認後の git 状態把握\n\n- `git\
+  \ log --oneline -10`：直近のコミット履歴\n- `git status`：未コミット変更の有無\n\n### 1.3 ワークフロー上の現在位置の確認\n\
+  \n- 現在どのフェーズか（intent ／ requirements ／ design ／ tasks ／ implementation）\n- 現在どの段か（drafting\
+  \ ／ triad-review ／ review-wave ／ alignment ／ approval の 5 段）\n- 残機能と消化予定所見\n\n##\
+  \ 2. ワークフロー段の役割と順序\n\n### 2.1 全体構造\n\n```\nintent 層（人間担当）\n  ↓\n機能分離\n  ↓\nrequirements\
+  \ 段：drafting → triad-review → review-wave → alignment → approval\n  ↓\ndesign 段：drafting\
+  \ → triad-review → review-wave → alignment → approval\n  ↓\ntasks 段：drafting → triad-review\
+  \ → review-wave → alignment → approval\n  ↓\nimplementation 段：drafting → triad-review\
+  \ → review-wave → alignment → approval\n```\n\n各フェーズは drafting／triad-review／review-wave／alignment／approval\
+  \ の 5 段で進める。\n\n### 2.2 各段の役割（責務分離後）\n\n- **drafting**：各機能の草案作成のみ。1 機能ずつ独立に進める。actor=llm（または\
+  \ human）。requirements／design／tasks の drafting は文書起草を意味する。implementation の drafting\
+  \ は文書起草ではなく、tasks.md に従ったテストと実装コードの生成を意味する。\n- **tasks drafting の粒度**：tasks 段の drafting\
+  \ では、対象機能の設計書 §14 要件追跡表（Req 受入単位 × 担当タスク単位）を骨格として tasks.md を作成する。tasks.md は implementation\
+  \ drafting へ直接入れる粒度で書く。各タスクには、実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を含める。implementation-plan.md\
+  \ や implementation-drafting.md のような別の実装前計画文書を正本成果物として要求しない。\n- **triad-review**：機能内の\
+  \ 3 役レビュー（主役・敵対役・判定役）と機能内対処の実施。手動 dogfooding または subagent_mediated（サブエージェント仲介方式）で実施。actor=llm\n\
+  - **review-wave**：複数機能を横断する複数ラウンドレビュー。機能横断波及所見と同根所見（異なる機能で同じ性格の所見が独立に発見された組）を集約し、一貫した対処方針で全該当機能の仕様文書に反映する\n\
+  - **alignment**：LLM 自動判定による整合確認段（actor=llm）\n- **approval**：人間承認段（actor=human）。proxy_model\
+  \ は approval 段の代行主体ではなく、review-run 後の重要件判断だけを代行できる\n\ndrafting と triad-review を別段にする理由は、誰が何をしたかを段単位で明確に記録し、草案作成者と判定者の分離を機械検査可能にするためである。\n\
+  \n<a id=\"vertical-intent-transfer-review\"></a>\n\n### 2.2.1 上流意図伝達の必須検査\n\n各 phase\
+  \ の triad-review／review-wave／alignment では、対象 phase の成果物だけでなく、上流成果物または上流判断材料からの意図伝達を必須検査項目とする。review\
+  \ prompt は、少なくとも「上流の目的・責務境界・受入条件・禁止事項が、対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか」を問わなければならない。\n\
+  \n- **requirements review**：`上流判断材料 → requirements.md` を確認し、reopen 分類根拠、利用者判断、計画メモ、設計メモなどの目的・責務境界・受入条件・禁止事項が要件へ欠落なく落ちているかを検査する。design.md\
+  \ / tasks.md は参照資料であり、審査対象ではない\n- **design review**：`requirements.md → design.md`\
+  \ を確認し、要件の目的・境界・受入条件が設計へ欠落なく落ちているかを検査する\n- **tasks review**：`requirements.md → design.md\
+  \ → tasks.md` を確認し、要件と設計の意図が implementation-ready なタスク粒度へ落ちているかを検査する\n- **implementation\
+  \ review**：`requirements.md → design.md → tasks.md → implementation` を確認し、実装がタスクだけでなく上流意図から逸脱していないかを検査する\n\
+  \nreview prompt は、review target / source materials / out of scope を明示する。審査対象は現在\
+  \ phase の成果物に限定し、source materials は背景・意図伝達確認のための参照資料として扱う。下流 phase の成果物が source\
+  \ materials に含まれる場合でも、その correctness を現在 phase の review で判定してはならない。\n\nsource materials\
+  \ をパス名だけで列挙してはならない。縦方向監査の review prompt には、判断に必要な上流本文または要点抽出を、モデルが推測せず読める形で含める。要点抽出を使う場合は、少なくとも上流の目的、責務境界、受入条件、禁止事項、未確定事項、対象\
+  \ phase へ引き継ぐべき判断を分けて記録する。上流資料を読んでいない場合は review-run を開始してはならない。prompt 内で上流資料の中身が確認できない場合も\
+  \ review-run を開始してはならない。\n\ntasks review では、単に tasks.md の粒度や項目数を見るだけでは不十分である。たとえば\
+  \ T-016〜T-019 を審査する場合は、Requirement 13〜16 の意図が design.md の設計判断を経由して、欠落・弱体化・勝手な追加なしに\
+  \ implementation-ready な作業単位へ落ちているかを必須で確認する。\n\n### 2.3 段の進め方の規律\n\n- **drafting\
+  \ 段の草案完成** → 当該機能の triad-review 段に進む（機能単位で逐次進行）\n- **triad-review 段で 3 役レビューと機能内対処**\
+  \ を完了 → 当該機能の drafting／triad-review がそろう\n- **全機能で drafting ＋ triad-review を完了**\
+  \ してから review-wave に進む（部分的に review-wave を始めない）\n- **review-wave の所見を消化** してから alignment\
+  \ に進む\n- **alignment で LLM 自動判定** を通過してから approval に進む\n- **approval で利用者の明示承認**\
+  \ を得てから次フェーズに進む\n\n### 2.4 「次の機能の drafting に進むべき」状況の判断\n\ntriad-review 段で 3 役レビューを行った所見が\
+  \ **機能横断の波及所見**だった場合、当該機能の triad-review で対処せず、carry-forward register に持ち越して **次の機能の\
+  \ drafting に進む**。\n\n## 3. 修正案件の波及種別と処理段\n\n### 3.1 用語の使い分け\n\n両用語は **対象方向が異なる正当な技術用語**\
+  \ であり、優劣はない：\n\n- **遡及（そきゅう）**：**上流フェーズへの影響**。下流段の作業で発見された問題が、上流段（過去フェーズ）の修正を要するもの。例：実装段で発見した不整合が要件段の書き直しを要する\n\
+  - **波及（はきゅう）**：**同フェーズ内の他機能（フィーチャー）への影響**。ある機能のレビューが別機能との不整合を露出させるもの。例：foundation\
+  \ 要件の修正が runtime／evaluation 要件にも影響する\n\n所見を分類するときは、上流フェーズへ戻る必要があるか、同フェーズ内の他機能へ広がるかを分けて判断する。\n\
+  \n### 3.2 修正案件の 4 種別（＋ 2 補助種別）\n\nレビューで露出する所見は次の種別に分類する：\n\n| 種別 | 内容 | 例 |\n|---|---|---|\n\
+  | **機能内対処** | 当該機能の仕様修正のみで完結 | 表現修正、機能内の語彙不統一訂正 |\n| **波及（同フェーズ・横方向）** | 同フェーズ内の他機能の仕様修正も必要\
+  \ | A-001：foundation 要件と runtime 要件の `not_run` 欠落 |\n| **遡及（上流フェーズ・縦方向）** | 上流フェーズの仕様修正が必要\
+  \ | 設計段で「要件段の Req 6 受入 8 に矛盾あり」と発見 |\n| **遡及 ＋ 波及（縦 ＋ 横）** | 上流フェーズの複数機能に影響 | 設計段で発見した要件段の不整合が複数機能の要件文書に波及\
+  \ |\n\n補助種別：\n\n- **leave-as-is（修正不要）**：判定役が「修正不要」と判断したもの、対処せず記録のみ\n- **延期**：「将来フェーズで対処」と判定役が明示したもの（例：F-004\
+  \ の配置時対処）\n\n### 3.3 種別ごとの処理段と方法\n\n#### (a) 機能内対処\n\n- **発見されるタイミング**：drafting\
+  \ 段（起草者の自己発見）／ triad-review 段（3 役レビュー）\n- **処理する段**：当該機能の **triad-review 段** で対処（drafting\
+  \ に戻して草案修正、または triad-review 段内で直接修正）\n- **方法**：当該機能の仕様文書を直接修正\n- **次段への進行**：当該機能の\
+  \ triad-review 段が `completed` 状態になってから次機能へ\n- **記録先**：レビュー記録（`.reviewcompass/specs/<機能>/reviews/<日付>-<種別>.md`）の\
+  \ §4 統合節に「対処済み」と記録\n\n##### (a-1) must-fix 所見の対処手順\n\ntriad-review 段で判定役が must-fix\
+  \ と判定した所見の対処は、起草者（LLM または人間）が独自判断で仕様文書を修正することを禁ずる。利用者と必ず議論し、各所見の対処方針を 1 件ずつ平易な日本語で説明して合意を得てから反映する。\n\
+  \n**手順**：\n\n1. must-fix 所見を 1 件ずつ取り上げる。複数所見が論理的に連動する場合は連動単位でまとめる（例：F-001 と F-007\
+  \ が同一事象を別観点で扱う場合）\n2. 各所見について、対処方針の提案を次の構造で平易に説明する：\n   - その判断が必要になった経緯（要件文書や上流文書からの導出）\n\
+  \   - 候補案の列挙（必ず複数）\n   - 各候補案の利点と弱点\n   - **後段で発生し得る問題の深掘り**：下流仕様（他機能の design／tasks／implementation）、対象アプリへの配置可能性、機械検証時の挙動、実装フェーズの運用、将来の拡張性\n\
+  \   - 推奨案とその根拠\n3. 「現状維持」を推奨する場合も、現状維持の弱点を検証してから示す\n4. 一括処理（複数論点を一気に決着）を避け、各論点を個別に深掘りする\n\
+  5. 利用者の判断を得てから、仕様文書を 1 件ずつ Edit で修正する\n6. 各修正後に grep または Read で機械的に照合し、反映を確認する\n\
+  7. レビュー記録（reviews/...）の §4 統合節に「対処方針・利用者承認の根拠・反映箇所」を記録する\n\n**深掘りの具体内容**（推奨案を提示する際に必ず想定する事項）：\n\
+  \n- foundation 機能の場合：対象アプリへの配置可能性、配布対象外資産との分離、リポジトリ内資産の規則との整合\n- 値域・語彙の固定：将来拡張時の改訂コスト、機械検証時の不正値検出\n\
+  - 責務境界：foundation と runtime（または他機能）の責務分離、上流が下流の実装方針に踏み込まない原則\n- 不変性：成果物の追記性、生証拠は不変の原則\n\
+  - 依存関係：他機能が当該仕様を取り込む際の参照可否\n\n**禁則**：\n\n- 利用者と議論せずに must-fix 所見の対処内容を独自に確定する\n\
+  - 「現状維持を推奨」と表層的に提案する（弱点検証を欠く）\n- 候補案を 1 つしか提示しない（代替案との比較を欠く）\n- 後段影響を想定しない推奨\n\n\
+  <a id=\"3.3-a-2\"></a>\n\n##### (a-2) review-run 後の proxy_model 判断代行手順\n\nAPI 経由の\
+  \ review-run 後に、人間の個別判断を proxy_model が代行する場合も、メインセッション LLM が重要件を独自に確定して実装へ進むことを禁ずる。proxy_model\
+  \ 代行は「人間判断を省略する」ものではなく、判断主体を別モデルへ移す運用である。\n\n**proxy_model 判断依頼前の利用者提示ゲート**：\n\n\
+  API review-run が完了したら、proxy_model 判断依頼、実装修正、spec.json 更新、フェーズ移行のいずれにも進む前に、メインセッション\
+  \ LLM は次を利用者へ提示して停止する。この提示ゲートを完了する前に proxy_model を呼び出してはいけない。\n\n1. 使用 variant 名\n\
+  2. role ごとの path／provider／model（例：primary／adversarial／judgment の割当）\n3. モデル別 raw\
+  \ 結果概要（parse 状態、所見数、severity 内訳、raw path）\n4. 同根所見クラスタの一覧\n5. `must-fix`／`should-fix`／`leave-as-is`\
+  \ の三段階トリアージ案\n6. `must-fix` 候補ごとの平易な説明、候補案、各案の利点と弱点、後段影響、推薦案\n7. proxy_model に判断させる場合の対象\
+  \ finding／cluster、判断範囲、不可逆操作（commit／push／spec.json 更新／フェーズ移行）を含まないこと\n\nvariant\
+  \ が未確定、または role 割当が曖昧な場合は review-run を開始しない。既定 variant が CLI 経路を含む等、実行環境と合わない場合は、設定ファイルを読んで候補\
+  \ variant と role 割当を利用者へ説明し、選択理由を review-run 記録に残す。\n\n**役割分担**：\n\n1. メインセッション\
+  \ LLM は raw レビューを集約し、三段階トリアージの下書きを作る。parsed YAML だけでなく raw response も読み、同根所見をまとめ、`must-fix`\
+  \ ／ `should-fix` ／ `leave-as-is` の候補を作る\n2. メインセッション LLM は重要件ごとに、平易な問題説明、候補案、各案の利点と弱点、後段影響、推薦案を作る\n\
+  3. proxy_model は重要件の採用案・判断理由・最終ラベルを決定する。実装は担当しない\n4. メインセッション LLM は proxy_model\
+  \ の raw response を保存し、`decisions/<suffix>.yaml`（重要件ごとの裁定 file。`<suffix>` は `<model>-<role>-<連番>`）と\
+  \ `proxy-approval.yaml` に構造化する\n5. 機械ガードは proxy decision の充足を検査する。未判断、raw 欠落、候補案欠落、採用案欠落、判断理由欠落、triage\
+  \ 最終ラベルとの不一致があれば実装へ進まない\n6. メインセッション LLM は機械ガード通過後、採用された修正だけを TDD で実装する\n7. コミット・プッシュ・spec.json\
+  \ 更新・フェーズ移行は人間の明示承認を要求する。proxy_model はこれらの不可逆操作を代行しない\n\n**重要件の判定閾値**：\n\n- `must-fix`、`ERROR`、`CRITICAL`\
+  \ は必ず重要件として扱う\n- `should-fix` でも、上流仕様、データ契約、機械ガード、証跡保持、ワークフロー権限境界、複数モデルの同根指摘に関わるものは重要件として扱う\n\
+  - 同根指摘とは、複数モデルの所見が同じ対象ファイル・同じ出力契約・同じ機械ガード・同じ証跡・同じ原因に触れているものをいう。表現が異なっても、対象または原因が一致する場合は同根として扱う\n\
+  - 正本削除、機械ガード削除、重要件閾値の引き下げ、承認証跡の削除、検証対象範囲の縮小は、コミット等と同じく人間の明示承認を要する不可逆操作として扱う\n- 判断に迷うものは重要件側に倒し、proxy_model\
+  \ 判断または人間判断へ回す\n\n**proxy_model への入力証跡**：\n\n- proxy_model へ渡す判断材料には、メインセッション LLM\
+  \ の要約だけでなく、元 review raw への参照または抜粋を必ず含める\n- proxy_model への判断プロンプト（review-run 直下に保存）を作成する前に、[[llm-as-judge-prompting]]\
+  \ の手順（材料揃え → 問い設計 → 選択肢なし分析）でプロンプトを設計する\n- 判断プロンプト（review-run 直下。既定名 `proxy-adjudication-prompt.md`、実行時に指定可）に、元\
+  \ review raw 参照、問題説明、候補案セット、推薦案、判断してほしい最終ラベルを保存する\n- `decisions/<suffix>.yaml`（重要件ごとの裁定\
+  \ file。`<suffix>` は `<model>-<role>-<連番>`）には、`candidate_options`、`source_raw_paths`、`decision_prompt_path`、採用案、棄却案理由、判断理由、最終ラベルを保存する\n\
+  - proxy_model が元 review raw を読めない形の判断材料しか受け取っていない場合、その decision は実装着手の承認証跡として扱わない\n\
+  - 現行の軽量ガードは、proxy_model_id の文字列一致、decision file の finding_id 一致、final_label 一致、prompt/raw/候補案証跡の存在を検査する。API\
+  \ 署名や暗号学的な生成元証明は将来課題とする\n\n**証跡配置**：\n\n- `raw/`：各モデルの生応答\n- `triage.yaml`：メインセッション\
+  \ LLM による三段階トリアージ\n- `proxy-adjudication-prompt.md`（既定名。review-run 直下、実行時に指定可）：proxy_model\
+  \ に渡した判断材料\n- `proxy-adjudication-response.txt`（既定名。review-run 直下、実行時に指定可）：proxy_model\
+  \ の生応答\n- `decisions/<suffix>.yaml`：重要件ごとの採用案、判断理由、最終ラベル、棄却案理由\n- `proxy-approval.yaml`：実装着手を許可する\
+  \ proxy approval record\n\n**並列化可能な単位**：\n\n- proxy_model への判断依頼は、同根所見クラスタ単位で並列化できる\n\
+  - TDD 実装は、互いに同じファイルを更新しない実装単位、または入出力契約が独立しているタスク単位で並列化できる\n- 共通スキーマ・共通ビルダー・同一ファイルを触る修正は直列で扱う\n\
+  - 生成物、共有 helper、推移的契約、同じ出力 manifest、同じ traceability 出力を共有する修正は直列で扱う\n- 並列実装の統合前に、メインセッション\
+  \ LLM が triage、proxy decision、テスト結果、ファイル差分を再照合する\n- 並列処理で新しい判断問題が出た場合、その単位は停止し、proxy_model\
+  \ 判断または人間判断へ戻す\n- 承認済み finding の実装中に見つけた未承認の便乗リファクタ、隣接挙動変更、対象外 cleanup は実施しない。必要なら新しい判断問題として停止する\n\
+  \n**実装サブ担当 LLM の扱い**：\n\n- 実装サブ担当 LLM は、原則として別スレッドかつ分離 worktree で扱う\n- 同じ repo での並列実装は原則禁止し、読み取り調査または差分を残さない確認に限定する\n\
+  - メインセッション LLM は、対象 finding、proxy decision、触ってよいファイル、期待テスト、禁止事項、停止条件を実装サブ担当へ渡す\n\
+  - 実装サブ担当は、指定範囲外のファイル変更、判断変更、コミット、プッシュ、spec.json 更新、フェーズ移行を行わない\n- 実装サブ担当が新しい判断問題、上流仕様への疑義、許可ファイル外の修正必要性を見つけた場合、その作業単位を停止してメインセッション\
+  \ LLM に戻す\n\n**別スレッド生成物の扱い**：\n\n- 別スレッド・分離 worktree で発生した生成物は、実装差分、検証結果、判断根拠、作業ノイズに分類する\n\
+  - 実装差分は、メインセッション LLM が確認したうえで本線 worktree への取り込み候補にする\n- 検証結果と判断根拠は、必要な要約だけを review-run、session\
+  \ record、または docs/notes に保存する\n- 判断に影響した失敗試行、失敗パッチ、途中ログは work_noise から decision_basis\
+  \ へ昇格し、メインセッション LLM が要約または該当箇所を保存する\n- 作業ノイズは本線 repo に取り込まない。作業ログ、一時メモ、途中のテスト出力、失敗パッチ案は原則としてサブ\
+  \ worktree 側に閉じる\n- 本線へ戻す標準単位は、パッチ、テスト結果サマリ、未解決事項の 3 点とする\n\n<a id=\"3.3-a-3\"></a>\n\
+  \n##### (a-3) 操縦 LLM 別の API 既定 variant と独立性原則（本節を正本とする）\n\nセッションを操縦（起草・修正）する LLM\
+  \ と、その成果物を検証する LLM の系列を分離する。\n自己レビューによる独立性低下を防ぐための原則であり、利用者承認済み\n（設計記録 `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md`\
+  \ §3.6、2026-06-11 個別承認）。\n本節がこの原則と既定 variant 選択規則の正本である（仕様への昇格は実アプリ pilot 後に再検討、\n\
+  MLE-DEC-004、2026-06-12 利用者決定）。\n\n**独立性の原則**：\n\n1. 単独検証役（1 体での post-write 検証など）は、操縦\
+  \ LLM と別系列を必須とする\n2. 3 役構成の adversarial（反証役）と judgment（判定役）は、操縦 LLM と別系列を必須とする\n\
+  3. 3 役構成の primary（検出役）は、操縦 LLM と同系列を許容する（最終判定を持たず、\n   残り 2 役の独立で全体の独立性が保たれるため）\n\
+  4. proxy_model（人の判断の代行）は、操縦 LLM と別系列を必須とする\n\n**操縦 LLM 別の既定 variant**（実体は `config/api-settings.yaml`）：\n\
+  \n- **Claude Code 操縦時**：接尾辞なしの `*_independent_3way` 系\n  （post_write_verification／yaml_audit／implementation_review\
+  \ の 3 用途。\n  primary=anthropic/claude-sonnet-4-6、adversarial=openai/gpt-5.5、\n \
+  \ judgment=gemini/gemini-3.1-pro-preview）\n- **Codex CLI 操縦時**：`*_independent_3way_codex_operator`\
+  \ 系\n  （primary=openai/gpt-5.4、adversarial=anthropic/claude-opus-4-8、\n  judgment=gemini/gemini-3.1-pro-preview）\n\
+  - judgment（gemini-3.1-pro-preview）と小規模 1 体検証（`post_write_verification_google`）は\n\
+  \  両操縦で共用し、操縦を切り替えても判定基準の連続性を保つ\n- 既存 variant の改名は行わない（規律文書・過去 run 記録・spec からの参照保全）。\n\
+  \  別の LLM が操縦する場合（将来）は同じ原則で役を回転して対応する\n\n対象アプリ向けの同内容の案内は `templates/entry/AGENT_ENTRY.template.md`\
+  \ §10 と\n`.reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md` にあり、本節と整合させて保守する。\n\
+  \n#### (b) 波及（同フェーズ・他機能への影響）\n\n- **発見されるタイミング**：triad-review 段（3 役が他機能との不整合に気づく）／\
+  \ review-wave 段（機能横断レビュー）\n- **処理する段**：**review-wave 段**（フェーズ終端の機能横断段、全機能の drafting\
+  \ ＋ triad-review 完了後に開始）\n- **方法**：\n  1. triad-review 段で波及と判定されたら **当該機能では対処せず**、carry-forward\
+  \ register に追記\n  2. 「次の機能の drafting」に進む（個別機能の段では対処しない）\n  3. 全機能の drafting ＋ triad-review\
+  \ が完了したら、review-wave 段で集約消化\n  4. 影響を受ける全機能の仕様文書を一括修正（依存順を守る、例：foundation を先に修正してから\
+  \ runtime）\n- **記録先**：`learning/workflow/carry-forward-register/reviewcompass-import.yaml`\
+  \ の各所見項目、消化後は `status: resolved` と `resolution` を更新\n\n#### (c) 遡及（上流フェーズへの影響）\n\
+  \n- **発見されるタイミング**：任意の下流段（triad-review／review-wave／alignment／approval のいずれか）\n-\
+  \ **処理方法**：[REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md) の 4 過程手順を起動。当該段の作業を停止し、上流フェーズに戻る\n\
+  - **手戻り種別判定**：N（intent）／R（requirements）／D（design）／A（tasks）／I（implementation）× 深さ\
+  \ 0〜4 の二次元表記で判定\n- **再実施対象決定**：第1過程で trigger_map（再実施対象段の決定表）を参照して決める。actor=human\
+  \ の段（approval 等）に来たら作業を止めて承認待ち\n- **記録先**：種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md`\
+  \ に残す、機能単位 spec.json の `reopened` 履歴と `recheck` フラグを更新\n\n#### (d) 遡及 ＋ 波及の組合せ\n\
+  \n- **発見されるタイミング**：任意の下流段\n- **処理方法**：reopen で上流フェーズに戻り、上流フェーズの review-wave 段で波及所見として集約消化、その後下流に伝播\n\
+  \  1. **第 1 段階**：reopen 手続きで上流フェーズに戻り、影響範囲を特定（trigger_map）\n  2. **第 2 段階**：上流フェーズで\
+  \ carry-forward register に波及所見として追記し、当該フェーズの review-wave 段で消化\n  3. **第 3 段階**：上流フェーズの\
+  \ alignment ＋ approval を再実施\n  4. **第 4 段階**：下流フェーズの alignment ＋ approval を再実施（trigger_map\
+  \ で連鎖再実施対象として決定）\n- **記録先**：reopen 記録 ＋ carry-forward register の両方\n\n#### (e) leave-as-is\
+  \ と延期\n\n- **leave-as-is**：判定役が「修正不要」と判断したもの。対処せず、レビュー記録に判定根拠を残すのみ\n- **延期**：将来のフェーズで対処する判定。レビュー記録に延期理由と対処予定フェーズを残し、当該フェーズ着手時のチェックリストに追記\n\
+  \n### 3.4 振り分け判断のフロー（triad-review 段で実施）\n\ntriad-review 段の判定役は、各所見について次の振り分けを行う：\n\
+  \n```\n所見発見\n  ↓\n当該機能の仕様修正のみで完結するか？\n  ├── YES → 機能内対処（triad-review 段内で対処）\n  └──\
+  \ NO\n      ↓\n  他機能の仕様修正も必要か？\n  ├── YES（同フェーズ内のみ） → carry-forward register に追記、review-wave\
+  \ 段で処理\n  ├── YES（上流フェーズに戻る必要あり、単機能） → reopen 手続きを起動\n  └── YES（上流フェーズに戻る必要あり、複数機能）\
+  \ → reopen ＋ 上流の review-wave で集約処理\n  \n別判定：\n  ├── 修正不要 → leave-as-is（記録のみ）\n \
+  \ └── 将来フェーズで対処 → 延期（チェックリスト追記）\n```\n\n### 3.5 段ごとの露出と処理段の対応表\n\n| 段 | 主に露出する所見\
+  \ | 当該段内で処理する所見 | 次段に持ち越す所見 |\n|---|---|---|---|\n| drafting | 起草中の自己発見 | 機能内（草案に直接反映）\
+  \ | なし |\n| triad-review | 機能内 ／ 波及 ／ 遡及 | **機能内** のみ | 波及 → review-wave、遡及 → reopen\
+  \ |\n| review-wave | 波及（横断ラウンド中の追加発見も） | **波及** | 遡及あり → reopen |\n| alignment |\
+  \ 自動判定の不整合検出 | （自動判定が通過するまで前段に戻す） | 遡及あり → reopen |\n| approval | 重大見落とし、利用者または別モデルによる指摘\
+  \ | （承認しない） | reopen で上流戻し |\n\n### 3.6 機能横断波及所見の管理ルール\n\n- 各機能の triad-review 段で発見されたら、即時\
+  \ carry-forward register に追記\n- 追記項目：所見 ID（A-XXX 形式）、検出セッション、波及範囲（影響を受ける機能と仕様箇所）、対処方針、依存関係\n\
+  - review-wave／alignment／approval の機能横断段着手時、全件を消化対象とする\n- 消化後、各所見に「✅ 対処済み（YYYY-MM-DD、要件\
+  \ review-wave）」ラベルを追加\n\n## 4. サブエージェント方式の運用条件\n\n### 4.1 位置づけ\n\n- メインセッションは草案作成とレビュー結果の取りまとめを担う\n\
+  - 3 役レビューは、メインセッションから分離された reviewer session または外部 API 検証者で実行する\n- review-run の実行形は\
+  \ adapter と provider 設定に従う\n\n### 4.2 モデル割り当て（規律）\n\n3 役（主役・敵対役・判定役）は、メイン LLM から分離した実行主体が担う。メイン\
+  \ LLM は草案作成と三役レビュー結果の取りまとめのみを担い、3 役のいずれにもならない。\n\n各役のモデルは `runtime/config/reviewcompass.yaml`\
+  \ または review-run の provider 設定で指定する。利用者が設定で変更できる。\n\n**モデル能力配分の規律**：\n\n- **主役と敵対役は必ず異なるモデルを使う**（敵対役の独立性確保のため）\n\
+  - 判定役は主役または敵対役と同じモデルを使うことを許容する\n- 敵対役と判定役には、反証生成と責務境界判断を担う十分な能力のモデルを割り当てる\n\n###\
+  \ 4.3 サブエージェント呼び出し時の規律\n\n- **プロンプトに自己完結性を持たせる**：サブエージェントは別 session で、メインの作業文脈を共有しない\n\
+  - **参照文書の引用は事後検証**：サブエージェントの引用には節番号や参照先の誤りが発生しうる。メインセッションが grep やリンク検査で確認する\n- **ファイル書き込みは原則禁止**：読み取りと分析のみ。例外的にレビュー記録の\
+  \ §2 や carry-forward register への追記提案を許容\n- **モデル指定**：利用中の adapter が提供する model /\
+  \ provider 指定方法に従う。外部 API 経由では provider 設定を参照する\n\n### 4.4 レビュー記録の必須フィールド\n\nレビュー記録の\
+  \ front-matter に次を必須化：\n\n```yaml\nauthor:\n  identity: <adapter_main_session>\n\
+  \  model: <model-id>\n  role: drafter\nreviewer:\n  identity: <adapter_reviewer_session>\n\
+  \  model: <model-id>\n  role: final_judgment\n  separation_from_author: true\n```\n\
+  \n`author.identity` と `reviewer.identity` が異名であることを機械検査の対象とする。重要なのは provider 名ではなく、起草者と判定者が分離していることを記録できることである。\n\
+  \n### 4.5 mode 値\n\nレビュー記録の `mode` は `subagent_mediated`（正式値）。foundation のレビューモード語彙正本（Requirement\
+  \ 6 受入 6）の 3 値のうちのひとつ。\n\n## 5. 利用者判断が必要な論点の見極め\n\n### 5.1 利用者判断必須の項目\n\n次のいずれかに該当する場合、LLM\
+  \ は単独で確定せず、利用者の明示承認を仰ぐ：\n\n- **正本方針変更**：仕様・設計・タスク・運用規律の意味を変える修正\n- **大規模再設計**：既存の責務境界、機械判定、成果物配置を大きく変更する場合\n\
+  - **機能横断の権限分担**：複数機能にまたがる責務分担の決定（例：A-007 の self-improvement と workflow-management\
+  \ の権限調停）\n- **判定境界の判断**：must-fix／should-fix／leave-as-is の境界が曖昧な場合\n- **承認・コミット・push・フェーズ移行**：すべて利用者明示承認必須\n\
+  - **作業の打ち切り・先送りの誘導**：利用者の明示承認なく「続きは次セッションで」等と作業を終了・先送りに誘導しない\n\n### 5.2 LLM が自律的に決められる項目\n\
+  \n- **抽出時のクリーニング作業の細部**（機能名置換、自己適用前提除去等）\n- **観点 5（検証可能性）の機械判定可能な所見の指摘**\n- **レビュー記録の構造化**（front-matter、節構成）\n\
+  \n### 5.3 判断の記録規律\n\n利用者判断の結果は次の場所に記録：\n\n- **正本方針変更**：該当する仕様・設計・タスク・運用規律に決定日付付きで記載\n\
+  - **機能横断対処方針**：carry-forward register の該当所見に対処方針として追記\n- **重大論点**：レビュー記録の §1 主役レビュー、§4\
+  \ 統合の「利用者判断履歴」節に記録\n\n### 5.4 セッション記録の作成規律\n\n原則として毎セッション、セッション終了時または重要判断後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md`\
+  \ を作成または更新する。特に、重要な判断・承認・レビュー結果・修正経緯が発生した場合は必須とする。これは会話全文の逐語ログではなく、後で経緯を確認できる要約記録とする。\n\
+  \n`<N>` は `docs/sessions/` に存在する既存の最大セッション番号に 1 を加えた番号とする。同日の複数セッションでも番号を進め、同じ番号を再利用しない。\n\
+  1 session につき 1 ファイルとし、同一 session 内で重要判断が複数回発生した場合は同じファイルへ追記する。重要判断ごとに別番号を消費しない。\n\
+  並行セッションや未コミット作業により採番が衝突した場合、メインセッション LLM は既存記録・git 状態・未コミット差分を確認し、利用者が採番を確定するまで正式な新規セッション記録を作成しない。採番確定前に記録が必要な場合は、`docs/sessions/drafts/session-<YYYY-MM-DD>-<short-topic>.md`\
+  \ に一時草案を置き、正式番号確定後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md` へ移動する。移動後は draft\
+  \ ファイルを残さず、正式ファイルに草案内容が統合済みであることを確認する。\n\nメインセッション LLM はセッション記録の草案作成責任を持つ。利用者判断の引用・承認範囲・未確定事項に曖昧さがある場合は、記録前に利用者へ確認する。\n\
+  コンテキスト切れや中断により当該 LLM が記録できない場合、次セッションが草案を引き継ぐ。草案がない場合は、TODO、review-run、approval\
+  \ record、git diff から経緯を再構成して記録する。\n\n最低限、次を記録する：\n\n- このセッションで実施した作業\n- 利用者が承認した判断と、その対象\n\
+  - API レビューや独立検証の結果と三段階トリアージ\n- 修正した主要ファイルと検証結果\n- 失敗・見落とし・再発防止に必要な気づき\n- 次セッションへの引き継ぎ\n\
+  \n推奨見出しは既存 session 記録と同型とし、最低限次を含める：\n\n1. サマリ（このセッションでやったこと）\n2. 気づき・特筆点\n3. コミット一覧（該当する場合）\n\
+  4. 次セッションへの引き継ぎ\n\n`TODO_NEXT_SESSION.md` は次セッション向けの入口メモであり、詳細な経緯記録の正本ではない。詳細経緯は\
+  \ `docs/sessions/` に残し、TODO には必要な参照だけを置く。\n\n## 6. コミット規律\n\n### 6.1 コミット単位\n\n\
+  - **正本文書更新 ＋ 基盤整備**：1〜2 コミット（方針確定、運用ファイル整備）\n- **機能ごとに 1 コミット**：仕様文書 ＋ 運用文書 ＋ レビュー記録の\
+  \ 3 ファイル（または schema/template 等の関連ファイル）\n- **機能横断段（review-wave／alignment／approval）**：1\
+  \ コミット（複数機能の小修正をまとめる）\n\n### 6.2 コミット順序\n\n依存マップ順に従う：\n\n1. foundation\n2. runtime\n\
+  3. evaluation\n4. analysis\n5. workflow-management\n6. self-improvement\n7. conformance-evaluation\n\
+  \n### 6.3 コミットメッセージ規律\n\n- **平易な日本語**：英語技術用語の連発を避け、完全な日本語の文で書く\n- **題名**：機能名 ＋ 作業種別（例：「foundation\
+  \ 機能の requirements 抽出と 3 役レビュー」）\n- **本文**：作成・更新ファイルの列挙、主な反映内容、機能横断所見の持ち越し有無\n-\
+  \ **Co-Authored-By**：利用中の adapter と利用者方針に従う。自動付与を前提にしない\n\n### 6.4 コミット前確認\n\n-\
+  \ `git status` で対象ファイルを確認\n- `git diff --cached` で内容確認（必要に応じて）\n- `--no-verify`\
+  \ や `--no-gpg-sign` は使わない（規律）\n\n### 6.5 不可逆操作の進行報告最小化\n\ncommit、push、spec.json\
+  \ workflow_state 変更、フェーズ移行などの不可逆操作では、利用者が操作を明示指示した後の正常系進行報告を原則として省く。LLM は必要な確認、stage、承認\
+  \ record、guard、実操作、事後確認を実行してよいが、各内部手順を逐一会話へ説明しない。\n\n途中報告を行うのは、利用者判断または追加承認が必要な場合に限る。例：承認\
+  \ record の期限切れや対象不一致、precheck failure、post-write / reopen / in-progress による遮断、sandbox\
+  \ escalation が必要な場合、staged 内容が変わり再承認が必要な場合。\n\ncommit 中に、staged 内容の確定、承認内容を作り直す、既存\
+  \ delegation を使い直す、nonce を更新する、といった内部再準備が必要になっても、それ自体を利用者に報告しない。これらは、承認済みの対象範囲内であり利用者判断を要しない通常手順として黙って実行する。コミット対象が増えた、staged\
+  \ 内容が変わった、または再承認が必要になった場合は内部再準備として隠さず、追加判断が必要な停止理由だけを短く報告する。利用者へ報告するのは、作業を続けられない異常、追加判断が必要な\
+  \ WARN / DEVIATION、または成功結果だけとする。\n\n正常完了時の報告は、実行結果だけに絞る。commit なら commit hash、`git\
+  \ status` の clean 性、`next --json` の要点を示す。push なら push 先と結果、`git status` の clean\
+  \ 性を示す。詳細な手順ログ、precheck の全文、stage したファイル一覧、nonce / challenge の値は、利用者が求めた場合または失敗調査に必要な場合だけ示す。\n\
+  \n### 6.6 push\n\npush は **利用者明示承認**を仰いでから実行。LLM が自律的に push しない。\n\n## 7. 作業完了時レポート\n\
+  \n作業を終えて利用者へ返答するときは、adapter や利用モデルに依存しない会話末尾の運用契約として、最低限次を示す：\n\n- **作業サマリ**：このターンで実施した変更、判断、未変更の範囲\n\
+  - **検証結果**：実行したテスト、確認コマンド、`post_write_verification` の要否と結果\n- **現在状態**：`git status`\
+  \ と `next --json` の要点\n- **次タスク**：次に着手すべき具体的な作業、または workflow が要求する次 action\n\n未実施・失敗・承認待ち・保留判断がある場合は、完了扱いにせず明記する。commit、push、workflow_state\
+  \ 更新、spec.json 更新などの不可逆または状態変更を伴う操作は、実際に成功した場合だけ作業サマリに記録する。\n\n`next --json` が `post_write_verification`、`reopen_in_progress`、`resume_in_progress`、`unknown`\
+  \ など `completed` 以外を返している場合、次タスクには任意の改善候補ではなく、その workflow 状態に従う次 action を示す。\n\n\
+  `next --json` が `completed` を返している場合、通常 workflow 上の次 action はない。このとき完了報告の次タスク欄に任意候補を書く場合は、次の順で拾う：\n\
+  \n1. 利用者がこのターンで次作業を明示した場合は、その指示を次タスクにする。\n2. 利用者指示がない場合は、`TODO_NEXT_SESSION.md`\
+  \ の「次にやること」にある推奨順を候補源にする。\n3. 候補を表示する前に、`.reviewcompass/backlog/index.yaml` または候補ファイル本体で\
+  \ `status: candidate` であることを確認し、完了済み・存在しない・状態が矛盾する候補は次タスクとして出さない。\n4. `TODO_NEXT_SESSION.md`\
+  \ の候補が古い、または候補を解決できない場合は、その旨を現在状態に書き、`.reviewcompass/backlog/index.yaml` の `status:\
+  \ candidate` から次候補を拾う。\n5. 完了報告の次タスク欄では、確認できた候補を 5 件ほど、同じ順序でリスト表示する。各候補には、利用者が選べる程度の短い説明を\
+  \ 1 文で添える。\n6. 利用者が「次の 1 件だけ」「最上位候補だけ」など 1 件表示を明示した場合に限り、確認できた最上位候補だけを次タスクとして示す。\n\
+  \ncompleted 状態で候補を出す場合も、その候補はまだ開始済みではない。maintenance、reopen、新規 workflow、backlog TODO\
+  \ 実行のいずれとして開始するかは、利用者指示または開始前 preflight の結果で確定する。\n\n### 7.1 進捗説明の平易化\n\n進捗説明では、内部処理名をそのまま主文にせず、利用者が理解しやすい作業状態で述べる。まず次の順で短く示す：\n\
+  \n1. 今どの段階か\n2. 何をしたか\n3. 次に何をするか\n\n必要な場合だけ、内部用語を括弧で補足する。\n\n完了報告や途中報告では、翻訳調の名詞句、英語混じりの見出し、内部状態名や英語の道具名を見出しや主語にしない。`next\
+  \ --json`、`commit wrapper`、`required_action`、`workflow_state` などの語は、利用者が判断するために必要な場合だけ、自然な日本語の説明の後ろへ括弧書きで添える。主文では「何を変えたか」「今どこで止まっているか」を自然な日本語で述べ、利用者が次に何をすればよいかを自然な日本語の文で示す。\n\
+  \n避ける表現：\n\n- 停止点を消費\n- gate を通過\n- required_action\n- pending_gate\n- workflow_state\
+  \ を更新\n- commit wrapper を開始条件にする\n- next --json は reopen_in_progress\n\n言い換え例：\n\
+  \n- 「tasks approval の停止点を消費」ではなく「tasks 段の承認を完了済みとして記録」\n- 「implementation drafting\
+  \ を完了」ではなく「implementation 段のコードとテストを作成」\n- 「次の required_action は run_reopen_pending_gate」ではなく「次は現在の段のレビュー作業」\n\
+  - 「commit wrapper を最初から sandbox 外で実行」ではなく「コミット用の検査手順は、最初から許可された実行環境で動かす」\n- 「next\
+  \ --json は reopen_in_progress」ではなく「やり直し手続きの途中で、次は requirements 段の確認を進める状態」\n\n###\
+  \ 7.2 利用者操作が必要な停止点の表示\n\n承認、コミット、push、判断など、利用者の短い返信で次へ進む停止点では、完了報告の末尾に次の 1 行を示す：\n\
+  \n```text\n次に必要な操作: <操作語>\n```\n\n`<操作語>` は、利用者がそのまま返信できる短い語にする。\n\n例：\n\n- `次に必要な操作:\
+  \ 承認`\n- `次に必要な操作: コミット`\n- `次に必要な操作: push`\n- `次に必要な操作: 判断`\n\n複数の選択肢が必要な場合だけ、候補を短く並べる。通常は候補を\
+  \ 1 つに絞る。内部用語、長い説明、手順ログをこの行に混ぜない。\n\nこのレポートは会話末尾の完了報告であり、workflow_state や `spec.json`\
+  \ の正本を代替しない。\n\n## 8. 用語ガイド\n\n### 8.1 「遡及」と「波及」\n\n両用語は対象方向で使い分ける：\n\n- **遡及（そきゅう）**：上流フェーズへの影響（時間軸＝過去方向）\n\
+  - **波及（はきゅう）**：同フェーズ内の他機能への影響（横方向＝機能間）\n\n両方とも正当な技術用語で、避けるべき／推奨という関係ではない。所見の性格を正確に表すために使い分ける。\n\
+  \n### 8.2 判定値の使い分け\n\n- **must-fix**：仕様の致命的または重要な欠落、修正必須\n- **should-fix**：仕様の改善余地、修正推奨\n\
+  - **leave-as-is**：仕様として問題なし、修正不要\n\n### 8.3 機能内と機能横断\n\n- **機能内対処**：当該機能の drafting\
+  \ 段で本セッション内に修正\n- **機能横断持ち越し**：carry-forward register に集約、review-wave／alignment／approval\
+  \ の機能横断段で対処\n\n### 8.4 サブエージェント関連\n\n- **メインセッション**：作業の入口となる LLM session。草案作成とレビュー結果の取りまとめを担い、3\
+  \ 役レビューの判定者とは分離する\n- **サブエージェント**：敵対役・判定役を実行する別 session または外部 API 検証者。利用中の adapter\
+  \ が利用可能な実行形に従う\n- **mode = `subagent_mediated`**：サブエージェント方式のレビュー記録の mode 値\n\n##\
+  \ 9. 関連文書\n\n- ワークフローナビゲーション：[WORKFLOW_NAVIGATION.md](WORKFLOW_NAVIGATION.md)\n\
+  - 事前検査：[WORKFLOW_PRECHECK.md](WORKFLOW_PRECHECK.md)\n- reopen 手順：[REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md)\n\
+  - 抽出進捗：[../../docs/extraction-mapping.md](../../docs/extraction-mapping.md)\n- 機能横断波及所見：正本\
+  \ [../../learning/workflow/carry-forward-register/reviewcompass-import.yaml](../../learning/workflow/carry-forward-register/reviewcompass-import.yaml)、履歴\
+  \ source [../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md](../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md)\n\
+  - レビュー記録雛形：[../../templates/review/manual_dogfooding_review_template.md](../../templates/review/manual_dogfooding_review_template.md)\n\
+  - TODO：[../../TODO_NEXT_SESSION.md](../../TODO_NEXT_SESSION.md)\n\n## 10. 本ガイドラインの改訂規律\n\
+  \n- 本ガイドラインは運用文書として更新可能\n- セッションの経緯記録は `docs/sessions/` に残し、本文書には現行の運用契約だけを置く\n\
+  - 規律変更（§2〜§8）は利用者明示承認後に反映\n- 改訂時は最終更新日付を更新\n```\n\n### .reviewcompass/guidance/WORKFLOW_NAVIGATION.md\n\
+  \ncontent_mode: full_text\ncontent_sha256: f264a762f6bde2e6a2702a5c9219d89b611ced5328be4db65e66ccba23a4c269\n\
+  \n```text\n# ReviewCompass ワークフローナビゲータ共通手引き\n\nこの文書は、`tools/check-workflow-action.py\
+  \ next --json` の読み方を定める共通手引きである。\n\n## 1. 最初に実行するコマンド\n\n作業を始める前、または次に何をするかを提案する前に、必ず次を実行する。\n\
+  \n```bash\npython3 tools/check-workflow-action.py next --json\n```\n\n出力 JSON の\
+  \ `next_action.kind` を、現在の作業順序・優先順位の正本として扱う。記憶、要約、TODO の候補欄だけを段取りの根拠にしない。\n\n`next_action.required_disciplines`\
+  \ がある場合は、作業直前にそのファイルだけを読む。セッション開始時に長い規律群を一括で読んで記憶に頼るのではなく、機械判定された場面ごとの短い規律セットで挙動を調整する。対応表は\
+  \ `.reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml` を正本とし、`next --json` はその内容を機械可読に展開する。\n\
+  \n`next_action.required_inputs` がある場合は、規律ではなく作業対象ごとの状態入力として扱う。`id`、`source_type`、`read_policy`\
+  \ を確認し、`path` がある場合でもファイル名そのものを一般規律に昇格しない。たとえば持ち越し台帳は、配布先プロジェクトごとに別ファイル、外部台帳、または未配置になり得るため、`unresolved_cross_scope_items`\
+  \ のような抽象入力として扱う。\n\n機械可読な判定点では、判定点ごとに 1 本の effective prompt を読む。複数の元資料を直接ばらばらに読ませるのではなく、判定点に必要な規律・入力・次タスク方針を\
+  \ 1 本へ束ねた effective prompt を作り、その本文を LLM に読ませる。元資料は `prompt_source_refs` として保持し、実際に読ませた統合プロンプトは\
+  \ `effective_prompt_path`、`effective_prompt_sha256`、`effective_prompt_loaded` で記録する。全判定点で同じ巨大な共通プロンプトを使わず、各判定点に必要な短い\
+  \ effective prompt を使う。\n\n## 1.1 作業モード分類の用語表（work mode taxonomy）\n\n作業者は、maintenance、side-track、blocking\
+  \ unit、reopen、post-write verification を単一 enum に押し込まない。これらは同列の「作業モード」ではなく、次の軸を組み合わせて説明する。\n\
+  \n| 用語 | 意味 |\n| --- | --- |\n| `current_state` | `next --json` が返す機械状態。例：`completed`、`maintenance_in_progress`、`blocking_unit_in_progress`、`post_write_verification`。\
+  \ |\n| `work_class` | これから行う手続きの種類。例：normal workflow、maintenance、reopen、verification。maintenance\
+  \ は作業区分であり、作業内容ラベルや親子関係ではない。 |\n| `control_relation` | 本線・親作業との関係。例：mainline、side-track、blocking-unit、parent-resume。side-track\
+  \ は本線との関係であり、maintenance と同列の状態名ではない。blocking unit は親作業に束縛された制御構造である。 |\n| `permitted_scope`\
+  \ | 作業宣言の属性。`allowed_scope`、`allowed_files`、`completion_conditions` で、どこまで触ってよいかと戻る条件を表す。\
+  \ |\n| `work_context` | workflow state が `completed` でも残り得る実作業上の文脈。active anchor、side-track\
+  \ stack、return target など、戻り先や親子関係を会話記憶ではなく構造化記録から説明するために使う。 |\n\n例：`next --json`\
+  \ が `completed` を返していても、利用者が検査器の局所修正を求めた場合は、`current_state=completed`、`work_class=maintenance`、`control_relation=mainline`\
+  \ または `side-track`、`permitted_scope=allowed_files と completion_conditions` と分けて説明する。`audit`\
+  \ のような作業内容ラベルを、`current_state` や `control_relation` の値として扱わない。\n\n## 2. 判定結果の共通分岐\n\
+  \n<a id=\"resume_in_progress\"></a>\n\n### `resume_in_progress`\n\n`stages/in-progress/`\
+  \ に進行中手続きがある。新しい作業を始めず、`next_action.file` に示された進行中ファイルを読む。\n\n<a id=\"parent_resume_pending\"\
+  ></a>\n\n### `parent_resume_pending`\n\nblocking unit が完了し、戻り先の parent unit へ復帰する必要が残っている。新しい作業を始めず、`next_action.parent_unit_id`\
+  \ と `next_action.completed_unit_id` を確認し、まず parent unit の作業文脈へ戻る。\n\n`parent_resume_pending`\
+  \ が出ている状態で、利用者から別作業への明示的な割り込み指示があった場合は、開始前に次を実行して、active unit と resume pending の有無を機械的に確認する。\n\
+  \n```bash\npython3 tools/check-workflow-action.py work-unit preflight-start \\\n\
+  \  --proposed-unit-id <開始候補 unit ID> \\\n  --title \"<開始候補の題名>\" \\\n  --reason\
+  \ \"<開始候補の理由>\" \\\n  --json\n```\n\n`start_allowed: false` の場合は、`blocking_reasons`\
+  \ を利用者へ示して停止する。理由を見ずに通常 workflow、maintenance、新しい blocking unit へ進まない。\n\n<a id=\"\
+  blocking_unit_required\"></a>\n\n### `blocking_unit_required`\n\n別作業として切り出すべき作業が検出されている。通常\
+  \ workflow や親作業を続けず、`next_action.proposed_unit` の `unit_id`、`title`、`reason`、`parent_unit_id`、`return_conditions`\
+  \ を確認してから、利用者の明示的な開始指示を待つ。\n\n機械化が完全に揃うまでは、blocking unit の開始を暗黙に扱わない。開始前に、少なくとも次を会話上で明示する。\n\
+  \n- blocking unit に入ること。\n- 親作業の識別子。\n- blocking unit の目的。\n- blocking unit で変更してよい\
+  \ allowed files。\n- 親作業へ戻るための完了条件。\n\n宣言形式は次の形にそろえる。項目名を変えたり、本文中に散らして書いたりしない。\n\n\
+  ```text\nblocking unit に入ります\n- unit_id: <blocking unit ID>\n- parent_unit_id: <親作業\
+  \ ID>\n- title: <短い題名>\n- reason: <なぜ別作業として切り出すか>\n- allowed_files: <変更してよいファイルまたはディレクトリ>\n\
+  - return_conditions: <親作業へ戻るための完了条件>\n```\n\n`allowed_files` は必須であり、空欄や「必要な範囲」「関連ファイル」などの曖昧な指定では開始しない。開始時点で想定できるファイルまたはディレクトリを列挙し、途中で範囲を広げる必要が出た場合は、変更前に\
+  \ allowed files の追加を利用者へ明示する。親作業全体やリポジトリ全体を覆う指定は、混線防止の目的に反するため使わない。\n\n`return_conditions`\
+  \ も必須であり、空欄や「完了したら」「必要なところまで」などの主観的な指定では開始しない。親作業へ戻ってよいかを確認できる条件を列挙し、少なくとも成果物、検証、commit\
+  \ または evidence の扱いを含める。blocking unit を出るときは、各条件を満たしたか、未達なら何を残件として親作業へ戻すかを明示する。\n\
+  \n<a id=\"blocking_unit_in_progress\"></a>\n\n### `blocking_unit_in_progress`\n\n\
+  blocking unit が active である。`next_action.unit_id` の作業だけを扱い、親作業の commit、push、post-write\
+  \ verification、TODO 整理へ横滑りしない。\n\n機械化が完全に揃うまでは、作業者は次を手動で守る。\n\n- 作業開始時と再開時に、現在の\
+  \ active blocking unit を確認する。\n- commit 前に、commit unit が active blocking unit の\
+  \ `unit_id` と一致することを確認する。\n- blocking unit 完了前に親作業の成果物を同じ commit に混ぜない。\n- 親作業の\
+  \ commit は、blocking unit の完了条件を満たし、必要な commit または evidence を残し、親作業へ戻る宣言を終えるまで実行しない。\n\
+  - blocking unit を出るときは、完了条件を満たしたこと、残件、親作業への戻り先を明示する。\n\n<a id=\"reopen_in_progress\"\
+  ></a>\n\n### `reopen_in_progress`\n\nreopen 手続きが進行中である。通常ワークフローや post-write-verification\
+  \ より優先する。`next_action.file`、`next_step`、`completed_steps`、`pending_gates`、`current_blocker`、`required_action`\
+  \ を確認し、`required_action` に従う。\n\n代表的な `required_action`：\n\n- `draft_reopen_classification`：第1過程。種別判定・根拠記録。進行中ファイル発行と\
+  \ spec.json フラグ差し戻しは後続操作（`run_reopen_start`・`apply_approved_reopen_plan`）が担う。\n\
+  - `repair_canonical_documents`：第2過程。上流フェーズの正本文書修正。\n- `run_reopen_drafting`：第3過程。`next_pending_gate`\
+  \ が triad-review でも、同じ phase の drafting 完了が `drafting_completed_gates` または `completed_gates`\
+  \ に記録されていないため、先に正本文書を更新する。`active_gate`、`phase`、`stage: drafting`、`required_feature_scope`\
+  \ を確認し、レビューを開始しない。\n- `run_reopen_pending_gate`：第3過程。drafting 完了記録がある、または次 gate\
+  \ が triad-review 以外であるため、`next_pending_gate` の gate を実行する。alignment / approval 連鎖の再実施を含む。\n\
+  - `wait_for_human_decision`：人間の判断待ち。判断なしに進めない。\n- `finalize_reopen`：第4過程。最終確認、recheck\
+  \ クリア、in-progress の完了処理。\n- `repair_workflow_state`：判定不能または状態破損。推測で進めず利用者へ報告する。\n\
+  \n<a id=\"maintenance_in_progress\"></a>\n\n### `maintenance_in_progress`\n\n通常ワークフローではなく、ワークフロー制御・運用規律・検査器などの保守作業が進行中である。`next_action.file`\
+  \ を読み、`required_action`、`allowed_scope`、`completion_conditions` に従う。通常の `stage`\
+  \ や `upstream_recheck` へ戻るのは、maintenance の完了条件を満たし、進行中ファイルを `stages/completed/`\
+  \ へ移してからである。\n\n`next_action` と異なる作業へ入る場合、または `next` 判定自体の欠陥を直す場合は、ファイル編集前に `stages/in-progress/maintenance-<日付>-<短い名前>.yaml`\
+  \ を作成する。少なくとも `trigger`、`mainline_blocked_by`、`work_class`、`control_relation`、`allowed_scope`、`allowed_files`、`completion_conditions`\
+  \ を記録し、side track であることを明示する。保守作業を side-track として始める場合は `work_class: maintenance`、`control_relation:\
+  \ side-track` を使う。これを省略すると、本筋の作業順序を守るための修復作業自体が、記録されない手順逸脱になる。\n\nmaintenance の進行中ファイルは、必要に応じて\
+  \ `workflow_steps`、`required_reviews`、`review_evidence`、`post_write_verification`、`completion_criteria`\
+  \ を持つ。`workflow_steps` は作業工程の完了状態、`required_reviews` は変更内容そのものに対する必要レビュー、`review_evidence`\
+  \ はそのレビューや確認の証跡、`post_write_verification` は正本文書などの書き込み後検証、`completion_criteria`\
+  \ は maintenance を完了へ移せる条件を表す。変更内容レビューと post-write verification は別工程として記録し、docs note\
+  \ だけの記録作業は code / SDD / guidance 変更と同じ厳格検証として扱わない。\n\n`required_reviews` に未完了項目があれば\
+  \ `next --json` は `maintenance_review_required` を返す。`required_reviews` が完了し、`post_write_verification.status`\
+  \ が未完了なら `maintenance_post_write_required` を返す。これらが完了し、`completion_criteria` が記録されている場合は\
+  \ `maintenance_completion_required` を返し、maintenance ファイルを完了側へ移す作業へ進む。\n\n本線 reopen\
+  \ 中の maintenance 完了 commit は、`stages/completed/maintenance-*.yaml` の `mainline_blocked_by`\
+  \ が現在の reopen in-progress ファイルを覆うことで許可される。本線 `stages/in-progress/reopen-*.yaml`\
+  \ は、maintenance のためだけに同伴 stage しない。\n\n**maintenance を始める前の事前調査（in-progress YAML\
+  \ を作成する前に実施する）**\n\n1. 変更対象ファイルと依存関係を確認し、影響範囲を特定する。\n2. フィーチャー横断の影響がないことを確認する。\n\
+  3. 先に解決すべきブロッカー（別の問題）が潜んでいないことを確認する。\n\n事前調査の結果として次の開始条件をすべて満たした場合のみ maintenance\
+  \ を始める。\n\n- 変更が局所的である（既存仕様境界を変えず、workflow 機構・承認・状態機械・`next --json` の意味を変えない）。\n\
+  - 影響範囲が対象フィーチャーに閉じている。\n\nいずれかを満たさない場合：\n\n- 中核変更（仕様境界・workflow 機構を変える）の場合は reopen\
+  \ または新規 workflow として扱う。\n- フィーチャー横断の影響がある場合は利用者にエスカレーションする。\n\n開始条件を満たした場合、in-progress\
+  \ YAML を作成した後に最初に次の 3 行を宣言する。\n\n```\n変更分類: 局所\n理由: <影響範囲と既存仕様境界への影響の説明>\n手順: TDD\
+  \ 主導 / 文書のみ（lightweight self-check）\n```\n\nコード変更を伴う局所変更は TDD 主導（テスト先行）で進める。文書のみの変更は\
+  \ lightweight self-check で確認する。\n\n### `reopen_classification_required`\n\n完了済み\
+  \ workflow で、`intent`、feature-partitioning、`requirements`、`design`、`tasks` などの上流正本が後続成果物より新しい。単なる再確認として下流へ進めず、意味変更の有無と\
+  \ reopen 種別を分類する。`next_action.reopen_trigger` が候補を示す場合も、分類根拠を保存して `reopen-start`\
+  \ へ進む。\n\n<a id=\"post_write_verification\"></a>\n\n### `post_write_verification`\n\
+  \n書き込み後検証の対象となる未コミット変更がある。通常ワークフローへ進まず、`next_action.target_files` 全体を対象として検証する。\n\
+  \n検証 manifest は `.reviewcompass/post-write-verification/*.yaml` に置く。`target_files`、`target_sha256`、`required_verifiers`、`completed_verifiers`、`unresolved_substantive_findings`\
+  \ を記録する。`verifications[]` がある場合、各 verifier は `target_files` 全体と対応する `target_sha256`\
+  \ を単一エントリで覆る必要がある。ファイルごとの分業は独立多重チェックではない。\n\nAPI 経由の複数モデル検証を行う場合の標準手順：\n\n```bash\n\
+  .venv/bin/python3 tools/api_providers/prepare_post_write_review.py \\\n  --target\
+  \ <target-file> \\\n  [--target <target-file-2> ...] \\\n  --source-material .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md\
+  \ \\\n  [--source-material <additional-source-material> ...] \\\n  --review-run-dir\
+  \ .reviewcompass/evidence/review-runs/<run-id> \\\n  --criteria-id <criteria-id>\
+  \ \\\n  --change-summary \"<change-summary>\" \\\n  --review-question \"<review-question>\"\
+  \n\n.venv/bin/python3 tools/api_providers/run_review.py \\\n  --variant post_write_verification_google\
+  \ \\\n  --target <target-file> \\\n  [--target <target-file-2> ...] \\\n  --phase\
+  \ post_write_verification \\\n  --criteria-file .reviewcompass/evidence/review-runs/<run-id>/review-target.md\
+  \ \\\n  --prompt-manifest-path .reviewcompass/evidence/review-runs/<run-id>/prompt-manifest.yaml\
+  \ \\\n  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>\n\n.venv/bin/python3\
+  \ tools/api_providers/review_triage.py list-pending \\\n  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>\n\
+  \n.venv/bin/python3 tools/api_providers/review_triage.py decide \\\n  --review-run-dir\
+  \ .reviewcompass/evidence/review-runs/<run-id> \\\n  --finding-id <finding-id> \\\
+  \n  --final-label must-fix \\\n  --decision-reason \"<reason>\" \\\n  --decision-actor\
+  \ human \\\n  --approval-record .reviewcompass/evidence/review-runs/<run-id>/approval.yaml\n\
+  \n.venv/bin/python3 tools/api_providers/review_triage.py write-manifest \\\n  --review-run-dir\
+  \ .reviewcompass/evidence/review-runs/<run-id> \\\n  --out auto \\\n  --approval-record\
+  \ .reviewcompass/evidence/review-runs/<run-id>/approval.yaml\n\n.venv/bin/python3\
+  \ tools/check-workflow-action.py next --json\n```\n\nAPI 呼び出し起動手順の正本は、先に `.venv/bin/python3\
+  \ tools/api_providers/prepare_post_write_review.py ...` で review-target と prompt\
+  \ manifest を生成し、その後 `.venv/bin/python3 tools/api_providers/run_review.py ... --criteria-file\
+  \ <review-target.md> --prompt-manifest-path <prompt-manifest.yaml>` を実行することである。外側から\
+  \ `zsh -c` で包まない。API key は配布物や設定ファイルへ書かず、利用者の shell 初期化で読み込まれる環境変数から渡す。Claude Code\
+  \ などの操縦実行面では、子プロセスの `ANTHROPIC_API_KEY` と `GEMINI_API_KEY` が空文字列へ上書きされることが確認済みである。一方、`OPENAI_API_KEY`\
+  \ は同じ確認では上書きされていない。このため `run_review.py` / `run_role.py` entrypoint 内で、環境変数が未設定の場合に\
+  \ `~/.zshrc` を読み直して API key を補完する。補完後も key が得られない場合は API key 未設定として fail-closed\
+  \ する。\n\n`prepare_post_write_review.py` は `review-target.md`、`review-target.yaml`、`prompt-manifest.yaml`\
+  \ を同じ `--review-run-dir` に生成する。`review-target.md` には criteria ID、変更要約、検査質問、target\
+  \ files、source materials、target file contents、scope / out-of-scope、finding policy、機微情報チェック結果を含める。`prompt-manifest.yaml`\
+  \ には `review_prompt_materials.target_files` と `review_prompt_materials.source_materials`\
+  \ を `content_mode: full_text` と `content_sha256` 付きで記録する。機微情報らしい文字列を検出した場合、または prompt\
+  \ manifest audit が DEVIATION の場合は fail-closed し、外部 API review へ進まない。\n\n`next_action.target_files`\
+  \ が複数ある場合は、`prepare_post_write_review.py` と `run_review.py` の両方で `--target` を複数回指定して同じ\
+  \ review-run に束ねる。API review-run の成否確認は、`review-target.md`、`review-target.yaml`、`prompt-manifest.yaml`、`review_summary.md`、`rounds.yaml`、`model-result-summary.yaml`、`raw/`、`parsed/`、`prompts/`、`target-manifest.yaml`\
+  \ が同じ `--review-run-dir` に生成され、`rounds.yaml` の `target_files`、`criteria_source_path`、`prompt_manifest_path`、provider、model、prompt/raw/parsed\
+  \ path が今回の対象と一致することで行う。\n\nAPI 呼び出しが失敗した場合は、まず上の正本手順を再確認する。`import` エラー、`argparse`\
+  \ エラー、引数不一致は起動手順または実装の問題であり、外部送信ポリシーや provider 側障害と混同しない。`ConnectError`、名前解決失敗、接続不能が出た場合は\
+  \ sandbox network 制限の可能性を先に疑い、同じ正本コマンドをネットワーク実行が許可された実行面で再実行する。API key 未設定のエラーは\
+  \ `~/.zshrc` から対象 provider の環境変数が読み込まれているかを確認する。\n\n`post_write_verification` では\
+  \ API 経路の variant を明示する。小規模既定は `--variant post_write_verification_google`、大規模または\
+  \ 3 系統検証が必要な場合は `--variant <post-write-api-variant>` として、`config/api-settings.yaml`\
+  \ の `context: post_write_verification` かつ API provider だけで構成された variant を選ぶ。CLI\
+  \ 経路を含む default variant に暗黙フォールバックしてはいけない。\n\nAPI レビュー結果を得た場合は、raw 参照、モデル別要約、三段階トリアージ（`must-fix`／`should-fix`／`leave-as-is`）を利用者へまとめて提示する。`ERROR`／`CRITICAL`\
+  \ または最終判断 `must-fix` の重要件を `decide` する場合、または重要件を含む run から manifest を生成する場合は、承認を記録した\
+  \ `--approval-record` が必須である。承認レコードには `approved_by: user` または `approved_by: proxy_model`、`review_run_id`、`summary_presented_to_user:\
+  \ true`、`triage_presented_to_user: true`、`approved_finding_ids`、必要に応じて `approved_final_labels`\
+  \ を含める。`approved_by: proxy_model` の場合は、`proxy_model_id` と finding ごとの `proxy_decisions`\
+  \ を含め、各 decision file が raw response、候補案、採用案、判断理由、最終ラベルを保持する。\n\n`write-manifest\
+  \ --out auto` は `.reviewcompass/post-write-verification/post-write-YYYY-MM-DD-NNN.yaml`\
+  \ の次番号を作る。manifest は post-write validation の途中記録ではなく、commit 直前の最終封印である。`triage.yaml`\
+  \ に `decision_status: human_required` が残る場合、重要件の利用者承認が確認できない場合、または review-run の\
+  \ target set に含まれない未コミット post-write target が残る場合は manifest を生成しない。manifest 作成後は対象ファイルを編集せず、stage\
+  \ / approval / commit へ直行する。\n\nこの生成停止条件は、現在の review-run から新しい最終 manifest を作る場合の規則である。既存の\
+  \ post-write manifest が現在の対象ファイルと一致し、かつ未解決の本質的指摘を含む場合は、`next --json` が `post_write_human_decision_required`\
+  \ と `next_action.manifest` を返す。\n\n<a id=\"lightweight_self_check\"></a>\n\n###\
+  \ `lightweight_self_check`\n\nnotes / 履歴 / 判断材料の未コミット変更がある。通常ワークフローへ進まず、`next_action.target_files`\
+  \ を API post-write verification ではなく軽量自己精査で確認する。\n\n軽量自己精査の対象は `docs/notes/` 配下と、単独変更の\
+  \ `TODO_NEXT_SESSION.md` とする。`docs/notes/` は議論記録、判断経緯、過去メモ、参考情報を置く場所として扱い、正本仕様・運用規律・レビュー判定そのものではないため、API\
+  \ review ではなく自己検査で確認する。`docs/operations/`、`docs/disciplines/`、`docs/reviews/`、`stages/completed/`\
+  \ は正本または完了記録として厳格に扱う。notes から正本へ昇格する内容は、該当する正本ファイルへ移した時点で strict な `post_write_verification`\
+  \ 対象とする。\n\n`TODO_NEXT_SESSION.md` は更新頻度が高い次セッション導線であり、進捗整理・次タスク・現在状態の更新だけなら API\
+  \ review ではなく軽量自己精査で扱う。ただし、同じ未コミット差分に strict な `post_write_verification` 対象が含まれる場合は、TODO\
+  \ も同じ strict 検証の `target_files` に同梱する。\n\n軽量自己精査では、API review を呼ばず、次だけを確認する。\n\n\
+  1. 利用者の指摘内容を落としていないか。\n2. 事実、推測、方針案、未実装事項が区別されているか。\n3. 後で見たときに次の判断材料になるか。\n4. 作業範囲を超えて仕様化していないか。\n\
+  5. API review が必要な正本へ昇格していないか。\n\n完了記録は `.reviewcompass/post-write-verification/*.yaml`\
+  \ に置き、`required_verifiers` と `completed_verifiers` は `lightweight_self_check` とする。`target_files`\
+  \ と `target_sha256` は通常の post-write manifest と同じく対象全体を覆う。\n\n`post_write_verification`\
+  \ 対象と `lightweight_self_check` 対象が混在する場合は、`post_write_verification` を優先する。strict\
+  \ 側が完了した後、軽量対象が残っていれば `lightweight_self_check` を返す。\n\n<a id=\"post_write_policy_violation\"\
+  ></a>\n\n### `post_write_policy_violation`\n\npost-write-verification pending 中に禁止変更がある。通常ワークフローへ進まず、`next_action.forbidden_files`\
+  \ を報告して停止する。禁止ファイルを勝手に削除・修正してはいけない。\n\n現行実装では、post-write-verification 対象ファイルが未コミット変更に含まれる状態で、`tools/*.py`、`templates/`、または他の\
+  \ post-write 対象と混ざった `docs/disciplines/` 配下の変更があると逸脱になる。\n\n<a id=\"post_write_human_decision_required\"\
+  ></a>\n\n### `post_write_human_decision_required`\n\n既存の post-write manifest に未解決の本質的指摘がある。通常ワークフローへ戻らず、`next_action.target_files`\
+  \ と `next_action.manifest` を確認し、利用者判断を待つ。\n\nこれは、現在の review-run で `triage.yaml`\
+  \ に `decision_status: human_required` が残ったまま新しい最終 manifest を生成する状態ではない。その場合は manifest\
+  \ 生成前に停止し、triage の判断または承認を先に解決する。\n\n### `stage`\n\n通常ワークフロー上の次タスクが決まっている。`feature`、`phase`、`stage`\
+  \ の示す作業だけを扱う。\n\n`stage` が `triad-review` の場合、review-run の開始前に使用 variant と role\
+  \ ごとの path／provider／model を確定し、曖昧なまま開始しない。review-run に使うプロンプトは [[llm-as-judge-prompting]]\
+  \ の手順（材料揃え → 問い設計 → 選択肢なし分析）で設計する。API review-run 完了後は、proxy_model 判断依頼、実装修正、spec.json\
+  \ 更新、フェーズ移行のいずれにも進む前に、raw 参照、モデル別要約、同根所見クラスタ、`must-fix`／`should-fix`／`leave-as-is`\
+  \ の三段階トリアージ案、重要件の平易な説明を利用者へ提示して停止する。詳細手順は `.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#3.3-a-2`\
+  \ を正本とする。\n\n### `cross_feature_stage`\n\n機能横断段に進む。`feature` は `all_features` になる。`recheck_items`\
+  \ がある場合は上流変更の織り込みを含める。`required_inputs` に `unresolved_cross_scope_items` があり、`unresolved_count`\
+  \ が 0 より大きい場合は、`read_policy` に従って未消化の持ち越し所見だけを確認する。ReviewCompass では互換情報として `pending_cross_feature_findings`\
+  \ も返るが、一般化された判断根拠は `required_inputs` とする。\n\n自律・並列で機能横断段を試行する場合は、通常の review-wave\
+  \ 完了判定に入る前に `autonomous-plan` を作成し、`tools/check-workflow-action.py autonomous-plan\
+  \ <plan.yaml>` で検査する。計画には `recheck_items` と `stages/feature-dependency.yaml` から分かる依存を明示し、上流\
+  \ recheck 対象を下流判断より先に置く。同じ worktree で並列化してよいのは読取調査または差分を残さない確認に限る。新しい依存、暗黙依存、未記録依存、または上流\
+  \ recheck の下流反映が必要だと分かった場合、その作業単位は停止し、機能横断段の実施記録に blocked として記録してから統合判断へ戻す。\n\n\
+  機能横断段の実施記録は、単一 feature 配下に置かず `.reviewcompass/specs/_cross_feature/reviews/` に置く。標準ファイル名は\
+  \ `.reviewcompass/specs/_cross_feature/reviews/{date}-{phase}-{stage}.md` とし、`feature:\
+  \ all_features`、対象 phase/stage、確認した feature 範囲、持ち越し件数、recheck 結果、実行した検証コマンド、判断結果を記録する。`_cross_feature`\
+  \ は実 feature ではなく、横断段成果物だけの名前空間である。\n\n<a id=\"commit_stop_point\"></a>\n\n### `commit_stop_point`\n\
+  \n通常 workflow の phase 終端または reopen 手続き上の停止点に到達している。`required_action: commit_stop_point`\
+  \ の場合、次 phase / 次 gate へ進まず、利用者の明示的な commit 指示を待つ。\n\n利用者の短い操作語（例: `コミット`、`push`、`次へ`）を受けた場合は、mutation\
+  \ の前に `.venv/bin/python3 tools/check-workflow-action.py operation-trigger-resolve\
+  \ --trigger-text <text> --json` を実行し、`operation_id`、`operation_card_path`、`first_readonly_command`、`mutation_allowed_after`\
+  \ を確認する。`resolution_status: stop-and-ask` または `unknown_operation` の場合は、低レベルコマンドを推測実行せず利用者確認で停止する。\n\
+  \n利用者が commit を指示した直後は、Git index への追加（`git add`）や approval record を作る前に `.venv/bin/python3\
+  \ tools/check-workflow-action.py commit-preflight --json` を実行する。`DEVIATION` の場合は何も作らず停止し、理由と次に許可されている\
+  \ action だけを報告する。\n\n通常 workflow では、`intent.approval` または `feature-partitioning.approval`\
+  \ が全 feature で完了し、該当 phase の workflow_state または成果物に未コミット変更がある場合に返る。`blocked_by.phase`、`blocked_by.stage`、`blocked_by.dirty_paths`\
+  \ を確認する。`commit-preflight` が `OK` を返した後に対象差分を `git add` し、guarded commit の通常手順へ進む。commit\
+  \ 後に作業ツリーが clean であれば、同じ停止点を返し続けず次 phase の action へ進む。\n\nreopen 手続きでは、`reopen_in_progress`\
+  \ の `required_action: commit_stop_point` として返る。`blocked_by.kind` と `blocked_by.gate`\
+  \ を確認し、reopen 手続きファイルを含む停止点 commit を行う。\n\n<a id=\"commit_mixing_risk\"></a>\n\n\
+  ### `commit_mixing_risk`\n\ncommit unit が固定した対象外の staged file が混入している。通常 workflow、post-write\
+  \ verification、guarded commit へ進まず、`next_action.target_files`、`extra_staged_files`、`path`\
+  \ を確認する。\n\n利用者に、対象外ファイルを別 commit unit / blocking unit へ分けるか、現在の commit unit を再作成してよいかを確認する。対象外ファイルを理由なしに同じ\
+  \ commit へ混ぜない。\n\n<a id=\"commit_unit_stale\"></a>\n\n### `commit_unit_stale`\n\
+  \ncommit unit が現在の staged 内容と一致していない。通常 workflow、post-write verification、guarded\
+  \ commit へ進まず、`next_action.target_files` と `path` を確認する。\n\nstaged 内容を commit unit\
+  \ に合わせて戻すか、現在の staged 内容に合わせて commit unit を再作成する。古い commit unit のまま承認 record や commit\
+  \ execution delegation を作らない。\n\n### `upstream_recheck`\n\n完了済み workflow であっても、上流成果物が下流成果物より新しいため、下流へ進む前に再確認が必要である。`upstream_phase`、`phase`、`stage`\
+  \ を確認し、`phase.stage` に示された作業を次作業として扱う。たとえば intent 更新後は feature-partitioning の確認、requirements\
+  \ 更新後は design の再確認、tasks 更新後は implementation の再確認を先に行う。\n\nこの kind が返った場合、記憶や直前の会話から\
+  \ requirements、design、tasks、implementation へ飛ばない。必ず `next_action.phase` と `next_action.stage`\
+  \ に従い、上流から下流へ順に反映する。\n\n<a id=\"feature_definition_required\"></a>\n\n### `feature_definition_required`\n\
+  \nfeature 一覧が解決できない（`feature-dependency.yaml` が見つからない、または `feature_order` キーが未定義）。対象アプリの初期状態で発生する。エラーではない（verdict\
+  \ OK）。\n\n`next_action.reason`（立ち上げ案内の本文）と `current_state.feature_dependency_source`（解決元）を確認する。`feature_dependency_source`\
+  \ が null ならファイル自体が探索順（`.reviewcompass/feature-dependency.yaml` → `stages/feature-dependency.yaml`\
+  \ → `feature-dependency.yaml`）のどこにも存在せず、ファイルパスが入っていればそのファイルはあるが `feature_order`\
+  \ キーが未定義または不正である。前者は分割結果の記録から、後者は既存ファイルへの `feature_order` キーの追記から始める。\n\n新しい作業を始めず、intent\
+  \ と feature-partitioning を実施し、承認された分割結果（機能ごとの依存の主張と理由、順序の導出を含む）を `.reviewcompass/feature-dependency.yaml`\
+  \ の `feature_order` キーに記録する。記録後に `next` を再実行する。feature 立ち上げの手順は `.reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md`\
+  \ を正本とする。\n\nなお、`feature_order` と `depends_on` の整合違反（依存される機能が先に並んでいない、循環依存がある）は本\
+  \ kind ではなく `unknown`／DEVIATION（fail-closed）になる。理由に従って `feature-dependency.yaml`\
+  \ を修正する。\n\n### `completed`\n\n全 workflow_state が完了している。通常の次タスクはない。\n\n完了報告で「次タスク」を示す必要がある場合、ここでいう「通常の次タスクはない」とは、workflow_state\
+  \ が要求する次 action がないという意味である。backlog 候補、maintenance 候補、reopen 候補を提示してよいが、それらは workflow\
+  \ の自動継続ではなく、利用者が次に選べる作業候補として扱う。\n\n候補を拾う順序と表示件数は `.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#7-作業完了時レポート`\
+  \ の completed 時の次タスク取得規律に従う。`TODO_NEXT_SESSION.md` の推奨順を候補源にする場合でも、候補が現在も `status:\
+  \ candidate` であることを `.reviewcompass/backlog/index.yaml` または候補ファイル本体で確認してから表示する。完了報告では、利用者が\
+  \ 1 件表示を明示した場合を除き、5 件ほどを短い説明つきの選択肢として示す。\n\n利用者指示により maintenance、reopen、または新規 workflow\
+  \ を開始できる。別作業を開始する前には、原則として `work-unit preflight-start` を実行し、`start_allowed` と `blocking_reasons`\
+  \ を確認する。maintenance を始める場合は、その後に `maintenance_in_progress` の事前調査と開始条件を確認する。\n\n\
+  **completed からの作業開始分類**\n\n| 分類 | 使う条件 |\n| --- | --- |\n| maintenance | 局所的な運用・検査器・手引き補修で、既存仕様境界や\
+  \ workflow 機構の意味を変えない。 |\n| reopen | 既存正本の意味変更や下流再実施が必要で、既存 feature の責務内に収まる。 |\n\
+  | 新規 workflow | 既存 feature の責務境界に収まらない新しい責務を導入する。 |\n\n判断が分かれる場合は候補だけを提示し、人間判断を待つ。候補のまま\
+  \ `stages/in-progress/maintenance-*.yaml` を作成したり、reopen-start や新規 workflow の正本作成へ進んだりしない。\n\
+  \n### `unknown`\n\n状態判定できない。推測で進めず、`reasons` と `current_state` を利用者へ報告する。\n\n##\
+  \ 3. 共通禁止事項\n\n- `next` を実行せずに次作業を提案しない。\n- `resume_in_progress`、`parent_resume_pending`、`reopen_in_progress`、`post_write_verification`、`post_write_policy_violation`、`post_write_human_decision_required`\
+  \ を通常ワークフローより後回しにしない。\n- `lightweight_self_check` を通常ワークフローより後回しにしない。\n- `reopen_classification_required`\
+  \ を「再確認で足りる」と独断して下流成果物を更新しない。\n- `next_action` と異なる side track に入る場合、または `next`\
+  \ 判定自体を修復する場合は、maintenance in-progress を作らずに編集を始めない。\n- 事前調査を省略して maintenance を始めない。影響範囲・依存関係・ブロッカーの確認が済んでいない状態で\
+  \ in-progress YAML を作成しない。\n- spec.json の workflow_state 変更、commit、push は不可逆操作として扱い、対応する\
+  \ precheck サブコマンドを実行する。\n- 検証者は `target_files` 全体を見る。ファイルごとの分業を独立多重チェックとして扱わない。\n\
+  - 本質的指摘を独断で逐語的指摘に落とさない。迷う場合は利用者へ上げる。\n```\n\n### .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md\n\
+  \ncontent_mode: full_text\ncontent_sha256: 7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8\n\
+  \n```text\n# API Review Prompt Quality\n\n最終更新：2026-06-23\n\n本文書は、API 経由の review-run\
+  \ を開始する前に、レビュー用プロンプト自体を品質確認するための運用手順である。\n\nこの手順は、特定 feature や特定 phase に閉じない。各 review-run\
+  \ は、この共通手順に phase / gate / feature 固有の上流接続要件を差し込んで使う。\n\n利用者が任意の場面で API review を依頼する場合は、利用者が伝えたレビュー要件を\
+  \ `User Review Requirements` として保持し、criteria 作成・prompt quality review・実 review-run\
+  \ の全段で照合する。\n\n## 1. 目的\n\nAPI review-run の品質は、モデルや provider だけでなく、プロンプトの作り方に強く依存する。\n\
+  \nレビュー用プロンプトの監査は、高リスク時だけの追加確認ではなく、API review-run の標準ゲートである。プロンプトが target / source\
+  \ / scope / output contract を誤ると、その後の raw response、parsed YAML、triage、proxy decision、実装修正がすべて誤った入力に基づく。したがって、prompt\
+  \ audit にかかるコストはレビュー外の余分なコストではなく、レビュー品質を成立させるための本体コストとして扱う。\n\n特に、次の失敗を防ぐ。\n\n-\
+  \ `--target` が実際の審査対象本文ではなく、作成者の要約になっている\n- `--criteria-file` と `--target` が同一の\
+  \ author-written summary になっている\n- source materials が path-only で、モデルが本文を読めない\n\
+  - review target / source materials / out of scope が分離されていない\n- 上流意図伝達レビューで、上流の目的・責務境界・受入条件・禁止事項が\
+  \ prompt に含まれていない\n- 利用者が指定したレビュー目的、重視点、範囲、禁止事項が main によって狭められる、広げられる、または別の問いに置き換えられる\n\
+  - output contract が曖昧で parser / triage に載らない\n- プロンプトが結論を誘導している\n\n## 2. 役割\n\n\
+  APIレビュー用プロンプト品質確認は、次の 2 者レビュー体制で行う。\n\n| 役割 | 担当 | 目的 |\n|---|---|---|\n| main |\
+  \ 操縦中の LLM | API review criteria 素案を作る |\n| adversarial | 別モデル | 素案の欠落、誘導、対象違い、材料不足、範囲ミスを探す\
+  \ |\n| judgment | 別モデル | adversarial 所見の反映後、その prompt を実 review-run に使ってよいか判定する\
+  \ |\n\nここでいう 2 者レビュー体制は、作成者である main を除き、adversarial と judgment の 2 者で品質確認する運用を指す。\n\
+  \n## 3. 入力分離\n\nAPI review-run では、criteria と target を分離する。\n\n- `User Review Requirements`:\
+  \ 利用者が指定したレビュー目的、判断対象、重視点、範囲、禁止事項、必要出力\n- `--criteria-file`: レビュー目的、背景、上流材料、必須チェック、範囲外、finding\
+  \ policy を含む\n- `--target`: 実際に審査する本文\n\n`User Review Requirements` は criteria の上位入力であり、criteria\
+  \ 作成時に失われてはならない。main は、利用者要件を criteria に構造化して写し、どの要件がどの review task / required check\
+  \ / out of scope / finding policy に対応するかを確認できる形にする。\n\n禁止:\n\n- criteria と target\
+  \ に同じ review wrapper / author-written summary を渡す\n- target manifest が実審査対象を含まない状態で\
+  \ gate 完了根拠にする\n- target 本文を入れず、target の要約だけで review-run を実行する\n- 利用者が求めたレビュー範囲を、合意なく狭める、広げる、または別目的の\
+  \ review に置き換える\n\n## 4. User Review Requirements\n\n利用者が任意の場面で review を依頼する場合、main\
+  \ は prompt 作成前に次を整理する。\n\n1. review purpose: 欠陥検出、採否判断、上流接続確認、回帰確認、比較評価など\n2. review\
+  \ object: artifact、prompt、設計案、修正案、実装差分など\n3. review focus: API設計、互換性、セキュリティ、運用境界、上流要件、実装可能性など\n\
+  4. scope boundaries: 含める範囲、含めない範囲、まだ判断しない下流工程\n5. source materials: 根拠にする要件、設計、過去判断、制約、禁止事項\n\
+  6. output requirements: findings、severity、採否、懸念点、修正案、比較軸など\n7. prohibited actions:\
+  \ commit、push、phase 完了、人間承認代行、未合意の仕様変更など\n\n利用者要件が曖昧な場合でも、main が勝手に確定しない。作業可能な仮定として扱う場合は、criteria\
+  \ に仮定を明記し、prompt quality review で妥当性を確認させる。\n\n## 5. API 送信可能材料の基準\n\nAPI review-run\
+  \ / proxy_model 判断では、判断に必要な ReviewCompass リポジトリ内の仕様、設計、タスク、レビュー所見、構造化要約、証跡パスを prompt\
+  \ に含めてよい。\n\nこれは、次の条件を満たす場合に限る。\n\n1. 利用者が当該 API review-run / proxy_model 判断の実行を明示承認している。\n\
+  2. API key、token、password、nonce などの秘密値を含めない。\n3. メールアドレス、電話番号など個人識別情報を含めない。\n4.\
+  \ 第三者との契約上、外部送信できない非公開情報を含めない。\n5. 判断に不要な全文ログや周辺ファイルを含めず、判断項目に必要な抜粋または構造化要約に絞る。\n\
+  \n単にリポジトリ内の未公開仕様・設計・レビュー要約であることだけを理由に、API 送信を禁止しない。ReviewCompass の API review /\
+  \ proxy_model 運用では、それらは通常のレビュー材料である。\n\nただし、利用者が外部送信を避ける方針を示した場合、または上記 2〜4 に該当する情報が含まれる場合は、伏字化、抽象化、または外部\
+  \ API を使わない判断へ切り替える。\n\n## 6. Main が作る criteria の必須要素\n\ncriteria file は、少なくとも次を持つ。\n\
+  \n1. review task\n2. why this review exists\n3. user review requirements\n4. required\
+  \ disciplines\n5. review target\n6. source materials\n7. required checks\n8. out\
+  \ of scope\n9. finding policy\n\nsource materials は path-only にしない。必要な本文抜粋または構造化要約を、モデルが読める形で\
+  \ criteria に含める。\n\nfront matter に path を置く場合は、provenance なのか model-readable material\
+  \ なのかを明示する。\n\ncriteria は、利用者要件を単に引用するだけでなく、review task / required checks / out\
+  \ of scope / finding policy へ反映する。\n\n## 6.1 Main Preanalysis\n\nmain は criteria\
+  \ 素案を書く前に、対象 review requirement と source materials を直接検討し、判断に必要な材料、判断項目、分割要否、未読資料、機微情報リスクを整理する。\n\
+  \nmain preanalysis は、prompt 作成のための材料揃えと判断点発見であり、reviewer に対する正解ではない。preanalysis\
+  \ を後続の監査や prompt に含める場合は、仮説・source discovery aid として明示し、reviewer に source materials\
+  \ から独立再構成させる。\n\nmain preanalysis には少なくとも次を含める。\n\n- 読んだ source materials と使用目的\n\
+  - 判断項目と、それぞれの target / source / out of scope\n- 複数 prompt に分割すべき独立判断の有無\n- prompt\
+  \ に含めるべき model-readable source material\n- 送信してはいけない、または最小化すべき機微情報\n- 未解決・未読・推測に留まる事項\n\
+  \npreanalysis 内の所見は、`open`、`resolved`、`superseded`、`used_for_context` など現在性を区別できる形で扱う。解決済み所見を\
+  \ open な欠陥として prompt bundle に残すと、reviewer を誤誘導するためである。\n\n### 6.2 Behavior-Path\
+  \ Claim の材料選定\n\nreview requirement が「あるトリガーから、意図した機械手順へ進むか」「短い利用者指示が gate を bypass\
+  \ しないか」「特定の guard が必ず作動するか」のような behavior-path claim / 実行経路 claim を含む場合、main preanalysis\
+  \ は変更文書だけを target/source にしてはならない。\n\nこの場合、source materials には少なくとも次を含める。\n\n- trigger\
+  \ resolver または利用者発話を operation に写像する map\n- operation preflight、guard、gate、runner\
+  \ など実行経路上の制御実装\n- その経路を固定するテスト、または存在しない場合は「未固定」と分かる証跡\n- 変更対象文書、effective prompt、plan\
+  \ / TODO / checklist など経路上の入力成果物\n- 期待される停止点、禁止 bypass、許可される次操作\n\n対象が「文書の整合性」ではなく「動作上の強制」なら、変更された\
+  \ guidance / prompt だけを target にした review-run は不足である。文書に要件が書かれていても、trigger resolver、operation\
+  \ preflight、runner、test がその要件を読んでいなければ behavior-path claim は成立しない。\n\n### 6.3 Review\
+  \ Question Decomposition\n\nmain は criteria 作成前に review question decomposition を行う。整合性確認だけの一括質問にしない。\n\
+  \n分解では、利用者要件または workflow 要件を要求 claim ごとの required check に写す。各 required check は、次を明示する。\n\
+  \n1. 何を成立させる claim か\n2. どの target / source material で判定するか\n3. finding にすべき失敗条件は何か\n\
+  4. out of scope は何か\n\n例: 「ショートリクエストが bridge を bypass しない」を検証するなら、単に「prompt と map\
+  \ が整合しているか」と聞かない。`次へ`、`進める`、`継続` などの短い発話がどの trigger resolver / operation preflight\
+  \ / effective prompt に到達し、どこで plan materialization status、TODO/checklist coverage、quality\
+  \ audit を確認するかを required check に分解する。\n\nreview question が複数 claim を含む場合は、claim\
+  \ ごとに prompt を分けるか、少なくとも required checks を分離して reviewer が各 claim を個別に pass/fail\
+  \ できる形にする。\n\n## 7. Phase 別の上流接続\n\n`.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review`\
+  \ が適用される review では、phase ごとに次を確認する。\n\n| phase | target | source materials |\n|---|---|---|\n\
+  | requirements | `requirements.md` | upstream decision materials, reopen classification,\
+  \ planning notes, user decisions |\n| design | `design.md` | `requirements.md` |\n\
+  | tasks | `tasks.md` | `requirements.md`, `design.md` |\n| implementation | implementation\
+  \ artifacts | `requirements.md`, `design.md`, `tasks.md` |\n\nsource materials は背景・意図伝達確認のために使う。現在\
+  \ phase の correctness だけを target として判定し、下流 phase の correctness を同時に判定しない。\n\n利用者が指定した\
+  \ review focus が phase 標準の観点と異なる場合は、両者の関係を criteria に明記する。phase 標準の必須検査を外す必要がある場合は、利用者合意なしに外してはならない。\n\
+  \n## 8. Prompt Quality Review\n\nmain が criteria 素案を作ったら、実 review-run の前に preanalysis\
+  \ sufficiency audit と prompt quality review を行う。\n\n標準手順は次の順序とする。\n\n1. main preanalysis\n\
+  2. preanalysis sufficiency audit\n3. API review criteria draft\n4. prompt quality\
+  \ review\n5. 実 review-run\n6. raw / parsed / model summary / triage\n7. 必要に応じて proxy_model\
+  \ decision\n\n通常の prompt quality review の前に、`templates/review/main_preanalysis_sufficiency_audit_criteria_template.md`\
+  \ を使って preanalysis sufficiency audit を行う。この監査では、reviewer に source materials から judgment\
+  \ item を独立再構成させたうえで、main preanalysis を仮説として比較させる。main preanalysis を正解として渡してはならない。\n\
+  \npreanalysis sufficiency audit では、target bundle に次を含める。\n\n- 利用者または workflow の\
+  \ review requirement\n- 判断に必要な source materials の本文または構造化抜粋\n- main session LLM\
+  \ の preanalysis\n- proposed API review criteria または prompt\n\n監査結果の `required_prompt_changes`\
+  \ を反映してから、通常の `templates/review/api_review_prompt_quality_criteria_template.md`\
+  \ による prompt quality review へ進む。\n\npreanalysis sufficiency audit は、次の欠陥を検出するための標準ゲートである。\n\
+  \n- source selection の漏れ\n- source summary と原文対応の不足\n- main preanalysis の stale\
+  \ / resolved 所見による anchoring\n- 複数の独立判断を 1 prompt に押し込む粒度誤り\n- 誤検出防止文言が、重要な欠陥検出まで抑制する\
+  \ framing bias\n- output contract と runner / parser の不一致\n- behavior-path claim\
+  \ に必要な trigger resolver / operation preflight / runner / test の欠落\n- review question\
+  \ decomposition の不足による、整合性確認だけの一括質問化\n\nreview question は 1 prompt につき原則 1 つにする。複数の独立した採否判断、クラスタ判断、設計論点判断を\
+  \ 1 つの prompt に押し込まない。\n\n複数判断がある場合は、判断項目ごとに prompt を分ける。各 prompt は、その判断に必要な source\
+  \ findings、上流材料、対象本文要約、out of scope、output contract だけを持つ。共通背景を入れる場合も、個別判断の焦点を曖昧にしない量に抑える。\n\
+  \nadversarial には、`templates/review/api_review_prompt_quality_criteria_template.md`\
+  \ を criteria として渡し、criteria 素案を target としてレビューさせる。\n\n利用者要件がある場合、prompt quality\
+  \ review では次も確認する。\n\n- 利用者要件が criteria に保持されている\n- 利用者要件が review task / required\
+  \ checks / out of scope / finding policy に反映されている\n- main が利用者要件を合意なく狭めたり広げたりしていない\n\
+  - 利用者が禁止した操作や判断代行が prompt に混入していない\n- 複数の独立判断を 1 prompt に押し込んでおらず、判断項目ごとに注意が分散しない粒度になっている\n\
+  \nadversarial の所見を main が反映した後、judgment に同じ quality criteria と adversarial 所見を渡し、使用可否を判定させる。\n\
+  \njudgment が `findings: []` を返した場合だけ、実 review-run へ進める。\n\njudgment が finding を返した場合は、prompt\
+  \ を再修正し、必要に応じて再度 judgment へ回す。\n\n高リスクまたは実行経路 claim を含む review では、single-model findings:\
+  \ [] を単独の完了根拠にしない。根拠説明なしの 0 件、特に raw response が `findings: []` のみの場合は、対象材料と問いが狭すぎる可能性を疑い、次のいずれかを行う。\n\
+  \n- 3-way の独立 review に切り替える\n- reviewer に claim ごとの pass/fail rationale と参照 material\
+  \ を出力させる\n- main preanalysis sufficiency audit へ戻り、source selection と review question\
+  \ decomposition をやり直す\n\n## 9. 実 Review-Run\n\nprompt quality review を通過した後、実 review-run\
+  \ を実行する。\n\n複数 prompt に分けた場合は、各 prompt の prompt quality review 通過証跡と実 review-run\
+  \ / proxy decision 結果を判断項目ごとに保存する。一括 summary は後段で作ってよいが、個別判断の raw / parsed / decision\
+  \ 証跡を上書きしない。\n\n実行時には次を確認する。\n\n- `target-manifest.yaml` に実審査対象が入っている\n- `rounds.yaml`\
+  \ の criteria は使用可判定済み criteria である\n- raw / parsed / model-result-summary / triage\
+  \ が生成されている\n- 利用者提示ゲート前に、raw 結果概要、モデル別 summary、同根クラスタ、三段階トリアージ案をまとめる\n- 実 review-run\
+  \ の結果を、利用者要件に含まれていない操作承認や phase 完了根拠へ拡張しない\n\n## 10. 成果物配置\n\n推奨配置:\n\n```text\n\
+  .reviewcompass/specs/<feature>/reviews/<date>-<feature>-<phase>-<topic>-prompt-quality-run/\n\
+  \  api-review-criteria.md\n  prompt-quality-review-criteria.md\n  variant-role-assignment.yaml\n\
+  \  raw/\n  parsed/\n  prompts/\n  rounds.yaml\n  model-result-summary.yaml\n  prompt-quality-summary.md\n\
+  ```\n\n実 review-run は別ディレクトリに分ける。\n\n```text\n.reviewcompass/specs/<feature>/reviews/<date>-<feature>-<phase>-<topic>-review-run/\n\
+  ```\n\nprompt-quality-run は、実 review-run の gate 完了根拠ではない。実 review-run の criteria\
+  \ を使ってよいことを示す補助証跡である。\n\n## 11. 今回の事例から得た規則\n\n2026-06-20 の `workflow-management`\
+  \ design triad-review では、旧 run が `review-target.md` を criteria と target の両方に使い、`findings:\
+  \ []` になった。\n\nその後、prompt quality review を挟み、`design.md` を実 target として再実行した v2 run\
+  \ では 15 件の所見が出た。\n\n同日の `workflow-management` implementation Req14 approval gate\
+  \ prompt audit では、preanalysis sufficiency audit により、source summary の原文対応不足と、誤検出防止文言が\
+  \ approval gate bypass 検出を鈍らせる framing bias が検出された。これは、prompt audit が形式確認ではなく、実\
+  \ review-run の欠陥検出力そのものを左右することを示す。\n\n2026-06-23 の plan-todo-checklist materialization\
+  \ PTC-4 post-write review では、prompt が「updated effective prompts and discipline map\
+  \ の整合性確認」に寄りすぎ、短い `次へ` / `進める` から plan-to-TODO bridge へ到達する実行経路を検証できなかった。target\
+  \ は guidance / effective prompt に寄り、trigger resolver、operation preflight、runner、経路テストを含めなかったため、single-model\
+  \ findings: [] が返っても behavior-path claim の完了根拠としては弱かった。\n\nこの差分から、次を標準規則とする。\n\n\
+  - 実審査対象本文を target にしない review-run は、gate 完了根拠として弱い\n- author-written summary は criteria\
+  \ または source-material summary として使えるが、target 本文の代替にしない\n- 上流接続 review では、source\
+  \ materials と target を明示的に分離する\n- source summary には原文または構造化抜粋に加え、必要に応じて source cross-reference\
+  \ を持たせる\n- main preanalysis は有用だが、仮説として扱い、reviewer に独立再構成させる\n- 1 prompt に複数の独立判断を押し込まない\n\
+  - prompt 自体の adversarial / judgment レビューを実行前に挟む\n- behavior-path claim では、変更文書だけでなく\
+  \ trigger resolver / operation preflight / runner / test を source materials に含める\n\
+  - review question は要求 claim ごとの required check に分解し、整合性確認だけの一括質問にしない\n- 高リスクまたは実行経路\
+  \ claim では、根拠説明なしの single-model findings: [] を完了根拠にしない\n\n## 12. 停止点\n\nprompt quality\
+  \ review は、実 review-run の開始許可であり、次の操作を自動許可しない。\n\n- `spec.json` 更新\n- phase / gate\
+  \ 完了\n- proxy_model 判断\n- design / requirements / tasks / implementation 本文修正\n\
+  - commit\n- push\n\nこれらはそれぞれの workflow gate と利用者承認に従う。\n```\n\n\n## Target File\
+  \ Contents\n\n### .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md\n\ncontent_mode:\
+  \ full_text\ncontent_sha256: 49044ad500177cd2bd401ebce77b0b8de88293d570c5bdeaa319614d1b01ca1f\n\
+  \n```text\n# SESSION_WORKFLOW_GUIDE：セッション運営ガイドライン\n\n最終更新：2026-06-10（現行のセッション運営契約として整理）\n\
+  \n本文書は ReviewCompass の開発セッションを確実に回すための運用ガイドラインである。作業開始、レビュー、利用者判断、コミット、完了報告の共通手順を定める。\n\
+  \n本文書は運用文書（`docs/operations/` 配下）であり、ReviewCompass の実行時手順を定める。仕様・設計・タスクの正本と矛盾する場合は、該当正本を確認し、必要に応じて\
+  \ reopen 手続きに乗せる。\n\n## 1. セッション開始時の必読フロー（5 分以内）\n\nセッション開始時は **作業着手前に必ず**次を順番に確認する。記憶や前回会話だけを根拠に作業へ入らない。\n\
+  \n### 1.1 必読 5 件\n\n順序は重要：\n\n1. **`TODO_NEXT_SESSION.md`**（最新進捗）\n   - 前セッション末尾の到達点、次の作業候補、未消化所見\n\
+  \   - 「§0 重要事項」「§1 起動手順」「§3 次の作業候補」を最低限読む\n   - 直近の `docs/sessions/session-*.md`\
+  \ も併読し、TODO に圧縮された経緯の詳細を確認する\n\n2. **`.reviewcompass/guidance/WORKFLOW_NAVIGATION.md`**（次\
+  \ action 判定）\n   - `tools/check-workflow-action.py next --json` の読み方\n   - 判定点ごとの\
+  \ required disciplines / required inputs / effective prompt の扱い\n\n3. **`.reviewcompass/guidance/WORKFLOW_PRECHECK.md`**（機械判定の入口）\n\
+  \   - `spec-set`、`commit`、`push`、`next`、`reopen-start` の実行前条件\n   - 機械判定で停止した場合の扱い\n\
+  \n4. **`learning/workflow/carry-forward-register/reviewcompass-import.yaml`**（持ち越し所見の正本）\n\
+  \   - 機能横断波及所見の未消化件数と内容を把握\n   - 正本と履歴 source を混同しない\n\n5. **`docs/extraction-mapping.md`**（抽出進捗）\n\
+  \   - 各機能の状態（未着手／抽出中／抽出済／確認済）\n   - 機能ごとの実施履歴\n\n### 1.2 確認後の git 状態把握\n\n- `git\
+  \ log --oneline -10`：直近のコミット履歴\n- `git status`：未コミット変更の有無\n\n### 1.3 ワークフロー上の現在位置の確認\n\
+  \n- 現在どのフェーズか（intent ／ requirements ／ design ／ tasks ／ implementation）\n- 現在どの段か（drafting\
+  \ ／ triad-review ／ review-wave ／ alignment ／ approval の 5 段）\n- 残機能と消化予定所見\n\n##\
+  \ 2. ワークフロー段の役割と順序\n\n### 2.1 全体構造\n\n```\nintent 層（人間担当）\n  ↓\n機能分離\n  ↓\nrequirements\
+  \ 段：drafting → triad-review → review-wave → alignment → approval\n  ↓\ndesign 段：drafting\
+  \ → triad-review → review-wave → alignment → approval\n  ↓\ntasks 段：drafting → triad-review\
+  \ → review-wave → alignment → approval\n  ↓\nimplementation 段：drafting → triad-review\
+  \ → review-wave → alignment → approval\n```\n\n各フェーズは drafting／triad-review／review-wave／alignment／approval\
+  \ の 5 段で進める。\n\n### 2.2 各段の役割（責務分離後）\n\n- **drafting**：各機能の草案作成のみ。1 機能ずつ独立に進める。actor=llm（または\
+  \ human）。requirements／design／tasks の drafting は文書起草を意味する。implementation の drafting\
+  \ は文書起草ではなく、tasks.md に従ったテストと実装コードの生成を意味する。\n- **tasks drafting の粒度**：tasks 段の drafting\
+  \ では、対象機能の設計書 §14 要件追跡表（Req 受入単位 × 担当タスク単位）を骨格として tasks.md を作成する。tasks.md は implementation\
+  \ drafting へ直接入れる粒度で書く。各タスクには、実装対象ファイル、最初に書く失敗テスト、実装順序、完了条件、検証コマンド、禁止事項、停止条件を含める。implementation-plan.md\
+  \ や implementation-drafting.md のような別の実装前計画文書を正本成果物として要求しない。\n- **triad-review**：機能内の\
+  \ 3 役レビュー（主役・敵対役・判定役）と機能内対処の実施。手動 dogfooding または subagent_mediated（サブエージェント仲介方式）で実施。actor=llm\n\
+  - **review-wave**：複数機能を横断する複数ラウンドレビュー。機能横断波及所見と同根所見（異なる機能で同じ性格の所見が独立に発見された組）を集約し、一貫した対処方針で全該当機能の仕様文書に反映する\n\
+  - **alignment**：LLM 自動判定による整合確認段（actor=llm）\n- **approval**：人間承認段（actor=human）。proxy_model\
+  \ は approval 段の代行主体ではなく、review-run 後の重要件判断だけを代行できる\n\ndrafting と triad-review を別段にする理由は、誰が何をしたかを段単位で明確に記録し、草案作成者と判定者の分離を機械検査可能にするためである。\n\
+  \n<a id=\"vertical-intent-transfer-review\"></a>\n\n### 2.2.1 上流意図伝達の必須検査\n\n各 phase\
+  \ の triad-review／review-wave／alignment では、対象 phase の成果物だけでなく、上流成果物または上流判断材料からの意図伝達を必須検査項目とする。review\
+  \ prompt は、少なくとも「上流の目的・責務境界・受入条件・禁止事項が、対象成果物へ欠落・弱体化・逸脱・未根拠追加なく引き継がれているか」を問わなければならない。\n\
+  \n- **requirements review**：`上流判断材料 → requirements.md` を確認し、reopen 分類根拠、利用者判断、計画メモ、設計メモなどの目的・責務境界・受入条件・禁止事項が要件へ欠落なく落ちているかを検査する。design.md\
+  \ / tasks.md は参照資料であり、審査対象ではない\n- **design review**：`requirements.md → design.md`\
+  \ を確認し、要件の目的・境界・受入条件が設計へ欠落なく落ちているかを検査する\n- **tasks review**：`requirements.md → design.md\
+  \ → tasks.md` を確認し、要件と設計の意図が implementation-ready なタスク粒度へ落ちているかを検査する\n- **implementation\
+  \ review**：`requirements.md → design.md → tasks.md → implementation` を確認し、実装がタスクだけでなく上流意図から逸脱していないかを検査する\n\
+  \nreview prompt は、review target / source materials / out of scope を明示する。審査対象は現在\
+  \ phase の成果物に限定し、source materials は背景・意図伝達確認のための参照資料として扱う。下流 phase の成果物が source\
+  \ materials に含まれる場合でも、その correctness を現在 phase の review で判定してはならない。\n\nsource materials\
+  \ をパス名だけで列挙してはならない。縦方向監査の review prompt には、判断に必要な上流本文または要点抽出を、モデルが推測せず読める形で含める。要点抽出を使う場合は、少なくとも上流の目的、責務境界、受入条件、禁止事項、未確定事項、対象\
+  \ phase へ引き継ぐべき判断を分けて記録する。上流資料を読んでいない場合は review-run を開始してはならない。prompt 内で上流資料の中身が確認できない場合も\
+  \ review-run を開始してはならない。\n\ntasks review では、単に tasks.md の粒度や項目数を見るだけでは不十分である。たとえば\
+  \ T-016〜T-019 を審査する場合は、Requirement 13〜16 の意図が design.md の設計判断を経由して、欠落・弱体化・勝手な追加なしに\
+  \ implementation-ready な作業単位へ落ちているかを必須で確認する。\n\n### 2.3 段の進め方の規律\n\n- **drafting\
+  \ 段の草案完成** → 当該機能の triad-review 段に進む（機能単位で逐次進行）\n- **triad-review 段で 3 役レビューと機能内対処**\
+  \ を完了 → 当該機能の drafting／triad-review がそろう\n- **全機能で drafting ＋ triad-review を完了**\
+  \ してから review-wave に進む（部分的に review-wave を始めない）\n- **review-wave の所見を消化** してから alignment\
+  \ に進む\n- **alignment で LLM 自動判定** を通過してから approval に進む\n- **approval で利用者の明示承認**\
+  \ を得てから次フェーズに進む\n\n### 2.4 「次の機能の drafting に進むべき」状況の判断\n\ntriad-review 段で 3 役レビューを行った所見が\
+  \ **機能横断の波及所見**だった場合、当該機能の triad-review で対処せず、carry-forward register に持ち越して **次の機能の\
+  \ drafting に進む**。\n\n## 3. 修正案件の波及種別と処理段\n\n### 3.1 用語の使い分け\n\n両用語は **対象方向が異なる正当な技術用語**\
+  \ であり、優劣はない：\n\n- **遡及（そきゅう）**：**上流フェーズへの影響**。下流段の作業で発見された問題が、上流段（過去フェーズ）の修正を要するもの。例：実装段で発見した不整合が要件段の書き直しを要する\n\
+  - **波及（はきゅう）**：**同フェーズ内の他機能（フィーチャー）への影響**。ある機能のレビューが別機能との不整合を露出させるもの。例：foundation\
+  \ 要件の修正が runtime／evaluation 要件にも影響する\n\n所見を分類するときは、上流フェーズへ戻る必要があるか、同フェーズ内の他機能へ広がるかを分けて判断する。\n\
+  \n### 3.2 修正案件の 4 種別（＋ 2 補助種別）\n\nレビューで露出する所見は次の種別に分類する：\n\n| 種別 | 内容 | 例 |\n|---|---|---|\n\
+  | **機能内対処** | 当該機能の仕様修正のみで完結 | 表現修正、機能内の語彙不統一訂正 |\n| **波及（同フェーズ・横方向）** | 同フェーズ内の他機能の仕様修正も必要\
+  \ | A-001：foundation 要件と runtime 要件の `not_run` 欠落 |\n| **遡及（上流フェーズ・縦方向）** | 上流フェーズの仕様修正が必要\
+  \ | 設計段で「要件段の Req 6 受入 8 に矛盾あり」と発見 |\n| **遡及 ＋ 波及（縦 ＋ 横）** | 上流フェーズの複数機能に影響 | 設計段で発見した要件段の不整合が複数機能の要件文書に波及\
+  \ |\n\n補助種別：\n\n- **leave-as-is（修正不要）**：判定役が「修正不要」と判断したもの、対処せず記録のみ\n- **延期**：「将来フェーズで対処」と判定役が明示したもの（例：F-004\
+  \ の配置時対処）\n\n### 3.3 種別ごとの処理段と方法\n\n#### (a) 機能内対処\n\n- **発見されるタイミング**：drafting\
+  \ 段（起草者の自己発見）／ triad-review 段（3 役レビュー）\n- **処理する段**：当該機能の **triad-review 段** で対処（drafting\
+  \ に戻して草案修正、または triad-review 段内で直接修正）\n- **方法**：当該機能の仕様文書を直接修正\n- **次段への進行**：当該機能の\
+  \ triad-review 段が `completed` 状態になってから次機能へ\n- **記録先**：レビュー記録（`.reviewcompass/specs/<機能>/reviews/<日付>-<種別>.md`）の\
+  \ §4 統合節に「対処済み」と記録\n\n##### (a-1) must-fix 所見の対処手順\n\ntriad-review 段で判定役が must-fix\
+  \ と判定した所見の対処は、起草者（LLM または人間）が独自判断で仕様文書を修正することを禁ずる。利用者と必ず議論し、各所見の対処方針を 1 件ずつ平易な日本語で説明して合意を得てから反映する。\n\
+  \n**手順**：\n\n1. must-fix 所見を 1 件ずつ取り上げる。複数所見が論理的に連動する場合は連動単位でまとめる（例：F-001 と F-007\
+  \ が同一事象を別観点で扱う場合）\n2. 各所見について、対処方針の提案を次の構造で平易に説明する：\n   - その判断が必要になった経緯（要件文書や上流文書からの導出）\n\
+  \   - 候補案の列挙（必ず複数）\n   - 各候補案の利点と弱点\n   - **後段で発生し得る問題の深掘り**：下流仕様（他機能の design／tasks／implementation）、対象アプリへの配置可能性、機械検証時の挙動、実装フェーズの運用、将来の拡張性\n\
+  \   - 推奨案とその根拠\n3. 「現状維持」を推奨する場合も、現状維持の弱点を検証してから示す\n4. 一括処理（複数論点を一気に決着）を避け、各論点を個別に深掘りする\n\
+  5. 利用者の判断を得てから、仕様文書を 1 件ずつ Edit で修正する\n6. 各修正後に grep または Read で機械的に照合し、反映を確認する\n\
+  7. レビュー記録（reviews/...）の §4 統合節に「対処方針・利用者承認の根拠・反映箇所」を記録する\n\n**深掘りの具体内容**（推奨案を提示する際に必ず想定する事項）：\n\
+  \n- foundation 機能の場合：対象アプリへの配置可能性、配布対象外資産との分離、リポジトリ内資産の規則との整合\n- 値域・語彙の固定：将来拡張時の改訂コスト、機械検証時の不正値検出\n\
+  - 責務境界：foundation と runtime（または他機能）の責務分離、上流が下流の実装方針に踏み込まない原則\n- 不変性：成果物の追記性、生証拠は不変の原則\n\
+  - 依存関係：他機能が当該仕様を取り込む際の参照可否\n\n**禁則**：\n\n- 利用者と議論せずに must-fix 所見の対処内容を独自に確定する\n\
+  - 「現状維持を推奨」と表層的に提案する（弱点検証を欠く）\n- 候補案を 1 つしか提示しない（代替案との比較を欠く）\n- 後段影響を想定しない推奨\n\n\
+  <a id=\"3.3-a-2\"></a>\n\n##### (a-2) review-run 後の proxy_model 判断代行手順\n\nAPI 経由の\
+  \ review-run 後に、人間の個別判断を proxy_model が代行する場合も、メインセッション LLM が重要件を独自に確定して実装へ進むことを禁ずる。proxy_model\
+  \ 代行は「人間判断を省略する」ものではなく、判断主体を別モデルへ移す運用である。\n\n**proxy_model 判断依頼前の利用者提示ゲート**：\n\n\
+  API review-run が完了したら、proxy_model 判断依頼、実装修正、spec.json 更新、フェーズ移行のいずれにも進む前に、メインセッション\
+  \ LLM は次を利用者へ提示して停止する。この提示ゲートを完了する前に proxy_model を呼び出してはいけない。\n\n1. 使用 variant 名\n\
+  2. role ごとの path／provider／model（例：primary／adversarial／judgment の割当）\n3. モデル別 raw\
+  \ 結果概要（parse 状態、所見数、severity 内訳、raw path）\n4. 同根所見クラスタの一覧\n5. `must-fix`／`should-fix`／`leave-as-is`\
+  \ の三段階トリアージ案\n6. `must-fix` 候補ごとの平易な説明、候補案、各案の利点と弱点、後段影響、推薦案\n7. proxy_model に判断させる場合の対象\
+  \ finding／cluster、判断範囲、不可逆操作（commit／push／spec.json 更新／フェーズ移行）を含まないこと\n\nvariant\
+  \ が未確定、または role 割当が曖昧な場合は review-run を開始しない。既定 variant が CLI 経路を含む等、実行環境と合わない場合は、設定ファイルを読んで候補\
+  \ variant と role 割当を利用者へ説明し、選択理由を review-run 記録に残す。\n\n**役割分担**：\n\n1. メインセッション\
+  \ LLM は raw レビューを集約し、三段階トリアージの下書きを作る。parsed YAML だけでなく raw response も読み、同根所見をまとめ、`must-fix`\
+  \ ／ `should-fix` ／ `leave-as-is` の候補を作る\n2. メインセッション LLM は重要件ごとに、平易な問題説明、候補案、各案の利点と弱点、後段影響、推薦案を作る\n\
+  3. proxy_model は重要件の採用案・判断理由・最終ラベルを決定する。実装は担当しない\n4. メインセッション LLM は proxy_model\
+  \ の raw response を保存し、`decisions/<suffix>.yaml`（重要件ごとの裁定 file。`<suffix>` は `<model>-<role>-<連番>`）と\
+  \ `proxy-approval.yaml` に構造化する\n5. 機械ガードは proxy decision の充足を検査する。未判断、raw 欠落、候補案欠落、採用案欠落、判断理由欠落、triage\
+  \ 最終ラベルとの不一致があれば実装へ進まない\n6. メインセッション LLM は機械ガード通過後、採用された修正だけを TDD で実装する\n7. コミット・プッシュ・spec.json\
+  \ 更新・フェーズ移行は人間の明示承認を要求する。proxy_model はこれらの不可逆操作を代行しない\n\n**重要件の判定閾値**：\n\n- `must-fix`、`ERROR`、`CRITICAL`\
+  \ は必ず重要件として扱う\n- `should-fix` でも、上流仕様、データ契約、機械ガード、証跡保持、ワークフロー権限境界、複数モデルの同根指摘に関わるものは重要件として扱う\n\
+  - 同根指摘とは、複数モデルの所見が同じ対象ファイル・同じ出力契約・同じ機械ガード・同じ証跡・同じ原因に触れているものをいう。表現が異なっても、対象または原因が一致する場合は同根として扱う\n\
+  - 正本削除、機械ガード削除、重要件閾値の引き下げ、承認証跡の削除、検証対象範囲の縮小は、コミット等と同じく人間の明示承認を要する不可逆操作として扱う\n- 判断に迷うものは重要件側に倒し、proxy_model\
+  \ 判断または人間判断へ回す\n\n**proxy_model への入力証跡**：\n\n- proxy_model へ渡す判断材料には、メインセッション LLM\
+  \ の要約だけでなく、元 review raw への参照または抜粋を必ず含める\n- proxy_model への判断プロンプト（review-run 直下に保存）を作成する前に、[[llm-as-judge-prompting]]\
+  \ の手順（材料揃え → 問い設計 → 選択肢なし分析）でプロンプトを設計する\n- 判断プロンプト（review-run 直下。既定名 `proxy-adjudication-prompt.md`、実行時に指定可）に、元\
+  \ review raw 参照、問題説明、候補案セット、推薦案、判断してほしい最終ラベルを保存する\n- `decisions/<suffix>.yaml`（重要件ごとの裁定\
+  \ file。`<suffix>` は `<model>-<role>-<連番>`）には、`candidate_options`、`source_raw_paths`、`decision_prompt_path`、採用案、棄却案理由、判断理由、最終ラベルを保存する\n\
+  - proxy_model が元 review raw を読めない形の判断材料しか受け取っていない場合、その decision は実装着手の承認証跡として扱わない\n\
+  - 現行の軽量ガードは、proxy_model_id の文字列一致、decision file の finding_id 一致、final_label 一致、prompt/raw/候補案証跡の存在を検査する。API\
+  \ 署名や暗号学的な生成元証明は将来課題とする\n\n**証跡配置**：\n\n- `raw/`：各モデルの生応答\n- `triage.yaml`：メインセッション\
+  \ LLM による三段階トリアージ\n- `proxy-adjudication-prompt.md`（既定名。review-run 直下、実行時に指定可）：proxy_model\
+  \ に渡した判断材料\n- `proxy-adjudication-response.txt`（既定名。review-run 直下、実行時に指定可）：proxy_model\
+  \ の生応答\n- `decisions/<suffix>.yaml`：重要件ごとの採用案、判断理由、最終ラベル、棄却案理由\n- `proxy-approval.yaml`：実装着手を許可する\
+  \ proxy approval record\n\n**並列化可能な単位**：\n\n- proxy_model への判断依頼は、同根所見クラスタ単位で並列化できる\n\
+  - TDD 実装は、互いに同じファイルを更新しない実装単位、または入出力契約が独立しているタスク単位で並列化できる\n- 共通スキーマ・共通ビルダー・同一ファイルを触る修正は直列で扱う\n\
+  - 生成物、共有 helper、推移的契約、同じ出力 manifest、同じ traceability 出力を共有する修正は直列で扱う\n- 並列実装の統合前に、メインセッション\
+  \ LLM が triage、proxy decision、テスト結果、ファイル差分を再照合する\n- 並列処理で新しい判断問題が出た場合、その単位は停止し、proxy_model\
+  \ 判断または人間判断へ戻す\n- 承認済み finding の実装中に見つけた未承認の便乗リファクタ、隣接挙動変更、対象外 cleanup は実施しない。必要なら新しい判断問題として停止する\n\
+  \n**実装サブ担当 LLM の扱い**：\n\n- 実装サブ担当 LLM は、原則として別スレッドかつ分離 worktree で扱う\n- 同じ repo での並列実装は原則禁止し、読み取り調査または差分を残さない確認に限定する\n\
+  - メインセッション LLM は、対象 finding、proxy decision、触ってよいファイル、期待テスト、禁止事項、停止条件を実装サブ担当へ渡す\n\
+  - 実装サブ担当は、指定範囲外のファイル変更、判断変更、コミット、プッシュ、spec.json 更新、フェーズ移行を行わない\n- 実装サブ担当が新しい判断問題、上流仕様への疑義、許可ファイル外の修正必要性を見つけた場合、その作業単位を停止してメインセッション\
+  \ LLM に戻す\n\n**別スレッド生成物の扱い**：\n\n- 別スレッド・分離 worktree で発生した生成物は、実装差分、検証結果、判断根拠、作業ノイズに分類する\n\
+  - 実装差分は、メインセッション LLM が確認したうえで本線 worktree への取り込み候補にする\n- 検証結果と判断根拠は、必要な要約だけを review-run、session\
+  \ record、または docs/notes に保存する\n- 判断に影響した失敗試行、失敗パッチ、途中ログは work_noise から decision_basis\
+  \ へ昇格し、メインセッション LLM が要約または該当箇所を保存する\n- 作業ノイズは本線 repo に取り込まない。作業ログ、一時メモ、途中のテスト出力、失敗パッチ案は原則としてサブ\
+  \ worktree 側に閉じる\n- 本線へ戻す標準単位は、パッチ、テスト結果サマリ、未解決事項の 3 点とする\n\n<a id=\"3.3-a-3\"></a>\n\
+  \n##### (a-3) 操縦 LLM 別の API 既定 variant と独立性原則（本節を正本とする）\n\nセッションを操縦（起草・修正）する LLM\
+  \ と、その成果物を検証する LLM の系列を分離する。\n自己レビューによる独立性低下を防ぐための原則であり、利用者承認済み\n（設計記録 `docs/notes/2026-06-10-deployment-multi-llm-entry-design.md`\
+  \ §3.6、2026-06-11 個別承認）。\n本節がこの原則と既定 variant 選択規則の正本である（仕様への昇格は実アプリ pilot 後に再検討、\n\
+  MLE-DEC-004、2026-06-12 利用者決定）。\n\n**独立性の原則**：\n\n1. 単独検証役（1 体での post-write 検証など）は、操縦\
+  \ LLM と別系列を必須とする\n2. 3 役構成の adversarial（反証役）と judgment（判定役）は、操縦 LLM と別系列を必須とする\n\
+  3. 3 役構成の primary（検出役）は、操縦 LLM と同系列を許容する（最終判定を持たず、\n   残り 2 役の独立で全体の独立性が保たれるため）\n\
+  4. proxy_model（人の判断の代行）は、操縦 LLM と別系列を必須とする\n\n**操縦 LLM 別の既定 variant**（実体は `config/api-settings.yaml`）：\n\
+  \n- **Claude Code 操縦時**：接尾辞なしの `*_independent_3way` 系\n  （post_write_verification／yaml_audit／implementation_review\
+  \ の 3 用途。\n  primary=anthropic/claude-sonnet-4-6、adversarial=openai/gpt-5.5、\n \
+  \ judgment=gemini/gemini-3.1-pro-preview）\n- **Codex CLI 操縦時**：`*_independent_3way_codex_operator`\
+  \ 系\n  （primary=openai/gpt-5.4、adversarial=anthropic/claude-opus-4-8、\n  judgment=gemini/gemini-3.1-pro-preview）\n\
+  - judgment（gemini-3.1-pro-preview）と小規模 1 体検証（`post_write_verification_google`）は\n\
+  \  両操縦で共用し、操縦を切り替えても判定基準の連続性を保つ\n- 既存 variant の改名は行わない（規律文書・過去 run 記録・spec からの参照保全）。\n\
+  \  別の LLM が操縦する場合（将来）は同じ原則で役を回転して対応する\n\n対象アプリ向けの同内容の案内は `templates/entry/AGENT_ENTRY.template.md`\
+  \ §10 と\n`.reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md` にあり、本節と整合させて保守する。\n\
+  \n#### (b) 波及（同フェーズ・他機能への影響）\n\n- **発見されるタイミング**：triad-review 段（3 役が他機能との不整合に気づく）／\
+  \ review-wave 段（機能横断レビュー）\n- **処理する段**：**review-wave 段**（フェーズ終端の機能横断段、全機能の drafting\
+  \ ＋ triad-review 完了後に開始）\n- **方法**：\n  1. triad-review 段で波及と判定されたら **当該機能では対処せず**、carry-forward\
+  \ register に追記\n  2. 「次の機能の drafting」に進む（個別機能の段では対処しない）\n  3. 全機能の drafting ＋ triad-review\
+  \ が完了したら、review-wave 段で集約消化\n  4. 影響を受ける全機能の仕様文書を一括修正（依存順を守る、例：foundation を先に修正してから\
+  \ runtime）\n- **記録先**：`learning/workflow/carry-forward-register/reviewcompass-import.yaml`\
+  \ の各所見項目、消化後は `status: resolved` と `resolution` を更新\n\n#### (c) 遡及（上流フェーズへの影響）\n\
+  \n- **発見されるタイミング**：任意の下流段（triad-review／review-wave／alignment／approval のいずれか）\n-\
+  \ **処理方法**：[REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md) の 4 過程手順を起動。当該段の作業を停止し、上流フェーズに戻る\n\
+  - **手戻り種別判定**：N（intent）／R（requirements）／D（design）／A（tasks）／I（implementation）× 深さ\
+  \ 0〜4 の二次元表記で判定\n- **再実施対象決定**：第1過程で trigger_map（再実施対象段の決定表）を参照して決める。actor=human\
+  \ の段（approval 等）に来たら作業を止めて承認待ち\n- **記録先**：種別判定の根拠を `docs/reviews/reopen-classification-<日付>.md`\
+  \ に残す、機能単位 spec.json の `reopened` 履歴と `recheck` フラグを更新\n\n#### (d) 遡及 ＋ 波及の組合せ\n\
+  \n- **発見されるタイミング**：任意の下流段\n- **処理方法**：reopen で上流フェーズに戻り、上流フェーズの review-wave 段で波及所見として集約消化、その後下流に伝播\n\
+  \  1. **第 1 段階**：reopen 手続きで上流フェーズに戻り、影響範囲を特定（trigger_map）\n  2. **第 2 段階**：上流フェーズで\
+  \ carry-forward register に波及所見として追記し、当該フェーズの review-wave 段で消化\n  3. **第 3 段階**：上流フェーズの\
+  \ alignment ＋ approval を再実施\n  4. **第 4 段階**：下流フェーズの alignment ＋ approval を再実施（trigger_map\
+  \ で連鎖再実施対象として決定）\n- **記録先**：reopen 記録 ＋ carry-forward register の両方\n\n#### (e) leave-as-is\
+  \ と延期\n\n- **leave-as-is**：判定役が「修正不要」と判断したもの。対処せず、レビュー記録に判定根拠を残すのみ\n- **延期**：将来のフェーズで対処する判定。レビュー記録に延期理由と対処予定フェーズを残し、当該フェーズ着手時のチェックリストに追記\n\
+  \n### 3.4 振り分け判断のフロー（triad-review 段で実施）\n\ntriad-review 段の判定役は、各所見について次の振り分けを行う：\n\
+  \n```\n所見発見\n  ↓\n当該機能の仕様修正のみで完結するか？\n  ├── YES → 機能内対処（triad-review 段内で対処）\n  └──\
+  \ NO\n      ↓\n  他機能の仕様修正も必要か？\n  ├── YES（同フェーズ内のみ） → carry-forward register に追記、review-wave\
+  \ 段で処理\n  ├── YES（上流フェーズに戻る必要あり、単機能） → reopen 手続きを起動\n  └── YES（上流フェーズに戻る必要あり、複数機能）\
+  \ → reopen ＋ 上流の review-wave で集約処理\n  \n別判定：\n  ├── 修正不要 → leave-as-is（記録のみ）\n \
+  \ └── 将来フェーズで対処 → 延期（チェックリスト追記）\n```\n\n### 3.5 段ごとの露出と処理段の対応表\n\n| 段 | 主に露出する所見\
+  \ | 当該段内で処理する所見 | 次段に持ち越す所見 |\n|---|---|---|---|\n| drafting | 起草中の自己発見 | 機能内（草案に直接反映）\
+  \ | なし |\n| triad-review | 機能内 ／ 波及 ／ 遡及 | **機能内** のみ | 波及 → review-wave、遡及 → reopen\
+  \ |\n| review-wave | 波及（横断ラウンド中の追加発見も） | **波及** | 遡及あり → reopen |\n| alignment |\
+  \ 自動判定の不整合検出 | （自動判定が通過するまで前段に戻す） | 遡及あり → reopen |\n| approval | 重大見落とし、利用者または別モデルによる指摘\
+  \ | （承認しない） | reopen で上流戻し |\n\n### 3.6 機能横断波及所見の管理ルール\n\n- 各機能の triad-review 段で発見されたら、即時\
+  \ carry-forward register に追記\n- 追記項目：所見 ID（A-XXX 形式）、検出セッション、波及範囲（影響を受ける機能と仕様箇所）、対処方針、依存関係\n\
+  - review-wave／alignment／approval の機能横断段着手時、全件を消化対象とする\n- 消化後、各所見に「✅ 対処済み（YYYY-MM-DD、要件\
+  \ review-wave）」ラベルを追加\n\n## 4. サブエージェント方式の運用条件\n\n### 4.1 位置づけ\n\n- メインセッションは草案作成とレビュー結果の取りまとめを担う\n\
+  - 3 役レビューは、メインセッションから分離された reviewer session または外部 API 検証者で実行する\n- review-run の実行形は\
+  \ adapter と provider 設定に従う\n\n### 4.2 モデル割り当て（規律）\n\n3 役（主役・敵対役・判定役）は、メイン LLM から分離した実行主体が担う。メイン\
+  \ LLM は草案作成と三役レビュー結果の取りまとめのみを担い、3 役のいずれにもならない。\n\n各役のモデルは `runtime/config/reviewcompass.yaml`\
+  \ または review-run の provider 設定で指定する。利用者が設定で変更できる。\n\n**モデル能力配分の規律**：\n\n- **主役と敵対役は必ず異なるモデルを使う**（敵対役の独立性確保のため）\n\
+  - 判定役は主役または敵対役と同じモデルを使うことを許容する\n- 敵対役と判定役には、反証生成と責務境界判断を担う十分な能力のモデルを割り当てる\n\n###\
+  \ 4.3 サブエージェント呼び出し時の規律\n\n- **プロンプトに自己完結性を持たせる**：サブエージェントは別 session で、メインの作業文脈を共有しない\n\
+  - **参照文書の引用は事後検証**：サブエージェントの引用には節番号や参照先の誤りが発生しうる。メインセッションが grep やリンク検査で確認する\n- **ファイル書き込みは原則禁止**：読み取りと分析のみ。例外的にレビュー記録の\
+  \ §2 や carry-forward register への追記提案を許容\n- **モデル指定**：利用中の adapter が提供する model /\
+  \ provider 指定方法に従う。外部 API 経由では provider 設定を参照する\n\n### 4.4 レビュー記録の必須フィールド\n\nレビュー記録の\
+  \ front-matter に次を必須化：\n\n```yaml\nauthor:\n  identity: <adapter_main_session>\n\
+  \  model: <model-id>\n  role: drafter\nreviewer:\n  identity: <adapter_reviewer_session>\n\
+  \  model: <model-id>\n  role: final_judgment\n  separation_from_author: true\n```\n\
+  \n`author.identity` と `reviewer.identity` が異名であることを機械検査の対象とする。重要なのは provider 名ではなく、起草者と判定者が分離していることを記録できることである。\n\
+  \n### 4.5 mode 値\n\nレビュー記録の `mode` は `subagent_mediated`（正式値）。foundation のレビューモード語彙正本（Requirement\
+  \ 6 受入 6）の 3 値のうちのひとつ。\n\n## 5. 利用者判断が必要な論点の見極め\n\n### 5.1 利用者判断必須の項目\n\n次のいずれかに該当する場合、LLM\
+  \ は単独で確定せず、利用者の明示承認を仰ぐ：\n\n- **正本方針変更**：仕様・設計・タスク・運用規律の意味を変える修正\n- **大規模再設計**：既存の責務境界、機械判定、成果物配置を大きく変更する場合\n\
+  - **機能横断の権限分担**：複数機能にまたがる責務分担の決定（例：A-007 の self-improvement と workflow-management\
+  \ の権限調停）\n- **判定境界の判断**：must-fix／should-fix／leave-as-is の境界が曖昧な場合\n- **承認・コミット・push・フェーズ移行**：すべて利用者明示承認必須\n\
+  - **作業の打ち切り・先送りの誘導**：利用者の明示承認なく「続きは次セッションで」等と作業を終了・先送りに誘導しない\n\n### 5.2 LLM が自律的に決められる項目\n\
+  \n- **抽出時のクリーニング作業の細部**（機能名置換、自己適用前提除去等）\n- **観点 5（検証可能性）の機械判定可能な所見の指摘**\n- **レビュー記録の構造化**（front-matter、節構成）\n\
+  \n### 5.3 判断の記録規律\n\n利用者判断の結果は次の場所に記録：\n\n- **正本方針変更**：該当する仕様・設計・タスク・運用規律に決定日付付きで記載\n\
+  - **機能横断対処方針**：carry-forward register の該当所見に対処方針として追記\n- **重大論点**：レビュー記録の §1 主役レビュー、§4\
+  \ 統合の「利用者判断履歴」節に記録\n\n### 5.4 セッション記録の作成規律\n\n原則として毎セッション、セッション終了時または重要判断後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md`\
+  \ を作成または更新する。特に、重要な判断・承認・レビュー結果・修正経緯が発生した場合は必須とする。これは会話全文の逐語ログではなく、後で経緯を確認できる要約記録とする。\n\
+  \n`<N>` は `docs/sessions/` に存在する既存の最大セッション番号に 1 を加えた番号とする。同日の複数セッションでも番号を進め、同じ番号を再利用しない。\n\
+  1 session につき 1 ファイルとし、同一 session 内で重要判断が複数回発生した場合は同じファイルへ追記する。重要判断ごとに別番号を消費しない。\n\
+  並行セッションや未コミット作業により採番が衝突した場合、メインセッション LLM は既存記録・git 状態・未コミット差分を確認し、利用者が採番を確定するまで正式な新規セッション記録を作成しない。採番確定前に記録が必要な場合は、`docs/sessions/drafts/session-<YYYY-MM-DD>-<short-topic>.md`\
+  \ に一時草案を置き、正式番号確定後に `docs/sessions/session-<N>-<YYYY-MM-DD>.md` へ移動する。移動後は draft\
+  \ ファイルを残さず、正式ファイルに草案内容が統合済みであることを確認する。\n\nメインセッション LLM はセッション記録の草案作成責任を持つ。利用者判断の引用・承認範囲・未確定事項に曖昧さがある場合は、記録前に利用者へ確認する。\n\
+  コンテキスト切れや中断により当該 LLM が記録できない場合、次セッションが草案を引き継ぐ。草案がない場合は、TODO、review-run、approval\
+  \ record、git diff から経緯を再構成して記録する。\n\n最低限、次を記録する：\n\n- このセッションで実施した作業\n- 利用者が承認した判断と、その対象\n\
+  - API レビューや独立検証の結果と三段階トリアージ\n- 修正した主要ファイルと検証結果\n- 失敗・見落とし・再発防止に必要な気づき\n- 次セッションへの引き継ぎ\n\
+  \n推奨見出しは既存 session 記録と同型とし、最低限次を含める：\n\n1. サマリ（このセッションでやったこと）\n2. 気づき・特筆点\n3. コミット一覧（該当する場合）\n\
+  4. 次セッションへの引き継ぎ\n\n`TODO_NEXT_SESSION.md` は次セッション向けの入口メモであり、詳細な経緯記録の正本ではない。詳細経緯は\
+  \ `docs/sessions/` に残し、TODO には必要な参照だけを置く。\n\n## 6. コミット規律\n\n### 6.1 コミット単位\n\n\
+  - **正本文書更新 ＋ 基盤整備**：1〜2 コミット（方針確定、運用ファイル整備）\n- **機能ごとに 1 コミット**：仕様文書 ＋ 運用文書 ＋ レビュー記録の\
+  \ 3 ファイル（または schema/template 等の関連ファイル）\n- **機能横断段（review-wave／alignment／approval）**：1\
+  \ コミット（複数機能の小修正をまとめる）\n\n### 6.2 コミット順序\n\n依存マップ順に従う：\n\n1. foundation\n2. runtime\n\
+  3. evaluation\n4. analysis\n5. workflow-management\n6. self-improvement\n7. conformance-evaluation\n\
+  \n### 6.3 コミットメッセージ規律\n\n- **平易な日本語**：英語技術用語の連発を避け、完全な日本語の文で書く\n- **題名**：機能名 ＋ 作業種別（例：「foundation\
+  \ 機能の requirements 抽出と 3 役レビュー」）\n- **本文**：作成・更新ファイルの列挙、主な反映内容、機能横断所見の持ち越し有無\n-\
+  \ **Co-Authored-By**：利用中の adapter と利用者方針に従う。自動付与を前提にしない\n\n### 6.4 コミット前確認\n\n-\
+  \ `git status` で対象ファイルを確認\n- `git diff --cached` で内容確認（必要に応じて）\n- `--no-verify`\
+  \ や `--no-gpg-sign` は使わない（規律）\n\n### 6.5 不可逆操作の進行報告最小化\n\ncommit、push、spec.json\
+  \ workflow_state 変更、フェーズ移行などの不可逆操作では、利用者が操作を明示指示した後の正常系進行報告を原則として省く。LLM は必要な確認、stage、承認\
+  \ record、guard、実操作、事後確認を実行してよいが、各内部手順を逐一会話へ説明しない。\n\n途中報告を行うのは、利用者判断または追加承認が必要な場合に限る。例：承認\
+  \ record の期限切れや対象不一致、precheck failure、post-write / reopen / in-progress による遮断、sandbox\
+  \ escalation が必要な場合、staged 内容が変わり再承認が必要な場合。\n\ncommit 中に、staged 内容の確定、承認内容を作り直す、既存\
+  \ delegation を使い直す、nonce を更新する、といった内部再準備が必要になっても、それ自体を利用者に報告しない。これらは、承認済みの対象範囲内であり利用者判断を要しない通常手順として黙って実行する。コミット対象が増えた、staged\
+  \ 内容が変わった、または再承認が必要になった場合は内部再準備として隠さず、追加判断が必要な停止理由だけを短く報告する。利用者へ報告するのは、作業を続けられない異常、追加判断が必要な\
+  \ WARN / DEVIATION、または成功結果だけとする。\n\n正常完了時の報告は、実行結果だけに絞る。commit なら commit hash、`git\
+  \ status` の clean 性、`next --json` の要点を示す。push なら push 先と結果、`git status` の clean\
+  \ 性を示す。詳細な手順ログ、precheck の全文、stage したファイル一覧、nonce / challenge の値は、利用者が求めた場合または失敗調査に必要な場合だけ示す。\n\
+  \n### 6.6 push\n\npush は **利用者明示承認**を仰いでから実行。LLM が自律的に push しない。\n\n## 7. 作業完了時レポート\n\
+  \n作業を終えて利用者へ返答するときは、adapter や利用モデルに依存しない会話末尾の運用契約として、最低限次を示す：\n\n- **作業サマリ**：このターンで実施した変更、判断、未変更の範囲\n\
+  - **検証結果**：実行したテスト、確認コマンド、`post_write_verification` の要否と結果\n- **現在状態**：`git status`\
+  \ と `next --json` の要点\n- **次タスク**：次に着手すべき具体的な作業、または workflow が要求する次 action\n\n未実施・失敗・承認待ち・保留判断がある場合は、完了扱いにせず明記する。commit、push、workflow_state\
+  \ 更新、spec.json 更新などの不可逆または状態変更を伴う操作は、実際に成功した場合だけ作業サマリに記録する。\n\n`next --json` が `post_write_verification`、`reopen_in_progress`、`resume_in_progress`、`unknown`\
+  \ など `completed` 以外を返している場合、次タスクには任意の改善候補ではなく、その workflow 状態に従う次 action を示す。\n\n\
+  `next --json` が `completed` を返している場合、通常 workflow 上の次 action はない。このとき完了報告の次タスク欄に任意候補を書く場合は、次の順で拾う：\n\
+  \n1. 利用者がこのターンで次作業を明示した場合は、その指示を次タスクにする。\n2. 利用者指示がない場合は、`TODO_NEXT_SESSION.md`\
+  \ の「次にやること」にある推奨順を候補源にする。\n3. 候補を表示する前に、`.reviewcompass/backlog/index.yaml` または候補ファイル本体で\
+  \ `status: candidate` であることを確認し、完了済み・存在しない・状態が矛盾する候補は次タスクとして出さない。\n4. `TODO_NEXT_SESSION.md`\
+  \ の候補が古い、または候補を解決できない場合は、その旨を現在状態に書き、`.reviewcompass/backlog/index.yaml` の `status:\
+  \ candidate` から次候補を拾う。\n5. 完了報告の次タスク欄では、確認できた候補を 5 件ほど、同じ順序でリスト表示する。各候補には、利用者が選べる程度の短い説明を\
+  \ 1 文で添える。\n6. 利用者が「次の 1 件だけ」「最上位候補だけ」など 1 件表示を明示した場合に限り、確認できた最上位候補だけを次タスクとして示す。\n\
+  \ncompleted 状態で候補を出す場合も、その候補はまだ開始済みではない。maintenance、reopen、新規 workflow、backlog TODO\
+  \ 実行のいずれとして開始するかは、利用者指示または開始前 preflight の結果で確定する。\n\n### 7.1 進捗説明の平易化\n\n進捗説明では、内部処理名をそのまま主文にせず、利用者が理解しやすい作業状態で述べる。まず次の順で短く示す：\n\
+  \n1. 今どの段階か\n2. 何をしたか\n3. 次に何をするか\n\n必要な場合だけ、内部用語を括弧で補足する。\n\n完了報告や途中報告では、翻訳調の名詞句、英語混じりの見出し、内部状態名や英語の道具名を見出しや主語にしない。`next\
+  \ --json`、`commit wrapper`、`required_action`、`workflow_state` などの語は、利用者が判断するために必要な場合だけ、自然な日本語の説明の後ろへ括弧書きで添える。主文では「何を変えたか」「今どこで止まっているか」を自然な日本語で述べ、利用者が次に何をすればよいかを自然な日本語の文で示す。\n\
+  \n避ける表現：\n\n- 停止点を消費\n- gate を通過\n- required_action\n- pending_gate\n- workflow_state\
+  \ を更新\n- commit wrapper を開始条件にする\n- next --json は reopen_in_progress\n\n言い換え例：\n\
+  \n- 「tasks approval の停止点を消費」ではなく「tasks 段の承認を完了済みとして記録」\n- 「implementation drafting\
+  \ を完了」ではなく「implementation 段のコードとテストを作成」\n- 「次の required_action は run_reopen_pending_gate」ではなく「次は現在の段のレビュー作業」\n\
+  - 「commit wrapper を最初から sandbox 外で実行」ではなく「コミット用の検査手順は、最初から許可された実行環境で動かす」\n- 「next\
+  \ --json は reopen_in_progress」ではなく「やり直し手続きの途中で、次は requirements 段の確認を進める状態」\n\n###\
+  \ 7.2 利用者操作が必要な停止点の表示\n\n承認、コミット、push、判断など、利用者の短い返信で次へ進む停止点では、完了報告の末尾に次の 1 行を示す：\n\
+  \n```text\n次に必要な操作: <操作語>\n```\n\n`<操作語>` は、利用者がそのまま返信できる短い語にする。\n\n例：\n\n- `次に必要な操作:\
+  \ 承認`\n- `次に必要な操作: コミット`\n- `次に必要な操作: push`\n- `次に必要な操作: 判断`\n\n複数の選択肢が必要な場合だけ、候補を短く並べる。通常は候補を\
+  \ 1 つに絞る。内部用語、長い説明、手順ログをこの行に混ぜない。\n\nこのレポートは会話末尾の完了報告であり、workflow_state や `spec.json`\
+  \ の正本を代替しない。\n\n## 8. 用語ガイド\n\n### 8.1 「遡及」と「波及」\n\n両用語は対象方向で使い分ける：\n\n- **遡及（そきゅう）**：上流フェーズへの影響（時間軸＝過去方向）\n\
+  - **波及（はきゅう）**：同フェーズ内の他機能への影響（横方向＝機能間）\n\n両方とも正当な技術用語で、避けるべき／推奨という関係ではない。所見の性格を正確に表すために使い分ける。\n\
+  \n### 8.2 判定値の使い分け\n\n- **must-fix**：仕様の致命的または重要な欠落、修正必須\n- **should-fix**：仕様の改善余地、修正推奨\n\
+  - **leave-as-is**：仕様として問題なし、修正不要\n\n### 8.3 機能内と機能横断\n\n- **機能内対処**：当該機能の drafting\
+  \ 段で本セッション内に修正\n- **機能横断持ち越し**：carry-forward register に集約、review-wave／alignment／approval\
+  \ の機能横断段で対処\n\n### 8.4 サブエージェント関連\n\n- **メインセッション**：作業の入口となる LLM session。草案作成とレビュー結果の取りまとめを担い、3\
+  \ 役レビューの判定者とは分離する\n- **サブエージェント**：敵対役・判定役を実行する別 session または外部 API 検証者。利用中の adapter\
+  \ が利用可能な実行形に従う\n- **mode = `subagent_mediated`**：サブエージェント方式のレビュー記録の mode 値\n\n##\
+  \ 9. 関連文書\n\n- ワークフローナビゲーション：[WORKFLOW_NAVIGATION.md](WORKFLOW_NAVIGATION.md)\n\
+  - 事前検査：[WORKFLOW_PRECHECK.md](WORKFLOW_PRECHECK.md)\n- reopen 手順：[REOPEN_PROCEDURE.md](REOPEN_PROCEDURE.md)\n\
+  - 抽出進捗：[../../docs/extraction-mapping.md](../../docs/extraction-mapping.md)\n- 機能横断波及所見：正本\
+  \ [../../learning/workflow/carry-forward-register/reviewcompass-import.yaml](../../learning/workflow/carry-forward-register/reviewcompass-import.yaml)、履歴\
+  \ source [../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md](../../learning/workflow/carry-forward-register/sources/reviewcompass-pending-cross-feature-findings.md)\n\
+  - レビュー記録雛形：[../../templates/review/manual_dogfooding_review_template.md](../../templates/review/manual_dogfooding_review_template.md)\n\
+  - TODO：[../../TODO_NEXT_SESSION.md](../../TODO_NEXT_SESSION.md)\n\n## 10. 本ガイドラインの改訂規律\n\
+  \n- 本ガイドラインは運用文書として更新可能\n- セッションの経緯記録は `docs/sessions/` に残し、本文書には現行の運用契約だけを置く\n\
+  - 規律変更（§2〜§8）は利用者明示承認後に反映\n- 改訂時は最終更新日付を更新\n```\n\n### .reviewcompass/guidance/WORKFLOW_NAVIGATION.md\n\
+  \ncontent_mode: full_text\ncontent_sha256: f264a762f6bde2e6a2702a5c9219d89b611ced5328be4db65e66ccba23a4c269\n\
+  \n```text\n# ReviewCompass ワークフローナビゲータ共通手引き\n\nこの文書は、`tools/check-workflow-action.py\
+  \ next --json` の読み方を定める共通手引きである。\n\n## 1. 最初に実行するコマンド\n\n作業を始める前、または次に何をするかを提案する前に、必ず次を実行する。\n\
+  \n```bash\npython3 tools/check-workflow-action.py next --json\n```\n\n出力 JSON の\
+  \ `next_action.kind` を、現在の作業順序・優先順位の正本として扱う。記憶、要約、TODO の候補欄だけを段取りの根拠にしない。\n\n`next_action.required_disciplines`\
+  \ がある場合は、作業直前にそのファイルだけを読む。セッション開始時に長い規律群を一括で読んで記憶に頼るのではなく、機械判定された場面ごとの短い規律セットで挙動を調整する。対応表は\
+  \ `.reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml` を正本とし、`next --json` はその内容を機械可読に展開する。\n\
+  \n`next_action.required_inputs` がある場合は、規律ではなく作業対象ごとの状態入力として扱う。`id`、`source_type`、`read_policy`\
+  \ を確認し、`path` がある場合でもファイル名そのものを一般規律に昇格しない。たとえば持ち越し台帳は、配布先プロジェクトごとに別ファイル、外部台帳、または未配置になり得るため、`unresolved_cross_scope_items`\
+  \ のような抽象入力として扱う。\n\n機械可読な判定点では、判定点ごとに 1 本の effective prompt を読む。複数の元資料を直接ばらばらに読ませるのではなく、判定点に必要な規律・入力・次タスク方針を\
+  \ 1 本へ束ねた effective prompt を作り、その本文を LLM に読ませる。元資料は `prompt_source_refs` として保持し、実際に読ませた統合プロンプトは\
+  \ `effective_prompt_path`、`effective_prompt_sha256`、`effective_prompt_loaded` で記録する。全判定点で同じ巨大な共通プロンプトを使わず、各判定点に必要な短い\
+  \ effective prompt を使う。\n\n## 1.1 作業モード分類の用語表（work mode taxonomy）\n\n作業者は、maintenance、side-track、blocking\
+  \ unit、reopen、post-write verification を単一 enum に押し込まない。これらは同列の「作業モード」ではなく、次の軸を組み合わせて説明する。\n\
+  \n| 用語 | 意味 |\n| --- | --- |\n| `current_state` | `next --json` が返す機械状態。例：`completed`、`maintenance_in_progress`、`blocking_unit_in_progress`、`post_write_verification`。\
+  \ |\n| `work_class` | これから行う手続きの種類。例：normal workflow、maintenance、reopen、verification。maintenance\
+  \ は作業区分であり、作業内容ラベルや親子関係ではない。 |\n| `control_relation` | 本線・親作業との関係。例：mainline、side-track、blocking-unit、parent-resume。side-track\
+  \ は本線との関係であり、maintenance と同列の状態名ではない。blocking unit は親作業に束縛された制御構造である。 |\n| `permitted_scope`\
+  \ | 作業宣言の属性。`allowed_scope`、`allowed_files`、`completion_conditions` で、どこまで触ってよいかと戻る条件を表す。\
+  \ |\n| `work_context` | workflow state が `completed` でも残り得る実作業上の文脈。active anchor、side-track\
+  \ stack、return target など、戻り先や親子関係を会話記憶ではなく構造化記録から説明するために使う。 |\n\n例：`next --json`\
+  \ が `completed` を返していても、利用者が検査器の局所修正を求めた場合は、`current_state=completed`、`work_class=maintenance`、`control_relation=mainline`\
+  \ または `side-track`、`permitted_scope=allowed_files と completion_conditions` と分けて説明する。`audit`\
+  \ のような作業内容ラベルを、`current_state` や `control_relation` の値として扱わない。\n\n## 2. 判定結果の共通分岐\n\
+  \n<a id=\"resume_in_progress\"></a>\n\n### `resume_in_progress`\n\n`stages/in-progress/`\
+  \ に進行中手続きがある。新しい作業を始めず、`next_action.file` に示された進行中ファイルを読む。\n\n<a id=\"parent_resume_pending\"\
+  ></a>\n\n### `parent_resume_pending`\n\nblocking unit が完了し、戻り先の parent unit へ復帰する必要が残っている。新しい作業を始めず、`next_action.parent_unit_id`\
+  \ と `next_action.completed_unit_id` を確認し、まず parent unit の作業文脈へ戻る。\n\n`parent_resume_pending`\
+  \ が出ている状態で、利用者から別作業への明示的な割り込み指示があった場合は、開始前に次を実行して、active unit と resume pending の有無を機械的に確認する。\n\
+  \n```bash\npython3 tools/check-workflow-action.py work-unit preflight-start \\\n\
+  \  --proposed-unit-id <開始候補 unit ID> \\\n  --title \"<開始候補の題名>\" \\\n  --reason\
+  \ \"<開始候補の理由>\" \\\n  --json\n```\n\n`start_allowed: false` の場合は、`blocking_reasons`\
+  \ を利用者へ示して停止する。理由を見ずに通常 workflow、maintenance、新しい blocking unit へ進まない。\n\n<a id=\"\
+  blocking_unit_required\"></a>\n\n### `blocking_unit_required`\n\n別作業として切り出すべき作業が検出されている。通常\
+  \ workflow や親作業を続けず、`next_action.proposed_unit` の `unit_id`、`title`、`reason`、`parent_unit_id`、`return_conditions`\
+  \ を確認してから、利用者の明示的な開始指示を待つ。\n\n機械化が完全に揃うまでは、blocking unit の開始を暗黙に扱わない。開始前に、少なくとも次を会話上で明示する。\n\
+  \n- blocking unit に入ること。\n- 親作業の識別子。\n- blocking unit の目的。\n- blocking unit で変更してよい\
+  \ allowed files。\n- 親作業へ戻るための完了条件。\n\n宣言形式は次の形にそろえる。項目名を変えたり、本文中に散らして書いたりしない。\n\n\
+  ```text\nblocking unit に入ります\n- unit_id: <blocking unit ID>\n- parent_unit_id: <親作業\
+  \ ID>\n- title: <短い題名>\n- reason: <なぜ別作業として切り出すか>\n- allowed_files: <変更してよいファイルまたはディレクトリ>\n\
+  - return_conditions: <親作業へ戻るための完了条件>\n```\n\n`allowed_files` は必須であり、空欄や「必要な範囲」「関連ファイル」などの曖昧な指定では開始しない。開始時点で想定できるファイルまたはディレクトリを列挙し、途中で範囲を広げる必要が出た場合は、変更前に\
+  \ allowed files の追加を利用者へ明示する。親作業全体やリポジトリ全体を覆う指定は、混線防止の目的に反するため使わない。\n\n`return_conditions`\
+  \ も必須であり、空欄や「完了したら」「必要なところまで」などの主観的な指定では開始しない。親作業へ戻ってよいかを確認できる条件を列挙し、少なくとも成果物、検証、commit\
+  \ または evidence の扱いを含める。blocking unit を出るときは、各条件を満たしたか、未達なら何を残件として親作業へ戻すかを明示する。\n\
+  \n<a id=\"blocking_unit_in_progress\"></a>\n\n### `blocking_unit_in_progress`\n\n\
+  blocking unit が active である。`next_action.unit_id` の作業だけを扱い、親作業の commit、push、post-write\
+  \ verification、TODO 整理へ横滑りしない。\n\n機械化が完全に揃うまでは、作業者は次を手動で守る。\n\n- 作業開始時と再開時に、現在の\
+  \ active blocking unit を確認する。\n- commit 前に、commit unit が active blocking unit の\
+  \ `unit_id` と一致することを確認する。\n- blocking unit 完了前に親作業の成果物を同じ commit に混ぜない。\n- 親作業の\
+  \ commit は、blocking unit の完了条件を満たし、必要な commit または evidence を残し、親作業へ戻る宣言を終えるまで実行しない。\n\
+  - blocking unit を出るときは、完了条件を満たしたこと、残件、親作業への戻り先を明示する。\n\n<a id=\"reopen_in_progress\"\
+  ></a>\n\n### `reopen_in_progress`\n\nreopen 手続きが進行中である。通常ワークフローや post-write-verification\
+  \ より優先する。`next_action.file`、`next_step`、`completed_steps`、`pending_gates`、`current_blocker`、`required_action`\
+  \ を確認し、`required_action` に従う。\n\n代表的な `required_action`：\n\n- `draft_reopen_classification`：第1過程。種別判定・根拠記録。進行中ファイル発行と\
+  \ spec.json フラグ差し戻しは後続操作（`run_reopen_start`・`apply_approved_reopen_plan`）が担う。\n\
+  - `repair_canonical_documents`：第2過程。上流フェーズの正本文書修正。\n- `run_reopen_drafting`：第3過程。`next_pending_gate`\
+  \ が triad-review でも、同じ phase の drafting 完了が `drafting_completed_gates` または `completed_gates`\
+  \ に記録されていないため、先に正本文書を更新する。`active_gate`、`phase`、`stage: drafting`、`required_feature_scope`\
+  \ を確認し、レビューを開始しない。\n- `run_reopen_pending_gate`：第3過程。drafting 完了記録がある、または次 gate\
+  \ が triad-review 以外であるため、`next_pending_gate` の gate を実行する。alignment / approval 連鎖の再実施を含む。\n\
+  - `wait_for_human_decision`：人間の判断待ち。判断なしに進めない。\n- `finalize_reopen`：第4過程。最終確認、recheck\
+  \ クリア、in-progress の完了処理。\n- `repair_workflow_state`：判定不能または状態破損。推測で進めず利用者へ報告する。\n\
+  \n<a id=\"maintenance_in_progress\"></a>\n\n### `maintenance_in_progress`\n\n通常ワークフローではなく、ワークフロー制御・運用規律・検査器などの保守作業が進行中である。`next_action.file`\
+  \ を読み、`required_action`、`allowed_scope`、`completion_conditions` に従う。通常の `stage`\
+  \ や `upstream_recheck` へ戻るのは、maintenance の完了条件を満たし、進行中ファイルを `stages/completed/`\
+  \ へ移してからである。\n\n`next_action` と異なる作業へ入る場合、または `next` 判定自体の欠陥を直す場合は、ファイル編集前に `stages/in-progress/maintenance-<日付>-<短い名前>.yaml`\
+  \ を作成する。少なくとも `trigger`、`mainline_blocked_by`、`work_class`、`control_relation`、`allowed_scope`、`allowed_files`、`completion_conditions`\
+  \ を記録し、side track であることを明示する。保守作業を side-track として始める場合は `work_class: maintenance`、`control_relation:\
+  \ side-track` を使う。これを省略すると、本筋の作業順序を守るための修復作業自体が、記録されない手順逸脱になる。\n\nmaintenance の進行中ファイルは、必要に応じて\
+  \ `workflow_steps`、`required_reviews`、`review_evidence`、`post_write_verification`、`completion_criteria`\
+  \ を持つ。`workflow_steps` は作業工程の完了状態、`required_reviews` は変更内容そのものに対する必要レビュー、`review_evidence`\
+  \ はそのレビューや確認の証跡、`post_write_verification` は正本文書などの書き込み後検証、`completion_criteria`\
+  \ は maintenance を完了へ移せる条件を表す。変更内容レビューと post-write verification は別工程として記録し、docs note\
+  \ だけの記録作業は code / SDD / guidance 変更と同じ厳格検証として扱わない。\n\n`required_reviews` に未完了項目があれば\
+  \ `next --json` は `maintenance_review_required` を返す。`required_reviews` が完了し、`post_write_verification.status`\
+  \ が未完了なら `maintenance_post_write_required` を返す。これらが完了し、`completion_criteria` が記録されている場合は\
+  \ `maintenance_completion_required` を返し、maintenance ファイルを完了側へ移す作業へ進む。\n\n本線 reopen\
+  \ 中の maintenance 完了 commit は、`stages/completed/maintenance-*.yaml` の `mainline_blocked_by`\
+  \ が現在の reopen in-progress ファイルを覆うことで許可される。本線 `stages/in-progress/reopen-*.yaml`\
+  \ は、maintenance のためだけに同伴 stage しない。\n\n**maintenance を始める前の事前調査（in-progress YAML\
+  \ を作成する前に実施する）**\n\n1. 変更対象ファイルと依存関係を確認し、影響範囲を特定する。\n2. フィーチャー横断の影響がないことを確認する。\n\
+  3. 先に解決すべきブロッカー（別の問題）が潜んでいないことを確認する。\n\n事前調査の結果として次の開始条件をすべて満たした場合のみ maintenance\
+  \ を始める。\n\n- 変更が局所的である（既存仕様境界を変えず、workflow 機構・承認・状態機械・`next --json` の意味を変えない）。\n\
+  - 影響範囲が対象フィーチャーに閉じている。\n\nいずれかを満たさない場合：\n\n- 中核変更（仕様境界・workflow 機構を変える）の場合は reopen\
+  \ または新規 workflow として扱う。\n- フィーチャー横断の影響がある場合は利用者にエスカレーションする。\n\n開始条件を満たした場合、in-progress\
+  \ YAML を作成した後に最初に次の 3 行を宣言する。\n\n```\n変更分類: 局所\n理由: <影響範囲と既存仕様境界への影響の説明>\n手順: TDD\
+  \ 主導 / 文書のみ（lightweight self-check）\n```\n\nコード変更を伴う局所変更は TDD 主導（テスト先行）で進める。文書のみの変更は\
+  \ lightweight self-check で確認する。\n\n### `reopen_classification_required`\n\n完了済み\
+  \ workflow で、`intent`、feature-partitioning、`requirements`、`design`、`tasks` などの上流正本が後続成果物より新しい。単なる再確認として下流へ進めず、意味変更の有無と\
+  \ reopen 種別を分類する。`next_action.reopen_trigger` が候補を示す場合も、分類根拠を保存して `reopen-start`\
+  \ へ進む。\n\n<a id=\"post_write_verification\"></a>\n\n### `post_write_verification`\n\
+  \n書き込み後検証の対象となる未コミット変更がある。通常ワークフローへ進まず、`next_action.target_files` 全体を対象として検証する。\n\
+  \n検証 manifest は `.reviewcompass/post-write-verification/*.yaml` に置く。`target_files`、`target_sha256`、`required_verifiers`、`completed_verifiers`、`unresolved_substantive_findings`\
+  \ を記録する。`verifications[]` がある場合、各 verifier は `target_files` 全体と対応する `target_sha256`\
+  \ を単一エントリで覆る必要がある。ファイルごとの分業は独立多重チェックではない。\n\nAPI 経由の複数モデル検証を行う場合の標準手順：\n\n```bash\n\
+  .venv/bin/python3 tools/api_providers/prepare_post_write_review.py \\\n  --target\
+  \ <target-file> \\\n  [--target <target-file-2> ...] \\\n  --source-material .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md\
+  \ \\\n  [--source-material <additional-source-material> ...] \\\n  --review-run-dir\
+  \ .reviewcompass/evidence/review-runs/<run-id> \\\n  --criteria-id <criteria-id>\
+  \ \\\n  --change-summary \"<change-summary>\" \\\n  --review-question \"<review-question>\"\
+  \n\n.venv/bin/python3 tools/api_providers/run_review.py \\\n  --variant post_write_verification_google\
+  \ \\\n  --target <target-file> \\\n  [--target <target-file-2> ...] \\\n  --phase\
+  \ post_write_verification \\\n  --criteria-file .reviewcompass/evidence/review-runs/<run-id>/review-target.md\
+  \ \\\n  --prompt-manifest-path .reviewcompass/evidence/review-runs/<run-id>/prompt-manifest.yaml\
+  \ \\\n  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>\n\n.venv/bin/python3\
+  \ tools/api_providers/review_triage.py list-pending \\\n  --review-run-dir .reviewcompass/evidence/review-runs/<run-id>\n\
+  \n.venv/bin/python3 tools/api_providers/review_triage.py decide \\\n  --review-run-dir\
+  \ .reviewcompass/evidence/review-runs/<run-id> \\\n  --finding-id <finding-id> \\\
+  \n  --final-label must-fix \\\n  --decision-reason \"<reason>\" \\\n  --decision-actor\
+  \ human \\\n  --approval-record .reviewcompass/evidence/review-runs/<run-id>/approval.yaml\n\
+  \n.venv/bin/python3 tools/api_providers/review_triage.py write-manifest \\\n  --review-run-dir\
+  \ .reviewcompass/evidence/review-runs/<run-id> \\\n  --out auto \\\n  --approval-record\
+  \ .reviewcompass/evidence/review-runs/<run-id>/approval.yaml\n\n.venv/bin/python3\
+  \ tools/check-workflow-action.py next --json\n```\n\nAPI 呼び出し起動手順の正本は、先に `.venv/bin/python3\
+  \ tools/api_providers/prepare_post_write_review.py ...` で review-target と prompt\
+  \ manifest を生成し、その後 `.venv/bin/python3 tools/api_providers/run_review.py ... --criteria-file\
+  \ <review-target.md> --prompt-manifest-path <prompt-manifest.yaml>` を実行することである。外側から\
+  \ `zsh -c` で包まない。API key は配布物や設定ファイルへ書かず、利用者の shell 初期化で読み込まれる環境変数から渡す。Claude Code\
+  \ などの操縦実行面では、子プロセスの `ANTHROPIC_API_KEY` と `GEMINI_API_KEY` が空文字列へ上書きされることが確認済みである。一方、`OPENAI_API_KEY`\
+  \ は同じ確認では上書きされていない。このため `run_review.py` / `run_role.py` entrypoint 内で、環境変数が未設定の場合に\
+  \ `~/.zshrc` を読み直して API key を補完する。補完後も key が得られない場合は API key 未設定として fail-closed\
+  \ する。\n\n`prepare_post_write_review.py` は `review-target.md`、`review-target.yaml`、`prompt-manifest.yaml`\
+  \ を同じ `--review-run-dir` に生成する。`review-target.md` には criteria ID、変更要約、検査質問、target\
+  \ files、source materials、target file contents、scope / out-of-scope、finding policy、機微情報チェック結果を含める。`prompt-manifest.yaml`\
+  \ には `review_prompt_materials.target_files` と `review_prompt_materials.source_materials`\
+  \ を `content_mode: full_text` と `content_sha256` 付きで記録する。機微情報らしい文字列を検出した場合、または prompt\
+  \ manifest audit が DEVIATION の場合は fail-closed し、外部 API review へ進まない。\n\n`next_action.target_files`\
+  \ が複数ある場合は、`prepare_post_write_review.py` と `run_review.py` の両方で `--target` を複数回指定して同じ\
+  \ review-run に束ねる。API review-run の成否確認は、`review-target.md`、`review-target.yaml`、`prompt-manifest.yaml`、`review_summary.md`、`rounds.yaml`、`model-result-summary.yaml`、`raw/`、`parsed/`、`prompts/`、`target-manifest.yaml`\
+  \ が同じ `--review-run-dir` に生成され、`rounds.yaml` の `target_files`、`criteria_source_path`、`prompt_manifest_path`、provider、model、prompt/raw/parsed\
+  \ path が今回の対象と一致することで行う。\n\nAPI 呼び出しが失敗した場合は、まず上の正本手順を再確認する。`import` エラー、`argparse`\
+  \ エラー、引数不一致は起動手順または実装の問題であり、外部送信ポリシーや provider 側障害と混同しない。`ConnectError`、名前解決失敗、接続不能が出た場合は\
+  \ sandbox network 制限の可能性を先に疑い、同じ正本コマンドをネットワーク実行が許可された実行面で再実行する。API key 未設定のエラーは\
+  \ `~/.zshrc` から対象 provider の環境変数が読み込まれているかを確認する。\n\n`post_write_verification` では\
+  \ API 経路の variant を明示する。小規模既定は `--variant post_write_verification_google`、大規模または\
+  \ 3 系統検証が必要な場合は `--variant <post-write-api-variant>` として、`config/api-settings.yaml`\
+  \ の `context: post_write_verification` かつ API provider だけで構成された variant を選ぶ。CLI\
+  \ 経路を含む default variant に暗黙フォールバックしてはいけない。\n\nAPI レビュー結果を得た場合は、raw 参照、モデル別要約、三段階トリアージ（`must-fix`／`should-fix`／`leave-as-is`）を利用者へまとめて提示する。`ERROR`／`CRITICAL`\
+  \ または最終判断 `must-fix` の重要件を `decide` する場合、または重要件を含む run から manifest を生成する場合は、承認を記録した\
+  \ `--approval-record` が必須である。承認レコードには `approved_by: user` または `approved_by: proxy_model`、`review_run_id`、`summary_presented_to_user:\
+  \ true`、`triage_presented_to_user: true`、`approved_finding_ids`、必要に応じて `approved_final_labels`\
+  \ を含める。`approved_by: proxy_model` の場合は、`proxy_model_id` と finding ごとの `proxy_decisions`\
+  \ を含め、各 decision file が raw response、候補案、採用案、判断理由、最終ラベルを保持する。\n\n`write-manifest\
+  \ --out auto` は `.reviewcompass/post-write-verification/post-write-YYYY-MM-DD-NNN.yaml`\
+  \ の次番号を作る。manifest は post-write validation の途中記録ではなく、commit 直前の最終封印である。`triage.yaml`\
+  \ に `decision_status: human_required` が残る場合、重要件の利用者承認が確認できない場合、または review-run の\
+  \ target set に含まれない未コミット post-write target が残る場合は manifest を生成しない。manifest 作成後は対象ファイルを編集せず、stage\
+  \ / approval / commit へ直行する。\n\nこの生成停止条件は、現在の review-run から新しい最終 manifest を作る場合の規則である。既存の\
+  \ post-write manifest が現在の対象ファイルと一致し、かつ未解決の本質的指摘を含む場合は、`next --json` が `post_write_human_decision_required`\
+  \ と `next_action.manifest` を返す。\n\n<a id=\"lightweight_self_check\"></a>\n\n###\
+  \ `lightweight_self_check`\n\nnotes / 履歴 / 判断材料の未コミット変更がある。通常ワークフローへ進まず、`next_action.target_files`\
+  \ を API post-write verification ではなく軽量自己精査で確認する。\n\n軽量自己精査の対象は `docs/notes/` 配下と、単独変更の\
+  \ `TODO_NEXT_SESSION.md` とする。`docs/notes/` は議論記録、判断経緯、過去メモ、参考情報を置く場所として扱い、正本仕様・運用規律・レビュー判定そのものではないため、API\
+  \ review ではなく自己検査で確認する。`docs/operations/`、`docs/disciplines/`、`docs/reviews/`、`stages/completed/`\
+  \ は正本または完了記録として厳格に扱う。notes から正本へ昇格する内容は、該当する正本ファイルへ移した時点で strict な `post_write_verification`\
+  \ 対象とする。\n\n`TODO_NEXT_SESSION.md` は更新頻度が高い次セッション導線であり、進捗整理・次タスク・現在状態の更新だけなら API\
+  \ review ではなく軽量自己精査で扱う。ただし、同じ未コミット差分に strict な `post_write_verification` 対象が含まれる場合は、TODO\
+  \ も同じ strict 検証の `target_files` に同梱する。\n\n軽量自己精査では、API review を呼ばず、次だけを確認する。\n\n\
+  1. 利用者の指摘内容を落としていないか。\n2. 事実、推測、方針案、未実装事項が区別されているか。\n3. 後で見たときに次の判断材料になるか。\n4. 作業範囲を超えて仕様化していないか。\n\
+  5. API review が必要な正本へ昇格していないか。\n\n完了記録は `.reviewcompass/post-write-verification/*.yaml`\
+  \ に置き、`required_verifiers` と `completed_verifiers` は `lightweight_self_check` とする。`target_files`\
+  \ と `target_sha256` は通常の post-write manifest と同じく対象全体を覆う。\n\n`post_write_verification`\
+  \ 対象と `lightweight_self_check` 対象が混在する場合は、`post_write_verification` を優先する。strict\
+  \ 側が完了した後、軽量対象が残っていれば `lightweight_self_check` を返す。\n\n<a id=\"post_write_policy_violation\"\
+  ></a>\n\n### `post_write_policy_violation`\n\npost-write-verification pending 中に禁止変更がある。通常ワークフローへ進まず、`next_action.forbidden_files`\
+  \ を報告して停止する。禁止ファイルを勝手に削除・修正してはいけない。\n\n現行実装では、post-write-verification 対象ファイルが未コミット変更に含まれる状態で、`tools/*.py`、`templates/`、または他の\
+  \ post-write 対象と混ざった `docs/disciplines/` 配下の変更があると逸脱になる。\n\n<a id=\"post_write_human_decision_required\"\
+  ></a>\n\n### `post_write_human_decision_required`\n\n既存の post-write manifest に未解決の本質的指摘がある。通常ワークフローへ戻らず、`next_action.target_files`\
+  \ と `next_action.manifest` を確認し、利用者判断を待つ。\n\nこれは、現在の review-run で `triage.yaml`\
+  \ に `decision_status: human_required` が残ったまま新しい最終 manifest を生成する状態ではない。その場合は manifest\
+  \ 生成前に停止し、triage の判断または承認を先に解決する。\n\n### `stage`\n\n通常ワークフロー上の次タスクが決まっている。`feature`、`phase`、`stage`\
+  \ の示す作業だけを扱う。\n\n`stage` が `triad-review` の場合、review-run の開始前に使用 variant と role\
+  \ ごとの path／provider／model を確定し、曖昧なまま開始しない。review-run に使うプロンプトは [[llm-as-judge-prompting]]\
+  \ の手順（材料揃え → 問い設計 → 選択肢なし分析）で設計する。API review-run 完了後は、proxy_model 判断依頼、実装修正、spec.json\
+  \ 更新、フェーズ移行のいずれにも進む前に、raw 参照、モデル別要約、同根所見クラスタ、`must-fix`／`should-fix`／`leave-as-is`\
+  \ の三段階トリアージ案、重要件の平易な説明を利用者へ提示して停止する。詳細手順は `.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#3.3-a-2`\
+  \ を正本とする。\n\n### `cross_feature_stage`\n\n機能横断段に進む。`feature` は `all_features` になる。`recheck_items`\
+  \ がある場合は上流変更の織り込みを含める。`required_inputs` に `unresolved_cross_scope_items` があり、`unresolved_count`\
+  \ が 0 より大きい場合は、`read_policy` に従って未消化の持ち越し所見だけを確認する。ReviewCompass では互換情報として `pending_cross_feature_findings`\
+  \ も返るが、一般化された判断根拠は `required_inputs` とする。\n\n自律・並列で機能横断段を試行する場合は、通常の review-wave\
+  \ 完了判定に入る前に `autonomous-plan` を作成し、`tools/check-workflow-action.py autonomous-plan\
+  \ <plan.yaml>` で検査する。計画には `recheck_items` と `stages/feature-dependency.yaml` から分かる依存を明示し、上流\
+  \ recheck 対象を下流判断より先に置く。同じ worktree で並列化してよいのは読取調査または差分を残さない確認に限る。新しい依存、暗黙依存、未記録依存、または上流\
+  \ recheck の下流反映が必要だと分かった場合、その作業単位は停止し、機能横断段の実施記録に blocked として記録してから統合判断へ戻す。\n\n\
+  機能横断段の実施記録は、単一 feature 配下に置かず `.reviewcompass/specs/_cross_feature/reviews/` に置く。標準ファイル名は\
+  \ `.reviewcompass/specs/_cross_feature/reviews/{date}-{phase}-{stage}.md` とし、`feature:\
+  \ all_features`、対象 phase/stage、確認した feature 範囲、持ち越し件数、recheck 結果、実行した検証コマンド、判断結果を記録する。`_cross_feature`\
+  \ は実 feature ではなく、横断段成果物だけの名前空間である。\n\n<a id=\"commit_stop_point\"></a>\n\n### `commit_stop_point`\n\
+  \n通常 workflow の phase 終端または reopen 手続き上の停止点に到達している。`required_action: commit_stop_point`\
+  \ の場合、次 phase / 次 gate へ進まず、利用者の明示的な commit 指示を待つ。\n\n利用者の短い操作語（例: `コミット`、`push`、`次へ`）を受けた場合は、mutation\
+  \ の前に `.venv/bin/python3 tools/check-workflow-action.py operation-trigger-resolve\
+  \ --trigger-text <text> --json` を実行し、`operation_id`、`operation_card_path`、`first_readonly_command`、`mutation_allowed_after`\
+  \ を確認する。`resolution_status: stop-and-ask` または `unknown_operation` の場合は、低レベルコマンドを推測実行せず利用者確認で停止する。\n\
+  \n利用者が commit を指示した直後は、Git index への追加（`git add`）や approval record を作る前に `.venv/bin/python3\
+  \ tools/check-workflow-action.py commit-preflight --json` を実行する。`DEVIATION` の場合は何も作らず停止し、理由と次に許可されている\
+  \ action だけを報告する。\n\n通常 workflow では、`intent.approval` または `feature-partitioning.approval`\
+  \ が全 feature で完了し、該当 phase の workflow_state または成果物に未コミット変更がある場合に返る。`blocked_by.phase`、`blocked_by.stage`、`blocked_by.dirty_paths`\
+  \ を確認する。`commit-preflight` が `OK` を返した後に対象差分を `git add` し、guarded commit の通常手順へ進む。commit\
+  \ 後に作業ツリーが clean であれば、同じ停止点を返し続けず次 phase の action へ進む。\n\nreopen 手続きでは、`reopen_in_progress`\
+  \ の `required_action: commit_stop_point` として返る。`blocked_by.kind` と `blocked_by.gate`\
+  \ を確認し、reopen 手続きファイルを含む停止点 commit を行う。\n\n<a id=\"commit_mixing_risk\"></a>\n\n\
+  ### `commit_mixing_risk`\n\ncommit unit が固定した対象外の staged file が混入している。通常 workflow、post-write\
+  \ verification、guarded commit へ進まず、`next_action.target_files`、`extra_staged_files`、`path`\
+  \ を確認する。\n\n利用者に、対象外ファイルを別 commit unit / blocking unit へ分けるか、現在の commit unit を再作成してよいかを確認する。対象外ファイルを理由なしに同じ\
+  \ commit へ混ぜない。\n\n<a id=\"commit_unit_stale\"></a>\n\n### `commit_unit_stale`\n\
+  \ncommit unit が現在の staged 内容と一致していない。通常 workflow、post-write verification、guarded\
+  \ commit へ進まず、`next_action.target_files` と `path` を確認する。\n\nstaged 内容を commit unit\
+  \ に合わせて戻すか、現在の staged 内容に合わせて commit unit を再作成する。古い commit unit のまま承認 record や commit\
+  \ execution delegation を作らない。\n\n### `upstream_recheck`\n\n完了済み workflow であっても、上流成果物が下流成果物より新しいため、下流へ進む前に再確認が必要である。`upstream_phase`、`phase`、`stage`\
+  \ を確認し、`phase.stage` に示された作業を次作業として扱う。たとえば intent 更新後は feature-partitioning の確認、requirements\
+  \ 更新後は design の再確認、tasks 更新後は implementation の再確認を先に行う。\n\nこの kind が返った場合、記憶や直前の会話から\
+  \ requirements、design、tasks、implementation へ飛ばない。必ず `next_action.phase` と `next_action.stage`\
+  \ に従い、上流から下流へ順に反映する。\n\n<a id=\"feature_definition_required\"></a>\n\n### `feature_definition_required`\n\
+  \nfeature 一覧が解決できない（`feature-dependency.yaml` が見つからない、または `feature_order` キーが未定義）。対象アプリの初期状態で発生する。エラーではない（verdict\
+  \ OK）。\n\n`next_action.reason`（立ち上げ案内の本文）と `current_state.feature_dependency_source`（解決元）を確認する。`feature_dependency_source`\
+  \ が null ならファイル自体が探索順（`.reviewcompass/feature-dependency.yaml` → `stages/feature-dependency.yaml`\
+  \ → `feature-dependency.yaml`）のどこにも存在せず、ファイルパスが入っていればそのファイルはあるが `feature_order`\
+  \ キーが未定義または不正である。前者は分割結果の記録から、後者は既存ファイルへの `feature_order` キーの追記から始める。\n\n新しい作業を始めず、intent\
+  \ と feature-partitioning を実施し、承認された分割結果（機能ごとの依存の主張と理由、順序の導出を含む）を `.reviewcompass/feature-dependency.yaml`\
+  \ の `feature_order` キーに記録する。記録後に `next` を再実行する。feature 立ち上げの手順は `.reviewcompass/guidance/INITIAL_SETUP_LLM_GUIDE.md`\
+  \ を正本とする。\n\nなお、`feature_order` と `depends_on` の整合違反（依存される機能が先に並んでいない、循環依存がある）は本\
+  \ kind ではなく `unknown`／DEVIATION（fail-closed）になる。理由に従って `feature-dependency.yaml`\
+  \ を修正する。\n\n### `completed`\n\n全 workflow_state が完了している。通常の次タスクはない。\n\n完了報告で「次タスク」を示す必要がある場合、ここでいう「通常の次タスクはない」とは、workflow_state\
+  \ が要求する次 action がないという意味である。backlog 候補、maintenance 候補、reopen 候補を提示してよいが、それらは workflow\
+  \ の自動継続ではなく、利用者が次に選べる作業候補として扱う。\n\n候補を拾う順序と表示件数は `.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#7-作業完了時レポート`\
+  \ の completed 時の次タスク取得規律に従う。`TODO_NEXT_SESSION.md` の推奨順を候補源にする場合でも、候補が現在も `status:\
+  \ candidate` であることを `.reviewcompass/backlog/index.yaml` または候補ファイル本体で確認してから表示する。完了報告では、利用者が\
+  \ 1 件表示を明示した場合を除き、5 件ほどを短い説明つきの選択肢として示す。\n\n利用者指示により maintenance、reopen、または新規 workflow\
+  \ を開始できる。別作業を開始する前には、原則として `work-unit preflight-start` を実行し、`start_allowed` と `blocking_reasons`\
+  \ を確認する。maintenance を始める場合は、その後に `maintenance_in_progress` の事前調査と開始条件を確認する。\n\n\
+  **completed からの作業開始分類**\n\n| 分類 | 使う条件 |\n| --- | --- |\n| maintenance | 局所的な運用・検査器・手引き補修で、既存仕様境界や\
+  \ workflow 機構の意味を変えない。 |\n| reopen | 既存正本の意味変更や下流再実施が必要で、既存 feature の責務内に収まる。 |\n\
+  | 新規 workflow | 既存 feature の責務境界に収まらない新しい責務を導入する。 |\n\n判断が分かれる場合は候補だけを提示し、人間判断を待つ。候補のまま\
+  \ `stages/in-progress/maintenance-*.yaml` を作成したり、reopen-start や新規 workflow の正本作成へ進んだりしない。\n\
+  \n### `unknown`\n\n状態判定できない。推測で進めず、`reasons` と `current_state` を利用者へ報告する。\n\n##\
+  \ 3. 共通禁止事項\n\n- `next` を実行せずに次作業を提案しない。\n- `resume_in_progress`、`parent_resume_pending`、`reopen_in_progress`、`post_write_verification`、`post_write_policy_violation`、`post_write_human_decision_required`\
+  \ を通常ワークフローより後回しにしない。\n- `lightweight_self_check` を通常ワークフローより後回しにしない。\n- `reopen_classification_required`\
+  \ を「再確認で足りる」と独断して下流成果物を更新しない。\n- `next_action` と異なる side track に入る場合、または `next`\
+  \ 判定自体を修復する場合は、maintenance in-progress を作らずに編集を始めない。\n- 事前調査を省略して maintenance を始めない。影響範囲・依存関係・ブロッカーの確認が済んでいない状態で\
+  \ in-progress YAML を作成しない。\n- spec.json の workflow_state 変更、commit、push は不可逆操作として扱い、対応する\
+  \ precheck サブコマンドを実行する。\n- 検証者は `target_files` 全体を見る。ファイルごとの分業を独立多重チェックとして扱わない。\n\
+  - 本質的指摘を独断で逐語的指摘に落とさない。迷う場合は利用者へ上げる。\n```\n\n\n## Scope\n\n- Check whether the changed\
+  \ target files clearly state the intended contract.\n- Check whether related instructions\
+  \ are mutually consistent across targets.\n- Check whether the documented procedure\
+  \ is actionable before API review, triage, manifest, or commit steps continue.\n\
+  \n## Out Of Scope\n\n- Do not request unrelated refactors or style-only rewrites.\n\
+  - Do not judge files that are not listed in Target Files.\n- Do not treat missing\
+  \ implementation work as a document defect unless the target text claims it already\
+  \ exists.\n\n## Finding Policy\n\n- Report must-fix findings for contradictions,\
+  \ missing required gates, or instructions that would allow an unsafe workflow action.\n\
+  - Report should-fix findings for ambiguity that could cause repeated manual judgment\
+  \ or unnecessary API review loops.\n- Return findings: [] when the target files\
+  \ are internally consistent for this review question.\n\n## Sensitive Information\
+  \ Check\n\n- status: passed\n- External API review must not proceed if this section\
+  \ reports potential secrets.\n"
+prompt_sha256: d557e2c5c22191375c45889a671144b2a2c35eee042536009eed1eaa03b1b40e
+model_results:
+- model_id: gemini-3.1-pro-preview
+  provider: gemini-api
+  role: primary
+  treatment: primary
+  invocation_path: api
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  raw_sha256: 67f20b5f2a77ca36c12b6b153ce451a10d7c0026c9147c2eb86f0e1d33ea4fb1
+  parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+  parsed_sha256: 1a979a1490ac7fe37575d1eeff338ace3e27891e3c6a2f560925b97f716e4b3f
+  parse_status: parsed
+  formatted_by: parser
+  formatted_by_actor_type: orchestrator
+  formatted_by_actor: run_role.py
+  formatted_at: '2026-07-01T00:27:59.135446+00:00'
+  follow_up_action: triage
+  attempts: 1
+  duration_seconds: 9.446
+  prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+  prompt_sha256: d557e2c5c22191375c45889a671144b2a2c35eee042536009eed1eaa03b1b40e
+criteria_source_path: .reviewcompass/evidence/review-runs/2026-07-01-next-task-list-display-postwrite/review-target.md
+criteria_source_sha256: 583316a0d44bdcda3e7464b9c58343bef17bf551e5928b213873a4881dfa1167
+prompt_manifest_path: .reviewcompass/evidence/review-runs/2026-07-01-next-task-list-display-postwrite/prompt-manifest.yaml
+prompt_manifest_sha256: 7332c3d5238d921a01adeb01ab9bdd465a4b28b7611bea9a1394c7ae43d79317
+prompt_manifest_sha256_prefixed: sha256:7332c3d5238d921a01adeb01ab9bdd465a4b28b7611bea9a1394c7ae43d79317
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: dd9a9f5069149a873aebe477447b5240654a11b96c8604dc946d3f7a8075a9ca

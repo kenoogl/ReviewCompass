@@ -1,0 +1,14 @@
+run_id: 2026-07-01-next-task-list-display-postwrite
+models:
+- model_id: gemini-3.1-pro-preview
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  parse_status: parsed
+  triage_status: no_findings
+  findings_count: 0
+  findings_count_by_severity: {}
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: dd9a9f5069149a873aebe477447b5240654a11b96c8604dc946d3f7a8075a9ca

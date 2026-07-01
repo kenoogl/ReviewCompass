@@ -1,0 +1,8 @@
+run_id: 2026-07-01-next-task-list-display-postwrite
+target_files:
+- path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  sha256: 49044ad500177cd2bd401ebce77b0b8de88293d570c5bdeaa319614d1b01ca1f
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: f264a762f6bde2e6a2702a5c9219d89b611ced5328be4db65e66ccba23a4c269
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: dd9a9f5069149a873aebe477447b5240654a11b96c8604dc946d3f7a8075a9ca

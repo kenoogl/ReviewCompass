@@ -1,0 +1,24 @@
+status: completed
+target_files:
+- .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+target_sha256:
+  .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md: 49044ad500177cd2bd401ebce77b0b8de88293d570c5bdeaa319614d1b01ca1f
+  .reviewcompass/guidance/WORKFLOW_NAVIGATION.md: f264a762f6bde2e6a2702a5c9219d89b611ced5328be4db65e66ccba23a4c269
+required_verifiers: &id001
+- gemini-3.1-pro-preview
+completed_verifiers: *id001
+unresolved_substantive_findings: 0
+verifications:
+- verifier: gemini-3.1-pro-preview
+  target_files:
+  - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  target_sha256:
+    .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md: 49044ad500177cd2bd401ebce77b0b8de88293d570c5bdeaa319614d1b01ca1f
+    .reviewcompass/guidance/WORKFLOW_NAVIGATION.md: f264a762f6bde2e6a2702a5c9219d89b611ced5328be4db65e66ccba23a4c269
+review_run:
+  path: .reviewcompass/evidence/review-runs/2026-07-01-next-task-list-display-postwrite
+  summary_path: .reviewcompass/evidence/review-runs/2026-07-01-next-task-list-display-postwrite/model-result-summary.yaml
+notes: Generated template; verify target_files cover current post-write targets before
+  use.

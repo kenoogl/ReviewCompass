@@ -1,0 +1,45 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-07-01-next-task-list-display
+kind: plan
+title: Show completed-state next-task candidates as a short list
+status: completed
+source_unit_id: main-completed
+created_at: '2026-07-01T00:00:00+09:00'
+completed_at: '2026-07-01T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:次タスクの表示が期待していたものとは違う
+  reason: >
+    completed 状態の完了報告で次タスクを 1 件だけ示すと、利用者が期待する
+    候補選択の導線にならないため、候補を 5 件ほど説明つきで表示する規律へ
+    修正する。
+summary: >
+  `next --json` が completed の場合、通常 workflow 上の次 action はないが、
+  完了報告では `TODO_NEXT_SESSION.md` と backlog の candidate 状態を照合し、
+  次に選べる作業候補を 5 件ほど、短い説明つきで表示するように規律を更新する。
+related:
+  - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  - TODO_NEXT_SESSION.md
+remaining_work:
+  - id: NTL-1
+    title: Clarify completed-state next-task list display
+    status: completed
+    tasks:
+      - SESSION_WORKFLOW_GUIDE.md の completed 時の次タスク取得規律を、候補 5 件ほどのリスト表示に変更する。
+      - 1 件表示は、利用者が明示的に 1 件だけを求めた場合に限る。
+      - WORKFLOW_NAVIGATION.md の completed 節も、候補提示は選択肢リストであることを補足する。
+    acceptance:
+      - completed 状態の完了報告で、次候補を 5 件ほど短い説明つきで表示する規律になっている。
+      - 候補は `TODO_NEXT_SESSION.md` の推奨順を起点にし、backlog で `status: candidate` を確認してから表示する。
+      - 候補は開始済み作業ではなく、利用者が次に選べる作業として説明される。
+    note: >
+      SESSION_WORKFLOW_GUIDE.md の completed 時次タスク取得規律を 5 件ほどの
+      説明つきリスト表示へ変更し、WORKFLOW_NAVIGATION.md の completed 節から
+      表示件数と候補確認規律を参照するようにした。
+non_goals:
+  - '`next --json` の機械状態を変更しない。'
+  - backlog 候補の自動開始はしない。
+  - '`TODO_NEXT_SESSION.md` の候補順そのものは変更しない。'
+decisions: []
