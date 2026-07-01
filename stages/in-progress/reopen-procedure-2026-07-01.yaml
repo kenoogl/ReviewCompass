@@ -8,10 +8,10 @@ completed_steps:
 - 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements alignment/approval → false、recheck=upstream_change_pending
   → true）
 - 第2過程：正本修正完了（requirements.md に backlog candidate routing 受入13を追加）
-next_step: 第2過程：停止点コミット
-step_number: 2
+- 第3過程：requirements alignment 完了（backlog candidate routing 受入13の整合確認）
+next_step: 第3過程：requirements approval
+step_number: 3
 pending_gates:
-- stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
 current_blocker: null
 reopen_step_records:
@@ -31,7 +31,29 @@ reopen_step_records:
   evidence:
   - .reviewcompass/specs/workflow-management/requirements.md
   - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+commit_stop_point_records:
+- step: 2
+  kind: canonical_update_complete
+  gate: null
+  reason: 第2過程の正本修正完了
+  head: 93f5cda88008be187b261fabffbfffbe1f9f09b4
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+completed_gates:
+- stages/requirements.yaml#alignment
+downstream_impact_decisions:
+- gate: stages/requirements.yaml#alignment
+  feature_scope: workflow-management
+  decision: approved
+  rationale: Requirement 2 受入13は、既存の next --json selector、reopen 手続き、operation preflight
+    と同じ workflow-management の運用契約に属する。backlog を候補置き場に限定し、work lane と TODO materialization
+    の扱いを明確化するもので、intent や feature-partitioning の変更は不要。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
 commit_stop_point: true
-commit_stop_point_step: 2
-commit_stop_point_kind: canonical_update_complete
-commit_stop_point_reason: 第2過程の正本修正完了
+commit_stop_point_step: 3
+commit_stop_point_kind: alignment_complete
+commit_stop_point_gate: stages/requirements.yaml#alignment
+commit_stop_point_reason: requirements alignment 完了時点の停止点
