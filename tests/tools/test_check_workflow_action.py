@@ -3929,6 +3929,54 @@ class NextNavigationTests(unittest.TestCase):
       ["stages/in-progress/reopen-procedure-2026-06-02.yaml"],
     )
 
+  def test_next_reopen_requires_downstream_impact_decisions_for_edited_requirements(self):
+    """requirements 編集後は design/tasks/implementation の影響判断不足を返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-07-01.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第3過程：連鎖再実施\n"
+      "step_number: 3\n"
+      "edited_phases:\n"
+      "  - requirements\n"
+      "pending_gates: []\n"
+      "completed_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n"
+      "  - stages/requirements.yaml#review-wave\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "downstream_impact_decisions:\n"
+      "  - gate: stages/requirements.yaml#approval\n"
+      "    feature_scope: all_features\n"
+      "    decision: approved\n"
+      "    rationale: requirements approval は完了している。\n"
+      "    evidence:\n"
+      "      - .reviewcompass/specs/foundation/requirements.md\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    data = json.loads(result.stdout)
+    action = data["next_action"]
+    self.assertEqual(action["kind"], "reopen_in_progress")
+    self.assertEqual(
+      action["required_action"],
+      "record_reopen_downstream_impact_decision",
+    )
+    self.assertEqual(
+      action["missing_downstream_impact_phases"],
+      ["design", "tasks", "implementation"],
+    )
+    self.assertEqual(action["active_gate"], "stages/design.yaml#impact-decision")
+    self.assertEqual(action["phase"], "design")
+    self.assertEqual(action["stage"], "impact-decision")
+
   def test_next_reopen_uses_feature_impact_decisions_as_review_scope(self):
     """reopen のレビュー対象 feature は feature_impact_decisions から機械的に返す"""
     cwd = Path(self.tmpdir)

@@ -3922,6 +3922,79 @@ def _impact_decision_phase_set(decision_gates):
   return phases
 
 
+def _required_downstream_impact_phases_for_edited_phases(edited_phases):
+  """編集済み phase から下流影響判断が必要な phase を返す"""
+  if not isinstance(edited_phases, list):
+    return []
+  required = set()
+  canonical_phases = [
+    phase for phase in edited_phases
+    if isinstance(phase, str) and phase in PHASE_ORDER
+  ]
+  for phase in canonical_phases:
+    phase_index = PHASE_ORDER.index(phase)
+    for downstream_phase in PHASE_ORDER[phase_index + 1:]:
+      if downstream_phase in CROSS_FEATURE_PHASES:
+        continue
+      required.add(downstream_phase)
+  return [
+    phase for phase in PHASE_ORDER
+    if phase in required
+  ]
+
+
+def _reopen_missing_downstream_impact_phases(data):
+  """reopen state の下流影響判断不足 phase を返す"""
+  required_phases = _required_downstream_impact_phases_for_edited_phases(
+    data.get("edited_phases", []),
+  )
+  if not required_phases:
+    return [], required_phases, []
+
+  decision_gates, decision_errors = _impact_decision_gate_set(data)
+  if decision_errors or decision_gates is None:
+    completed_phases = []
+  else:
+    completed_phases = sorted(
+      _impact_decision_phase_set(decision_gates),
+      key=PHASE_ORDER.index,
+    )
+  missing_phases = [
+    phase for phase in required_phases
+    if phase not in completed_phases
+  ]
+  return missing_phases, required_phases, completed_phases
+
+
+def _reopen_downstream_impact_action(data):
+  """下流影響判断不足を next_action フィールドに変換する"""
+  missing_phases, required_phases, completed_phases = (
+    _reopen_missing_downstream_impact_phases(data)
+  )
+  if not missing_phases:
+    return None
+
+  phase = missing_phases[0]
+  active_gate = _stage_gate(phase, "impact-decision")
+  return {
+    "required_action": "record_reopen_downstream_impact_decision",
+    "next_pending_gate": None,
+    "next_drafting_gate": None,
+    "active_gate": active_gate,
+    "phase": phase,
+    "stage": "impact-decision",
+    "blocked_by": {
+      "type": "downstream_impact_decision_missing",
+      "missing_phases": missing_phases,
+      "required_phases": required_phases,
+      "completed_phases": completed_phases,
+    },
+    "missing_downstream_impact_phases": missing_phases,
+    "required_downstream_impact_phases": required_phases,
+    "completed_downstream_impact_phases": completed_phases,
+  }
+
+
 def _validate_evidence_list(value, label):
   """証跡 list の形式を検査する"""
   if not isinstance(value, list) or not value or not all(isinstance(v, str) and v for v in value):
@@ -5794,6 +5867,9 @@ def select_reopen_next_action_fields(data, pending_gates, cwd=None):
     data.get("step_number") in (3, "3")
     or (isinstance(next_step, str) and "第3過程" in next_step)
   )
+  downstream_impact_action = _reopen_downstream_impact_action(data)
+  if is_step_three and downstream_impact_action is not None:
+    return downstream_impact_action
   if is_step_three and gate_action["required_action"]:
     return {
       **gate_action,
@@ -5963,6 +6039,13 @@ def build_in_progress_next_action(cwd, relative_path):
       "stage": action_fields["stage"],
       "reason": "reopen 手続きの進行中状態ファイルがあります",
     }
+    for field in [
+      "missing_downstream_impact_phases",
+      "required_downstream_impact_phases",
+      "completed_downstream_impact_phases",
+    ]:
+      if action_fields.get(field) is not None:
+        action[field] = action_fields[field]
     if action_fields.get("repair_reasons") is not None:
       action["repair_reasons"] = action_fields["repair_reasons"]
     return action

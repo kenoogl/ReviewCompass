@@ -149,9 +149,25 @@ red_tests:
   - id: RPMR-T2
     title: requirements 編集後に design/tasks/implementation 判断がなければ next が不足作業を返す
     target: tests/tools/test_check_workflow_action.py
+    status: completed
     expected: >
       requirements が edited phase で、downstream impact decision が design/tasks/implementation を
       覆っていない場合、`next --json` は completed ではなく reopen の downstream 判断不足を返す。
+    evidence:
+      red_test: >
+        `NextNavigationTests::test_next_reopen_requires_downstream_impact_decisions_for_edited_requirements`
+        は実装前に `rerun_alignment_approval_chain` が返るため失敗した。
+      implementation: >
+        `next --json` が `edited_phases: [requirements]` から design/tasks/implementation の
+        downstream impact decision 不足を計算し、
+        `record_reopen_downstream_impact_decision` を返すようにした。
+      verification:
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::NextNavigationTests::test_next_reopen_requires_downstream_impact_decisions_for_edited_requirements -q`
+          が成功。
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::NextNavigationTests -q`
+          が成功。
   - id: RPMR-T3
     title: downstream 変更不要でも判断証跡なしなら finalize を拒否する
     target: tests/tools/test_check_workflow_action.py
