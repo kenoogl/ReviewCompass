@@ -143,9 +143,20 @@ red_tests:
   - id: RPMR-T1
     title: requirements 編集 phase が alignment/approval だけなら finalize を拒否する
     target: tests/tools/test_check_workflow_action.py
+    status: completed
     expected: >
       reopen state に `edited_phases: [requirements]` があり、requirements の
       triad-review/review-wave が completed_gates にない場合、`reopen-finalize` は DEVIATION になる。
+    evidence:
+      implementation: >
+        `reopen-finalize` が `edited_phases` に含まれる phase の full review gate
+        （triad-review/review-wave/alignment/approval）を `completed_gates` または
+        `required_gates` から照合し、不足があれば completed 記録を生成しないようにした。
+      commit: b420a282 Fail closed reopen finalize gates
+      verification:
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenFinalizeTests::test_reopen_finalize_rejects_edited_requirements_without_full_review_gates -q`
+          が成功。
   - id: RPMR-T2
     title: requirements 編集後に design/tasks/implementation 判断がなければ next が不足作業を返す
     target: tests/tools/test_check_workflow_action.py
