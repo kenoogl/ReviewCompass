@@ -7030,6 +7030,41 @@ class ReopenFinalizeTests(unittest.TestCase):
     self.assertIn("feature_impact_decisions", result.stdout)
     self.assertTrue(in_progress.exists())
 
+  def test_reopen_finalize_rejects_edited_requirements_without_full_review_gates(self):
+    """requirements を実質編集した reopen は triad-review/review-wave なしで完了化できない"""
+    in_progress = self._write_ready_in_progress()
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    state["edited_phases"] = ["requirements"]
+    state["completed_gates"] = [
+      "stages/requirements.yaml#alignment",
+      "stages/requirements.yaml#approval",
+    ]
+    in_progress.write_text(
+      yaml.safe_dump(state, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "reopen-finalize",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--impacted-downstream-phase", "requirements",
+        "--new-feature-decision",
+        "no_new_feature",
+        "既存 feature で受けられる。",
+        "stages/feature-partitioning/2026-05-24-proposal.md",
+        "--json",
+      ]
+      + self._feature_impact_args(),
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("edited_phases", result.stdout)
+    self.assertIn("triad-review", result.stdout)
+    self.assertTrue(in_progress.exists())
+
 
 class CommitUnitIsolationTests(unittest.TestCase):
   """blocking unit 中の commit 候補混線を機械検出する"""

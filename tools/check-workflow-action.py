@@ -8493,6 +8493,47 @@ def _append_reopen_finalize_step_record(data, completed_step, evidence):
   data["reopen_step_records"] = records
 
 
+def _validate_reopen_finalize_edited_phase_gates(data):
+  """実質編集済み phase が full review gate を満たすか検査する。"""
+  edited_phases = data.get("edited_phases", [])
+  if edited_phases is None:
+    edited_phases = []
+  if not isinstance(edited_phases, list) or not all(
+    isinstance(phase, str) and phase in PHASE_STAGES
+    for phase in edited_phases
+  ):
+    raise ValueError("edited_phases は既知 phase 名の list が必要です")
+  if not edited_phases:
+    return
+
+  completed_gates = data.get("completed_gates", [])
+  if completed_gates is None:
+    completed_gates = []
+  required_gates = data.get("required_gates", [])
+  if required_gates is None:
+    required_gates = []
+  if (
+    not isinstance(completed_gates, list)
+    or not all(isinstance(gate, str) for gate in completed_gates)
+    or not isinstance(required_gates, list)
+    or not all(isinstance(gate, str) for gate in required_gates)
+  ):
+    raise ValueError("completed_gates/required_gates は文字列 list が必要です")
+
+  gate_trace = set(completed_gates) | set(required_gates)
+  missing = []
+  for phase in sorted(set(edited_phases), key=PHASE_ORDER.index):
+    missing.extend([
+      gate for gate in _full_reopen_gates_for_changed_phase(phase)
+      if gate not in gate_trace
+    ])
+  if missing:
+    raise ValueError(
+      "edited_phases の full review gate が不足しています: "
+      + ", ".join(missing)
+    )
+
+
 def cmd_reopen_finalize(args):
   """reopen 第4過程の完了 YAML 生成と completed 移動を機械処理する"""
   cwd = Path.cwd()
@@ -8535,6 +8576,7 @@ def cmd_reopen_finalize(args):
       or not all(isinstance(v, str) and v in PHASE_STAGES for v in data["impacted_downstream_phases"])
     ):
       raise ValueError("impacted_downstream_phases は既知フェーズ名の list が必要です")
+    _validate_reopen_finalize_edited_phase_gates(data)
 
     target_path = _completed_reopen_path(cwd, source_path)
     if target_path.exists():

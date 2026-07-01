@@ -212,10 +212,30 @@ repair_route_candidates:
     rationale: >
       手続き不備を「完了済み成果物の再検討」として扱い、通常 reopen の枠に乗せる。
 selected_repair_route:
-  status: undecided
+  status: selected
+  selected: RPMR-R1
   required_before_implementation: true
   note: >
-    修復経路は実装前に決める。ただし、どの経路を選んでも fail-closed 不変条件と赤テストは必要である。
+    修復経路は RPMR-R1（pushed completed reopen を superseding reopen で置き換える）を採用する。
+    既に push 済みの `stages/completed/reopen-procedure-2026-07-01.yaml` は履歴として残し、
+    その completed 記録が requirements 実質編集に対する triad-review/review-wave を欠いたことを
+    superseding reopen の trigger として扱う。後付けで既存 completed 記録を有効化せず、
+    新しい reopen で fail-closed 機械処理を実装・検証する。
+  selected_reason: >
+    R1 は履歴改変を避けつつ、既存 completed reopen の手続き不備を明示できる。R2 の
+    workflow-state repair は既存 completed 記録を補修して有効化したように見えやすく、
+    R3 の completed reopen 再 reopen は対象が「成果物の意味」なのか「reopen 機械処理」なのか
+    曖昧になりやすい。今回の主問題は reopen 機械処理の fail-closed 不足なので、
+    superseding reopen として別記録で置き換える。
+  superseded_record:
+    path: stages/completed/reopen-procedure-2026-07-01.yaml
+    reason: >
+      requirements.md の実質修正後、requirements triad-review/review-wave を再実施しないまま
+      alignment/approval と finalize に進めてしまった。downstream design/tasks/implementation
+      判断も、通常の連鎖 gate としてではなく後付け補修に近い形で completed 記録へ入った。
+  next_execution_step: >
+    RPMR-T1 から TDD を開始し、`edited_phases: [requirements]` を持つ reopen state が
+    requirements triad-review/review-wave なしでは `reopen-finalize` できない赤テストを書く。
 proposed_work:
   - id: RPMR-1
     title: プロトコルと実装の監査
