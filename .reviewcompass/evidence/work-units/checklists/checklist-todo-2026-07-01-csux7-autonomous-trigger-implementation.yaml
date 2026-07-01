@@ -1,0 +1,91 @@
+schema_version: work-checklist-v1
+checklist_id: checklist-todo-2026-07-01-csux7-autonomous-trigger-implementation
+unit_id: main-completed
+title: Implement CSUX-7 autonomous trigger wording
+status: completed
+created_at: '2026-07-01T00:00:00+09:00'
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/todos/todo-2026-07-01-csux7-autonomous-trigger-implementation.yaml
+  reason: backlog TODO から runtime checklist を機械生成する
+items:
+- id: CSUX7-1
+  title: Add red tests for explicit commit/push/range grammar and short-form rejection
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-2
+  title: Confirm CSUX-7 red tests fail before implementation
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-3
+  title: Update operation trigger resolution grammar
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-4
+  title: Update commit approval source grammar and evidence
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-5
+  title: Update plan and index completion evidence
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-6
+  title: Run focused and related regression tests
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-7
+  title: Run full workflow-action regression tests
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-8
+  title: Run YAML, py_compile, representative resolver, next, and commit-preflight checks
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-RT-1
+  title: Explicit single-candidate commit boundary resolves
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-RT-2
+  title: Explicit single-candidate push boundary resolves
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-RT-3
+  title: Candidate range resolves as push-through autonomous execution
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-RT-4
+  title: Short single-candidate autonomous execution is rejected
+  status: done
+  checked: true
+  child_checklist_id: null
+- id: CSUX7-RT-5
+  title: Approval-source evidence mirrors resolver grammar
+  status: done
+  checked: true
+  child_checklist_id: null
+source_backlog_item_id: todo-2026-07-01-csux7-autonomous-trigger-implementation
+source_backlog_path: .reviewcompass/backlog/todos/todo-2026-07-01-csux7-autonomous-trigger-implementation.yaml
+progress:
+  total: 13
+  done: 13
+  active: 0
+  pending: 0
+  blocked: 0
+  active_item_ids: []
+  blocked_item_ids: []
+completed_at: '2026-07-01T00:00:00+09:00'
+completion_summary: >
+  CSUX-7 autonomous trigger wording implemented; focused tests, related tests,
+  full workflow-action test suite, YAML check, py_compile, representative
+  resolver checks, commit-preflight, and next-state check passed.

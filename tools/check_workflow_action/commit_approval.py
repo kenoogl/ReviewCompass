@@ -390,24 +390,50 @@ def _lower_ascii(text):
 
 
 def _candidate_selector_autonomous_approval(normalized):
-  match = re.fullmatch(r"([1-9][0-9]*)を(pushまで)?自律実行", normalized)
-  if not match:
-    return None
-  raw_index = match.group(1)
-  through_push = match.group(2) == "pushまで"
-  return {
-    "raw_instruction": normalized,
-    "candidate_selector": {
-      "type": "ordinal",
-      "index": int(raw_index),
-      "raw": raw_index,
-    },
-    "operation_id": (
-      "autonomous-through-push" if through_push else "autonomous-through-commit"
-    ),
-    "commit_execution_delegation": "included",
-    "push_execution_delegation": "included" if through_push else "excluded",
-  }
+  single_match = re.fullmatch(
+    r"([1-9][0-9]*)を(コミット|commit|プッシュ|push)まで自律実行",
+    normalized,
+  )
+  if single_match:
+    raw_index = single_match.group(1)
+    boundary = single_match.group(2)
+    through_push = boundary in {"プッシュ", "push"}
+    return {
+      "raw_instruction": normalized,
+      "candidate_selector": {
+        "type": "ordinal",
+        "index": int(raw_index),
+        "raw": raw_index,
+      },
+      "operation_id": (
+        "autonomous-through-push" if through_push else "autonomous-through-commit"
+      ),
+      "commit_execution_delegation": "included",
+      "push_execution_delegation": "included" if through_push else "excluded",
+    }
+
+  range_match = re.fullmatch(r"([1-9][0-9]*)から([1-9][0-9]*)まで自律実行", normalized)
+  if range_match:
+    raw_start = range_match.group(1)
+    raw_end = range_match.group(2)
+    start_index = int(raw_start)
+    end_index = int(raw_end)
+    if start_index > end_index:
+      return None
+    return {
+      "raw_instruction": normalized,
+      "candidate_range": {
+        "type": "ordinal_range",
+        "start_index": start_index,
+        "end_index": end_index,
+        "raw": f"{raw_start}から{raw_end}",
+      },
+      "operation_id": "autonomous-through-push",
+      "commit_execution_delegation": "included",
+      "push_execution_delegation": "included",
+    }
+
+  return None
 
 
 def normalize_execution_delegation_instruction(source_text):

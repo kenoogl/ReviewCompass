@@ -2928,8 +2928,8 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(data["post_commit_stop_action"], "プッシュ")
     self.assertNotIn("git push", data["mutation_commands_after_preflight"])
 
-  def test_operation_trigger_resolve_candidate_selector_autonomous_execution_delegates_commit_only(self):
-    """Nを自律実行は候補番号と commit までの自律実行に分解される"""
+  def test_operation_trigger_resolve_candidate_selector_short_autonomous_execution_is_rejected(self):
+    """Nを自律実行は停止点が曖昧なので拒否される"""
     cwd = Path(self.tmpdir)
 
     result = run_script(
@@ -2938,24 +2938,66 @@ class NextNavigationTests(unittest.TestCase):
     )
 
     _assert_script_invoked(self, result)
-    self.assertEqual(result.returncode, 0, result.stderr)
+    self.assertEqual(result.returncode, 2)
     data = json.loads(result.stdout)
-    self.assertEqual(data["verdict"], "OK")
-    self.assertEqual(data["original_user_instruction"], "2を自律実行")
-    self.assertEqual(
-      data["candidate_selector"],
-      {"type": "ordinal", "index": 2, "raw": "2"},
-    )
+    self.assertEqual(data["verdict"], "DEVIATION")
+    self.assertEqual(data["resolution_status"], "stop-and-ask")
+    self.assertEqual(data["reason"], "unknown_operation")
+
+  def test_operation_trigger_resolve_candidate_selector_autonomous_execution_delegates_commit_only(self):
+    """Nをコミットまで自律実行は候補番号と commit までの自律実行に分解される"""
+    cwd = Path(self.tmpdir)
+
+    for trigger_text in ("2をコミットまで自律実行", "2をcommitまで自律実行"):
+      with self.subTest(trigger_text=trigger_text):
+        result = run_script(
+          ["operation-trigger-resolve", "--trigger-text", trigger_text, "--json"],
+          cwd=cwd,
+        )
+
+        _assert_script_invoked(self, result)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        data = json.loads(result.stdout)
+        self.assertEqual(data["verdict"], "OK")
+        self.assertEqual(data["original_user_instruction"], trigger_text)
+        self.assertEqual(
+          data["candidate_selector"],
+          {"type": "ordinal", "index": 2, "raw": "2"},
+        )
     self.assertEqual(data["operation_id"], "autonomous-through-commit")
     self.assertEqual(data["commit_execution_delegation"], "included")
     self.assertEqual(data["push_execution_delegation"], "excluded")
 
   def test_operation_trigger_resolve_candidate_selector_autonomous_execution_through_push(self):
-    """Nをpushまで自律実行は候補番号と push までの自律実行に分解される"""
+    """Nをプッシュまで自律実行は候補番号と push までの自律実行に分解される"""
+    cwd = Path(self.tmpdir)
+
+    for trigger_text in ("2をプッシュまで自律実行", "2をpushまで自律実行"):
+      with self.subTest(trigger_text=trigger_text):
+        result = run_script(
+          ["operation-trigger-resolve", "--trigger-text", trigger_text, "--json"],
+          cwd=cwd,
+        )
+
+        _assert_script_invoked(self, result)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        data = json.loads(result.stdout)
+        self.assertEqual(data["verdict"], "OK")
+        self.assertEqual(data["original_user_instruction"], trigger_text)
+        self.assertEqual(
+          data["candidate_selector"],
+          {"type": "ordinal", "index": 2, "raw": "2"},
+        )
+        self.assertEqual(data["operation_id"], "autonomous-through-push")
+        self.assertEqual(data["commit_execution_delegation"], "included")
+        self.assertEqual(data["push_execution_delegation"], "included")
+
+  def test_operation_trigger_resolve_candidate_range_autonomous_execution_through_push(self):
+    """MからNまで自律実行は候補範囲と push までの自律実行に分解される"""
     cwd = Path(self.tmpdir)
 
     result = run_script(
-      ["operation-trigger-resolve", "--trigger-text", "2をpushまで自律実行", "--json"],
+      ["operation-trigger-resolve", "--trigger-text", "1から3まで自律実行", "--json"],
       cwd=cwd,
     )
 
@@ -2963,10 +3005,10 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stderr)
     data = json.loads(result.stdout)
     self.assertEqual(data["verdict"], "OK")
-    self.assertEqual(data["original_user_instruction"], "2をpushまで自律実行")
+    self.assertEqual(data["original_user_instruction"], "1から3まで自律実行")
     self.assertEqual(
-      data["candidate_selector"],
-      {"type": "ordinal", "index": 2, "raw": "2"},
+      data["candidate_range"],
+      {"type": "ordinal_range", "start_index": 1, "end_index": 3, "raw": "1から3"},
     )
     self.assertEqual(data["operation_id"], "autonomous-through-push")
     self.assertEqual(data["commit_execution_delegation"], "included")
@@ -8153,7 +8195,7 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(result.returncode, 0, result.stdout)
 
   def test_commit_approval_records_candidate_selector_autonomous_evidence(self):
-    """Nを自律実行は構造化された候補選択と代行範囲を承認証跡に残す"""
+    """Nをコミットまで自律実行は構造化された候補選択と代行範囲を承認証跡に残す"""
     _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
     _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
     challenge = _prepare_commit_approval(self.tmpdir)
@@ -8161,7 +8203,7 @@ class CommitExitCodeTests(unittest.TestCase):
     record = _record_commit_approval(
       self.tmpdir,
       challenge["nonce"],
-      source_text="2を自律実行\n",
+      source_text="2をコミットまで自律実行\n",
     )
     _assert_script_invoked(self, record)
     self.assertEqual(record.returncode, 0, record.stdout + record.stderr)
@@ -8169,7 +8211,7 @@ class CommitExitCodeTests(unittest.TestCase):
     delegation = _delegate_commit_execution(
       self.tmpdir,
       challenge["nonce"],
-      source_text="2を自律実行\n",
+      source_text="2をコミットまで自律実行\n",
     )
     _assert_script_invoked(self, delegation)
     self.assertEqual(delegation.returncode, 0, delegation.stdout + delegation.stderr)
@@ -8177,7 +8219,7 @@ class CommitExitCodeTests(unittest.TestCase):
     approval = _read_commit_approval(self.tmpdir)
     execution_delegation = _read_commit_execution_delegation(self.tmpdir)
     expected_evidence = {
-      "raw_instruction": "2を自律実行",
+      "raw_instruction": "2をコミットまで自律実行",
       "candidate_selector": {"type": "ordinal", "index": 2, "raw": "2"},
       "operation_id": "autonomous-through-commit",
       "commit_execution_delegation": "included",
@@ -8190,6 +8232,71 @@ class CommitExitCodeTests(unittest.TestCase):
     self.assertEqual(
       execution_delegation["approval_source"]["autonomous_execution_approval"],
       expected_evidence,
+    )
+
+  def test_commit_approval_records_candidate_range_autonomous_evidence(self):
+    """MからNまで自律実行は候補範囲と push 代行範囲を承認証跡に残す"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    record = _record_commit_approval(
+      self.tmpdir,
+      challenge["nonce"],
+      source_text="1から3まで自律実行\n",
+    )
+    _assert_script_invoked(self, record)
+    self.assertEqual(record.returncode, 0, record.stdout + record.stderr)
+
+    delegation = _delegate_commit_execution(
+      self.tmpdir,
+      challenge["nonce"],
+      source_text="1から3まで自律実行\n",
+    )
+    _assert_script_invoked(self, delegation)
+    self.assertEqual(delegation.returncode, 0, delegation.stdout + delegation.stderr)
+
+    approval = _read_commit_approval(self.tmpdir)
+    execution_delegation = _read_commit_execution_delegation(self.tmpdir)
+    expected_evidence = {
+      "raw_instruction": "1から3まで自律実行",
+      "candidate_range": {
+        "type": "ordinal_range",
+        "start_index": 1,
+        "end_index": 3,
+        "raw": "1から3",
+      },
+      "operation_id": "autonomous-through-push",
+      "commit_execution_delegation": "included",
+      "push_execution_delegation": "included",
+    }
+    self.assertEqual(
+      approval["approval_source"]["autonomous_execution_approval"],
+      expected_evidence,
+    )
+    self.assertEqual(
+      execution_delegation["approval_source"]["autonomous_execution_approval"],
+      expected_evidence,
+    )
+
+  def test_commit_approval_does_not_record_short_candidate_autonomous_evidence(self):
+    """Nを自律実行は候補選択つき代行承認として記録しない"""
+    _set_pending_findings(self.pending_file, unresolved_count=0, resolved_count=2)
+    _stage_file(self.tmpdir, "notes.md", "# テスト用ノート")
+    challenge = _prepare_commit_approval(self.tmpdir)
+
+    record = _record_commit_approval(
+      self.tmpdir,
+      challenge["nonce"],
+      source_text="2を自律実行\n",
+    )
+    _assert_script_invoked(self, record)
+    self.assertEqual(record.returncode, 0, record.stdout + record.stderr)
+
+    approval = _read_commit_approval(self.tmpdir)
+    self.assertNotIn(
+      "autonomous_execution_approval",
+      approval.get("approval_source", {}),
     )
 
   def test_human_commit_precheck_allows_content_approval_without_delegation(self):

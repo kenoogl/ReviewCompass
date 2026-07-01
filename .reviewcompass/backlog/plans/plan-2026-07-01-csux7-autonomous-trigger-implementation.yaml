@@ -2,9 +2,10 @@ schema_version: reviewcompass-backlog-item-v1
 id: plan-2026-07-01-csux7-autonomous-trigger-implementation
 kind: plan
 title: Implement CSUX-7 autonomous trigger wording
-status: candidate
+status: completed
 source_unit_id: main-completed
 created_at: '2026-07-01T00:00:00+09:00'
+completed_at: '2026-07-01T00:00:00+09:00'
 index_path: .reviewcompass/backlog/index.yaml
 provenance:
   created_by: llm
@@ -21,6 +22,8 @@ summary: >
   short form is rejected.
 related:
   - .reviewcompass/backlog/plans/plan-2026-06-23-commit-stop-point-and-approval-ux.yaml
+  - .reviewcompass/backlog/todos/todo-2026-07-01-csux7-autonomous-trigger-implementation.yaml
+  - .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-csux7-autonomous-trigger-implementation.yaml
   - tools/check-workflow-action.py
   - tools/check_workflow_action/commit_approval.py
   - tests/tools/test_check_workflow_action.py
@@ -65,7 +68,7 @@ decisions:
 remaining_work:
   - id: CSUX7-1
     title: Add red tests for the CSUX-7 trigger grammar
-    status: pending
+    status: completed
     details:
       - >
         Add resolver tests proving that `1を自律実行` is rejected with an
@@ -85,7 +88,7 @@ remaining_work:
         operation id, and delegation range evidence.
   - id: CSUX7-2
     title: Update operation trigger resolution
-    status: pending
+    status: completed
     details:
       - >
         Replace the old optional `pushまで` matcher in
@@ -99,7 +102,7 @@ remaining_work:
         for single-candidate autonomous execution.
   - id: CSUX7-3
     title: Update commit approval source handling
-    status: pending
+    status: completed
     details:
       - >
         Mirror the CSUX-7 grammar in
@@ -112,7 +115,7 @@ remaining_work:
         included.
   - id: CSUX7-4
     title: Refresh documentation and evidence
-    status: pending
+    status: completed
     details:
       - >
         Update the existing CSUX plan, todo, or checklist evidence only as
@@ -144,3 +147,35 @@ non_goals:
   - >
     Do not start autonomous execution from candidate text without first passing
     through the operation resolver and approval-source contract.
+execution_history:
+  - todo_id: todo-2026-07-01-csux7-autonomous-trigger-implementation
+    todo_path: .reviewcompass/backlog/todos/todo-2026-07-01-csux7-autonomous-trigger-implementation.yaml
+    checklist_id: checklist-todo-2026-07-01-csux7-autonomous-trigger-implementation
+    checklist_evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-csux7-autonomous-trigger-implementation.yaml
+    completion_summary: >
+      TODO/checklist materialization was added before commit after the missing
+      plan-to-TODO-to-checklist chain was noticed.
+    completed_at: '2026-07-01T00:00:00+09:00'
+implementation_notes:
+  - >
+    Updated `tools/check-workflow-action.py` so single-candidate autonomous
+    execution requires an explicit `commit`/`コミット` or `push`/`プッシュ`
+    boundary, and `MからNまで自律実行` records a candidate range with
+    push-through semantics.
+  - >
+    Updated `tools/check_workflow_action/commit_approval.py` so approval-source
+    evidence follows the same grammar as operation trigger resolution.
+  - >
+    Updated `tests/tools/test_check_workflow_action.py` to reject
+    `Nを自律実行`, accept explicit commit/push single-candidate forms, and
+    accept range execution as push-through autonomous execution.
+verification:
+  - command: >
+      .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py -k
+      "candidate_selector_autonomous or candidate_range_autonomous or
+      short_candidate_autonomous"
+    result: passed
+  - command: >
+      .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py -k
+      "operation_trigger_resolve or commit_approval"
+    result: passed

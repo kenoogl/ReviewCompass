@@ -1,0 +1,125 @@
+schema_version: reviewcompass-backlog-item-v1
+id: todo-2026-07-01-csux7-autonomous-trigger-implementation
+kind: todo
+title: Implement CSUX-7 autonomous trigger wording
+status: completed
+source_unit_id: main-completed
+created_at: '2026-07-01T00:00:00+09:00'
+completed_at: '2026-07-01T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: .reviewcompass/backlog/plans/plan-2026-07-01-csux7-autonomous-trigger-implementation.yaml
+  reason: >
+    The implementation began directly from the plan; this TODO records the
+    executable work unit and checklist evidence so the plan/TODO/checklist
+    chain remains auditable before commit.
+decisions:
+- decision: completed
+  decision_ref: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-csux7-autonomous-trigger-implementation.yaml
+  reason: >
+    CSUX-7 trigger grammar implementation, resolver tests, approval-source
+    tests, focused verification, full workflow-action test suite, YAML check,
+    and next-state check passed.
+  decided_at: '2026-07-01T00:00:00+09:00'
+source_plan_id: plan-2026-07-01-csux7-autonomous-trigger-implementation
+source_plan_path: .reviewcompass/backlog/plans/plan-2026-07-01-csux7-autonomous-trigger-implementation.yaml
+source_plan_slice:
+  phase_id: CSUX7
+  title: Implement CSUX-7 autonomous trigger wording
+summary: >
+  Align autonomous execution trigger wording with CSUX-7 so single-candidate
+  autonomous execution requires an explicit commit or push boundary, range
+  autonomous execution means push-through execution, and the ambiguous short
+  form is rejected.
+problem_statement:
+- >
+  `1をプッシュまで自律実行` and `1をコミットまで自律実行` were not accepted by
+  the resolver even though CSUX-7 defines them.
+- >
+  `1を自律実行` was still accepted as commit-through autonomous execution even
+  though the stop point is ambiguous.
+- >
+  `1から3まで自律実行` did not resolve as range execution.
+- >
+  Operation trigger resolution, approval-source evidence, and tests encoded
+  different contracts.
+implementation_plan:
+  phases:
+  - id: CSUX7
+    title: CSUX-7 autonomous trigger wording implementation
+    tasks:
+    - id: CSUX7-1
+      title: Add red tests for explicit commit/push/range grammar and short-form rejection
+      status: done
+    - id: CSUX7-2
+      title: Update operation trigger resolution grammar
+      status: done
+    - id: CSUX7-3
+      title: Update commit approval source grammar and evidence
+      status: done
+    - id: CSUX7-4
+      title: Update plan/index completion evidence
+      status: done
+    - id: CSUX7-5
+      title: Run focused, related, and full regression verification
+      status: done
+acceptance_criteria:
+- >
+  `Nをコミットまで自律実行` and `Nをcommitまで自律実行` resolve to
+  `autonomous-through-commit` with candidate selector evidence.
+- >
+  `Nをプッシュまで自律実行` and `Nをpushまで自律実行` resolve to
+  `autonomous-through-push` with candidate selector evidence.
+- >
+  `MからNまで自律実行` resolves to `autonomous-through-push` with candidate range
+  evidence.
+- >
+  `Nを自律実行` is rejected by the resolver and is not recorded as autonomous
+  execution approval evidence.
+red_tests:
+- id: CSUX7-RT-1
+  title: Explicit single-candidate commit boundary resolves
+  expected: >
+    `operation-trigger-resolve --trigger-text 2をコミットまで自律実行 --json`
+    resolves to `autonomous-through-commit`.
+  status: done
+- id: CSUX7-RT-2
+  title: Explicit single-candidate push boundary resolves
+  expected: >
+    `operation-trigger-resolve --trigger-text 2をプッシュまで自律実行 --json`
+    resolves to `autonomous-through-push`.
+  status: done
+- id: CSUX7-RT-3
+  title: Candidate range resolves as push-through autonomous execution
+  expected: >
+    `operation-trigger-resolve --trigger-text 1から3まで自律実行 --json`
+    includes `candidate_range` and `autonomous-through-push`.
+  status: done
+- id: CSUX7-RT-4
+  title: Short single-candidate autonomous execution is rejected
+  expected: >
+    `operation-trigger-resolve --trigger-text 2を自律実行 --json` returns
+    `DEVIATION`.
+  status: done
+- id: CSUX7-RT-5
+  title: Approval-source evidence mirrors resolver grammar
+  expected: >
+    commit approval records explicit commit/push/range autonomous evidence and
+    does not record the short form as autonomous approval evidence.
+  status: done
+non_goals:
+- >
+  Do not add `自動実行` as a synonym for `自律実行`.
+- >
+  Do not bypass commit preflight, guarded commit, or push preflight checks.
+- >
+  Do not change top-level `自律実行` or `pushまで自律実行` operation aliases.
+execution_history:
+- checklist_id: checklist-todo-2026-07-01-csux7-autonomous-trigger-implementation
+  evidence_path: .reviewcompass/evidence/work-units/checklists/checklist-todo-2026-07-01-csux7-autonomous-trigger-implementation.yaml
+  completion_summary: >
+    CSUX-7 autonomous trigger wording implemented; focused tests, related
+    tests, full workflow-action test suite, YAML check, py_compile, representative
+    resolver checks, commit-preflight, and next-state check passed.
+  completed_at: '2026-07-01T00:00:00+09:00'

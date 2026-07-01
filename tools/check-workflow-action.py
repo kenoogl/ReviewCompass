@@ -7471,22 +7471,46 @@ def _normalize_trigger_text(value):
 
 
 def _candidate_selector_autonomous_trigger(normalized):
-  match = re.fullmatch(r"([1-9][0-9]*)を(pushまで)?自律実行", normalized)
-  if not match:
-    return None
-  raw_index = match.group(1)
-  through_push = match.group(2) == "pushまで"
-  return {
-    "original_user_instruction": normalized,
-    "candidate_selector": {
-      "type": "ordinal",
-      "index": int(raw_index),
-      "raw": raw_index,
-    },
-    "operation_id": (
-      "autonomous-through-push" if through_push else "autonomous-through-commit"
-    ),
-  }
+  single_match = re.fullmatch(
+    r"([1-9][0-9]*)を(コミット|commit|プッシュ|push)まで自律実行",
+    normalized,
+  )
+  if single_match:
+    raw_index = single_match.group(1)
+    boundary = single_match.group(2)
+    through_push = boundary in {"プッシュ", "push"}
+    return {
+      "original_user_instruction": normalized,
+      "candidate_selector": {
+        "type": "ordinal",
+        "index": int(raw_index),
+        "raw": raw_index,
+      },
+      "operation_id": (
+        "autonomous-through-push" if through_push else "autonomous-through-commit"
+      ),
+    }
+
+  range_match = re.fullmatch(r"([1-9][0-9]*)から([1-9][0-9]*)まで自律実行", normalized)
+  if range_match:
+    raw_start = range_match.group(1)
+    raw_end = range_match.group(2)
+    start_index = int(raw_start)
+    end_index = int(raw_end)
+    if start_index > end_index:
+      return None
+    return {
+      "original_user_instruction": normalized,
+      "candidate_range": {
+        "type": "ordinal_range",
+        "start_index": start_index,
+        "end_index": end_index,
+        "raw": f"{raw_start}から{raw_end}",
+      },
+      "operation_id": "autonomous-through-push",
+    }
+
+  return None
 
 
 def _plan_has_unmaterialized_slice(data):
@@ -7593,8 +7617,11 @@ def resolve_operation_trigger_entry(trigger_text):
   if candidate_autonomous:
     base.update({
       "original_user_instruction": candidate_autonomous["original_user_instruction"],
-      "candidate_selector": candidate_autonomous["candidate_selector"],
     })
+    if "candidate_selector" in candidate_autonomous:
+      base["candidate_selector"] = candidate_autonomous["candidate_selector"]
+    if "candidate_range" in candidate_autonomous:
+      base["candidate_range"] = candidate_autonomous["candidate_range"]
   base.update({
     "verdict": "OK",
     "exit_code": 0,
