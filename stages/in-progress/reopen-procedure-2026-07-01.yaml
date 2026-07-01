@@ -8,7 +8,10 @@ completed_steps:
 - 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements alignment/approval → false、recheck=upstream_change_pending
   → true）
 - 第2過程：正本修正完了（requirements.md に backlog candidate routing 受入13を追加）
-- 第3過程：requirements alignment 完了（backlog candidate routing 受入13の整合確認）
+- 第3過程：requirements alignment 完了（scope 分離前の旧受入13に対する整合確認。scope 分離により再実施対象）
+- 第3過程：scope 分離により requirements 受入13を routing discipline に絞り直し、maintenance cleanup
+  plan を別候補として追加
+- 第3過程：requirements alignment 完了（scope 分離後の backlog routing discipline を整合確認）
 next_step: 第3過程：requirements approval
 step_number: 3
 pending_gates:
@@ -31,6 +34,17 @@ reopen_step_records:
   evidence:
   - .reviewcompass/specs/workflow-management/requirements.md
   - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- from_step: 3
+  completed_step: 第3過程：scope 分離により requirements 受入13を routing discipline に絞り直し、maintenance
+    cleanup plan を別候補として追加
+  rationale: 利用者指摘により、TODO 棚卸し・helper 調査・局所修正は maintenance-sized cleanup であり、reopen
+    requirements scope に含めると過剰に広がると判断した。reopen は backlog routing discipline の確定に絞り、
+    cleanup は別 backlog candidate として分離した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-entry-lane-routing.yaml
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-routing-maintenance-cleanup.yaml
+  - .reviewcompass/backlog/index.yaml
 commit_stop_point_records:
 - step: 2
   kind: canonical_update_complete
@@ -40,17 +54,28 @@ commit_stop_point_records:
   evidence:
   - .reviewcompass/specs/workflow-management/requirements.md
   - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- step: 3
+  kind: alignment_complete
+  gate: stages/requirements.yaml#alignment
+  reason: requirements alignment 完了時点の停止点
+  head: 217478a1f4e164835aedc16e7d8899508fd7886d
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
 completed_gates:
 - stages/requirements.yaml#alignment
 downstream_impact_decisions:
 - gate: stages/requirements.yaml#alignment
   feature_scope: workflow-management
   decision: approved
-  rationale: Requirement 2 受入13は、既存の next --json selector、reopen 手続き、operation preflight
-    と同じ workflow-management の運用契約に属する。backlog を候補置き場に限定し、work lane と TODO materialization
-    の扱いを明確化するもので、intent や feature-partitioning の変更は不要。
+  rationale: 分離後の Requirement 2 受入13は backlog を候補置き場に限定し、実行前に SDD workflow / reopen
+    / maintenance へ分類する規律だけを requirements 範囲としている。TODO 棚卸し、TODO-only 候補返却、helper 等の局所修正は別
+    maintenance 候補へ分離済みであり、reopen scope の過剰取り込みを解消しているため、workflow-management requirements
+    と整合する。
   evidence:
   - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-entry-lane-routing.yaml
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-routing-maintenance-cleanup.yaml
   - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
 commit_stop_point: true
 commit_stop_point_step: 3

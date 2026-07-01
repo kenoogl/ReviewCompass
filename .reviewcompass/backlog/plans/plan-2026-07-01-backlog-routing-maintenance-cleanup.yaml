@@ -1,0 +1,70 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-07-01-backlog-routing-maintenance-cleanup
+kind: plan
+title: Separate backlog routing maintenance cleanup from reopen scope
+status: candidate
+plan_level: candidate
+materialization_required: true
+source_unit_id: main-completed
+created_at: '2026-07-01T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:分離します
+  reason: >
+    During the backlog-candidate-routing reopen, the user noticed that
+    maintenance-sized cleanup work had been pulled into the reopen scope. This
+    plan keeps those cleanup items as a separate candidate so the reopen can
+    focus on the routing discipline itself.
+summary: >
+  Track the maintenance-sized follow-up work split out from the backlog routing
+  reopen: inventory existing TODO files, return TODO-only candidates to plan
+  records where needed, inspect helper functions and guidance for obsolete
+  plan/TODO/checklist assumptions, and make small local corrections only after
+  they qualify for maintenance.
+routing:
+  candidate_origin: plan-2026-07-01-backlog-entry-lane-routing
+  intended_lane: maintenance
+  direct_execution_allowed: false
+  reason: >
+    This is a candidate holding record. Each concrete item must still be checked
+    for small/local/checklist-ready maintenance eligibility before execution.
+scope:
+  included:
+    - >
+      Inventory existing `.reviewcompass/backlog/todos/` files and match them
+      against existing plan records.
+    - >
+      Identify TODO-only candidates that still represent valid backlog
+      candidates and return them to plan records.
+    - >
+      Inspect helper functions, guidance, and operation preflight paths for
+      stale assumptions that backlog is an entry lane or that TODO is the
+      required backlog materialization step.
+    - >
+      Propose small local checklist-ready fixes as maintenance work when they do
+      not alter completed product/workflow decisions.
+  excluded:
+    - >
+      Redefining the backlog routing discipline itself. That belongs to the
+      reopen `plan-2026-07-01-backlog-entry-lane-routing`.
+    - >
+      Making broad design changes or changing completed decisions without SDD
+      workflow or reopen classification.
+acceptance:
+  - >
+    TODO inventory distinguishes content already represented by plans from
+    TODO-only candidates.
+  - >
+    TODO-only candidates that remain valid are represented as plan records or
+    explicitly recorded as deferred/record-only.
+  - >
+    Any helper or guidance change is limited to maintenance-sized local cleanup
+    unless separately routed to SDD workflow or reopen.
+  - >
+    Evidence records what was inspected and why each follow-up was treated as
+    maintenance, deferred, SDD workflow, or reopen.
+notes:
+  - >
+    This plan exists to keep the reopen scope narrow. It is not itself an
+    execution approval.

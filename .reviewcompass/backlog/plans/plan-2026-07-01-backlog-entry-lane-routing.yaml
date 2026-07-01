@@ -27,8 +27,9 @@ summary: >
   backlog holds candidates only, candidates are routed to SDD workflow, reopen,
   or maintenance, TODO is not used as the backlog materialization step, and only
   maintenance work that is small, local, and checklist-ready may proceed
-  directly. This plan also absorbs the text-format resilience work so natural
-  language fields do not break machine-readable backlog records.
+  directly. Maintenance-sized cleanup discovered while defining this discipline
+  is split to `plan-2026-07-01-backlog-routing-maintenance-cleanup` instead of
+  being executed inside this reopen.
 lane_model:
   work_lanes:
     - id: sdd_workflow
@@ -144,12 +145,15 @@ current_problem:
   - >
     Existing implementation may still contain functions, workflow rules, and
     machine processing that assume backlog-to-TODO materialization or backlog as
-    an execution lane.
+    an execution lane. This is a follow-up maintenance candidate, not part of
+    this reopen's requirements scope.
   - >
     Existing backlog TODO files may contain candidates that do not have
     corresponding plan records. Since TODO is no longer the backlog
     materialization step, TODO-only candidates need to be returned to plan
     records, while content already represented in plans needs no duplicate work.
+    This inventory is split to
+    `plan-2026-07-01-backlog-routing-maintenance-cleanup`.
   - >
     Natural-language backlog records can break YAML syntax when long text,
     Markdown notation, colons, or backticks are embedded directly in plain
@@ -182,9 +186,10 @@ decisions:
       standalone candidate after its requirements are represented here.
   - id: BELR-D7
     summary: >
-      Migrate existing TODO-only backlog candidates back to plan records. If the
-      same content already exists in a plan, no additional work is required for
-      that TODO.
+      Keep existing TODO-only migration, helper inspection, and local cleanup
+      outside this reopen. Track them in
+      `plan-2026-07-01-backlog-routing-maintenance-cleanup` and route each
+      concrete item before execution.
 implementation_plan:
   - id: BELR-1
     title: Document backlog as candidate holding area
@@ -230,37 +235,19 @@ implementation_plan:
         Any remaining TODO dependency is either removed or explicitly justified
         outside this backlog routing discipline.
   - id: BELR-4
-    title: Investigate existing implementation impact
+    title: Record maintenance follow-up boundary
     goal: >
-      Find and revise implemented functions, workflow rules, and machine
-      processing that still assume backlog is an entry lane or TODO is required.
+      Keep implementation cleanup out of this reopen unless it changes the
+      routing discipline itself.
     deliverables:
       - >
-        Inventory functions that create, inspect, or enforce plan/TODO/checklist
-        materialization.
+        The maintenance cleanup candidate is recorded separately.
       - >
-        Identify unused functions after TODO removal.
+        Requirements text states that TODO inventory and helper cleanup are not
+        part of this reopen's requirements scope.
       - >
-        Update next-task display, autonomous trigger handling, and commit
-        preflight where they conflict with the new discipline.
-  - id: BELR-5
-    title: Return existing TODO-only candidates to plans
-    goal: >
-      Clean up the existing backlog TODO directory so TODO-only candidates are
-      represented as plan records instead of remaining as standalone backlog
-      work.
-    deliverables:
-      - >
-        Inventory existing TODO files and match them against existing plans.
-      - >
-        Mark TODO content that is already represented in a plan as requiring no
-        additional plan creation.
-      - >
-        Create or update plan records for TODO-only candidates that still
-        represent valid backlog candidates.
-      - >
-        Remove or retire TODO files after their content is represented by plans
-        or explicitly determined to need no work.
+        Any future concrete cleanup is routed through maintenance, SDD workflow,
+        or reopen before execution.
   - id: BELR-6
     title: Absorb resilient record format rules
     goal: >
