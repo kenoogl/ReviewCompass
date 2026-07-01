@@ -7171,6 +7171,35 @@ class ReopenFinalizeTests(unittest.TestCase):
     self.assertIn("feature_impact_decisions", result.stdout)
     self.assertTrue(in_progress.exists())
 
+  def test_reopen_finalize_rejects_impacted_downstream_phases_without_decisions(self):
+    """downstream phase が影響対象なら変更不要でも判断証跡を必須にする"""
+    in_progress = self._write_ready_in_progress()
+
+    result = run_script(
+      [
+        "reopen-finalize",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--impacted-downstream-phase", "design",
+        "--impacted-downstream-phase", "tasks",
+        "--impacted-downstream-phase", "implementation",
+        "--new-feature-decision",
+        "no_new_feature",
+        "既存 feature で受けられる。",
+        "stages/feature-partitioning/2026-05-24-proposal.md",
+        "--json",
+      ]
+      + self._feature_impact_args(),
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("impacted_downstream_phases", result.stdout)
+    self.assertIn("design", result.stdout)
+    self.assertIn("tasks", result.stdout)
+    self.assertIn("implementation", result.stdout)
+    self.assertTrue(in_progress.exists())
+
   def test_reopen_finalize_rejects_edited_requirements_without_full_review_gates(self):
     """requirements を実質編集した reopen は triad-review/review-wave なしで完了化できない"""
     in_progress = self._write_ready_in_progress()

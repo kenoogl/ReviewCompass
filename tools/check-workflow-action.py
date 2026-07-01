@@ -8787,6 +8787,37 @@ def _validate_reopen_finalize_edited_phase_gates(data):
     )
 
 
+def _validate_reopen_finalize_downstream_impact_decisions(data):
+  """影響対象 downstream phase が判断証跡で覆われているか検査する。"""
+  impacted_phases = data.get("impacted_downstream_phases", [])
+  if impacted_phases is None:
+    impacted_phases = []
+  if not impacted_phases:
+    return
+  if not isinstance(impacted_phases, list) or not all(
+    isinstance(phase, str) and phase in PHASE_STAGES
+    for phase in impacted_phases
+  ):
+    raise ValueError("impacted_downstream_phases は既知フェーズ名の list が必要です")
+
+  decision_gates, decision_errors = _impact_decision_gate_set(data)
+  if decision_errors:
+    raise ValueError("; ".join(decision_errors))
+  if decision_gates is None:
+    raise ValueError("downstream_impact_decisions は list が必要です")
+
+  decision_phases = _impact_decision_phase_set(decision_gates)
+  missing = [
+    phase for phase in sorted(set(impacted_phases), key=PHASE_ORDER.index)
+    if phase not in decision_phases
+  ]
+  if missing:
+    raise ValueError(
+      "impacted_downstream_phases に対応する downstream_impact_decisions が不足しています: "
+      + ", ".join(missing)
+    )
+
+
 def cmd_reopen_finalize(args):
   """reopen 第4過程の完了 YAML 生成と completed 移動を機械処理する"""
   cwd = Path.cwd()
@@ -8830,6 +8861,7 @@ def cmd_reopen_finalize(args):
     ):
       raise ValueError("impacted_downstream_phases は既知フェーズ名の list が必要です")
     _validate_reopen_finalize_edited_phase_gates(data)
+    _validate_reopen_finalize_downstream_impact_decisions(data)
 
     target_path = _completed_reopen_path(cwd, source_path)
     if target_path.exists():

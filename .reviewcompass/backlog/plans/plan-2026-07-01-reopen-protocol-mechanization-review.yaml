@@ -171,9 +171,24 @@ red_tests:
   - id: RPMR-T3
     title: downstream 変更不要でも判断証跡なしなら finalize を拒否する
     target: tests/tools/test_check_workflow_action.py
+    status: completed
     expected: >
       `impacted_downstream_phases` に design/tasks/implementation が含まれていても、
       各 phase に対応する `downstream_impact_decisions` がなければ `reopen-finalize` は失敗する。
+    evidence:
+      red_test: >
+        `ReopenFinalizeTests::test_reopen_finalize_rejects_impacted_downstream_phases_without_decisions`
+        は実装前に `reopen-finalize` が completed 記録を生成して成功してしまうため失敗した。
+      implementation: >
+        `reopen-finalize` が `impacted_downstream_phases` と `downstream_impact_decisions`
+        の phase coverage を照合し、不足 phase があれば completed 記録を生成しないようにした。
+      verification:
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenFinalizeTests::test_reopen_finalize_rejects_impacted_downstream_phases_without_decisions -q`
+          が成功。
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenFinalizeTests -q`
+          が成功。
   - id: RPMR-T4
     title: existing_sufficient/no_impact の証跡があれば downstream 変更なしで進める
     target: tests/tools/test_check_workflow_action.py
