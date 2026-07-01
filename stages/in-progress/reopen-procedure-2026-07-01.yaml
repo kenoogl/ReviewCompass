@@ -1,0 +1,53 @@
+process_id: reopen-procedure
+feature: workflow-management
+classification: R-0
+started_at: '2026-07-01T00:00:00+09:00'
+trigger: reopen protocol mechanization review を maintenance 復帰後に superseding reopen
+  として開始
+classification_basis: .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
+completed_steps:
+- 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements triad-review/review-wave/alignment/approval
+  → false、recheck=upstream_change_pending → true、impacted_downstream_phases=design/tasks/implementation）
+- 第2過程：正本修正完了（Requirement 5 に reopen edited phase / downstream impact fail-closed
+  契約を追加）
+next_step: 第2過程：停止点コミット
+step_number: 2
+pending_gates:
+- stages/requirements.yaml#triad-review
+- stages/requirements.yaml#review-wave
+- stages/requirements.yaml#alignment
+- stages/requirements.yaml#approval
+current_blocker: null
+edited_phases:
+- requirements
+impacted_downstream_phases:
+- design
+- tasks
+- implementation
+downstream_impact_decisions: []
+reopen_step_records:
+- from_step: 1
+  completed_step: 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements triad-review/review-wave/alignment/approval
+    → false、recheck=upstream_change_pending → true、impacted_downstream_phases=design/tasks/implementation）
+  rationale: maintenance 復帰後に reopen protocol mechanization review を superseding reopen
+    として開始し、requirements を実質編集するため requirements review 系 gate を再実施対象に戻した。下流 design/tasks/implementation
+    は downstream impact decision の対象として recheck に残す。
+  evidence:
+  - .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
+  - .reviewcompass/specs/workflow-management/spec.json
+  - stages/in-progress/reopen-procedure-2026-07-01.yaml
+- from_step: 2
+  completed_step: 第2過程：正本修正完了（Requirement 5 に reopen edited phase / downstream impact
+    fail-closed 契約を追加）
+  rationale: reopen protocol mechanization review の本体として、reopen state が edited_phases
+    と impacted_downstream_phases を保持し、edited phase の full review gate と downstream
+    impact decision の不足を next/reopen-finalize/commit-preflight で fail-closed にする requirements
+    契約を追加した。push 済み不完全 completed reopen は superseding reopen として扱う方針も正本化した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
+  - stages/in-progress/reopen-procedure-2026-07-01.yaml
+commit_stop_point: true
+commit_stop_point_step: 2
+commit_stop_point_kind: canonical_update_complete
+commit_stop_point_reason: 第2過程の正本修正完了
