@@ -3888,6 +3888,39 @@ class NextNavigationTests(unittest.TestCase):
     )
     self.assertIsNone(data["next_action"]["blocked_by"])
 
+  def test_next_reopen_triad_review_reports_protocol_state(self):
+    """reopen triad-review はレビュー手順の機械状態を返す"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-07-01.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "feature: workflow-management\n"
+      "next_step: 第3過程：requirements triad-review\n"
+      "step_number: 3\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n"
+      "drafting_completed_gates:\n"
+      "  - stages/requirements.yaml#drafting\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    action = json.loads(result.stdout)["next_action"]
+    self.assertEqual(action["required_action"], "run_reopen_pending_gate")
+    self.assertEqual(action["stage"], "triad-review")
+    protocol = action["triad_review_protocol"]
+    self.assertEqual(protocol["state"], "main_preanalysis_required")
+    self.assertEqual(protocol["gate"], "stages/requirements.yaml#triad-review")
+    self.assertIn("source_protocol_text", protocol["required_inputs"])
+    self.assertIn("main_preanalysis", protocol["required_artifacts"])
+    self.assertIn("reopen-advance-gate", protocol["blocked_operations"])
+
   def test_next_reopen_requires_drafting_before_triad_review(self):
     """reopen 第3過程は triad-review の前に phase drafting を一意に返す"""
     cwd = Path(self.tmpdir)
@@ -3976,6 +4009,39 @@ class NextNavigationTests(unittest.TestCase):
     self.assertEqual(action["active_gate"], "stages/design.yaml#impact-decision")
     self.assertEqual(action["phase"], "design")
     self.assertEqual(action["stage"], "impact-decision")
+
+  def test_next_reopen_prioritizes_pending_gate_before_downstream_impact_decision(self):
+    """requirements の pending gate が残る間は下流影響判断を先に返さない"""
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress_dir = cwd / "stages" / "in-progress"
+    in_progress_dir.mkdir(parents=True)
+    (in_progress_dir / "reopen-procedure-2026-07-01.yaml").write_text(
+      "process_id: reopen-procedure\n"
+      "next_step: 第3過程：requirements triad-review\n"
+      "step_number: 3\n"
+      "edited_phases:\n"
+      "  - requirements\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n"
+      "  - stages/requirements.yaml#review-wave\n"
+      "  - stages/requirements.yaml#alignment\n"
+      "  - stages/requirements.yaml#approval\n"
+      "completed_gates: []\n"
+      "downstream_impact_decisions: []\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(["next", "--json"], cwd=cwd)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    action = json.loads(result.stdout)["next_action"]
+    self.assertEqual(action["required_action"], "run_reopen_drafting")
+    self.assertEqual(action["active_gate"], "stages/requirements.yaml#drafting")
+    self.assertEqual(action["phase"], "requirements")
+    self.assertEqual(action["stage"], "drafting")
 
   def test_next_reopen_uses_feature_impact_decisions_as_review_scope(self):
     """reopen のレビュー対象 feature は feature_impact_decisions から機械的に返す"""
@@ -5310,6 +5376,14 @@ class ReopenStartTests(unittest.TestCase):
   def test_reopen_start_generates_in_progress_file_for_d_1(self):
     """D-1 から pending_gates を解決して in-progress YAML を生成する"""
     cwd = Path(self.tmpdir)
+    complete_stage = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_spec(cwd, "runtime", complete_stage)
     result = run_script(
       [
         "reopen-start",
@@ -5346,8 +5420,16 @@ class ReopenStartTests(unittest.TestCase):
     self.assertEqual(generated["next_step"], "第1過程：判定とフラグ差し戻し")
 
   def test_reopen_start_initializes_edited_phase_downstream_scope(self):
-    """reopen-start は編集対象 phase から下流確認対象を初期化する"""
+    """reopen-start は編集対象 phase と下流 phase を pending gate に積む"""
     cwd = Path(self.tmpdir)
+    complete_stage = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_spec(cwd, "workflow-management", complete_stage)
     result = run_script(
       [
         "reopen-start",
@@ -5370,10 +5452,166 @@ class ReopenStartTests(unittest.TestCase):
     generated = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
     self.assertEqual(generated["edited_phases"], ["requirements"])
     self.assertEqual(
+      generated["pending_gates"],
+      [
+        "stages/requirements.yaml#triad-review",
+        "stages/requirements.yaml#review-wave",
+        "stages/requirements.yaml#alignment",
+        "stages/requirements.yaml#approval",
+        "stages/design.yaml#triad-review",
+        "stages/design.yaml#review-wave",
+        "stages/design.yaml#alignment",
+        "stages/design.yaml#approval",
+        "stages/tasks.yaml#triad-review",
+        "stages/tasks.yaml#review-wave",
+        "stages/tasks.yaml#alignment",
+        "stages/tasks.yaml#approval",
+        "stages/implementation.yaml#triad-review",
+        "stages/implementation.yaml#review-wave",
+        "stages/implementation.yaml#alignment",
+        "stages/implementation.yaml#approval",
+      ],
+    )
+    self.assertEqual(
       generated["impacted_downstream_phases"],
       ["design", "tasks", "implementation"],
     )
+    self.assertEqual(
+      generated["full_reopen_downstream_phases"],
+      ["design", "tasks", "implementation"],
+    )
     self.assertEqual(generated["downstream_impact_decisions"], [])
+    spec_path = (
+      cwd
+      / ".reviewcompass"
+      / "specs"
+      / "workflow-management"
+      / "spec.json"
+    )
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    workflow_state = spec["workflow_state"]
+    for stage in ["triad-review", "review-wave", "alignment", "approval"]:
+      self.assertFalse(workflow_state["requirements"][stage])
+    for phase in ["design", "tasks", "implementation"]:
+      for stage in ["drafting", "triad-review", "review-wave", "alignment", "approval"]:
+        self.assertFalse(workflow_state[phase][stage])
+    self.assertEqual(
+      spec["recheck"],
+      {
+        "upstream_change_pending": True,
+        "impacted_downstream_phases": ["design", "tasks", "implementation"],
+      },
+    )
+
+  def test_reopen_start_design_edit_uses_full_reopen_gates_without_impact_only_chain(self):
+    """design 実質編集時は design と下流を full reopen gate にする"""
+    cwd = Path(self.tmpdir)
+    complete_stage = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_spec(cwd, "workflow-management", complete_stage)
+    result = run_script(
+      [
+        "reopen-start",
+        "--classification", "D-0",
+        "--feature", "workflow-management",
+        "--basis", "docs/reviews/reopen-classification-2026-07-01.md",
+        "--date", "2026-07-01",
+        "--trigger", "design の正本本文を修正する",
+        "--edited-phase", "design",
+        "--json",
+      ],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    in_progress = cwd / "stages" / "in-progress" / "reopen-procedure-2026-07-01.yaml"
+    generated = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    self.assertEqual(generated["edited_phases"], ["design"])
+    self.assertEqual(
+      generated["pending_gates"],
+      [
+        "stages/design.yaml#triad-review",
+        "stages/design.yaml#review-wave",
+        "stages/design.yaml#alignment",
+        "stages/design.yaml#approval",
+        "stages/tasks.yaml#triad-review",
+        "stages/tasks.yaml#review-wave",
+        "stages/tasks.yaml#alignment",
+        "stages/tasks.yaml#approval",
+        "stages/implementation.yaml#triad-review",
+        "stages/implementation.yaml#review-wave",
+        "stages/implementation.yaml#alignment",
+        "stages/implementation.yaml#approval",
+      ],
+    )
+    self.assertNotIn("stages/requirements.yaml#alignment", generated["pending_gates"])
+    self.assertEqual(
+      generated["impacted_downstream_phases"],
+      ["tasks", "implementation"],
+    )
+    self.assertEqual(
+      generated["full_reopen_downstream_phases"],
+      ["tasks", "implementation"],
+    )
+    self.assertEqual(generated["downstream_impact_decisions"], [])
+
+  def test_reopen_start_false_scope_follows_dynamic_downstream_phase(self):
+    """spec.json の false 化範囲は編集 phase の下流から動的に決まる"""
+    cwd = Path(self.tmpdir)
+    complete_stage = {
+      "drafting": True,
+      "triad-review": True,
+      "review-wave": True,
+      "alignment": True,
+      "approval": True,
+    }
+    _write_spec(cwd, "workflow-management", complete_stage)
+    result = run_script(
+      [
+        "reopen-start",
+        "--classification", "A-0",
+        "--feature", "workflow-management",
+        "--basis", "docs/reviews/reopen-classification-2026-07-01.md",
+        "--date", "2026-07-01",
+        "--trigger", "tasks の正本本文を修正する",
+        "--edited-phase", "tasks",
+        "--json",
+      ],
+      cwd=cwd,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    spec_path = (
+      cwd
+      / ".reviewcompass"
+      / "specs"
+      / "workflow-management"
+      / "spec.json"
+    )
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    workflow_state = spec["workflow_state"]
+    for phase in ["requirements", "design"]:
+      for stage in ["drafting", "triad-review", "review-wave", "alignment", "approval"]:
+        self.assertTrue(workflow_state[phase][stage])
+    self.assertTrue(workflow_state["tasks"]["drafting"])
+    for stage in ["triad-review", "review-wave", "alignment", "approval"]:
+      self.assertFalse(workflow_state["tasks"][stage])
+    for stage in ["drafting", "triad-review", "review-wave", "alignment", "approval"]:
+      self.assertFalse(workflow_state["implementation"][stage])
+    self.assertEqual(
+      spec["recheck"],
+      {
+        "upstream_change_pending": True,
+        "impacted_downstream_phases": ["implementation"],
+      },
+    )
 
   def test_reopen_start_invalid_classification_returns_deviation(self):
     """未定義 classification は fail-closed で逸脱"""
@@ -5521,6 +5759,52 @@ class ReopenAdvanceGateTests(unittest.TestCase):
     ]
     for gate, next_gate, expected_step, expected_kind in cases:
       with self.subTest(gate=gate):
+        protocol_record = ""
+        if gate.endswith("#triad-review"):
+          protocol_record = (
+            "triad_review_protocol:\n"
+            "  gates:\n"
+            f"    \"{gate}\":\n"
+            "      main_preanalysis:\n"
+            "        path: reviews/main-preanalysis.md\n"
+            "      preanalysis_sufficiency_audit:\n"
+            "        status: passed\n"
+            "        required_prompt_changes: []\n"
+            "        required_prompt_changes_applied: true\n"
+            "      criteria_draft:\n"
+            "        path: reviews/api-review-criteria.md\n"
+            "        user_review_requirements_mapped: true\n"
+            "        required_checks_mapped: true\n"
+            "        target_criteria_separated: true\n"
+            "        output_contract_present: true\n"
+            "        prohibited_actions_reflected: true\n"
+            "        source_materials_path_only: false\n"
+            "      prompt_quality_review:\n"
+            "        adversarial: reviews/prompt-quality-adversarial.yaml\n"
+            "        main_revision: reviews/api-review-criteria-v2.md\n"
+            "        judgment: reviews/prompt-quality-judgment.yaml\n"
+            "        approved: true\n"
+            "        judgment_findings: []\n"
+            "      review_run:\n"
+            "        raw: reviews/raw\n"
+            "        parsed: reviews/parsed\n"
+            "        rounds: reviews/rounds.yaml\n"
+            "        model_result_summary: reviews/model-result-summary.yaml\n"
+            "        prompt_manifest: reviews/prompt-manifest.yaml\n"
+            "        triage: reviews/triage.md\n"
+            "        target_manifest_has_target: true\n"
+            "        rounds_criteria_approved: true\n"
+            "      user_visible_triage:\n"
+            "        presented: true\n"
+            "        variant: standard\n"
+            "        role_provider_model_assignment: reviews/variant-role-assignment.yaml\n"
+            "        raw_result_summary: reviews/raw-summary.md\n"
+            "        severity: must-fix\n"
+            "        same_root_clusters: reviews/clusters.yaml\n"
+            "        three_level_triage: reviews/triage.md\n"
+            "        must_fix_candidates: reviews/must-fix.yaml\n"
+            "        stopped_before_proxy_spec_or_gate: true\n"
+          )
         in_progress = (
           Path(self.tmpdir)
           / "stages"
@@ -5540,7 +5824,8 @@ class ReopenAdvanceGateTests(unittest.TestCase):
           +
           "completed_gates: []\n"
           "downstream_impact_decisions: []\n"
-          "current_blocker: null\n",
+          "current_blocker: null\n"
+          + protocol_record,
           encoding="utf-8",
         )
 
@@ -5739,6 +6024,51 @@ class ReopenAdvanceGateTests(unittest.TestCase):
     _assert_script_invoked(self, result)
     self.assertEqual(result.returncode, 2, result.stdout)
     self.assertIn("evidence", result.stdout)
+
+  def test_reopen_advance_gate_rejects_triad_review_without_protocol_completion(self):
+    """triad-review はレビュー手順完了前に gate 完了できない"""
+    self._write_spec()
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-07-01.yaml"
+    )
+    in_progress.parent.mkdir(parents=True)
+    in_progress.write_text(
+      "process_id: reopen-procedure\n"
+      "feature: workflow-management\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：requirements triad-review\n"
+      "completed_steps: []\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n"
+      "drafting_completed_gates:\n"
+      "  - stages/requirements.yaml#drafting\n"
+      "completed_gates: []\n"
+      "downstream_impact_decisions: []\n"
+      "current_blocker: null\n",
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "reopen-advance-gate",
+        "--file", "stages/in-progress/reopen-procedure-2026-07-01.yaml",
+        "--gate", "stages/requirements.yaml#triad-review",
+        "--decision", "existing_sufficient",
+        "--feature-scope", "workflow-management",
+        "--rationale", "requirements triad-review を完了する。",
+        "--evidence", ".reviewcompass/specs/workflow-management/reviews/run.yaml",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("triad_review_protocol", result.stdout)
+    self.assertIn("main_preanalysis_required", result.stdout)
 
   def test_reopen_advance_gate_rejects_malformed_pending_gate(self):
     """pending_gates の全要素が標準 gate 形式でなければ拒否する"""
@@ -11688,6 +12018,340 @@ class ActiveSessionsCommitGuardTests(unittest.TestCase):
     data = json.loads(result.stdout)
     reasons = "\n".join(data.get("reasons", []))
     self.assertNotIn("進行中セッション", reasons)
+
+
+class ReopenTriadReviewProtocolTests(unittest.TestCase):
+  """reopen triad-review protocol state の機械化"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+
+  def _write_reopen_triad_review_state(self, protocol_record=""):
+    cwd = Path(self.tmpdir)
+    _write_specs_for_next(cwd, {})
+    in_progress = (
+      cwd
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-07-01.yaml"
+    )
+    in_progress.parent.mkdir(parents=True, exist_ok=True)
+    in_progress.write_text(
+      "process_id: reopen-procedure\n"
+      "feature: workflow-management\n"
+      "next_step: 第3過程：requirements triad-review\n"
+      "step_number: 3\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n"
+      "drafting_completed_gates:\n"
+      "  - stages/requirements.yaml#drafting\n"
+      "current_blocker: null\n"
+      + protocol_record,
+      encoding="utf-8",
+    )
+    return in_progress
+
+  def test_next_reports_main_preanalysis_required(self):
+    """protocol 記録がなければ main preanalysis 必須状態を返す"""
+    self._write_reopen_triad_review_state()
+
+    result = run_script(["next", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    protocol = json.loads(result.stdout)["next_action"]["triad_review_protocol"]
+    self.assertEqual(protocol["state"], "main_preanalysis_required")
+    self.assertIn("source_protocol_text", protocol["required_inputs"])
+    self.assertIn("reopen-advance-gate", protocol["blocked_operations"])
+
+  def test_next_reports_preanalysis_required_changes_pending(self):
+    """sufficiency audit の required changes が未反映なら停止状態を返す"""
+    self._write_reopen_triad_review_state(
+      "triad_review_protocol:\n"
+      "  gates:\n"
+      "    \"stages/requirements.yaml#triad-review\":\n"
+      "      main_preanalysis:\n"
+      "        path: reviews/main-preanalysis.md\n"
+      "      preanalysis_sufficiency_audit:\n"
+      "        status: passed\n"
+      "        required_prompt_changes:\n"
+      "          - source selection を追加する\n"
+      "        required_prompt_changes_applied: false\n"
+    )
+
+    result = run_script(["next", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    protocol = json.loads(result.stdout)["next_action"]["triad_review_protocol"]
+    self.assertEqual(protocol["state"], "preanalysis_required_changes_pending")
+
+
+class ReopenReviewPromptQualityGuardTests(unittest.TestCase):
+  """reopen triad-review の prompt quality / review-run guard"""
+
+  def setUp(self):
+    self.tmpdir = tempfile.mkdtemp()
+    self.addCleanup(shutil.rmtree, self.tmpdir)
+    spec_path = (
+      Path(self.tmpdir)
+      / ".reviewcompass"
+      / "specs"
+      / "workflow-management"
+      / "spec.json"
+    )
+    spec_path.parent.mkdir(parents=True, exist_ok=True)
+    spec_path.write_text(
+      json.dumps(
+        {
+          "feature_name": "workflow-management",
+          "workflow_state": {
+            "requirements": {
+              "drafting": True,
+              "triad-review": False,
+            }
+          },
+        },
+        ensure_ascii=False,
+        indent=2,
+      )
+      + "\n",
+      encoding="utf-8",
+    )
+
+  def _write_reopen_state(self, protocol_record):
+    in_progress = (
+      Path(self.tmpdir)
+      / "stages"
+      / "in-progress"
+      / "reopen-procedure-2026-07-01.yaml"
+    )
+    in_progress.parent.mkdir(parents=True, exist_ok=True)
+    in_progress.write_text(
+      "process_id: reopen-procedure\n"
+      "feature: workflow-management\n"
+      "step_number: 3\n"
+      "next_step: 第3過程：requirements triad-review\n"
+      "completed_steps: []\n"
+      "pending_gates:\n"
+      "  - stages/requirements.yaml#triad-review\n"
+      "drafting_completed_gates:\n"
+      "  - stages/requirements.yaml#drafting\n"
+      "completed_gates: []\n"
+      "downstream_impact_decisions: []\n"
+      "current_blocker: null\n"
+      + protocol_record,
+      encoding="utf-8",
+    )
+
+  def _run_advance_gate(self):
+    return run_script(
+      [
+        "reopen-advance-gate",
+        "--file", "stages/in-progress/reopen-procedure-2026-07-01.yaml",
+        "--gate", "stages/requirements.yaml#triad-review",
+        "--decision", "existing_sufficient",
+        "--feature-scope", "workflow-management",
+        "--rationale", "requirements triad-review を完了する。",
+        "--evidence", ".reviewcompass/specs/workflow-management/reviews/run.yaml",
+        "--json",
+      ],
+      cwd=self.tmpdir,
+    )
+
+  def test_blocks_prompt_quality_findings_before_review_run(self):
+    """prompt quality finding が残る場合は実 review-run 完了扱いに進めない"""
+    self._write_reopen_state(
+      "triad_review_protocol:\n"
+      "  gates:\n"
+      "    \"stages/requirements.yaml#triad-review\":\n"
+      "      main_preanalysis:\n"
+      "        path: reviews/main-preanalysis.md\n"
+      "      preanalysis_sufficiency_audit:\n"
+      "        status: passed\n"
+      "        required_prompt_changes: []\n"
+      "        required_prompt_changes_applied: true\n"
+      "      criteria_draft:\n"
+      "        path: reviews/api-review-criteria.md\n"
+      "        user_review_requirements_mapped: true\n"
+      "        required_checks_mapped: true\n"
+      "        target_criteria_separated: true\n"
+      "        output_contract_present: true\n"
+      "        prohibited_actions_reflected: true\n"
+      "        source_materials_path_only: false\n"
+      "      prompt_quality_review:\n"
+      "        adversarial: reviews/prompt-quality-adversarial.yaml\n"
+      "        main_revision: reviews/api-review-criteria-v2.md\n"
+      "        judgment: reviews/prompt-quality-judgment.yaml\n"
+      "        approved: false\n"
+      "        judgment_findings:\n"
+      "          - source material が不足している\n"
+    )
+
+    result = self._run_advance_gate()
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("prompt_quality_changes_pending", result.stdout)
+
+  def test_blocks_review_run_missing_prompt_manifest(self):
+    """review-run に prompt manifest がなければ gate 完了できない"""
+    self._write_reopen_state(
+      "triad_review_protocol:\n"
+      "  gates:\n"
+      "    \"stages/requirements.yaml#triad-review\":\n"
+      "      main_preanalysis:\n"
+      "        path: reviews/main-preanalysis.md\n"
+      "      preanalysis_sufficiency_audit:\n"
+      "        status: passed\n"
+      "        required_prompt_changes: []\n"
+      "        required_prompt_changes_applied: true\n"
+      "      criteria_draft:\n"
+      "        path: reviews/api-review-criteria.md\n"
+      "        user_review_requirements_mapped: true\n"
+      "        required_checks_mapped: true\n"
+      "        target_criteria_separated: true\n"
+      "        output_contract_present: true\n"
+      "        prohibited_actions_reflected: true\n"
+      "        source_materials_path_only: false\n"
+      "      prompt_quality_review:\n"
+      "        adversarial: reviews/prompt-quality-adversarial.yaml\n"
+      "        main_revision: reviews/api-review-criteria-v2.md\n"
+      "        judgment: reviews/prompt-quality-judgment.yaml\n"
+      "        approved: true\n"
+      "        judgment_findings: []\n"
+      "      review_run:\n"
+      "        raw: reviews/raw\n"
+      "        parsed: reviews/parsed\n"
+      "        rounds: reviews/rounds.yaml\n"
+      "        model_result_summary: reviews/model-result-summary.yaml\n"
+      "        triage: reviews/triage.md\n"
+      "        target_manifest_has_target: true\n"
+      "        rounds_criteria_approved: true\n"
+    )
+
+    result = self._run_advance_gate()
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("review_run_artifact_validation_required", result.stdout)
+
+  def test_blocks_proxy_decision_without_raw_reference(self):
+    """proxy decision は raw 参照または抜粋なしでは gate 完了根拠にできない"""
+    self._write_reopen_state(
+      "triad_review_protocol:\n"
+      "  gates:\n"
+      "    \"stages/requirements.yaml#triad-review\":\n"
+      "      main_preanalysis:\n"
+      "        path: reviews/main-preanalysis.md\n"
+      "      preanalysis_sufficiency_audit:\n"
+      "        status: passed\n"
+      "        required_prompt_changes: []\n"
+      "        required_prompt_changes_applied: true\n"
+      "      criteria_draft:\n"
+      "        path: reviews/api-review-criteria.md\n"
+      "        user_review_requirements_mapped: true\n"
+      "        required_checks_mapped: true\n"
+      "        target_criteria_separated: true\n"
+      "        output_contract_present: true\n"
+      "        prohibited_actions_reflected: true\n"
+      "        source_materials_path_only: false\n"
+      "      prompt_quality_review:\n"
+      "        adversarial: reviews/prompt-quality-adversarial.yaml\n"
+      "        main_revision: reviews/api-review-criteria-v2.md\n"
+      "        judgment: reviews/prompt-quality-judgment.yaml\n"
+      "        approved: true\n"
+      "        judgment_findings: []\n"
+      "      review_run:\n"
+      "        raw: reviews/raw\n"
+      "        parsed: reviews/parsed\n"
+      "        rounds: reviews/rounds.yaml\n"
+      "        model_result_summary: reviews/model-result-summary.yaml\n"
+      "        prompt_manifest: reviews/prompt-manifest.yaml\n"
+      "        triage: reviews/triage.md\n"
+      "        target_manifest_has_target: true\n"
+      "        rounds_criteria_approved: true\n"
+      "      user_visible_triage:\n"
+      "        presented: true\n"
+      "        variant: standard\n"
+      "        role_provider_model_assignment: reviews/variant-role-assignment.yaml\n"
+      "        raw_result_summary: reviews/raw-summary.md\n"
+      "        severity: must-fix\n"
+      "        same_root_clusters: reviews/clusters.yaml\n"
+      "        three_level_triage: reviews/triage.md\n"
+      "        must_fix_candidates: reviews/must-fix.yaml\n"
+      "        stopped_before_proxy_spec_or_gate: true\n"
+      "      proxy_decision_required: true\n"
+      "      proxy_decision:\n"
+      "        important_decision_only: true\n"
+      "        prohibited_operations_excluded: true\n"
+    )
+
+    result = self._run_advance_gate()
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("proxy_decision_optional", result.stdout)
+
+  def test_blocks_proxy_decision_authorizing_prohibited_operation(self):
+    """proxy decision は commit や spec 更新などの代行を許可できない"""
+    self._write_reopen_state(
+      "triad_review_protocol:\n"
+      "  gates:\n"
+      "    \"stages/requirements.yaml#triad-review\":\n"
+      "      main_preanalysis:\n"
+      "        path: reviews/main-preanalysis.md\n"
+      "      preanalysis_sufficiency_audit:\n"
+      "        status: passed\n"
+      "        required_prompt_changes: []\n"
+      "        required_prompt_changes_applied: true\n"
+      "      criteria_draft:\n"
+      "        path: reviews/api-review-criteria.md\n"
+      "        user_review_requirements_mapped: true\n"
+      "        required_checks_mapped: true\n"
+      "        target_criteria_separated: true\n"
+      "        output_contract_present: true\n"
+      "        prohibited_actions_reflected: true\n"
+      "        source_materials_path_only: false\n"
+      "      prompt_quality_review:\n"
+      "        adversarial: reviews/prompt-quality-adversarial.yaml\n"
+      "        main_revision: reviews/api-review-criteria-v2.md\n"
+      "        judgment: reviews/prompt-quality-judgment.yaml\n"
+      "        approved: true\n"
+      "        judgment_findings: []\n"
+      "      review_run:\n"
+      "        raw: reviews/raw\n"
+      "        parsed: reviews/parsed\n"
+      "        rounds: reviews/rounds.yaml\n"
+      "        model_result_summary: reviews/model-result-summary.yaml\n"
+      "        prompt_manifest: reviews/prompt-manifest.yaml\n"
+      "        triage: reviews/triage.md\n"
+      "        target_manifest_has_target: true\n"
+      "        rounds_criteria_approved: true\n"
+      "      user_visible_triage:\n"
+      "        presented: true\n"
+      "        variant: standard\n"
+      "        role_provider_model_assignment: reviews/variant-role-assignment.yaml\n"
+      "        raw_result_summary: reviews/raw-summary.md\n"
+      "        severity: must-fix\n"
+      "        same_root_clusters: reviews/clusters.yaml\n"
+      "        three_level_triage: reviews/triage.md\n"
+      "        must_fix_candidates: reviews/must-fix.yaml\n"
+      "        stopped_before_proxy_spec_or_gate: true\n"
+      "      proxy_decision_required: true\n"
+      "      proxy_decision:\n"
+      "        important_decision_only: true\n"
+      "        raw_reference: reviews/raw/primary.yaml\n"
+      "        prohibited_operations_excluded: true\n"
+      "        spec_update_authorized: true\n"
+    )
+
+    result = self._run_advance_gate()
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 2, result.stdout)
+    self.assertIn("proxy_decision_optional", result.stdout)
 
 
 if __name__ == "__main__":

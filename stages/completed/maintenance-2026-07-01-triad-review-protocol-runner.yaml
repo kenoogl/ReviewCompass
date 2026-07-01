@@ -1,0 +1,491 @@
+process_id: maintenance
+title: triad review protocol runner mechanization
+started_at: '2026-07-01T00:00:00+09:00'
+completed_at: '2026-07-01T00:00:00+09:00'
+trigger: >
+  リオープン中の requirements triad-review で、TRIAD review protocol が
+  手順記憶に依存しており、main preanalysis、preanalysis sufficiency audit、
+  prompt quality review、実 review-run、利用者可視 triage gate の順序が
+  機械処理として徹底されていないことが判明したため。
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-07-01.yaml
+work_class: maintenance
+control_relation: side-track
+status: completed
+conversation_log_reviewed:
+  - thread_id: 019f18d5-3129-7650-a04c-f06ae6f3645e
+    turn_id: 019f1c93-25c5-7e31-87bc-6b04ae6b6709
+    point: 既存 TRIAD review process を参照する必要がある。
+  - thread_id: 019f18d5-3129-7650-a04c-f06ae6f3645e
+    turn_id: 019f1c94-d9d6-7121-b2da-8875853fda4b
+    point: review API 前に main LLM の preanalysis が必要である。
+  - thread_id: 019f18d5-3129-7650-a04c-f06ae6f3645e
+    turn_id: 019f1c95-a206-7f30-92f7-ce824c4dc6d2
+    point: preanalysis sufficiency audit、prompt quality review の判定条件、利用者可視 gate が漏れていた。
+  - thread_id: 019f18d5-3129-7650-a04c-f06ae6f3645e
+    turn_id: 019f1c98-dbad-72e3-b2f7-0f1973ba502b
+    point: 本線 review を手で進める前に、メンテナンスノードで protocol runner を機械化する方針を採用した。
+  - thread_id: 019f18d5-3129-7650-a04c-f06ae6f3645e
+    turn_id: 019f1c9a-c539-7301-8235-842f43a2f5b2
+    point: downstream scope は起点 phase によって変わり、full reopen と impact-check-only を分ける必要がある。
+  - thread_id: 019f18d5-3129-7650-a04c-f06ae6f3645e
+    turn_id: 019f1c9b-c4ef-7d93-95a6-b106f0297834
+    point: downstream phase の動的算出は既存実装済みなので、再設計ではなく回帰固定する。
+source_protocol_text: |
+  調べ直した結果、漏れがあります。しかも、私が直前に説明した手順でもまだ不足していました。
+  正しい TRIAD review / API review-run の標準プロトコルは、少なくとも次です。
+
+  1. next --json / effective prompt 確認
+     - 現在 gate が requirements triad-review であることを確認
+     - required disciplines / required inputs を読む
+     - variant / role 割当が曖昧なら review-run を開始しない
+
+  2. main preanalysis
+     - main LLM がまず自分で対象を読む
+     - claim ごとに target / source / out of scope を分ける
+     - 必要な原文または構造化抜粋を決める
+     - 未読資料、推測、機微情報リスクを記録する
+     - behavior-path claim がある場合は、文書だけでなく runner / guard / preflight / tests まで source に含める
+
+  3. preanalysis sufficiency audit
+     - ここが漏れていました
+     - main preanalysis をそのまま信用せず、別レビューで「材料選定・判断項目・分割・source selection が足りているか」を監査する
+     - templates/review/main_preanalysis_sufficiency_audit_criteria_template.md を使う規律になっています
+
+  4. API review criteria draft 作成
+     - criteria と target を分離する
+     - target は実審査対象本文、criteria はレビュー観点
+     - source materials は path-only 禁止
+     - requirements triad-review では、requirements.md を target、reopen 分類・計画・利用者判断・関連規律を source にする
+     - design / tasks / implementation の correctness はこの段階の out of scope
+
+  5. prompt quality review
+     - ここも「1回投げる」では足りません
+     - adversarial が欠落・誘導・材料不足を探す
+     - main が修正する
+     - judgment が「実 review-run に使ってよいか」を判定する
+     - judgment が findings: [] の場合だけ実 review-run へ進む
+     - finding があれば prompt を直して再度回す
+
+  6. 実 TRIAD review-run
+     - prompt quality 通過済み criteria を使う
+     - raw / parsed / rounds / model-result-summary / triage を保存
+     - target-manifest.yaml に実審査対象が入っていることを確認
+
+  7. 利用者提示ゲート
+     - ここも必須です
+     - proxy_model 判断、実装修正、spec.json 更新、フェーズ移行の前に停止
+     - variant、role/provider/model、raw概要、severity、同根クラスタ、三段階トリアージ案、must-fix 候補を提示する
+
+  8. 必要なら proxy_model decision
+     - proxy_model は重要件判断だけ
+     - commit / push / spec.json 更新 / phase 移行は代行不可
+     - proxy_model へ渡す材料にも raw 参照または抜粋が必要
+
+  9. gate 完了処理
+     - review 結果と判断が済んだ後に reopen-advance-gate
+     - gate 完了後は commit stop point
+     - phase / gate 完了は自動許可されない
+
+  今回、私の前説明で漏れていた主な点は次です。
+  - preanalysis sufficiency audit を明示していなかった
+  - prompt quality review の adversarial → main修正 → judgment の順序を曖昧にしていた
+  - judgment が findings: [] の場合だけ実 review-run に進める条件を言っていなかった
+  - 実 review-run 後の利用者提示ゲートを、必須停止点として十分強く扱っていなかった
+  - prompt-quality-run は gate 完了根拠ではなく、実 review-run の前提証跡にすぎない点を明示していなかった
+  現在状態: requirements triad-review の入口で、まだ review-run を開始していません。
+  次タスク: main preanalysis から開始し、その後 preanalysis sufficiency audit へ進む。
+source_protocol_outline:
+  - id: source-1
+    title: next --json / effective prompt 確認
+    source_lines:
+      - 現在 gate が requirements triad-review であることを確認
+      - required disciplines / required inputs を読む
+      - variant / role 割当が曖昧なら review-run を開始しない
+    implementation_refs:
+      - TRRP-M-4
+      - TRRP-M-4A
+    status: mapped
+  - id: source-2
+    title: main preanalysis
+    source_lines:
+      - main LLM がまず自分で対象を読む
+      - claim ごとに target / source / out of scope を分ける
+      - 必要な原文または構造化抜粋を決める
+      - 未読資料、推測、機微情報リスクを記録する
+      - behavior-path claim がある場合は、文書だけでなく runner / guard / preflight / tests まで source に含める
+    implementation_refs:
+      - TRRP-M-5
+    status: mapped
+  - id: source-3
+    title: preanalysis sufficiency audit
+    source_lines:
+      - main preanalysis をそのまま信用せず、別レビューで材料選定・判断項目・分割・source selection が足りているかを監査する
+      - templates/review/main_preanalysis_sufficiency_audit_criteria_template.md を使う
+    implementation_refs:
+      - TRRP-M-6
+      - TRRP-M-11A
+    status: mapped
+  - id: source-4
+    title: API review criteria draft 作成
+    source_lines:
+      - criteria と target を分離する
+      - target は実審査対象本文、criteria はレビュー観点
+      - source materials は path-only 禁止
+      - requirements triad-review では requirements.md を target、reopen 分類・計画・利用者判断・関連規律を source にする
+      - design / tasks / implementation の correctness はこの段階の out of scope
+    implementation_refs:
+      - TRRP-M-7
+    status: mapped
+  - id: source-5
+    title: prompt quality review
+    source_lines:
+      - adversarial が欠落・誘導・材料不足を探す
+      - main が修正する
+      - judgment が実 review-run に使ってよいかを判定する
+      - 'judgment が findings: [] の場合だけ実 review-run へ進む'
+      - finding があれば prompt を直して再度回す
+    implementation_refs:
+      - TRRP-M-8
+      - TRRP-M-9
+      - TRRP-M-10
+    status: mapped
+  - id: source-6
+    title: 実 TRIAD review-run
+    source_lines:
+      - prompt quality 通過済み criteria を使う
+      - raw / parsed / rounds / model-result-summary / triage を保存
+      - target-manifest.yaml に実審査対象が入っていることを確認
+    implementation_refs:
+      - TRRP-M-11
+      - TRRP-M-11A
+    status: mapped
+  - id: source-7
+    title: 利用者提示ゲート
+    source_lines:
+      - proxy_model 判断、実装修正、spec.json 更新、フェーズ移行の前に停止
+      - variant、role/provider/model、raw概要、severity、同根クラスタ、三段階トリアージ案、must-fix 候補を提示する
+    implementation_refs:
+      - TRRP-M-12
+      - TRRP-M-13
+    status: mapped
+  - id: source-8
+    title: 必要なら proxy_model decision
+    source_lines:
+      - proxy_model は重要件判断だけ
+      - commit / push / spec.json 更新 / phase 移行は代行不可
+      - proxy_model へ渡す材料にも raw 参照または抜粋が必要
+    implementation_refs:
+      - TRRP-M-14
+    status: mapped
+  - id: source-9
+    title: gate 完了処理
+    source_lines:
+      - review 結果と判断が済んだ後に reopen-advance-gate
+      - gate 完了後は commit stop point
+      - phase / gate 完了は自動許可されない
+    implementation_refs:
+      - TRRP-M-15
+    status: mapped
+  - id: source-10
+    title: 前説明で漏れていた主な点
+    source_lines:
+      - preanalysis sufficiency audit を明示していなかった
+      - prompt quality review の adversarial → main修正 → judgment の順序を曖昧にしていた
+      - 'judgment が findings: [] の場合だけ実 review-run に進める条件を言っていなかった'
+      - 実 review-run 後の利用者提示ゲートを、必須停止点として十分強く扱っていなかった
+      - prompt-quality-run は gate 完了根拠ではなく、実 review-run の前提証跡にすぎない点を明示していなかった
+    implementation_refs:
+      - TRRP-M-6
+      - TRRP-M-8
+      - TRRP-M-9
+      - TRRP-M-10
+      - TRRP-M-12
+      - TRRP-M-13
+    status: mapped
+allowed_scope:
+  - run_reopen_pending_gate が triad-review gate を扱うときの機械状態を定義する。
+  - TRIAD review protocol の各段階が、成果物なしに次へ進まない fail-closed 条件を追加する。
+  - prompt quality review と実 review-run を別工程として扱う。
+  - 実 review-run 後、proxy decision、spec.json 更新、gate advance の前に利用者可視 triage gate で止める。
+  - 既存の downstream phase 動的算出を壊さない回帰テストを追加する。
+  - requirements/design/tasks/implementation 起点の downstream scope と flag policy をテストで固定する。
+  - guidance は正本規律として参照する。実装中に不足が判明した場合だけ、利用者確認後に allowed_scope を更新して変更対象へ加える。
+allowed_files:
+  - stages/in-progress/maintenance-2026-07-01-triad-review-protocol-runner.yaml
+  - stages/completed/maintenance-2026-07-01-triad-review-protocol-runner.yaml
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+reference_files:
+  - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+pre_existing_dirty_state_policy:
+  must_not_revert:
+    - .reviewcompass/specs/workflow-management/spec.json
+    - stages/in-progress/reopen-procedure-2026-07-01.yaml
+    - tests/tools/test_check_workflow_action.py
+    - tools/check-workflow-action.py
+  may_edit_with_care:
+    - tests/tools/test_check_workflow_action.py
+    - tools/check-workflow-action.py
+  must_not_edit_in_this_maintenance:
+    - .reviewcompass/specs/workflow-management/spec.json
+    - stages/in-progress/reopen-procedure-2026-07-01.yaml
+  note: >
+    既存 dirty state は利用者または直前作業由来として扱い、revert しない。
+    この maintenance では tools/tests の範囲だけ既存変更と整合させて編集し、
+    spec.json と reopen-procedure 本線ファイルは触らない。
+out_of_scope:
+  - 現在の requirements triad-review を手作業で実行すること。
+  - 既存の downstream phase 動的算出を固定表へ置き換えること。
+  - SDD 本線の requirements/design/tasks/implementation 本文を変更すること。
+  - 利用者確認なしに proxy decision、spec.json 更新、gate advance、commit、push を進めること。
+completion_conditions:
+  - next --json / effective prompt で現在 gate、required disciplines、required inputs、variant / role 割当を具体 field として確認できる。
+  - next --json から run_reopen_pending_gate が要求されたとき、triad-review protocol の次工程が機械的に分かる。
+  - main preanalysis なしに preanalysis sufficiency audit へ進めない。
+  - preanalysis sufficiency audit 未通過のまま criteria draft または prompt quality review へ進めない。
+  - preanalysis sufficiency audit は source materials から判断項目を独立再構成し、main preanalysis を正解として扱わない。
+  - preanalysis sufficiency audit の required_prompt_changes を反映するまで prompt quality review へ進めない。
+  - criteria draft は User Review Requirements を保持し、required checks / out of scope / finding policy / output contract に写像する。
+  - prompt quality review は複数 claim の分解、1 prompt 1 judgment 原則、output contract と parser の一致を確認する。
+  - '高リスクまたは behavior-path claim では、single-model findings: [] だけを完了根拠にしない。'
+  - 'prompt quality judgment が findings: [] でない場合、実 review-run へ進めない。'
+  - prompt quality review の成功だけを triad-review gate 完了根拠にできない。
+  - 実 review-run は prompt quality 通過済み criteria だけを使い、raw / parsed / rounds / model-result-summary / prompt-manifest / triage を保存する。
+  - target-manifest.yaml に実審査対象が入っていない review-run を有効扱いしない。
+  - rounds.yaml の criteria は使用可判定済み criteria でなければならない。
+  - 複数判断の raw / parsed / decision 証跡を一括 summary で上書きしない。
+  - 実 review-run 後、利用者可視 triage gate なしに proxy decision、spec.json 更新、gate advance へ進めない。
+  - review 結果と判断が済んだ後だけ reopen-advance-gate に進め、gate 完了後は commit stop point で止まる。
+  - phase / gate 完了は自動許可されない。
+  - downstream scope は edited phase から動的に算出され、requirements 固定になっていない。
+  - full reopen downstream と impact-check-only downstream が混同されない。
+  - 対象テストが成功し、next --json の状態が期待どおりである。
+checklist:
+  - id: TRRP-M-1
+    title: 作業中 maintenance ノードの allowed scope / out of scope / completion conditions を確定する
+    status: done
+    requirements:
+      - allowed_files を明示する
+      - 未確定の項目を done 扱いしない
+      - completion_conditions が fail-closed 条件を含む
+  - id: TRRP-M-2
+    title: run_reopen_pending_gate と triad-review gate の既存実装位置を確認する
+    status: done
+  - id: TRRP-M-3
+    title: API_REVIEW_PROMPT_QUALITY と SESSION_WORKFLOW_GUIDE の必須手順を実装対象に対応付ける
+    status: done
+  - id: TRRP-M-4
+    title: next --json / effective prompt 確認を protocol の開始条件にする
+    status: done
+    requirements:
+      - next_action.required_action が run_reopen_pending_gate であることを確認する
+      - next_action.phase が requirements であることを確認する
+      - next_action.stage が triad-review であることを確認する
+      - next_action.next_pending_gate が stages/requirements.yaml#triad-review であることを確認する
+      - next_action.required_disciplines を読む
+      - next_action.required_inputs を読む
+      - variant_role_assignment または同等 field に role / provider / model / prompt path がそろっていることを確認する
+      - variant / role 割当が曖昧なら review-run を開始しない
+      - 確認結果が欠落、不一致、曖昧な場合は fail-closed で停止する
+  - id: TRRP-M-4A
+    title: triad-review protocol state enum を定義する
+    status: done
+    states:
+      - main_preanalysis_required
+      - preanalysis_sufficiency_audit_required
+      - preanalysis_required_changes_pending
+      - criteria_draft_required
+      - prompt_quality_review_required
+      - prompt_quality_changes_pending
+      - actual_review_run_required
+      - review_run_artifact_validation_required
+      - user_visible_triage_required
+      - proxy_decision_optional
+      - reopen_advance_gate_allowed
+      - commit_stop_point_required
+  - id: TRRP-M-5
+    title: main preanalysis の成果物要件を定義する
+    status: done
+    requirements:
+      - main LLM がまず自分で対象を読む
+      - claim ごとの target / source / out of scope
+      - 必要な原文または構造化抜粋
+      - 未読資料、推測、機微情報リスク
+      - behavior-path claim の場合の runner / guard / preflight / tests source
+  - id: TRRP-M-6
+    title: preanalysis sufficiency audit の成果物要件と未通過時の停止条件を定義する
+    status: done
+    requirements:
+      - main preanalysis をそのまま信用しない
+      - 材料選定、判断項目、分割、source selection の十分性を別レビューで監査する
+      - templates/review/main_preanalysis_sufficiency_audit_criteria_template.md を使う
+      - reviewer に source materials から judgment item を独立再構成させる
+      - main preanalysis を正解として渡さない
+      - required_prompt_changes を反映してから次へ進む
+  - id: TRRP-M-7
+    title: API review criteria draft の target / criteria / source materials 分離を機械条件にする
+    status: done
+    requirements:
+      - User Review Requirements を保持する
+      - 利用者要件を review task / required checks / out of scope / finding policy へ写す
+      - target は実審査対象本文にする
+      - criteria はレビュー観点にする
+      - source materials は path-only 禁止にする
+      - output contract を parser / triage が扱える形にする
+      - 禁止操作を criteria に反映する
+      - requirements triad-review では requirements.md を target にする
+      - requirements triad-review では reopen 分類、計画、利用者判断、関連規律を source にする
+      - design / tasks / implementation の correctness はこの段階の out of scope にする
+  - id: TRRP-M-8
+    title: prompt quality review の adversarial -> main 修正 -> judgment の順序を機械条件にする
+    status: done
+    requirements:
+      - adversarial が欠落、誘導、材料不足を探す
+      - main が指摘を反映して修正する
+      - judgment が実 review-run に使ってよいかを判定する
+      - finding があれば prompt を直して再度回す
+      - review question を claim ごとに分解する
+      - 1 prompt につき原則 1 judgment にする
+      - 複数 claim を 1 prompt に押し込む場合は required checks を分離する
+      - output contract と runner / parser の一致を確認する
+      - '高リスクまたは behavior-path claim では single-model findings: [] だけを完了根拠にしない'
+  - id: TRRP-M-9
+    title: judgment findings が空でない場合に実 review-run へ進めないテストを追加する
+    status: done
+  - id: TRRP-M-10
+    title: prompt quality review を gate 完了根拠にできないテストを追加する
+    status: done
+  - id: TRRP-M-11
+    title: 実 TRIAD review-run の保存成果物と target manifest を機械条件にする
+    status: done
+    requirements:
+      - prompt quality 通過済み criteria を使う
+      - raw / parsed / rounds / model-result-summary / prompt-manifest / triage を保存する
+      - target-manifest.yaml に実審査対象が入っていることを確認する
+      - rounds.yaml の criteria が使用可判定済み criteria であることを確認する
+      - 個別判断の raw / parsed / decision 証跡を一括 summary で上書きしない
+  - id: TRRP-M-11A
+    title: review-run 成果物不備を個別に fail-closed でテストする
+    status: done
+    test_cases:
+      - preanalysis sufficiency audit 未通過なら criteria draft へ進めない
+      - required_prompt_changes 未反映なら prompt quality review へ進めない
+      - prompt-manifest.yaml がない review-run は有効扱いしない
+      - target-manifest.yaml に実 target がない review-run は有効扱いしない
+      - rounds.yaml の criteria が使用可判定済み criteria と一致しなければ有効扱いしない
+      - raw / parsed / model-result-summary / triage のいずれかが欠けた review-run は利用者可視 gate へ進めない
+  - id: TRRP-M-12
+    title: 実 review-run 後に user-visible triage gate で止まるテストを追加する
+    status: done
+  - id: TRRP-M-13
+    title: user-visible triage gate の表示要件を機械状態に含める
+    status: done
+    requirements:
+      - variant
+      - role / provider / model assignment
+      - raw result summary
+      - severity
+      - same-root clusters
+      - three-level triage
+      - must-fix explanation / options / recommended action
+      - proxy_model 判断、実装修正、spec.json 更新、フェーズ移行の前に停止する
+  - id: TRRP-M-14
+    title: proxy decision が必要な場合の材料と禁止操作を定義する
+    status: done
+    requirements:
+      - proxy decision は重要件判断だけを扱う
+      - raw 参照または抜粋を材料に含める
+      - commit / push / spec.json 更新 / phase 移行を代行しない
+  - id: TRRP-M-15
+    title: gate 完了処理の停止点を機械条件にする
+    status: done
+    requirements:
+      - review 結果と判断が済んだ後に reopen-advance-gate へ進む
+      - gate 完了後は commit stop point で止まる
+      - phase / gate 完了は自動許可されない
+  - id: TRRP-M-16
+    title: run_reopen_pending_gate の次工程が protocol state に従って出る最小実装を行う
+    status: done
+  - id: TRRP-M-17
+    title: downstream phase の既存動的算出を確認し、再設計しない
+    status: done
+    expected_behavior:
+      requirements:
+        downstream:
+          - design
+          - tasks
+          - implementation
+      design:
+        downstream:
+          - tasks
+          - implementation
+      tasks:
+        downstream:
+          - implementation
+      implementation:
+        downstream: []
+  - id: TRRP-M-18
+    title: intent / feature-partitioning 起点の波及ルールが必要かを既存規律に照らして確認する
+    status: done
+  - id: TRRP-M-19
+    title: full reopen downstream と impact-check-only downstream の分類が混ざらないテストを追加する
+    status: done
+  - id: TRRP-M-20
+    title: spec.json の false 化範囲が downstream 分類から決まることをテストで固定する
+    status: done
+  - id: TRRP-M-21
+    title: 赤テスト失敗を証跡として残し、赤テストだけでは commit しない
+    status: done
+  - id: TRRP-M-22
+    title: 実装後に対象テストと next --json を確認する
+    status: done
+  - id: TRRP-M-23
+    title: 完了時に復帰先が requirements triad-review であることを記録する
+    status: done
+verification_plan:
+  - .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenTriadReviewProtocolTests -q
+  - .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenReviewPromptQualityGuardTests -q
+  - .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenStartTests tests/tools/test_check_workflow_action.py::ReopenAdvanceGateTests -q
+  - .venv/bin/python3 tools/check-workflow-action.py next --json
+execution_evidence:
+  red_tests:
+    - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::NextNavigationTests::test_next_reopen_triad_review_reports_protocol_state tests/tools/test_check_workflow_action.py::ReopenAdvanceGateTests::test_reopen_advance_gate_rejects_triad_review_without_protocol_completion -q
+      result: 2 failed as expected before implementation
+      failures:
+        - missing next_action.triad_review_protocol
+        - reopen-advance-gate allowed triad-review without protocol completion
+    - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenReviewPromptQualityGuardTests::test_blocks_proxy_decision_without_raw_reference tests/tools/test_check_workflow_action.py::ReopenReviewPromptQualityGuardTests::test_blocks_proxy_decision_authorizing_prohibited_operation -q
+      result: 2 failed as expected before implementation
+      failures:
+        - proxy decision without raw reference was accepted
+        - proxy decision authorizing spec update was accepted
+  implementation_checks:
+    - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenTriadReviewProtocolTests tests/tools/test_check_workflow_action.py::ReopenReviewPromptQualityGuardTests -q
+      result: 4 passed
+    - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenTriadReviewProtocolTests tests/tools/test_check_workflow_action.py::ReopenReviewPromptQualityGuardTests tests/tools/test_check_workflow_action.py::ReopenStartTests tests/tools/test_check_workflow_action.py::ReopenAdvanceGateTests tests/tools/test_check_workflow_action.py::NextNavigationTests -q
+      result: 95 passed
+    - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenReviewPromptQualityGuardTests::test_blocks_proxy_decision_without_raw_reference tests/tools/test_check_workflow_action.py::ReopenReviewPromptQualityGuardTests::test_blocks_proxy_decision_authorizing_prohibited_operation -q
+      result: 2 passed
+    - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenStartTests::test_reopen_start_design_edit_uses_full_reopen_gates_without_impact_only_chain tests/tools/test_check_workflow_action.py::ReopenStartTests::test_reopen_start_false_scope_follows_dynamic_downstream_phase -q
+      result: 2 passed
+    - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenTriadReviewProtocolTests tests/tools/test_check_workflow_action.py::ReopenReviewPromptQualityGuardTests tests/tools/test_check_workflow_action.py::ReopenStartTests tests/tools/test_check_workflow_action.py::ReopenAdvanceGateTests tests/tools/test_check_workflow_action.py::NextNavigationTests -q
+      result: 99 passed
+    - command: .venv/bin/python3 tools/check-workflow-action.py next --json
+      result: maintenance_in_progress / run_maintenance
+    - command: .venv/bin/python3 tools/check-workflow-action.py next --json
+      result: reopen_in_progress / requirements triad-review / triad_review_protocol.state=main_preanalysis_required
+completed_changes:
+  - next --json の reopen triad-review action に triad_review_protocol state を追加した。
+  - triad-review gate は protocol state が reopen_advance_gate_allowed になるまで reopen-advance-gate で完了できないようにした。
+  - preanalysis sufficiency audit、criteria draft、prompt quality review、review-run artifacts、user-visible triage の構造条件を fail-closed で検査するようにした。
+  - proxy decision が必要な場合は、重要件判断だけ、raw 参照または抜粋あり、禁止操作の非代行を満たすまで gate 完了を止めるようにした。
+  - intent / feature-partitioning 起点は既存の reopen classification 検出と N-0 trigger で扱うため、新規ルール追加ではなく既存規律への適合確認として整理した。
+  - design/tasks 起点で full reopen downstream と impact-check-only chain が混ざらず、spec.json の false 化範囲が動的 downstream 算出に従うことを回帰テストで固定した。
+remaining_work: []
+return_to:
+  required_action: run_reopen_pending_gate
+  phase: requirements
+  gate: triad-review
+  path: stages/in-progress/reopen-procedure-2026-07-01.yaml

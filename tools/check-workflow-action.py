@@ -3943,6 +3943,25 @@ def _required_downstream_impact_phases_for_edited_phases(edited_phases):
   ]
 
 
+def _gate_chain_for_edited_phases_and_downstream(edited_phases, pending_gates):
+  """編集 phase と下流 phase を reopen 第3過程の gate 列へ展開する"""
+  if not isinstance(edited_phases, list) or not edited_phases:
+    return pending_gates
+  gates = []
+  full_reopen_downstream_phases = _required_downstream_impact_phases_for_edited_phases(
+    edited_phases,
+  )
+  for phase in PHASE_ORDER:
+    if phase in edited_phases:
+      gates.extend(_full_reopen_gates_for_changed_phase(phase))
+    elif phase in full_reopen_downstream_phases:
+      gates.extend(_full_reopen_gates_for_changed_phase(phase))
+  for gate in pending_gates:
+    if gate not in gates:
+      gates.append(gate)
+  return gates
+
+
 def _reopen_missing_downstream_impact_phases(data):
   """reopen state の下流影響判断不足 phase を返す"""
   required_phases = _required_downstream_impact_phases_for_edited_phases(
@@ -5461,6 +5480,246 @@ def _resolve_reopen_next_gate(data, pending_gates, current_blocker):
   }
 
 
+TRIAD_REVIEW_PROTOCOL_STATES = [
+  "main_preanalysis_required",
+  "preanalysis_sufficiency_audit_required",
+  "preanalysis_required_changes_pending",
+  "criteria_draft_required",
+  "prompt_quality_review_required",
+  "prompt_quality_changes_pending",
+  "actual_review_run_required",
+  "review_run_artifact_validation_required",
+  "user_visible_triage_required",
+  "proxy_decision_optional",
+  "reopen_advance_gate_allowed",
+  "commit_stop_point_required",
+]
+
+
+TRIAD_REVIEW_PROTOCOL_BLOCKED_OPERATIONS = [
+  "reopen-advance-gate",
+  "proxy_model",
+  "spec_update",
+  "phase_transition",
+]
+
+
+PROXY_DECISION_PROHIBITED_OPERATION_FIELDS = [
+  "commit_authorized",
+  "push_authorized",
+  "spec_update_authorized",
+  "phase_transition_authorized",
+]
+
+
+def _is_triad_review_gate(gate):
+  """標準 gate 文字列が triad-review を指すか判定する"""
+  _phase, stage = _parse_stage_gate(gate)
+  return stage == "triad-review"
+
+
+def _triad_review_protocol_gate_record(data, gate):
+  """reopen YAML 内の triad review protocol 記録を gate 単位で返す"""
+  protocol = data.get("triad_review_protocol")
+  if not isinstance(protocol, dict):
+    return {}
+  gates = protocol.get("gates")
+  if isinstance(gates, dict):
+    record = gates.get(gate)
+    return record if isinstance(record, dict) else {}
+  record = protocol.get(gate)
+  if isinstance(record, dict):
+    return record
+  if protocol.get("gate") == gate:
+    return protocol
+  return {}
+
+
+def _protocol_mapping_present(record, field):
+  value = record.get(field)
+  return isinstance(value, dict) and bool(value)
+
+
+def _protocol_required_changes_pending(audit_record):
+  changes = audit_record.get("required_prompt_changes")
+  if isinstance(changes, list) and changes:
+    return audit_record.get("required_prompt_changes_applied") is not True
+  return False
+
+
+def _criteria_draft_valid(criteria_record):
+  if not isinstance(criteria_record, dict) or not criteria_record:
+    return False
+  required_true_fields = [
+    "user_review_requirements_mapped",
+    "required_checks_mapped",
+    "target_criteria_separated",
+    "output_contract_present",
+    "prohibited_actions_reflected",
+  ]
+  if any(criteria_record.get(field) is not True for field in required_true_fields):
+    return False
+  return criteria_record.get("source_materials_path_only") is False
+
+
+def _prompt_quality_review_approved(prompt_quality_record):
+  if not isinstance(prompt_quality_record, dict) or not prompt_quality_record:
+    return False
+  for field in ("adversarial", "main_revision", "judgment"):
+    if not prompt_quality_record.get(field):
+      return False
+  findings = prompt_quality_record.get("judgment_findings")
+  if findings is None:
+    findings = prompt_quality_record.get("findings")
+  return (
+    prompt_quality_record.get("approved") is True
+    and isinstance(findings, list)
+    and not findings
+  )
+
+
+def _review_run_artifacts_valid(review_run_record):
+  if not isinstance(review_run_record, dict) or not review_run_record:
+    return False
+  required_fields = [
+    "raw",
+    "parsed",
+    "rounds",
+    "model_result_summary",
+    "prompt_manifest",
+    "triage",
+  ]
+  if any(not review_run_record.get(field) for field in required_fields):
+    return False
+  return (
+    review_run_record.get("target_manifest_has_target") is True
+    and review_run_record.get("rounds_criteria_approved") is True
+  )
+
+
+def _user_visible_triage_presented(triage_record):
+  if not isinstance(triage_record, dict) or triage_record.get("presented") is not True:
+    return False
+  required_fields = [
+    "variant",
+    "role_provider_model_assignment",
+    "raw_result_summary",
+    "severity",
+    "same_root_clusters",
+    "three_level_triage",
+    "must_fix_candidates",
+  ]
+  if any(not triage_record.get(field) for field in required_fields):
+    return False
+  return triage_record.get("stopped_before_proxy_spec_or_gate") is True
+
+
+def _proxy_decision_valid(proxy_decision_record):
+  if not isinstance(proxy_decision_record, dict) or not proxy_decision_record:
+    return False
+  if proxy_decision_record.get("important_decision_only") is not True:
+    return False
+  has_raw_material = bool(
+    proxy_decision_record.get("raw_reference")
+    or proxy_decision_record.get("raw_excerpt")
+  )
+  if not has_raw_material:
+    return False
+  if proxy_decision_record.get("prohibited_operations_excluded") is not True:
+    return False
+  return not any(
+    proxy_decision_record.get(field) is True
+    for field in PROXY_DECISION_PROHIBITED_OPERATION_FIELDS
+  )
+
+
+def resolve_triad_review_protocol_state(data, gate):
+  """triad-review の標準プロトコル進捗を reopen YAML から算出する"""
+  record = _triad_review_protocol_gate_record(data, gate)
+  if not _protocol_mapping_present(record, "main_preanalysis"):
+    return "main_preanalysis_required"
+
+  audit = record.get("preanalysis_sufficiency_audit")
+  if not isinstance(audit, dict) or not audit:
+    return "preanalysis_sufficiency_audit_required"
+  if audit.get("status") not in ("passed", "completed", "approved"):
+    return "preanalysis_sufficiency_audit_required"
+  if _protocol_required_changes_pending(audit):
+    return "preanalysis_required_changes_pending"
+
+  criteria_draft = record.get("criteria_draft")
+  if not _criteria_draft_valid(criteria_draft):
+    return "criteria_draft_required"
+
+  prompt_quality = record.get("prompt_quality_review")
+  if not isinstance(prompt_quality, dict) or not prompt_quality:
+    return "prompt_quality_review_required"
+  if not _prompt_quality_review_approved(prompt_quality):
+    return "prompt_quality_changes_pending"
+
+  review_run = record.get("review_run")
+  if not isinstance(review_run, dict) or not review_run:
+    return "actual_review_run_required"
+  if not _review_run_artifacts_valid(review_run):
+    return "review_run_artifact_validation_required"
+
+  user_visible_triage = record.get("user_visible_triage")
+  if not _user_visible_triage_presented(user_visible_triage):
+    return "user_visible_triage_required"
+
+  if record.get("proxy_decision_required") is True:
+    if not _proxy_decision_valid(record.get("proxy_decision")):
+      return "proxy_decision_optional"
+  return "reopen_advance_gate_allowed"
+
+
+def build_triad_review_protocol_status(data, gate):
+  """next --json に載せる triad-review protocol 状態を作る"""
+  record = _triad_review_protocol_gate_record(data, gate)
+  state = resolve_triad_review_protocol_state(data, gate)
+  return {
+    "gate": gate,
+    "state": state,
+    "states": TRIAD_REVIEW_PROTOCOL_STATES,
+    "required_inputs": [
+      "source_protocol_text",
+      "source_protocol_outline",
+      "API_REVIEW_PROMPT_QUALITY.md",
+      "SESSION_WORKFLOW_GUIDE.md",
+      "WORKFLOW_NAVIGATION.md",
+    ],
+    "required_artifacts": [
+      "main_preanalysis",
+      "preanalysis_sufficiency_audit",
+      "criteria_draft",
+      "prompt_quality_review",
+      "review_run",
+      "user_visible_triage",
+    ],
+    "variant_role_assignment": record.get("variant_role_assignment", {
+      "status": "required",
+      "required_fields": ["role", "provider", "model", "prompt_path"],
+    }),
+    "blocked_operations": (
+      TRIAD_REVIEW_PROTOCOL_BLOCKED_OPERATIONS
+      if state != "reopen_advance_gate_allowed"
+      else []
+    ),
+  }
+
+
+def validate_triad_review_protocol_allows_gate_advance(data, gate):
+  """triad-review gate 完了前に標準プロトコル完了を要求する"""
+  if not _is_triad_review_gate(gate):
+    return
+  status = build_triad_review_protocol_status(data, gate)
+  if status["state"] != "reopen_advance_gate_allowed":
+    raise ValueError(
+      "triad_review_protocol が未完了です: "
+      f"{gate} state={status['state']}"
+    )
+
+
 def _sha256_digest_for_repo_file(cwd, relative_path):
   """repo-relative ファイルの現在 digest を approval-gate 形式で返す"""
   if not isinstance(relative_path, str) or not relative_path.strip():
@@ -5879,13 +6138,13 @@ def select_reopen_next_action_fields(data, pending_gates, cwd=None):
     or (isinstance(next_step, str) and "第3過程" in next_step)
   )
   downstream_impact_action = _reopen_downstream_impact_action(data)
-  if is_step_three and downstream_impact_action is not None:
-    return downstream_impact_action
   if is_step_three and gate_action["required_action"]:
     return {
       **gate_action,
       "blocked_by": None,
     }
+  if is_step_three and downstream_impact_action is not None:
+    return downstream_impact_action
 
   return {
     "required_action": resolve_reopen_required_action(
@@ -6059,6 +6318,15 @@ def build_in_progress_next_action(cwd, relative_path):
         action[field] = action_fields[field]
     if action_fields.get("repair_reasons") is not None:
       action["repair_reasons"] = action_fields["repair_reasons"]
+    if (
+      action.get("required_action") == "run_reopen_pending_gate"
+      and action.get("stage") == "triad-review"
+      and action.get("active_gate")
+    ):
+      action["triad_review_protocol"] = build_triad_review_protocol_status(
+        data,
+        action["active_gate"],
+      )
     return action
   return {
     "kind": "blocking_in_progress",
@@ -8014,10 +8282,16 @@ def build_reopen_in_progress_data(args, pending_gates):
   }
   edited_phases = args.edited_phase or []
   if edited_phases:
+    data["pending_gates"] = _gate_chain_for_edited_phases_and_downstream(
+      edited_phases,
+      pending_gates,
+    )
     data["edited_phases"] = edited_phases
-    data["impacted_downstream_phases"] = _required_downstream_impact_phases_for_edited_phases(
+    full_reopen_downstream_phases = _required_downstream_impact_phases_for_edited_phases(
       edited_phases,
     )
+    data["impacted_downstream_phases"] = full_reopen_downstream_phases
+    data["full_reopen_downstream_phases"] = full_reopen_downstream_phases
     data["downstream_impact_decisions"] = []
   return data
 
@@ -8031,6 +8305,34 @@ def write_reopen_in_progress(cwd, date, data):
     encoding="utf-8",
   )
   return path
+
+
+def apply_reopen_start_spec_updates(cwd, args, data):
+  """reopen-start の pending gate と recheck を spec.json へ反映する"""
+  spec_path = Path(cwd) / ".reviewcompass" / "specs" / args.feature / "spec.json"
+  if not spec_path.exists():
+    raise ValueError(f"{spec_path.relative_to(cwd)} が見つかりません")
+  spec = json.loads(spec_path.read_text(encoding="utf-8"))
+  workflow_state = spec.setdefault("workflow_state", {})
+  for gate in data.get("pending_gates", []):
+    phase, stage = _parse_stage_gate(gate)
+    phase_state = workflow_state.setdefault(phase, {})
+    phase_state[stage] = False
+  for phase in data.get("full_reopen_downstream_phases", []):
+    phase_state = workflow_state.setdefault(phase, {})
+    for stage in ("drafting", "triad-review", "review-wave", "alignment", "approval"):
+      if stage in PHASE_STAGES.get(phase, []):
+        phase_state[stage] = False
+
+  impacted_phases = data.get("impacted_downstream_phases")
+  if impacted_phases is not None:
+    spec["recheck"] = {
+      "upstream_change_pending": True,
+      "impacted_downstream_phases": impacted_phases,
+    }
+  spec["updated_at"] = f"{args.date}T00:00:00+09:00"
+  _write_json_file(spec_path, spec)
+  return str(spec_path.relative_to(cwd))
 
 
 def cmd_reopen_start(args):
@@ -8050,21 +8352,36 @@ def cmd_reopen_start(args):
     }
     current_state = {"known_classifications": sorted(REOPEN_TRIGGER_MAP.keys())}
   else:
-    data = build_reopen_in_progress_data(args, pending_gates)
-    path = write_reopen_in_progress(cwd, args.date, data)
-    verdict, exit_code = "OK", 0
-    reasons = []
-    next_action = {
-      "kind": "reopen_started",
-      "file": str(path.relative_to(cwd)),
-      "classification": args.classification,
-      "feature": args.feature,
-      "pending_gates": pending_gates,
-      "phase": None,
-      "stage": None,
-      "reason": "reopen in-progress ファイルを生成しました",
-    }
-    current_state = data
+    try:
+      data = build_reopen_in_progress_data(args, pending_gates)
+      spec_path = apply_reopen_start_spec_updates(cwd, args, data)
+      path = write_reopen_in_progress(cwd, args.date, data)
+      verdict, exit_code = "OK", 0
+      reasons = []
+      next_action = {
+        "kind": "reopen_started",
+        "file": str(path.relative_to(cwd)),
+        "classification": args.classification,
+        "feature": args.feature,
+        "pending_gates": data["pending_gates"],
+        "spec_path": spec_path,
+        "phase": None,
+        "stage": None,
+        "reason": "reopen in-progress ファイルを生成し、spec.json のフラグを差し戻しました",
+      }
+      current_state = data
+    except ValueError as e:
+      verdict, exit_code = "DEVIATION", 2
+      reasons = [str(e)]
+      next_action = {
+        "kind": "reopen_start_failed",
+        "classification": args.classification,
+        "feature": args.feature,
+        "phase": None,
+        "stage": None,
+        "reason": "reopen 開始に必要な spec.json 更新に失敗しました",
+      }
+      current_state = {}
 
   if args.json:
     print(format_next_json_output(verdict, exit_code, next_action, reasons, current_state))
@@ -8382,6 +8699,7 @@ def cmd_reopen_advance_gate(args):
     evidence = args.evidence or []
     if not evidence:
       raise ValueError("--evidence は 1 件以上必要です")
+    validate_triad_review_protocol_allows_gate_advance(data, args.gate)
     approval_record_consumed_path, consume_reasons = _consume_recorded_approval_gate_record(
       cwd,
       data.get("current_blocker"),
