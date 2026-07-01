@@ -1,0 +1,131 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-07-01-reopen-protocol-mechanization-review
+kind: plan
+title: reopen プロトコルの機械処理と下流波及規律の再検討
+status: candidate
+plan_level: design_required
+materialization_required: true
+source_unit_id: main-completed
+created_at: '2026-07-01T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:reopen処理がおかしい。プロトコルを確認せよ
+  reason: >
+    backlog routing の reopen では requirements.md を実質修正したにもかかわらず、
+    requirements の triad-review と review-wave を再実行しないまま finalize された。
+    また、design/tasks/implementation への下流波及は通常の reopen 連鎖として処理されず、
+    完了直前の補足メタデータとして扱われた。
+summary: >
+  上流成果物を実質修正した reopen が alignment/approval だけで完了しないように、
+  reopen 手順、機械ガード、運用規律を再検討する。対象には requirements 変更、
+  design/tasks/implementation への下流波及、完了済み reopen の修復方針、
+  commit/finalize 前の fail-closed 検査を含める。
+current_problem:
+  - >
+    直近の backlog routing reopen では `requirements.md` を変更したが、
+    requirements の triad-review と review-wave を通さずに alignment と approval へ進んだ。
+  - >
+    design/tasks/implementation への下流影響は認識されたが、通常の第3過程の連鎖としてではなく、
+    finalize/commit 修復時の補足判断として追加された。
+  - >
+    既存の機械検査は、下流影響判断の不足を `reopen-finalize` が completed 記録を生成した後、
+    commit 時にようやく検出した。
+  - >
+    文書化されたプロトコル上は前段の gate が必要な場合でも、`reopen-finalize` が
+    completed reopen 記録を生成できてしまう。
+  - >
+    「正本本文を実質修正した phase」と「正本本文を修正していない downstream phase」の違いが、
+    guidance と機械モデルの双方で十分に明示されていない。
+scope:
+  included:
+    - >
+      `REOPEN_PROCEDURE.md`、workflow-management の design/tasks、
+      `tools/check-workflow-action.py` の reopen 系コマンドを照合し、不一致を調査する。
+    - >
+      phase の成果物本文を実質修正した場合、その phase の triad-review、review-wave、
+      alignment、approval を finalize 前に必須とする規律を定義する。
+    - >
+      requirements 変更が design/tasks/implementation へ波及する場合、または既存の下流成果物で
+      十分と判断する場合に、下流 gate をどのように記録するか定義する。
+    - >
+      必須 gate や下流判断が不足しているとき、`next --json`、`reopen-advance-gate`、
+      `reopen-finalize`、commit preflight が fail-closed で停止する条件を定める。
+    - >
+      すでに push 済みの backlog routing reopen 記録を、修復するのか、再 reopen するのか、
+      supersede するのか決める。
+  excluded:
+    - >
+      プロトコルと修復経路が明示承認される前に、修復後の reopen フローを実装すること。
+    - >
+      修復または置換判断を記録せず、既存の completed reopen 記録を完全に有効なものとして扱うこと。
+design_questions:
+  - id: RPMR-Q1
+    question: >
+      reopen 中に phase 成果物を編集したとき、機械はどのように
+      alignment/approval だけではなく triad-review と review-wave が必要だと検出するか。
+  - id: RPMR-Q2
+    question: >
+      影響を受ける downstream phase に gate 判断が記録されていない場合、
+      completed 記録を作ってから commit 時に失敗させるのではなく、`reopen-finalize` 自体を
+      拒否すべきか。
+  - id: RPMR-Q3
+    question: >
+      push 済みだが手続き上 incomplete な reopen は、workflow-state の修復、新しい reopen、
+      superseding reopen record のどれとして表現するべきか。
+  - id: RPMR-Q4
+    question: >
+      直接の reopen 範囲と、間接的な影響確認範囲を区別する正本フィールドは何にするべきか。
+proposed_work:
+  - id: RPMR-1
+    title: プロトコルと実装の監査
+    tasks:
+      - >
+        `REOPEN_PROCEDURE.md` と `tools/check-workflow-action.py` の reopen 関連実装を比較する。
+      - >
+        requirements を実質修正した後でも、機械が alignment/approval のみを許してしまった箇所を特定する。
+      - >
+        commit/finalize 検査のうち、遅すぎるもの、不十分なものを特定する。
+  - id: RPMR-2
+    title: 修復経路の決定
+    tasks:
+      - >
+        push 済みの backlog routing reopen を修復するか、supersede するか、再度 reopen するか提案する。
+      - >
+        workflow state を変更する前に、選択した経路を記録する。
+  - id: RPMR-3
+    title: fail-closed 契約
+    tasks:
+      - >
+        編集された phase と影響を受ける downstream phase に必要な gate を定義する。
+      - >
+        それらの gate が不足している場合の `next --json` と `reopen-finalize` の停止挙動を定義する。
+      - >
+        phase gate 証跡が不足した completed reopen 記録を commit できないようにする
+        commit preflight 検査を定義する。
+  - id: RPMR-4
+    title: TDD 実装計画
+    tasks:
+      - >
+        requirements の実質修正後、alignment/approval 前に triad-review/review-wave を必須にする
+        失敗テストを追加する。
+      - >
+        downstream 波及判断が未完了の場合に `reopen-finalize` が拒否する失敗テストを追加する。
+      - >
+        プロトコル承認後に、必要最小限の実装を行う。
+acceptance:
+  - >
+    backlog routing reopen が誤って完了できた具体的なプロトコル gap が特定されている。
+  - >
+    push 済み reopen の修復経路が明示され、証跡に基づいている。
+  - >
+    編集された phase が triad-review と review-wave を省略できないよう、機械挙動が定義されている。
+  - >
+    downstream design/tasks/implementation の波及判断が finalize 前に必須化され、
+    commit 失敗後の後付け補修にならない。
+  - >
+    実装計画が TDD で開始できる粒度になっており、fail-closed の失敗テストを含む。
+notes:
+  - >
+    この候補は maintenance ではない。reopen プロトコルの意味と機械ガードを変更するため、
+    明示分類のうえで SDD workflow または reopen に送る。
