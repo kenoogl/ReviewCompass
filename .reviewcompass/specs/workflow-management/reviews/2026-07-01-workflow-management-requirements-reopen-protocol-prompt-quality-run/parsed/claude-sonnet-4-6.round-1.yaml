@@ -1,0 +1,87 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 29.772
+findings:
+- severity: WARN
+  target_location: Source Materials / reopen-protocol-mechanization-plan / Structured
+    summary
+  description: The reopen-protocol-mechanization-plan source is described only via
+    a structured summary extracted from a plan YAML file. The prompt states the actual
+    review-run must not depend on the preanalysis audit bundle, but the plan YAML
+    itself is listed only as a source path with an embedded summary. If the embedded
+    summary is incomplete or selectively excerpted, the reviewing model has no way
+    to detect omissions in the transfer from that plan into requirements.md.
+  rationale: Source-material quality criteria require that model-readable content
+    be embedded as excerpt or structured summary, and that unresolved or deferred
+    items affecting the target review be included. A structured summary of a planning
+    artifact is acceptable, but the prompt gives no indication of how complete the
+    summary is relative to the full plan YAML, introducing a risk that the model validates
+    a partial intent-transfer picture.
+- severity: WARN
+  target_location: Source Materials / api-review-protocol-guidance / Exact governing
+    excerpts needed for authority boundaries
+  description: The api-review-protocol-guidance section lists SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+    and API_REVIEW_PROMPT_QUALITY.md#8 as sources but provides only paraphrased bullet-point
+    summaries rather than actual excerpts. For authority-boundary claims—which the
+    criteria treats as CRITICAL territory—paraphrase introduces the risk that the
+    reviewing model applies a slightly different interpretation than the governing
+    text intends.
+  rationale: When authority boundaries are the subject of a required check (Required
+    Check 5), the source material backing those boundaries should be verbatim or near-verbatim
+    excerpts, not paraphrase, to prevent the model from normalizing a convenient reading.
+    This is an avoidable weakness that could cause the model to miss a subtle authority-limit
+    nuance.
+- severity: WARN
+  target_location: Required Checks / Check 7
+  description: Check 7 instructs the model to use the behavior-path source summary
+    only to evaluate whether requirements.md makes sufficient behavior-path policy
+    claims, and explicitly forbids turning runner or test behavior into a code-correctness
+    finding. While the intent is correct, the wording 'do not turn runner or test
+    behavior into a code-correctness finding' could suppress a finding where a behavior-path
+    claim in requirements.md directly contradicts what the behavior-path summary describes,
+    even when the contradiction reveals a requirements omission rather than a code
+    defect.
+  rationale: The Out Of Scope section already forbids judging runner correctness.
+    Repeating a prohibition inside a required check, without clarifying the distinction
+    between 'code is wrong' (out of scope) and 'requirements claim contradicts behavior-path
+    evidence' (in scope), risks the model under-reporting a genuine requirements-level
+    conflict. The wording should clarify that behavioral contradictions that expose
+    a requirements omission remain reportable.
+- severity: WARN
+  target_location: Review Task / Return findings only when the requirements document
+    itself is deficient
+  description: The phrase 'Return findings only when the requirements document itself
+    is deficient for this review question' is accurate in intent but could be read
+    as a mild finding-suppression instruction. If combined with a model that is already
+    reluctant to report findings, this framing may cause the model to discount borderline
+    WARN-level issues as 'not deficient enough' rather than reporting them for human
+    judgment.
+  rationale: The finding policy defines four severity levels, and the criteria for
+    findings:[] is specific. Placing a broad 'return findings only when deficient'
+    instruction in the opening review task, before severity definitions appear, creates
+    a slight suppression risk for WARN and INFO items. Reordering or qualifying this
+    instruction would improve clarity without changing the intended scope.
+- severity: INFO
+  target_location: Source Materials / front matter / source_materials / note
+  description: The front-matter note states 'the actual review-run must not depend
+    on the preanalysis audit bundle' but does not explain what the preanalysis audit
+    bundle is or where it lives. A reviewer reading this criteria file cold has no
+    way to know what artifact is being excluded, which could cause confusion about
+    whether any of the embedded source summaries derive from that bundle.
+  rationale: Minor traceability gap. Naming or briefly describing the excluded bundle
+    (e.g., its path) would make the exclusion unambiguous and help future prompt-quality
+    reviewers confirm that none of the embedded summaries are merely preanalysis outputs
+    relabeled as independent source material.
+- severity: INFO
+  target_location: Target sections expected to be relevant
+  description: The target-section list (Requirement 3 AC5, Requirement 5 AC7, Requirement
+    16 AC11-14, and related context) is presented without any brief rationale linking
+    each section to the specific required check it is expected to satisfy. This makes
+    it harder to verify coverage during triage if the model reports findings referencing
+    sections not on this list.
+  rationale: Non-blocking ergonomics improvement. Adding a one-line mapping (e.g.,
+    'Requirement 16 AC11-14 → Required Check 3 fail-closed detection') would make
+    triage faster and would help detect if the model is focusing on the wrong sections
+    of requirements.md.

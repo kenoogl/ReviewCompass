@@ -1,0 +1,28 @@
+run_id: 2026-07-01-workflow-management-requirements-reopen-protocol-preanalysis-audit-run
+models:
+- model_id: claude-sonnet-4-6
+  raw_path: raw/claude-sonnet-4-6.round-1.txt
+  parse_status: parsed
+  triage_status: triage_pending
+  findings_count: 7
+  findings_count_by_severity:
+    ERROR: 2
+    WARN: 4
+    INFO: 1
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0
+- model_id: gemini-3.1-pro-preview
+  raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+  parse_status: parsed
+  triage_status: triage_pending
+  findings_count: 3
+  findings_count_by_severity:
+    ERROR: 3
+  must_fix_count: 0
+  should_fix_count: 0
+  leave_as_is_count: 0
+  human_required_count: 0
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: 5d37ae45107b3a3080235e91c819538a3969db4adabae8fbf5e05dcfe27ccbd4

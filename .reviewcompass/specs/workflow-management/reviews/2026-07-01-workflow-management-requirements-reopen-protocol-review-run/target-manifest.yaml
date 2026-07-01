@@ -1,0 +1,6 @@
+run_id: 2026-07-01-workflow-management-requirements-reopen-protocol-review-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: 6547bae098f1149e8ab19bf2cdf98e349e0e8eb68112a4ac98e7bca420d37acc
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: 8d50c0ab2731fe164d8bfce071f38d936869c4a400da67b70e573efa7999f3c4

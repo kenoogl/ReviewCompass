@@ -7,16 +7,30 @@ trigger: reopen protocol mechanization review を maintenance 復帰後に super
 classification_basis: .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
 completed_steps:
 - 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements triad-review/review-wave/alignment/approval
+  → false、design/tasks/implementation drafting/triad-review/review-wave/alignment/approval
   → false、recheck=upstream_change_pending → true、impacted_downstream_phases=design/tasks/implementation）
 - 第2過程：正本修正完了（Requirement 5 に reopen edited phase / downstream impact fail-closed
   契約を追加）
-next_step: 第2過程：停止点コミット
-step_number: 2
+- 第3過程：requirements drafting 完了（第2過程で修正した requirements 正本を第3過程の起草結果として確認）
+- 第3過程：requirements triad-review 完了（実 review-run、利用者可視 triage、承認済み finding 反映完了）
+next_step: 第3過程：requirements review-wave
+step_number: 3
 pending_gates:
-- stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
 - stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
+- stages/design.yaml#triad-review
+- stages/design.yaml#review-wave
+- stages/design.yaml#alignment
+- stages/design.yaml#approval
+- stages/tasks.yaml#triad-review
+- stages/tasks.yaml#review-wave
+- stages/tasks.yaml#alignment
+- stages/tasks.yaml#approval
+- stages/implementation.yaml#triad-review
+- stages/implementation.yaml#review-wave
+- stages/implementation.yaml#alignment
+- stages/implementation.yaml#approval
 current_blocker: null
 edited_phases:
 - requirements
@@ -24,14 +38,33 @@ impacted_downstream_phases:
 - design
 - tasks
 - implementation
-downstream_impact_decisions: []
+full_reopen_downstream_phases:
+- design
+- tasks
+- implementation
+downstream_impact_decisions:
+- gate: stages/requirements.yaml#triad-review
+  feature_scope: workflow-management
+  decision: accepted
+  rationale: requirements triad-review の実 review-run、利用者可視 triage、利用者承認、must-fix/should-fix
+    反映が完了したため、requirements triad-review gate を完了扱いにする。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/review_summary.md
+  - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/triage.yaml
+  - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/raw-review-triage-summary.md
+  - stages/in-progress/reopen-procedure-2026-07-01.yaml
+drafting_completed_gates:
+- stages/requirements.yaml#drafting
 reopen_step_records:
 - from_step: 1
   completed_step: 第1過程：R-0 判定確定・spec.json フラグ差し戻し完了（requirements triad-review/review-wave/alignment/approval
+    → false、design/tasks/implementation drafting/triad-review/review-wave/alignment/approval
     → false、recheck=upstream_change_pending → true、impacted_downstream_phases=design/tasks/implementation）
   rationale: maintenance 復帰後に reopen protocol mechanization review を superseding reopen
     として開始し、requirements を実質編集するため requirements review 系 gate を再実施対象に戻した。下流 design/tasks/implementation
-    は downstream impact decision の対象として recheck に残す。
+    も正本連鎖対象として drafting から通常 reopen chain に開き、downstream impact decision の対象として recheck
+    に残す。
   evidence:
   - .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
   - .reviewcompass/specs/workflow-management/spec.json
@@ -47,7 +80,181 @@ reopen_step_records:
   - .reviewcompass/specs/workflow-management/requirements.md
   - .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
   - stages/in-progress/reopen-procedure-2026-07-01.yaml
+drafting_records:
+- gate: stages/requirements.yaml#drafting
+  feature_scope: workflow-management
+  phase: requirements
+  rationale: 第2過程で requirements 正本に reopen edited phase / downstream impact fail-closed
+    契約を追加済みであり、その正本修正を第3過程の requirements drafting 結果として確認した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
+commit_stop_point_records:
+- step: 2
+  kind: canonical_update_complete
+  gate: null
+  reason: 第2過程の正本修正完了
+  head: 4b05fd07df88e2b22fb6c8c4a9c8fdd56f44efcd
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/spec.json
+triad_review_protocol:
+  gates:
+    stages/requirements.yaml#triad-review:
+      main_preanalysis:
+        status: completed
+        path: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/main-preanalysis.md
+        target:
+        - .reviewcompass/specs/workflow-management/requirements.md
+        source_materials:
+        - .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
+        - stages/in-progress/reopen-procedure-2026-07-01.yaml
+        - .reviewcompass/specs/workflow-management/spec.json
+        - .reviewcompass/guidance/REOPEN_PROCEDURE.md
+        - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review
+        - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#3.3-a-2
+        - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+        - .reviewcompass/guidance/discipline_llm_as_judge_prompting.md
+        - tools/check-workflow-action.py
+        - tests/tools/test_check_workflow_action.py
+        claims:
+        - edited_phase_full_gate_requirement
+        - downstream_impact_decision_requirement
+        - fail_closed_surfaces
+        - superseding_reopen_record_policy
+        - proxy_model_human_only_boundary
+        - review_scope_boundary
+        next_protocol_state: prompt_quality_review_required
+      preanalysis_sufficiency_audit:
+        status: completed
+        review_run_dir: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-preanalysis-audit-run
+        bundle_path: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/preanalysis-audit-bundle.md
+        criteria_file: templates/review/main_preanalysis_sufficiency_audit_criteria_template.md
+        review_execution_spec: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-preanalysis-audit-run/review-execution-spec.yaml
+        review_execution_spec_sha256: 5d37ae45107b3a3080235e91c819538a3969db4adabae8fbf5e05dcfe27ccbd4
+        verdicts:
+          adversarial: sufficient_with_revisions
+          judgment: insufficient
+        raw:
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-preanalysis-audit-run/raw/claude-sonnet-4-6.round-1.txt
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-preanalysis-audit-run/raw/gemini-3.1-pro-preview.round-1.txt
+        parsed:
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-preanalysis-audit-run/parsed/claude-sonnet-4-6.round-1.yaml
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-preanalysis-audit-run/parsed/gemini-3.1-pro-preview.round-1.yaml
+        model_result_summary: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-preanalysis-audit-run/model-result-summary.yaml
+        triage: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-preanalysis-audit-run/triage.yaml
+        required_prompt_changes:
+        - target material を source materials から外し、review target manifest として分離する。
+        - prompt meta-audit / split audit を実 review-run criteria の required checks
+          から外す。
+        - proposed criteria を preanalysis audit bundle 依存にせず、criteria 本体の source materials
+          を自己完結にする。
+        - plan invariant ID と RPMR-Q3 を model-readable source material 内に明示する。
+        - proxy_model / human-only 境界の governing text を構造化抜粋として追加する。
+        - behavior-path source summary の use-limit を criteria 本体にも明記する。
+        - primary review question を一般の vertical transfer 問いに寄せ、詳細 sub-topic は required
+          checks 側へ置く。
+        required_prompt_changes_applied: true
+        applied_change_evidence:
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/main-preanalysis.md
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/proposed-review-criteria-outline.md
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/preanalysis-audit-bundle.md
+      criteria_draft:
+        status: completed
+        path: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/proposed-review-criteria-outline.md
+        user_review_requirements_mapped: true
+        required_checks_mapped: true
+        target_criteria_separated: true
+        output_contract_present: true
+        prohibited_actions_reflected: true
+        source_materials_path_only: false
+      prompt_quality_review:
+        status: completed
+        approved: true
+        review_run_dir: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-prompt-quality-run
+        criteria_file: templates/review/api_review_prompt_quality_criteria_template.md
+        target: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/proposed-review-criteria-outline.md
+        target_sha256_after_main_revision: 5324826444851e1e63e24f1d3de5ff86a0a4b6c44797fa9e9c7619f2ac4298d6
+        adversarial: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-prompt-quality-run/parsed/claude-sonnet-4-6.round-1.yaml
+        adversarial_findings_count: 6
+        main_revision:
+          path: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/proposed-review-criteria-outline.md
+          changes_applied:
+          - preanalysis audit bundle の位置づけを明示し、actual review-run の authority source
+            ではないことを追記した。
+          - plan source summary の completeness note を追加した。
+          - authority boundary は paraphrase だけでなく governing excerpt を含める形に補強した。
+          - behavior-path source summary はコード正誤を対象外にしつつ、requirements 矛盾や omission
+            は finding 化できるように明確化した。
+          - opening review task の finding 抑制に見える文言を、requirements-level defect の report
+            条件へ置き換えた。
+          - target section と required check の対応を明示した。
+        judgment: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-prompt-quality-run/parsed/gemini-3.1-pro-preview.round-1.yaml
+        judgment_findings: []
+        model_result_summary: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-prompt-quality-run/model-result-summary.yaml
+        raw:
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-prompt-quality-run/raw/claude-sonnet-4-6.round-1.txt
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-prompt-quality-run/raw/gemini-3.1-pro-preview.round-1.txt
+        parsed:
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-prompt-quality-run/parsed/claude-sonnet-4-6.round-1.yaml
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-prompt-quality-run/parsed/gemini-3.1-pro-preview.round-1.yaml
+      review_run:
+        status: completed
+        review_run_dir: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run
+        review_execution_spec: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/review-execution-spec.yaml
+        review_execution_spec_sha256: 8d50c0ab2731fe164d8bfce071f38d936869c4a400da67b70e573efa7999f3c4
+        variant: implementation_review_independent_3way_codex_operator
+        raw:
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/raw/gpt-5.4.round-1.txt
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/raw/claude-sonnet-4-6.round-1.txt
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/raw/gemini-3.1-pro-preview.round-1.txt
+        parsed:
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/parsed/gpt-5.4.round-1.yaml
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/parsed/claude-sonnet-4-6.round-1.yaml
+        - .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/parsed/gemini-3.1-pro-preview.round-1.yaml
+        rounds: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/rounds.yaml
+        model_result_summary: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/model-result-summary.yaml
+        prompt_manifest: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/prompt-manifest.yaml
+        target_manifest: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/target-manifest.yaml
+        target_manifest_has_target: true
+        rounds_criteria_approved: true
+        triage: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/triage.yaml
+        raw_review_triage_summary: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/raw-review-triage-summary.md
+        findings_count: 5
+        severity:
+          WARN: 4
+          INFO: 1
+      user_visible_triage:
+        presented: true
+        variant: implementation_review_independent_3way_codex_operator
+        review_execution_spec: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/review-execution-spec.yaml
+        raw_result_summary: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/raw-review-triage-summary.md
+        severity: WARN
+        same_root_clusters: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/triage.yaml
+        three_level_triage: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/triage.yaml
+        must_fix_candidates: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/raw-review-triage-summary.md
+        stopped_before_proxy_spec_or_gate: true
+        human_decision:
+          decided_by: user
+          decided_at: '2026-07-01T18:25:49+09:00'
+          source_ref: conversation:user:承認
+          decision: 'C1〜C3 を must-fix として採用し、C4 を should-fix として同時に requirements へ反映する。
+
+            '
+          proxy_model_used: false
+        reflected_findings:
+          must_fix:
+          - C1 fail-closed detection layering
+          - C2 superseding reopen full-gate chain
+          - C3 downstream no-change decision evidence
+          should_fix:
+          - C4 feature-scope traceability
+        reflected_files:
+        - .reviewcompass/specs/workflow-management/requirements.md
+completed_gates:
+- stages/requirements.yaml#triad-review
 commit_stop_point: true
-commit_stop_point_step: 2
-commit_stop_point_kind: canonical_update_complete
-commit_stop_point_reason: 第2過程の正本修正完了
+commit_stop_point_step: 3
+commit_stop_point_kind: triad_review_complete
+commit_stop_point_gate: stages/requirements.yaml#triad-review
+commit_stop_point_reason: requirements triad-review 完了時点の停止点

@@ -1,0 +1,262 @@
+schema_version: review-execution-spec-v1
+review_run_id: 2026-07-01-workflow-management-requirements-reopen-protocol-review-run
+execution_spec_path: review-execution-spec.yaml
+created_at: '2026-07-01T09:08:36.397175+00:00'
+round_id: round-1
+phase: requirements_triad_review
+criteria: "---\ncriteria_id: workflow-management-requirements-reopen-protocol-review-criteria\n\
+  phase: requirements\ngate: stages/requirements.yaml#triad-review\nintended_review_target:\n\
+  \  - .reviewcompass/specs/workflow-management/requirements.md\nsource_materials:\n\
+  \  note: \"Front matter records provenance only. Model-readable source material\
+  \ is embedded in the body. The actual review-run must not depend on the preanalysis\
+  \ audit bundle at .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/preanalysis-audit-bundle.md;\
+  \ that bundle was an audit input, not an authority source.\"\n  embedded:\n    -\
+  \ reopen-protocol-mechanization-plan\n    - current-reopen-state\n    - current-spec-state\n\
+  \    - reopen-procedure-guidance\n    - vertical-intent-transfer-guidance\n    -\
+  \ api-review-protocol-guidance\n    - behavior-path-source-summary\nuser_review_requirements:\n\
+  \  provided_by: workflow\nstatus: draft_for_prompt_quality_review\n---\n\n# workflow-management\
+  \ requirements reopen-protocol Review Criteria\n\n## Review Task\n\nReview `.reviewcompass/specs/workflow-management/requirements.md`\
+  \ for `stages/requirements.yaml#triad-review`.\n\nThe review question is:\n\nDoes\
+  \ `requirements.md` carry the upstream reopen-protocol intent into requirements-stage\
+  \ policy without omission, weakening, contradiction, unsupported addition, or drift?\n\
+  \nReport a finding when the target requirements text creates a requirements-level\
+  \ omission, weakening, contradiction, unsupported addition, ambiguity, or traceability\
+  \ gap for this review question. Do not report findings against source materials,\
+  \ downstream artifacts, or implementation code unless their contents reveal such\
+  \ a target requirements defect.\n\n## Why This Review Exists\n\nThis review-run\
+  \ is required because the active reopen edits `workflow-management` requirements.\
+  \ A requirements edit must pass requirements triad-review before review-wave, alignment,\
+  \ approval, downstream phase gates, proxy_model decisions, `spec.json` updates,\
+  \ phase transitions, commit, or push can be treated as complete.\n\nThe prior process\
+  \ failure being guarded against is: a reopen that changed `requirements.md` proceeded\
+  \ without rerunning requirements triad-review and review-wave, while design/tasks/implementation\
+  \ impact was handled as late supplemental metadata instead of as normal reopen-chain\
+  \ work.\n\n## User And Workflow Review Requirements\n\nReview purpose:\n\n- Requirements\
+  \ triad-review for reopen protocol mechanization.\n- Vertical transfer check from\
+  \ user/workflow decisions, reopen classification, planning notes, and governance\
+  \ documents into `requirements.md`.\n\nReview object:\n\n- `.reviewcompass/specs/workflow-management/requirements.md`.\n\
+  \nReview focus:\n\n- Edited phase full-gate re-execution.\n- Downstream phase impact\
+  \ decisions with evidence even when downstream documents do not change.\n- Fail-closed\
+  \ detection at `next --json`, `reopen-finalize`, and commit preflight.\n- Superseding\
+  \ reopen record policy for already-pushed incomplete reopen records.\n- proxy_model\
+  \ and human-only authority boundaries.\n- Requirements-stage target/source/out-of-scope\
+  \ separation.\n\nScope boundaries:\n\n- In scope: whether the target requirements\
+  \ text carries the reopen protocol requirements and authority limits needed by later\
+  \ design/tasks/implementation work.\n- Out of scope: judging design.md, tasks.md,\
+  \ implementation code, or current runner correctness as final correctness targets.\n\
+  - Source-only: runner, guard, preflight, and tests may be used to understand behavior-path\
+  \ claims, but implementation defects are not target findings at this gate unless\
+  \ they reveal a requirements omission or contradiction.\n\nOutput requirements:\n\
+  \n- Parser-compatible findings.\n- Include `findings: []` only when the target requirements\
+  \ text is traceable, sufficiently scoped, and internally consistent for the stated\
+  \ review question.\n\nProhibited actions and authority limits:\n\n- Do not authorize\
+  \ commit, push, `spec.json` update, phase transition, gate completion, proxy_model\
+  \ decision, or human approval delegation.\n- Do not treat this review-run, prompt-quality-run,\
+  \ or a proxy_model answer as approval to mutate workflow state.\n\nRequirement-to-prompt\
+  \ mapping:\n\n- Edited phase full-gate requirement -> Review Task, Source Materials,\
+  \ Required Checks 1.\n- Downstream impact decision evidence -> Review Task, Source\
+  \ Materials, Required Checks 2.\n- Fail-closed behavior paths -> Review Task, behavior-path\
+  \ source summary, Required Checks 3.\n- Superseding reopen record policy -> Source\
+  \ Materials, Required Checks 4.\n- proxy_model boundary -> Source Materials, Required\
+  \ Checks 5, Out Of Scope.\n- Requirements-stage scope -> Scope boundaries, Required\
+  \ Checks 6.\n\n## Review Target\n\nThe review target is only:\n\n- `.reviewcompass/specs/workflow-management/requirements.md`\n\
+  \nAt the actual review-run, pass this path as the review target. Do not treat this\
+  \ criteria file, a wrapper, source summaries, design/tasks/implementation documents,\
+  \ or author-written preanalysis as a substitute for the target document.\n\nTarget\
+  \ sections expected to be relevant. These are target locations, not source material;\
+  \ the actual review-run must receive the full `requirements.md` file as target content.\n\
+  \n- Requirement 3 acceptance criterion 5 -> Required Check 1, edited phase full-gate\
+  \ rerun.\n- Requirement 5 acceptance criterion 7 -> Required Checks 1, 2, and 4,\
+  \ reopen state and superseding record policy.\n- Requirement 16 acceptance criteria\
+  \ 11-14 -> Required Checks 2, 3, 5, and 6, downstream impact evidence, fail-closed\
+  \ surfaces, authority boundaries, and state separation.\n- Related in-target context:\
+  \ Requirement 2 acceptance criteria 9/13 and Requirement 9 acceptance criteria 3/5\
+  \ -> Required Checks 3, 5, and 6, guard authority and state-transition boundaries.\n\
+  \n## Source Materials\n\nUse these source materials only for background and intent-transfer\
+  \ checking. Do not judge these source materials as review targets unless the requirements\
+  \ document omits, weakens, or contradicts their required transfer.\n\n### reopen-protocol-mechanization-plan\n\
+  \nSource path:\n\n- `.reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml`\n\
+  \nPurpose:\n\n- Correct a process failure where a requirements-changing reopen did\
+  \ not rerun requirements triad-review/review-wave and downstream impact was deferred\
+  \ until finalize/commit repair.\n\nResponsibility boundaries:\n\n- A phase whose\
+  \ canonical artifact is substantively edited must be marked as an edited phase.\n\
+  - Edited phases require full review gates, not only alignment/approval.\n- Downstream\
+  \ impact must be recorded as normal reopen-chain work, not late metadata.\n- Completed\
+  \ records already pushed should not be rewritten silently; use a superseding reopen\
+  \ record with a reason.\n\nAcceptance criteria / required transfer:\n\n- RPMR-I1:\
+  \ reopen state keeps the substantively edited phases as `edited_phases` or an equivalent\
+  \ machine-readable field.\n- RPMR-I2: each phase in `edited_phases` requires triad-review,\
+  \ review-wave, alignment, and approval; drafting completion is checked where drafting\
+  \ is required.\n- RPMR-I3: upstream phase edits require downstream phase impact\
+  \ coverage through `impacted_downstream_phases` and `downstream_impact_decisions`.\n\
+  - RPMR-I4: downstream no-change decisions still need gate, feature scope, decision,\
+  \ rationale, and evidence.\n- RPMR-I5: `next --json` detects missing edited phase\
+  \ gates or downstream decisions before normal completion.\n- RPMR-I6: `reopen-finalize`\
+  \ recomputes required gates and decisions before creating a completed record.\n\
+  - RPMR-I7: commit preflight is a final guard, not the first expected detection point.\n\
+  - RPMR-Q3: already-pushed incomplete completed reopen records should be handled\
+  \ by a superseding reopen record with replacement rationale, not by silent history\
+  \ rewriting.\n\nForbidden or high-risk drift:\n\n- Treating downstream impact as\
+  \ optional supplemental metadata.\n- Letting completed reopen records be generated\
+  \ before required gates or decisions are present.\n- Relying on commit preflight\
+  \ as the first normal detector.\n\nCompleteness note for this source summary:\n\n\
+  - It covers the plan's stated current_problem items about missed requirements triad-review/review-wave,\
+  \ late downstream impact handling, completed record generation before required gate\
+  \ checks, and weak edited-phase/downstream distinction.\n- It includes all plan\
+  \ design questions RPMR-Q1 through RPMR-Q4 as the responsibility and acceptance\
+  \ items above.\n- It includes fail-closed invariants RPMR-I1 through RPMR-I7, including\
+  \ RPMR-Q3's superseding-record repair concern.\n- It intentionally excludes the\
+  \ plan's red-test implementation evidence from the actual requirements review target;\
+  \ implementation evidence is represented only through the behavior-path source summary\
+  \ below.\n\n### current-reopen-state\n\nSource path:\n\n- `stages/in-progress/reopen-procedure-2026-07-01.yaml`\n\
+  \nStructured summary:\n\n- classification: `R-0`\n- edited_phases: `requirements`\n\
+  - impacted_downstream_phases: `design`, `tasks`, `implementation`\n- full_reopen_downstream_phases:\
+  \ `design`, `tasks`, `implementation`\n- downstream_impact_decisions: empty at this\
+  \ moment\n- drafting_completed_gates: `stages/requirements.yaml#drafting`\n- active\
+  \ gate: `stages/requirements.yaml#triad-review`\n- pending gates: requirements/design/tasks/implementation\
+  \ triad-review, review-wave, alignment, approval\n\nIntended target-phase transfer:\n\
+  \n- The requirements document should support this kind of active state: requirements\
+  \ was edited, downstream phases remain in scope, and the review cannot be considered\
+  \ complete before required gates and downstream decisions are recorded.\n\n### current-spec-state\n\
+  \nSource path:\n\n- `.reviewcompass/specs/workflow-management/spec.json`\n\nStructured\
+  \ summary:\n\n- requirements drafting is true.\n- requirements triad-review, review-wave,\
+  \ alignment, and approval are false.\n- design/tasks/implementation drafting, triad-review,\
+  \ review-wave, alignment, and approval are false.\n- `recheck.upstream_change_pending`\
+  \ is true.\n- `recheck.impacted_downstream_phases` includes design, tasks, and implementation.\n\
+  \nIntended target-phase transfer:\n\n- Requirements must distinguish active reopen\
+  \ scope from historical reopen flags, and must not imply that downstream gates can\
+  \ stay complete after upstream requirements changed.\n\n### reopen-procedure-guidance\n\
+  \nSource path:\n\n- `.reviewcompass/guidance/REOPEN_PROCEDURE.md`\n\nStructured\
+  \ summary:\n\n- A phase whose canonical artifact is substantively changed re-enters\
+  \ triad-review, review-wave, alignment, and approval.\n- Downstream impact is assessed\
+  \ for requirements, design, tasks, and implementation, not only for intent changes.\n\
+  - Even when downstream changes are unnecessary, the decision needs gate, feature\
+  \ scope, decision, rationale, and evidence.\n- Reopen progress should fail closed\
+  \ when required gates or impact evidence are missing.\n\n### vertical-intent-transfer-guidance\n\
+  \nSource path:\n\n- `.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#vertical-intent-transfer-review`\n\
+  \nStructured summary:\n\n- Requirements review checks upstream decision materials\
+  \ against `requirements.md`.\n- For requirements review, downstream documents are\
+  \ source context at most, not correctness targets.\n- Source materials must not\
+  \ be path-only.\n- The prompt must separate purpose, responsibility boundaries,\
+  \ acceptance criteria, forbidden actions, unresolved/deferred items, and intended\
+  \ target-phase transfer.\n\n### api-review-protocol-guidance\n\nSource paths:\n\n\
+  - `.reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md`\n- `.reviewcompass/guidance/discipline_llm_as_judge_prompting.md`\n\
+  - `.reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md#3.3-a-2`\n\nStructured summary:\n\
+  \n- Main preanalysis is a hypothesis and source-selection aid, not an answer key.\n\
+  - Preanalysis sufficiency audit must check material selection, judgment item split,\
+  \ and source coverage before real review-run.\n- Prompt quality review must use\
+  \ adversarial review, main revision, and judgment approval; actual review-run starts\
+  \ only when judgment has no findings.\n- After actual review-run, raw/parsed/rounds/model-summary/triage\
+  \ artifacts and user-visible triage must be presented before proxy_model, implementation\
+  \ edits, `spec.json` updates, or phase movement.\n- proxy_model may judge important\
+  \ finding triage, but cannot authorize commit, push, `spec.json` update, phase transition,\
+  \ or human-only approval.\n\nGoverning excerpts needed for authority boundaries:\n\
+  \n- `SESSION_WORKFLOW_GUIDE.md#3.3-a-2`: \"API review-run が完了したら、proxy_model 判断依頼、実装修正、spec.json\
+  \ 更新、フェーズ移行のいずれにも進む前に、メインセッション LLM は次を利用者へ提示して停止する。この提示ゲートを完了する前に proxy_model を呼び出してはいけない。\"\
+  \n- `SESSION_WORKFLOW_GUIDE.md#3.3-a-2`: the user-visible gate must include variant,\
+  \ role path/provider/model, raw summary, same-root clusters, three-level triage,\
+  \ must-fix explanation/proposals, and proxy_model scope that excludes commit, push,\
+  \ `spec.json` update, and phase transition.\n- `SESSION_WORKFLOW_GUIDE.md#3.3-a-2`:\
+  \ \"variant が未確定、または role 割当が曖昧な場合は review-run を開始しない。\"\n- `SESSION_WORKFLOW_GUIDE.md#3.3-a-2`:\
+  \ \"proxy_model は重要件の採用案・判断理由・最終ラベルを決定する。実装は担当しない\"\n- `SESSION_WORKFLOW_GUIDE.md#3.3-a-2`:\
+  \ \"コミット・プッシュ・spec.json 更新・フェーズ移行は人間の明示承認を要求する。proxy_model はこれらの不可逆操作を代行しない\"\n\
+  - `API_REVIEW_PROMPT_QUALITY.md#8`: standard order is main preanalysis, preanalysis\
+  \ sufficiency audit, API review criteria draft, prompt quality review, actual review-run,\
+  \ raw/parsed/model summary/triage, and optional proxy_model decision.\n- `API_REVIEW_PROMPT_QUALITY.md#8`:\
+  \ \"監査結果の `required_prompt_changes` を反映してから、通常の `templates/review/api_review_prompt_quality_criteria_template.md`\
+  \ による prompt quality review へ進む。\"\n\n### behavior-path-source-summary\n\nSource\
+  \ paths:\n\n- `tools/check-workflow-action.py`\n- `tests/tools/test_check_workflow_action.py`\n\
+  \nStructured summary:\n\n- `_required_downstream_impact_phases_for_edited_phases`\
+  \ derives downstream phases dynamically from edited phases.\n- `_gate_chain_for_edited_phases_and_downstream`\
+  \ expands edited phases and downstream full reopen phases to required full gates.\n\
+  - `_reopen_downstream_impact_action` returns `record_reopen_downstream_impact_decision`\
+  \ when downstream decisions are missing.\n- `validate_reopen_completion_impact_decisions`\
+  \ and `_validate_reopen_finalize_downstream_impact_decisions` reject incomplete\
+  \ completed/finalize records.\n- Focused tests cover initializing edited phase downstream\
+  \ scope, design edit dynamic downstream scope, false scope dynamic downstream phase,\
+  \ and finalize rejection when impacted downstream decisions are missing.\n\nUse\
+  \ this behavior-path material only to assess whether the requirements text makes\
+  \ behavior-path claims sufficiently explicit. Do not judge code correctness as the\
+  \ target of this requirements review.\n\n## Required Checks\n\n1. Check whether\
+  \ `requirements.md` requires every edited phase to rerun triad-review, review-wave,\
+  \ alignment, and approval, and whether the text avoids implying that alignment/approval\
+  \ alone is enough.\n2. Check whether `requirements.md` requires downstream impact\
+  \ decisions for affected downstream phases, including no-change decisions with gate,\
+  \ feature scope, decision, rationale, and evidence.\n3. Check whether `requirements.md`\
+  \ requires missing gates or decisions to be detected by `next --json` and `reopen-finalize`,\
+  \ with commit preflight as a final guard rather than the first normal detector.\n\
+  4. Check whether `requirements.md` requires incomplete completed reopen records\
+  \ to be handled as superseding reopen records with replacement reasons, rather than\
+  \ silent history rewriting.\n5. Check whether `requirements.md` preserves proxy_model\
+  \ and human-only authority boundaries: proxy_model may support important-issue judgment,\
+  \ but must not authorize commit, push, `spec.json` mutation, phase transition, or\
+  \ human-only approval.\n6. Check whether the requirements text keeps current active\
+  \ reopen scope, downstream impact review scope, historical reopen flags, consumer/derivative\
+  \ feature impact, and future downstream correctness review distinct enough for later\
+  \ phases.\n7. Use the behavior-path source summary only to evaluate whether `requirements.md`\
+  \ makes sufficient behavior-path policy claims. Do not report runner or test code\
+  \ correctness as the target finding at this requirements gate. Do report a target\
+  \ requirements finding if the requirements text contradicts behavior-path evidence,\
+  \ omits a required behavior-path policy, or would force later phases to invent the\
+  \ policy.\n\n## Out Of Scope\n\n- Do not judge whether design.md, tasks.md, or implementation\
+  \ code is correct.\n- Do not judge whether current runner implementation fully satisfies\
+  \ the requirements.\n- Do not approve or authorize commit, push, `spec.json` mutation,\
+  \ phase transition, gate completion, proxy_model use, or human approval delegation.\n\
+  - Do not treat source material defects as target findings unless they create a requirements\
+  \ transfer defect.\n- Do not use main preanalysis as an answer key.\n- Do not audit\
+  \ this criteria file, the preanalysis, or the prompt split in the actual requirements\
+  \ review-run.\n\n## Finding Policy\n\n- Report `CRITICAL` if the target requirements\
+  \ would authorize or imply authorization of commit, push, `spec.json` mutation,\
+  \ phase transition, gate completion, proxy_model substitution for human-only judgment,\
+  \ or human approval delegation.\n- Report `ERROR` if the target omits, weakens,\
+  \ broadens, or replaces a workflow review requirement in a way that changes the\
+  \ review outcome.\n- Report `ERROR` if edited phase full-gate requirements, downstream\
+  \ impact decision evidence, fail-closed detection points, superseding reopen record\
+  \ policy, or proxy_model authority boundaries are missing, contradicted, or ambiguous\
+  \ enough to require downstream invention.\n- Report `WARN` for ambiguity likely\
+  \ to force repeated manual judgment, weak traceability, unclear state boundaries,\
+  \ or overclaiming completion.\n- Report `INFO` only for non-blocking traceability\
+  \ improvements.\n- Return `findings: []` only when the target is traceable, internally\
+  \ consistent, correctly scoped, and sufficiently grounded for downstream phases.\n"
+criteria_source_path: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/proposed-review-criteria-outline.md
+criteria_source_sha256: 5324826444851e1e63e24f1d3de5ff86a0a4b6c44797fa9e9c7619f2ac4298d6
+variant: implementation_review_independent_3way_codex_operator
+target_files:
+- path: .reviewcompass/specs/workflow-management/requirements.md
+  sha256: 6547bae098f1149e8ab19bf2cdf98e349e0e8eb68112a4ac98e7bca420d37acc
+inputs:
+  target_paths:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  prior_finding_paths: []
+  effective_prompt_path: .reviewcompass/runtime/effective-prompts/next_action_kind-reopen_in_progress__workflow_stage-triad-review__reopen_required_action-run_reopen_pending_gate.prompt.md
+  prompt_manifest_path: null
+roles:
+- role: primary
+  provider: openai-api
+  model: gpt-5.4
+  outputs:
+    raw_path: raw/gpt-5.4.round-1.txt
+    parsed_path: parsed/gpt-5.4.round-1.yaml
+    prompt_path: prompts/gpt-5.4.round-1.prompt.md
+- role: adversarial
+  provider: anthropic-api
+  model: claude-sonnet-4-6
+  outputs:
+    raw_path: raw/claude-sonnet-4-6.round-1.txt
+    parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+    prompt_path: prompts/claude-sonnet-4-6.round-1.prompt.md
+- role: judgment
+  provider: gemini-api
+  model: gemini-3.1-pro-preview
+  outputs:
+    raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+    parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml
+    prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+intended_outputs:
+  execution_spec_path: review-execution-spec.yaml
+  target_manifest_path: target-manifest.yaml
+  rounds_path: rounds.yaml
+  model_result_summary_path: model-result-summary.yaml
+  triage_path: triage.yaml
+  review_summary_path: review_summary.md
+execution_spec_sha256: 8d50c0ab2731fe164d8bfce071f38d936869c4a400da67b70e573efa7999f3c4

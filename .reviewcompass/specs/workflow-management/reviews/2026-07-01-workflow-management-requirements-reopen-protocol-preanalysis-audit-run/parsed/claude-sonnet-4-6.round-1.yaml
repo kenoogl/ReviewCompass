@@ -1,0 +1,234 @@
+role: adversarial
+provider: anthropic-api
+model: claude-sonnet-4-6
+attempts: 1
+duration_seconds: 72.137
+verdict: sufficient_with_revisions
+independent_reconstruction:
+  judgment_items:
+  - item_id: requirements-reopen-protocol-transfer-sufficiency
+    question: 'Does requirements.md preserve the reopen protocol mechanization requirement,
+      including edited phase full-gate re-execution, downstream impact decision evidence,
+      fail-closed detection points, superseding reopen records, proxy_model authority
+      boundaries, and requirements-stage scope boundaries, without omission, weakening,
+      contradiction, unsupported addition, or drift?
+
+      '
+    target_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+    source_materials:
+    - 'embedded: reopen-protocol-mechanization-plan (plan invariants RPMR-I1 through
+      RPMR-I7, open policy question RPMR-Q3)'
+    - 'embedded: current-reopen-state (edited_phases, impacted_downstream_phases,
+      pending_gates, downstream_impact_decisions)'
+    - 'embedded: current-spec-state (requirements gate flags, recheck state, impacted_downstream_phases)'
+    - 'embedded: reopen-procedure-guidance (structured summary of governing reopen
+      procedure)'
+    - 'embedded: vertical-intent-transfer-guidance (review scope rule for requirements
+      triad-review)'
+    - 'embedded: api-review-protocol-guidance (authority boundary and protocol constraints)'
+    - 'embedded: behavior-path-source-summary (fail-closed function and test summaries
+      as behavior-path support only)'
+    - 'embedded: target-requirements-excerpts (Req 3 AC5, Req 5 AC7, Req 16 AC11-14)'
+    out_of_scope:
+    - correctness of design.md, tasks.md, or implementation code
+    - runner implementation correctness as a standalone target
+    - spec.json update, commit, push, phase transition, gate completion
+    - proxy_model decision authorization or human approval delegation
+    - rejudging historical completed reopen record bodies
+    - actual review-run execution (this audit only prepares the criteria)
+    rationale: 'The user and workflow requirement is preparation for a requirements
+      triad-review of reopen protocol mechanization. The upstream planning material,
+      active reopen state, governing procedure, and extracted requirements excerpts
+      together define what requirements.md must capture. The vertical intent transfer
+      guidance defines the correct scope boundary (requirements.md as target; upstream
+      decisions and procedure as source; downstream artifacts as out-of-scope). The
+      behavior-path summary is admissible as corroboration for fail-closed claims
+      in requirements.md but must not become a code correctness target. This is a
+      single coherent judgment item; the preanalysis notes a possible split but the
+      sources do not compel it.
+
+      '
+preanalysis_assessment:
+  supported_parts:
+  - Claim decomposition into six named sub-items (edited_phase_full_gate, downstream_impact_decision,
+    fail_closed_surfaces, superseding_reopen_record_policy, proxy_model_human_only_boundary,
+    review_scope_boundary) is well-grounded in plan invariants and reopen-procedure
+    structured summaries.
+  - Out-of-scope exclusion of design/tasks/implementation correctness and downstream
+    artifact bodies is consistent with vertical-intent-transfer-guidance.
+  - Identification of Req 3 AC5 and Req 5 AC7 as primary target sections is supported
+    by the excerpts embedded in the bundle.
+  - Noting that full design/tasks/implementation bodies are not read because downstream
+    correctness is out of scope is correctly bounded.
+  - unread_or_assumptions noting that older completed reopen record body is not read
+    is appropriate for superseding policy judgment.
+  - recommended_prompt_split defaulting to one prompt with a conditional split option
+    is a reasonable judgment given source overlap across sub-items.
+  missing_perspectives:
+  - The preanalysis does not explicitly identify Requirement 9 acceptance criteria
+    3 and 5, which are referenced in claim downstream_impact_decision_requirement,
+    but no excerpt for Req 9 is embedded in target-requirements-excerpts. The real
+    reviewer would need that text to evaluate the claim.
+  - The preanalysis references Requirement 2 acceptance criteria 9 and 13 for fail_closed_surfaces
+    but no excerpt for Req 2 is embedded. Without the text the reviewer cannot judge
+    whether fail-closed coverage is present or absent in requirements.md.
+  - The preanalysis does not surface the absence of the open policy question resolution
+    (RPMR-Q3 on superseding reopen records) from the requirements text. The proposed
+    criteria inherits this gap.
+  - No mention of how the reviewer should treat a requirements.md claim that is present
+    but only partially capturing a plan invariant (partial omission vs. full omission).
+    The gradation matters for findings severity.
+  unsupported_or_overconfident_parts:
+  - The preanalysis lists SESSION_WORKFLOW_GUIDE 3.3-a-2 and API_REVIEW_PROMPT_QUALITY
+    as sources for proxy_model_human_only_boundary but does not embed or quote the
+    relevant text. The structured summary in api-review-protocol-guidance covers the
+    boundary only in summary form; the actual governing text is path-only.
+  - The preanalysis asserts plan invariant IDs (RPMR-I1 through RPMR-I7, RPMR-Q3)
+    as if they are stable, labeled references, but the bundle embeds the plan as a
+    structured block without explicit invariant IDs. A reviewer using only the embedded
+    material cannot cross-reference by ID.
+  - The preanalysis treats behavior-path-source-summary as sufficient corroboration
+    for fail-closed requirements claims without noting that the summary is a human-curated
+    abstract and the actual test or code text is not embedded.
+  bias_risks:
+  - Claim decomposition in the preanalysis is presented as an enumerated checklist,
+    which risks anchoring the real reviewer to the same six items rather than reading
+    requirements.md independently and surfacing any additional or different defects.
+  - The review question as drafted names all six sub-topics (edited phase full-gate
+    re-execution, downstream impact decision evidence, fail-closed detection points,
+    superseding reopen records, proxy_model authority boundaries, requirements-stage
+    scope boundaries). This composite phrasing may lead the reviewer to treat the
+    checklist as exhaustive and overlook other transfer defects.
+  - behavior-path-source-summary is listed as a source material in the proposed criteria,
+    but framing it alongside governing guidance documents risks the reviewer treating
+    code-level behavior as a correctness standard for requirements, inverting the
+    requirements-first direction.
+prompt_sufficiency:
+  information: revisions_needed
+  question: revisions_needed
+  scope: sufficient
+  sensitivity_check: sufficient
+  notes:
+  - The proposed criteria correctly excludes commit, push, spec.json mutation, phase
+    transition, gate completion, proxy_model use, and human approval delegation in
+    the Out Of Scope section.
+  - 'The primary review question is non-leading in structure but is composite: it
+    names six specific sub-topics, which risks functioning as a hidden checklist and
+    suppressing independent defect discovery.'
+  - Missing model-readable text for Requirement 2 AC9/AC13 and Requirement 9 AC3/AC5
+    — the proposed criteria references these in the preanalysis claim decomposition
+    but the embedded excerpts do not include them. The real reviewer cannot check
+    those acceptance criteria without the text.
+  - Plan invariant IDs (RPMR-I1 through RPMR-I7) appear in the preanalysis but are
+    not labeled in the embedded plan block. The reviewer must guess which invariant
+    maps to which ID.
+  - The governing text for SESSION_WORKFLOW_GUIDE 3.3-a-2 and API_REVIEW_PROMPT_QUALITY
+    is referenced as path-only in the api-review-protocol-guidance summary. The structured
+    summary covers authority boundaries but may omit nuance relevant to proxy_model
+    judgment.
+  - behavior-path-source-summary is correctly marked use-as-source-only-for-behavior-path-claims
+    in the bundle but the proposed criteria does not repeat this limitation in the
+    Required Checks or Out Of Scope sections, creating a risk the reviewer elevates
+    code behavior to a correctness standard.
+  - Check 8 in Required Checks asks the reviewer to judge whether the prompt itself
+    combines independent judgment items. This is a meta-question about the criteria
+    document rather than a requirements-document question, and conflates the preanalysis
+    audit role with the requirements review role. It should be removed from the real
+    review-run criteria.
+  - The Out Of Scope clause 'Do not use main preanalysis as an answer key' is appropriate
+    and present.
+  - Source material is embedded rather than path-only, satisfying the vertical-intent-transfer-guidance
+    requirement.
+required_prompt_changes:
+- Embed model-readable excerpts for Requirement 2 acceptance criteria 9 and 13 in
+  target-requirements-excerpts. These are referenced in the fail_closed_surfaces claim
+  but are absent from the embedded source material.
+- Embed model-readable excerpts for Requirement 9 acceptance criteria 3 and 5 in target-requirements-excerpts.
+  These are referenced in the downstream_impact_decision_requirement claim but are
+  absent from the embedded source material.
+- Replace plan invariant ID references (RPMR-I1 through RPMR-I7, RPMR-Q3) with inline
+  text or numbered list entries that match the embedded plan block, so a reviewer
+  using only embedded material can cross-reference without external knowledge.
+- Embed or quote the specific governing text from SESSION_WORKFLOW_GUIDE section 3.3-a-2
+  and the relevant section of API_REVIEW_PROMPT_QUALITY that defines proxy_model and
+  human-only authority boundaries. The current structured summary is insufficient
+  if the nuance of those sections is needed to judge Req 3 AC5 or Req 16 AC13-14.
+- Add an explicit use-limit note in the Required Checks or Source Materials section
+  of the proposed criteria stating that behavior-path-source-summary may only be used
+  to evaluate whether requirements.md makes sufficient behavioral claims, not to evaluate
+  whether the implementation is correct.
+- Remove or reframe Required Check 8 ('Check whether the prompt combines independent
+  judgment items that should be split'). This check is a preanalysis audit question,
+  not a requirements review question. Including it in the real review-run criteria
+  conflates the two roles and may cause the reviewer to produce meta-findings instead
+  of requirements findings.
+- Consider rephrasing the primary review question to open with the general transfer-fidelity
+  question before naming sub-topics, or move the six named sub-topics into Required
+  Checks only, so the question itself does not function as an exhaustive checklist
+  that suppresses independent defect discovery.
+findings:
+- severity: ERROR
+  target_location: proposed-review-criteria-outline.md > Source Materials section
+    and target-requirements-excerpts key in bundle
+  description: Requirement 2 acceptance criteria 9 and 13 and Requirement 9 acceptance
+    criteria 3 and 5 are referenced in the preanalysis claim decomposition for fail_closed_surfaces
+    and downstream_impact_decision_requirement but no model-readable text for these
+    acceptance criteria is embedded in the bundle or proposed criteria.
+  rationale: A reviewer using only embedded material cannot independently judge whether
+    requirements.md satisfies these acceptance criteria. Absent text means the reviewer
+    must assume content or skip the check, making the review incomplete for two of
+    the six claimed sub-topics.
+- severity: ERROR
+  target_location: proposed-review-criteria-outline.md > Required Checks > Check 8
+  description: Check 8 asks the reviewer to judge whether the prompt combines independent
+    judgment items that should be split before actual review-run. This is a preanalysis
+    sufficiency audit question, not a requirements triad-review question.
+  rationale: Including a meta-audit question in the real review-run criteria conflates
+    the preanalysis audit role with the requirements review role. It may cause the
+    reviewer to produce findings about the criteria document rather than requirements.md,
+    polluting the review output and potentially blocking a valid triad-review gate.
+- severity: WARN
+  target_location: main-preanalysis.md > claim_decomposition invariant ID references
+  description: Plan invariant IDs RPMR-I1 through RPMR-I7 and RPMR-Q3 are cited as
+    stable cross-references but the embedded plan block in the bundle does not label
+    invariants with these IDs.
+  rationale: A reviewer relying on embedded material cannot resolve the ID references
+    without external knowledge, which introduces anchor bias (trusting the preanalysis
+    labeling) and risks missed or misattributed claims.
+- severity: WARN
+  target_location: proposed-review-criteria-outline.md > Source Materials > api-review-protocol-guidance
+  description: The governing text from SESSION_WORKFLOW_GUIDE section 3.3-a-2 and
+    API_REVIEW_PROMPT_QUALITY is represented only by a structured human-curated summary.
+    The actual governing sentences that define proxy_model and human-only authority
+    boundaries are not embedded.
+  rationale: Nuance in the governing text may be relevant to judging Req 3 AC5 and
+    Req 16 AC13-14. A summary can omit or soften conditions. If the real reviewer
+    needs the exact predicate language to assess whether requirements.md preserves
+    the boundary, the summary is insufficient.
+- severity: WARN
+  target_location: proposed-review-criteria-outline.md > Source Materials > behavior-path-source-summary
+  description: The proposed criteria lists behavior-path-source-summary alongside
+    governing guidance documents without restating the use-limit from the bundle (source
+    for behavior-path claims only; not a code correctness target).
+  rationale: Without the use-limit restated in the criteria itself, a reviewer may
+    treat the code-level behavior described in the summary as a correctness standard
+    for requirements.md, inverting the requirements-first direction and introducing
+    scope creep.
+- severity: WARN
+  target_location: proposed-review-criteria-outline.md > Review Task > review question
+  description: The primary review question names all six sub-topics inline, which
+    risks functioning as a hidden exhaustive checklist and may suppress independent
+    defect discovery for transfer issues not anticipated by the preanalysis.
+  rationale: Vertical intent transfer review requires the reviewer to read requirements.md
+    independently against upstream materials. A question that pre-enumerates all expected
+    defect categories anchors the reviewer to those categories and reduces the probability
+    of surfacing unanticipated omissions or contradictions.
+- severity: INFO
+  target_location: bundle > main-preanalysis.md > unread_or_assumptions
+  description: The preanalysis notes that variant and role assignment are not yet
+    fixed. The proposed criteria does not surface this constraint or instruct the
+    real reviewer about what to do if variant or role context affects judgment.
+  rationale: If variant selection affects which acceptance criteria apply, the real
+    reviewer should know this is an open variable. Omitting it may cause the reviewer
+    to assume a default variant that does not match the intended review context.

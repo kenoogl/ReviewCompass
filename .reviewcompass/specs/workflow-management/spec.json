@@ -17,31 +17,31 @@
     },
     "requirements": {
       "drafting": true,
-      "triad-review": false,
+      "triad-review": true,
       "review-wave": false,
       "alignment": false,
       "approval": false
     },
     "design": {
-      "drafting": true,
-      "triad-review": true,
-      "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
     },
     "tasks": {
-      "drafting": true,
-      "triad-review": true,
-      "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
     },
     "implementation": {
-      "drafting": true,
-      "triad-review": true,
-      "review-wave": true,
-      "alignment": true,
-      "approval": true
+      "drafting": false,
+      "triad-review": false,
+      "review-wave": false,
+      "alignment": false,
+      "approval": false
     }
   },
   "reopened": {

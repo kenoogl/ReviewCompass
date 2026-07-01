@@ -1,0 +1,28 @@
+run_id: 2026-07-01-workflow-management-requirements-reopen-protocol-review-run
+source_execution_spec: review-execution-spec.yaml
+source_execution_spec_sha256: 8d50c0ab2731fe164d8bfce071f38d936869c4a400da67b70e573efa7999f3c4
+variant: implementation_review_independent_3way_codex_operator
+criteria_file: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/proposed-review-criteria-outline.md
+criteria_source_sha256: 5324826444851e1e63e24f1d3de5ff86a0a4b6c44797fa9e9c7619f2ac4298d6
+target_files:
+  - path: .reviewcompass/specs/workflow-management/requirements.md
+    sha256: 6547bae098f1149e8ab19bf2cdf98e349e0e8eb68112a4ac98e7bca420d37acc
+roles:
+  - role: primary
+    provider: openai-api
+    model: gpt-5.4
+    prompt_path: prompts/gpt-5.4.round-1.prompt.md
+    raw_path: raw/gpt-5.4.round-1.txt
+    parsed_path: parsed/gpt-5.4.round-1.yaml
+  - role: adversarial
+    provider: anthropic-api
+    model: claude-sonnet-4-6
+    prompt_path: prompts/claude-sonnet-4-6.round-1.prompt.md
+    raw_path: raw/claude-sonnet-4-6.round-1.txt
+    parsed_path: parsed/claude-sonnet-4-6.round-1.yaml
+  - role: judgment
+    provider: gemini-api
+    model: gemini-3.1-pro-preview
+    prompt_path: prompts/gemini-3.1-pro-preview.round-1.prompt.md
+    raw_path: raw/gemini-3.1-pro-preview.round-1.txt
+    parsed_path: parsed/gemini-3.1-pro-preview.round-1.yaml

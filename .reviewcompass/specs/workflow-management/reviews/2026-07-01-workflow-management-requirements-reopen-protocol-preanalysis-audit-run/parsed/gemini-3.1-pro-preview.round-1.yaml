@@ -1,0 +1,84 @@
+role: judgment
+provider: gemini-api
+model: gemini-3.1-pro-preview
+attempts: 1
+duration_seconds: 50.16
+verdict: insufficient
+independent_reconstruction:
+  judgment_items:
+  - item_id: workflow-management-requirements-reopen-protocol
+    question: Does requirements.md preserve the reopen protocol mechanization requirement,
+      including edited phase full-gate re-execution, downstream impact decisions,
+      fail-closed detection points, superseding reopen records, and proxy_model authority
+      boundaries, without omission or drift?
+    target_files:
+    - .reviewcompass/specs/workflow-management/requirements.md
+    source_materials:
+    - reopen-protocol-mechanization-plan
+    - current-reopen-state
+    - current-spec-state
+    - reopen-procedure-guidance
+    - vertical-intent-transfer-guidance
+    - api-review-protocol-guidance
+    - behavior-path-source-summary
+    out_of_scope:
+    - Implementation code correctness
+    - design.md or tasks.md correctness
+    - Runner behavior or current implementation completeness
+    - Authorizing commits, push, or phase transitions
+    - Prompt meta-evaluation or split auditing
+    rationale: These elements constitute a single, cohesive intent transfer for the
+      reopen mechanization feature from planning/guidance into the requirements document.
+preanalysis_assessment:
+  supported_parts:
+  - Decomposition of reopen protocol requirements into verifiable fail-closed surfaces
+    and downstream impact policies.
+  - Identification of relevant plan invariants and guidance documents as sources.
+  missing_perspectives:
+  - Failure to isolate target material from source material, resulting in the target
+    being packaged into the source list.
+  unsupported_or_overconfident_parts:
+  - The implicit assumption that the final API reviewer should audit the prompt itself
+    for judgment splits and requirements drift.
+  bias_risks:
+  - Anchoring the review prompt on the 'audit bundle', which is a preanalysis artifact
+    that will not exist during execution.
+prompt_sufficiency:
+  information: insufficient
+  question: revisions_needed
+  scope: insufficient
+  sensitivity_check: sufficient
+  notes:
+  - Target material is erroneously bundled in the source materials.
+  - The prompt inappropriately instructs the execution model to perform prompt auditing.
+  - The prompt text references an 'audit bundle' rather than ensuring fully self-contained
+    source delivery.
+required_prompt_changes:
+- Remove 'target-requirements-excerpts' from the Source Materials block; the target
+  document must only be provided as the target artifact.
+- Remove Checks 7 and 8 from the Required Checks section to prevent the execution
+  reviewer from attempting prompt meta-evaluation.
+- Update the Source Materials prose to explicitly contain or reference self-contained
+  embedded source texts, removing any reference to 'this audit bundle'.
+findings:
+- severity: ERROR
+  target_location: 'Source Materials (key: target-requirements-excerpts)'
+  description: Target material (requirements.md excerpts) is included in the model-readable
+    source materials block.
+  rationale: Target and source materials must be strictly separated. Providing target
+    text as a source material breaks intent-transfer review logic and risks circular
+    validation.
+- severity: ERROR
+  target_location: Proposed API Review Criteria -> Required Checks (Items 7 and 8)
+  description: The prompt instructs the reviewer to evaluate if the prompt alters
+    review requirements or needs to be split.
+  rationale: Prompt quality auditing is the responsibility of the preanalysis phase.
+    Delegating it to the execution review-run broadens the scope incorrectly and confuses
+    the reviewer's task.
+- severity: ERROR
+  target_location: Proposed API Review Criteria -> Source Materials text block
+  description: The prompt instructs the reviewer to 'Use the embedded source materials
+    in this audit bundle'.
+  rationale: The 'audit bundle' will not exist during the actual review-run. Relying
+    on it makes the source materials functionally missing or path-only for the execution
+    reviewer.

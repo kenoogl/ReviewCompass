@@ -1,0 +1,6 @@
+run_id: 2026-07-01-workflow-management-requirements-reopen-protocol-preanalysis-audit-run
+target_files:
+- path: .reviewcompass/specs/workflow-management/reviews/2026-07-01-workflow-management-requirements-reopen-protocol-review-run/preanalysis-audit-bundle.md
+  sha256: 433911ef72a5dd4731b6f1cad4e686fc4047174dde5dc53b2604c61d90c4c6c3
+execution_spec_path: review-execution-spec.yaml
+execution_spec_sha256: 5d37ae45107b3a3080235e91c819538a3969db4adabae8fbf5e05dcfe27ccbd4
