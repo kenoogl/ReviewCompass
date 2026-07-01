@@ -14,10 +14,10 @@ completed_steps:
 - 第3過程：requirements drafting 完了（第2過程で修正した requirements 正本を第3過程の起草結果として確認）
 - 第3過程：requirements triad-review 完了（実 review-run、利用者可視 triage、承認済み finding 反映完了）
 - 第3過程：requirements review-wave 完了（横断影響なし、carry-forward 未消化 0 件）
-next_step: 第3過程：requirements alignment
+- 第3過程：requirements alignment 完了（requirements 正本・review 対処・workflow_state・reopen 記録の整合確認）
+next_step: 第3過程：requirements approval
 step_number: 3
 pending_gates:
-- stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
 - stages/design.yaml#triad-review
 - stages/design.yaml#review-wave
@@ -65,6 +65,17 @@ downstream_impact_decisions:
   - .reviewcompass/specs/_cross_feature/reviews/review-wave-summary.json
   - learning/workflow/carry-forward-register/reviewcompass-import.yaml
   - .reviewcompass/specs/workflow-management/requirements.md
+  - stages/in-progress/reopen-procedure-2026-07-01.yaml
+- gate: stages/requirements.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: requirements 正本、triad-review 対処、review-wave 判定、workflow_state、reopen
+    進行中記録が整合しており、requirements 内の追加修正は不要なため、requirements alignment gate を完了扱いにする。
+  evidence:
+  - .reviewcompass/specs/_cross_feature/reviews/2026-07-01-requirements-reopen-protocol-alignment.md
+  - .reviewcompass/specs/_cross_feature/reviews/2026-07-01-requirements-reopen-protocol-review-wave.md
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/spec.json
   - stages/in-progress/reopen-procedure-2026-07-01.yaml
 drafting_completed_gates:
 - stages/requirements.yaml#drafting
@@ -117,6 +128,14 @@ commit_stop_point_records:
   head: a4edd0c521647f55232483d8f503822252ce2f98
   evidence:
   - a4edd0c521647f55232483d8f503822252ce2f98
+  - stages/in-progress/reopen-procedure-2026-07-01.yaml
+- step: 3
+  kind: review_wave_complete
+  gate: stages/requirements.yaml#review-wave
+  reason: requirements review-wave 完了時点の停止点
+  head: 612332ad024bcc42ca444bdb72127e06d7b7422f
+  evidence:
+  - 612332ad024bcc42ca444bdb72127e06d7b7422f
   - stages/in-progress/reopen-procedure-2026-07-01.yaml
 triad_review_protocol:
   gates:
@@ -274,8 +293,9 @@ triad_review_protocol:
 completed_gates:
 - stages/requirements.yaml#triad-review
 - stages/requirements.yaml#review-wave
+- stages/requirements.yaml#alignment
 commit_stop_point: true
 commit_stop_point_step: 3
-commit_stop_point_kind: review_wave_complete
-commit_stop_point_gate: stages/requirements.yaml#review-wave
-commit_stop_point_reason: requirements review-wave 完了時点の停止点
+commit_stop_point_kind: alignment_complete
+commit_stop_point_gate: stages/requirements.yaml#alignment
+commit_stop_point_reason: requirements alignment 完了時点の停止点
