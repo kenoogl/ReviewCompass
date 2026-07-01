@@ -13,7 +13,8 @@ completed_steps:
   plan を別候補として追加
 - 第3過程：requirements alignment 完了（scope 分離後の backlog routing discipline を整合確認）
 - 第3過程：requirements approval 完了（scope 分離後の backlog routing discipline を利用者承認）
-next_step: 第4過程：完了
+- 第4過程：reopen 完了（scope 分離後の backlog routing discipline requirements を確定）
+next_step: 完了
 step_number: 4
 pending_gates: []
 current_blocker: null
@@ -45,6 +46,14 @@ reopen_step_records:
   - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-entry-lane-routing.yaml
   - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-routing-maintenance-cleanup.yaml
   - .reviewcompass/backlog/index.yaml
+- from_step: 4
+  completed_step: 第4過程：reopen 完了（scope 分離後の backlog routing discipline requirements
+    を確定）
+  rationale: 全 pending gate が完了し、対象 feature の recheck をクリアしたうえで、in-progress reopen
+    記録を completed state として保存した。
+  evidence:
+  - .reviewcompass/specs/workflow-management/spec.json
+  - stages/completed/reopen-procedure-2026-07-01.yaml
 commit_stop_point_records:
 - step: 2
   kind: canonical_update_complete
@@ -72,6 +81,15 @@ commit_stop_point_records:
   - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-entry-lane-routing.yaml
   - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-routing-maintenance-cleanup.yaml
   - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- step: 4
+  kind: approval_complete
+  gate: stages/requirements.yaml#approval
+  reason: requirements approval 完了時点の停止点
+  head: f5bbd225bfadbd40097d07c2ae056f882d345b17
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/specs/workflow-management/spec.json
+  - stages/in-progress/reopen-procedure-2026-07-01.yaml
 completed_gates:
 - stages/requirements.yaml#alignment
 - stages/requirements.yaml#approval
@@ -99,8 +117,83 @@ downstream_impact_decisions:
   - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-routing-maintenance-cleanup.yaml
   - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
   - .reviewcompass/runtime/approvals/req-backlog-routing-scope-split-approval-2026-07-01.yaml
-commit_stop_point: true
-commit_stop_point_step: 4
-commit_stop_point_kind: approval_complete
-commit_stop_point_gate: stages/requirements.yaml#approval
-commit_stop_point_reason: requirements approval 完了時点の停止点
+- gate: stages/design.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: backlog routing discipline は requirements の分類規律に限定され、design 正本変更は今回行っていない。下流 design
+    は既存完了状態を維持し、maintenance cleanup は別候補として扱う。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-routing-maintenance-cleanup.yaml
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- gate: stages/tasks.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: backlog routing discipline は requirements の分類規律に限定され、tasks 正本変更は今回行っていない。実作業の棚卸しや
+    helper 修正は別候補として後続 routing 対象にした。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-routing-maintenance-cleanup.yaml
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- gate: stages/implementation.yaml#alignment
+  feature_scope: workflow-management
+  decision: existing_sufficient
+  rationale: backlog routing discipline は requirements の分類規律に限定され、implementation 正本・実装変更は今回行っていない。局所修正は
+    maintenance 候補として分離済みである。
+  evidence:
+  - .reviewcompass/specs/workflow-management/requirements.md
+  - .reviewcompass/backlog/plans/plan-2026-07-01-backlog-routing-maintenance-cleanup.yaml
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+impacted_downstream_phases:
+- design
+- tasks
+- implementation
+feature_impact_decisions:
+- feature: workflow-management
+  decision: reopen_existing_feature
+  impact_basis: contract_ownership
+  rationale: backlog 候補、TODO/checklist 導線、reopen/maintenance 手続き、next --json、commit
+    preflight、自律実行トリガーの運用契約を workflow-management が所有するため。
+  evidence:
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- feature: foundation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 共通基盤の意図・機能境界を変更しないため。
+  evidence:
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- feature: runtime
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: session/handoff は手続きとして言及されるが、runtime の正本変更は現時点で不要。
+  evidence:
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- feature: evaluation
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 評価・レビュー評価契約に変更がないため。
+  evidence:
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- feature: analysis
+  decision: no_reopen_existing_feature
+  impact_basis: no_implementation_impact
+  rationale: 分析・可視化・報告機能に変更がないため。
+  evidence:
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- feature: self-improvement
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: 自律実行の証跡・候補提示に関係し得るが、主契約は workflow-management 側で扱う。
+  evidence:
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+- feature: conformance-evaluation
+  decision: indirect_check_only
+  impact_basis: consumer_or_derivative_only
+  rationale: 逸脱検出や照合観点で確認対象になり得るが、主契約は workflow-management 側で扱う。
+  evidence:
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
+new_feature_decision:
+  decision: no_new_feature
+  rationale: 既存 workflow-management の運用契約変更であり、新 feature は不要。
+  evidence:
+  - docs/reviews/reopen-classification-2026-07-01-wm-backlog-candidate-routing.md
