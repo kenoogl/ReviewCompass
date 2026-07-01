@@ -1,0 +1,47 @@
+process_id: maintenance
+started_at: '2026-07-01T00:00:00+09:00'
+completed_at: '2026-07-01T00:00:00+09:00'
+trigger: >
+  requirements triad-review の実 review-run 直前で、利用者が「implementation_review_independent_3way_codex_operator
+  が即座に使われないとならない」と指摘した。本番 review-run の variant / role / provider / model
+  を LLM が config や過去 run から探索して選ぶのではなく、機械的に operation_defaults から解決して
+  next --json に表示する必要がある。
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-07-01.yaml
+mainline_blocked_by_reason: >
+  本線 reopen は requirements triad-review の actual_review_run_required で停止中。
+  実 review-run の variant 解決規律が不十分なため、本線レビューを進める前にメンテレーンで補修した。
+allowed_scope:
+  - actual_review_run_required の next --json に実 review-run 用 variant を機械表示する
+  - config/api-settings.yaml の operation_defaults.implementation_review から variant を解決する
+  - 解決した variant の required_roles から role/path/provider/model を表示する
+  - LLM の手探索や過去 run 参照を本番 review-run 開始条件にしない
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - stages/completed/maintenance-2026-07-01-triad-review-default-variant-resolution.yaml
+change_classification: 局所
+classification_reason: >
+  next --json の案内情報に review-run variant 解決結果を追加するだけであり、workflow-management の
+  requirements 正本、review criteria、API review 結果、本線 reopen 記録の判断内容は変更しない。
+procedure: >
+  TDD。まず prompt quality 通過後の actual_review_run_required 状態で、next --json が
+  operation_defaults.implementation_review から implementation_review_independent_3way_codex_operator
+  と 3 役割当を返す赤テストを追加し、その後に実装した。
+completed_steps:
+  - actual_review_run_required 直前の variant 自動解決を要求する赤テストを追加した
+  - tools/check-workflow-action.py が config/api-settings.yaml の operation_defaults.implementation_review を読み、variant を解決するようにした
+  - 解決した variant の required_roles から primary/adversarial/judgment の path/provider/model を next --json に返すようにした
+  - next --json の run_review_args に --default-variant-for implementation_review を提示するようにした
+verification:
+  - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenTriadReviewProtocolTests::test_next_resolves_actual_review_run_variant_from_operation_defaults -q
+    result: passed
+  - command: .venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenTriadReviewProtocolTests tests/tools/test_check_workflow_action.py::ReopenReviewPromptQualityGuardTests -q
+    result: 8 passed
+  - command: .venv/bin/python3 tools/check-workflow-action.py next --json
+    result: >
+      triad_review_protocol.state は actual_review_run_required。variant_role_assignment は
+      operation_defaults.implementation_review 由来で resolved となり、
+      implementation_review_independent_3way_codex_operator と primary=openai-api/gpt-5.4、
+      adversarial=anthropic-api/claude-sonnet-4-6、judgment=gemini-api/gemini-3.1-pro-preview
+      を表示した。
+current_status: completed

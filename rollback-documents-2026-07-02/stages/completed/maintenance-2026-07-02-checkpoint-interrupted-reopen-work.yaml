@@ -1,0 +1,14 @@
+process_id: maintenance
+completed_at: "2026-07-02T05:50:00+09:00"
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-07-01.yaml
+title: "Checkpoint interrupted reopen work before rollback decision"
+scope:
+  - "壊れた reopen 作業を巻き戻す前に、現状を退避コミットとして保存する"
+  - "reopen 自体は完了扱いにしない"
+completed_steps:
+  - "利用者が reopen 作業の中止と巻き戻し候補確認を指示した"
+  - "退避コミットのため、進行中 reopen state と関連生成物を同一コミットに保存する"
+verification:
+  - command: ".venv/bin/python3 tools/guarded-git-commit.py -m \"Checkpoint interrupted reopen work\" --rationale \"利用者が本ターンでコミットを明示指示\""
+    result: "DEVIATION: stages/in-progress/reopen-procedure-2026-07-01.yaml が残るため、completed maintenance 記録が必要と判定"
+current_status: completed

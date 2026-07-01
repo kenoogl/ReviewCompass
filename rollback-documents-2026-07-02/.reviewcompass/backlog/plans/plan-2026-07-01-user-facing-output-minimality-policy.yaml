@@ -1,0 +1,91 @@
+schema_version: reviewcompass-backlog-item-v1
+id: plan-2026-07-01-user-facing-output-minimality-policy
+kind: plan
+title: Enforce user-facing output minimality across assistant workflows
+status: candidate
+source_unit_id: main-side-conversation
+created_at: '2026-07-01T00:00:00+09:00'
+index_path: .reviewcompass/backlog/index.yaml
+provenance:
+  created_by: llm
+  source_ref: conversation:user:正常時は不要・最小限、異常時のみ報告
+  reason: >
+    正常時の内部処理実況や機械状態名の説明が利用者に不要であり、異常時・判断待ち・
+    リスク提示に限って短く報告する方針を、システム全体のユーザ向け出力規律として
+    機械的に強制するため。
+summary: >
+  assistant の commentary / final に対し、正常時は沈黙または最小報告、異常時だけ
+  必要情報を提示する横断規律を定義し、effective prompt / operation prompt / lint へ
+  段階的に適用する。詳細な内部処理は YAML / JSON / evidence / log に残し、会話には
+  利用者が行動できる情報だけを出す。
+related:
+  - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  - .reviewcompass/guidance/WORKFLOW_DISCIPLINE_MAP.yaml
+  - .reviewcompass/backlog/plans/plan-2026-06-23-normal-output-minimization-rollout.yaml
+current_problem:
+  - 正常に進んでいる内部処理について、作業前後の実況コメントが出る。
+  - "`停止点を消費`、`blocker`、`gate` などの内部処理名がユーザ向け文面に出る。"
+  - 正常時の途中報告が多く、利用者が判断すべき情報と機械内部の進行ログが混ざる。
+  - CLI の正常系出力最小化とは別に、assistant 会話出力の最小化規律が未整備である。
+desired_policy:
+  - 正常時の途中コメントは原則出さない。
+  - 報告は、異常、判断待ち、確認不足、リスク、予定外分岐、長時間処理の生存報告に限る。
+  - 内部処理名・機械状態名・手続き実況は、ユーザが判断に使う場合を除き表示しない。
+  - final は結果、現在状態、次に必要な操作を短く示す。
+  - 詳細な手続き、コマンド、状態遷移、証跡はファイル・ログ・JSON に残す。
+remaining_work:
+  - id: UFOM-1
+    title: Define global user-facing output policy
+    status: candidate
+    tasks:
+      - SESSION_WORKFLOW_GUIDE.md にユーザ向け出力最小化規律を追加する。
+      - commentary / final / evidence / JSON / log の役割分担を明記する。
+      - 正常時、異常時、判断待ち、長時間処理時の許可出力を定義する。
+    acceptance:
+      - 正常時 commentary は原則不要であることが明文化されている。
+      - 異常時と判断待ちでは、理由と次に必要な操作だけを短く出す規律になっている。
+      - 内部処理詳細は会話ではなく証跡へ残す方針が明記されている。
+  - id: UFOM-2
+    title: Add forbidden and discouraged phrase lint
+    status: candidate
+    tasks:
+      - ユーザ向け文面で避ける内部処理語・実況表現のリストを定義する。
+      - commentary を最も厳しく、final を次に厳しく検査する lint を追加する。
+      - 最初は warning として導入し、安定後に deviation 化できる構造にする。
+    acceptance:
+      - "`これを消費します`、`停止点を消費します`、`blocker を設定`、`gate を進める` などを検出できる。"
+      - 異常報告や利用者判断に必要な語まで一律禁止しない例外条件がある。
+      - lint 結果は機械可読に記録される。
+  - id: UFOM-3
+    title: Reflect policy in effective prompts and operation prompts
+    status: candidate
+    tasks:
+      - WORKFLOW_DISCIPLINE_MAP.yaml から必要な判定点へ規律を配布する。
+      - next / commit / reopen / maintenance / backlog の effective prompt に、正常時 commentary 抑制を反映する。
+      - 操作開始前実況ではなく、異常・判断待ち・最終結果だけを出す例へ置き換える。
+    acceptance:
+      - 主要 workflow lane で同じ出力方針が適用される。
+      - operation prompt が内部処理名の露出を促さない。
+      - 既存の作業完了時レポート契約と矛盾しない。
+  - id: UFOM-4
+    title: Add regression tests for assistant output discipline
+    status: candidate
+    tasks:
+      - guidance test に正常時 commentary 不要、異常時のみ報告、内部処理語抑制の期待を追加する。
+      - lint test に禁止例と許可例を追加する。
+      - final report の最小構造を壊さないことを確認する。
+    acceptance:
+      - 禁止例が検出される。
+      - 判断待ちや異常時の短い報告は許可される。
+      - 作業完了時レポート契約の必須情報は保持される。
+non_goals:
+  - CLI の stdout / stderr 正常系出力最小化をこの plan だけで完了しない。
+  - 異常時の診断情報や必要な次 action を削らない。
+  - evidence / JSON / log の詳細記録を削らない。
+  - ユーザが明示的に詳細説明を求めた場合の回答まで禁止しない。
+decisions:
+  - date: '2026-07-01'
+    decision: >
+      この方針は個別作業ではなく、システム全体のユーザ向け出力ポリシーとして扱う。
+      正常時は不要・最小限、異常時のみ報告する。
