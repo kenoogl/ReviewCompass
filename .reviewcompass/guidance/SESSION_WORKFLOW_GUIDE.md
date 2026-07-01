@@ -533,6 +533,16 @@ push は **利用者明示承認**を仰いでから実行。LLM が自律的に
 
 `next --json` が `post_write_verification`、`reopen_in_progress`、`resume_in_progress`、`unknown` など `completed` 以外を返している場合、次タスクには任意の改善候補ではなく、その workflow 状態に従う次 action を示す。
 
+`next --json` が `completed` を返している場合、通常 workflow 上の次 action はない。このとき完了報告の次タスク欄に任意候補を書く場合は、次の順で拾う：
+
+1. 利用者がこのターンで次作業を明示した場合は、その指示を次タスクにする。
+2. 利用者指示がない場合は、`TODO_NEXT_SESSION.md` の「次にやること」にある推奨順を候補源にする。
+3. 候補を表示する前に、`.reviewcompass/backlog/index.yaml` または候補ファイル本体で `status: candidate` であることを確認し、完了済み・存在しない・状態が矛盾する候補は次タスクとして出さない。
+4. `TODO_NEXT_SESSION.md` の候補が古い、または候補を解決できない場合は、その旨を現在状態に書き、`.reviewcompass/backlog/index.yaml` の `status: candidate` から次候補を拾う。
+5. 候補を 1 件だけ出す場合は、確認できた最上位候補を「次タスク」とする。複数候補を求められた場合だけ、同じ順序で必要件数を列挙する。
+
+completed 状態で候補を出す場合も、その候補はまだ開始済みではない。maintenance、reopen、新規 workflow、backlog TODO 実行のいずれとして開始するかは、利用者指示または開始前 preflight の結果で確定する。
+
 ### 7.1 進捗説明の平易化
 
 進捗説明では、内部処理名をそのまま主文にせず、利用者が理解しやすい作業状態で述べる。まず次の順で短く示す：

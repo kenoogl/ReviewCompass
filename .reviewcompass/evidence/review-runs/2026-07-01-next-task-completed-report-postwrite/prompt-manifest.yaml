@@ -1,0 +1,89 @@
+schema_version: effective-prompt-manifest-v1
+decision_point:
+  kind: post_write_verification
+  required_action: run_post_write_verification
+source_artifacts:
+- path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  sha256: sha256:d2edd3aad73a89dcc34b1249f67a3153376b941afc252f6e15c61cb50a535458
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: sha256:1b8ccca40bd39a1e90f98d014c7c8e2e26dbfd598bba5239b3e70572f014a48e
+- path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+  sha256: sha256:d2edd3aad73a89dcc34b1249f67a3153376b941afc252f6e15c61cb50a535458
+- path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+  sha256: sha256:1b8ccca40bd39a1e90f98d014c7c8e2e26dbfd598bba5239b3e70572f014a48e
+- path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  sha256: sha256:7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+required_disciplines:
+- .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+- .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+operation_contract:
+  operation_id: prepare_post_write_review
+  sha256: sha256:57c1314912e7cd49f3a64e69b853fd28c7eb6f238c337fe5be0c064bd72ef48a
+expected_output_schema:
+  schema_ref: null
+  required_sections:
+  - findings
+prompt_length:
+  min_chars: 1
+  max_chars: 200000
+  source_ref: .reviewcompass/evidence/review-runs/2026-07-01-next-task-completed-report-postwrite/review-target.md
+  failure_verdict: DEVIATION
+preconditions_checked:
+- id: post-write-review-target-generated
+  source: prepare_post_write_review
+  machine_checked: true
+  evidence_ref: .reviewcompass/evidence/review-runs/2026-07-01-next-task-completed-report-postwrite/review-target.md
+language_task:
+  document_kind: post_write_verification
+  input:
+    required_files:
+    - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    state_refs: []
+    source_refs:
+    - .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+    - .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    - .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+  output_format:
+    kind: yaml_findings
+    required_sections:
+    - findings
+    schema_ref: null
+  constraints:
+  - Review language-level consistency only.
+  - Do not mutate workflow state.
+  - Do not create review-run artifacts.
+  - Do not commit or push.
+review_prompt_materials:
+  target_files:
+  - path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+    content_mode: full_text
+    content_sha256: sha256:d2edd3aad73a89dcc34b1249f67a3153376b941afc252f6e15c61cb50a535458
+  - path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    content_mode: full_text
+    content_sha256: sha256:1b8ccca40bd39a1e90f98d014c7c8e2e26dbfd598bba5239b3e70572f014a48e
+  source_materials:
+  - path: .reviewcompass/guidance/SESSION_WORKFLOW_GUIDE.md
+    content_mode: full_text
+    content_sha256: sha256:d2edd3aad73a89dcc34b1249f67a3153376b941afc252f6e15c61cb50a535458
+  - path: .reviewcompass/guidance/WORKFLOW_NAVIGATION.md
+    content_mode: full_text
+    content_sha256: sha256:1b8ccca40bd39a1e90f98d014c7c8e2e26dbfd598bba5239b3e70572f014a48e
+  - path: .reviewcompass/guidance/API_REVIEW_PROMPT_QUALITY.md
+    content_mode: full_text
+    content_sha256: sha256:7a4698ec32170ced27d6f7dad1910a4e5a9b64d4639c74892c37cf60cee999a8
+postconditions:
+- id: post-write-review-target-manifest-matches
+  check_kind: review_target_manifest_matches
+  source_ref: .reviewcompass/evidence/review-runs/2026-07-01-next-task-completed-report-postwrite/review-target.md
+on_completion:
+  next_required_action: run_post_write_verification
+  allowed_followups:
+  - prompt-audit
+  - run-post-write-review
+  forbidden_actions:
+  - commit
+  - push
+  - spec-set
+generated_at: '2026-07-01T00:06:38.003892+00:00'
+criteria_id: next_task_completed_report_guidance
