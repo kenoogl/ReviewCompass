@@ -7200,6 +7200,71 @@ class ReopenFinalizeTests(unittest.TestCase):
     self.assertIn("implementation", result.stdout)
     self.assertTrue(in_progress.exists())
 
+  def test_reopen_finalize_allows_downstream_no_change_with_decision_evidence(self):
+    """downstream phase は変更不要判断の証跡があれば本文変更なしで完了できる"""
+    in_progress = self._write_ready_in_progress()
+    state = yaml.safe_load(in_progress.read_text(encoding="utf-8"))
+    state["downstream_impact_decisions"].extend([
+      {
+        "gate": "stages/design.yaml#alignment",
+        "feature_scope": "all_features",
+        "decision": "existing_sufficient",
+        "rationale": "design は既存成果物で受けられる。",
+        "evidence": [".reviewcompass/specs/workflow-management/design.md"],
+      },
+      {
+        "gate": "stages/tasks.yaml#alignment",
+        "feature_scope": "all_features",
+        "decision": "no_impact",
+        "rationale": "tasks への追加影響はない。",
+        "evidence": [".reviewcompass/specs/workflow-management/tasks.md"],
+      },
+      {
+        "gate": "stages/implementation.yaml#alignment",
+        "feature_scope": "all_features",
+        "decision": "existing_sufficient",
+        "rationale": "implementation は既存実装で受けられる。",
+        "evidence": ["tools/check-workflow-action.py"],
+      },
+    ])
+    in_progress.write_text(
+      yaml.safe_dump(state, allow_unicode=True, sort_keys=False),
+      encoding="utf-8",
+    )
+
+    result = run_script(
+      [
+        "reopen-finalize",
+        "--file", "stages/in-progress/reopen-procedure-2026-06-16.yaml",
+        "--impacted-downstream-phase", "design",
+        "--impacted-downstream-phase", "tasks",
+        "--impacted-downstream-phase", "implementation",
+        "--new-feature-decision",
+        "no_new_feature",
+        "既存 feature で受けられる。",
+        "stages/feature-partitioning/2026-05-24-proposal.md",
+        "--json",
+      ]
+      + self._feature_impact_args(),
+      cwd=self.tmpdir,
+    )
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stdout)
+    completed = (
+      Path(self.tmpdir)
+      / "stages"
+      / "completed"
+      / "reopen-procedure-2026-06-16.yaml"
+    )
+    completed_state = yaml.safe_load(completed.read_text(encoding="utf-8"))
+    self.assertEqual(
+      completed_state["impacted_downstream_phases"],
+      ["design", "tasks", "implementation"],
+    )
+    self.assertEqual(len(completed_state["downstream_impact_decisions"]), 5)
+    self.assertFalse(in_progress.exists())
+
   def test_reopen_finalize_rejects_edited_requirements_without_full_review_gates(self):
     """requirements を実質編集した reopen は triad-review/review-wave なしで完了化できない"""
     in_progress = self._write_ready_in_progress()

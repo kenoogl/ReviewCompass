@@ -192,9 +192,25 @@ red_tests:
   - id: RPMR-T4
     title: existing_sufficient/no_impact の証跡があれば downstream 変更なしで進める
     target: tests/tools/test_check_workflow_action.py
+    status: completed
     expected: >
       各 downstream phase に gate、feature_scope、decision、rationale、evidence を持つ
       decision がある場合、本文変更なしの downstream phase は finalize 条件を満たす。
+    evidence:
+      test: >
+        `ReopenFinalizeTests::test_reopen_finalize_allows_downstream_no_change_with_decision_evidence`
+        を追加し、design/tasks/implementation に `existing_sufficient` または `no_impact`
+        の判断証跡がある場合に `reopen-finalize` が成功することを固定した。
+      implementation: >
+        T3 で追加した `impacted_downstream_phases` と `downstream_impact_decisions`
+        の phase coverage 検査により、証跡が揃っている場合は追加実装なしで通過した。
+      verification:
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenFinalizeTests::test_reopen_finalize_allows_downstream_no_change_with_decision_evidence -q`
+          が成功。
+        - >
+          `.venv/bin/python3 -m pytest tests/tools/test_check_workflow_action.py::ReopenFinalizeTests -q`
+          が成功。
   - id: RPMR-T5
     title: commit preflight は同じ不足を検出するが初検出にしない
     target: tests/tools/test_check_workflow_action.py
