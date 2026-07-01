@@ -1,0 +1,45 @@
+process_id: maintenance
+started_at: '2026-07-01T00:00:00+09:00'
+completed_at: '2026-07-01T00:00:00+09:00'
+trigger: >
+  preanalysis audit の証跡記録で role/provider/model assignment を手で転記していた。
+  api review / prompt quality の variant と role/provider/model は config/api-settings.yaml と
+  run_review.py が生成する review-execution-spec.yaml で機械的に確定しているため、手組み表を
+  正本扱いしないよう補修する。
+mainline_blocked_by: stages/in-progress/reopen-procedure-2026-07-01.yaml
+mainline_blocked_by_reason: >
+  本線 reopen は requirements triad-review の prompt_quality_review_required で停止中。
+  本補修は本線の要求本文や review judgment を変えず、レビュー実行証跡の参照方式だけを直す
+  局所的なメンテナンス作業として扱う。
+allowed_scope:
+  - user_visible_triage の role/provider/model 証跡を review-execution-spec.yaml 参照で満たせるようにする
+  - 現在の reopen state から手転記の role/provider/model 表を取り除き、execution spec 参照へ置換する（本線 state ファイルのため本コミットからは分離）
+  - 上記を固定する focused test を追加する
+allowed_files:
+  - tools/check-workflow-action.py
+  - tests/tools/test_check_workflow_action.py
+  - stages/in-progress/reopen-procedure-2026-07-01.yaml
+  - stages/in-progress/maintenance-2026-07-01-review-execution-spec-role-assignment.yaml
+  - stages/completed/maintenance-2026-07-01-review-execution-spec-role-assignment.yaml
+change_classification: 局所
+classification_reason: >
+  API review runner が既に生成している execution spec を参照するだけの証跡経路補修であり、
+  workflow-management の要求本文、review criteria の判断内容、API review 結果は変更しない。
+procedure: >
+  TDD。まず user_visible_triage が role_provider_model_assignment 手表なしでも
+  review_execution_spec 参照で進めることを赤テストにし、実装後に同テストを緑化する。
+completion_conditions:
+  - focused test が green
+  - next --json が引き続き prompt_quality_review_required を返す
+  - user_visible_triage は手組み role/provider/model 表なしで review_execution_spec 参照を受け入れる
+workflow_steps:
+  - 赤テスト追加
+  - 実装修正
+  - 現在の reopen state 記録の execution spec 参照化は本線ファイル側の未コミット変更として分離
+  - focused test と next --json で検証
+completed_steps:
+  - user_visible_triage が review_execution_spec 参照だけで role/provider/model 証跡を満たせる赤テストを追加した
+  - _user_visible_triage_presented が role_provider_model_assignment または review_execution_spec を受け入れるようにした
+  - 現在の reopen state の preanalysis_sufficiency_audit 記録は本線ファイルに大きな未コミット変更を含むため、本メンテコミットには含めず本線側へ分離した
+  - focused test と関連 protocol guard tests が green
+current_status: completed

@@ -5600,9 +5600,14 @@ def _review_run_artifacts_valid(review_run_record):
 def _user_visible_triage_presented(triage_record):
   if not isinstance(triage_record, dict) or triage_record.get("presented") is not True:
     return False
+  role_assignment_source = (
+    triage_record.get("role_provider_model_assignment")
+    or triage_record.get("review_execution_spec")
+  )
+  if not role_assignment_source:
+    return False
   required_fields = [
     "variant",
-    "role_provider_model_assignment",
     "raw_result_summary",
     "severity",
     "same_root_clusters",

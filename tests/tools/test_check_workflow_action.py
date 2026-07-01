@@ -12087,6 +12087,60 @@ class ReopenTriadReviewProtocolTests(unittest.TestCase):
     protocol = json.loads(result.stdout)["next_action"]["triad_review_protocol"]
     self.assertEqual(protocol["state"], "preanalysis_required_changes_pending")
 
+  def test_next_accepts_review_execution_spec_for_role_assignment(self):
+    """role/provider/model は手表ではなく review-execution-spec 参照で満たせる"""
+    self._write_reopen_triad_review_state(
+      "triad_review_protocol:\n"
+      "  gates:\n"
+      "    \"stages/requirements.yaml#triad-review\":\n"
+      "      main_preanalysis:\n"
+      "        path: reviews/main-preanalysis.md\n"
+      "      preanalysis_sufficiency_audit:\n"
+      "        status: passed\n"
+      "        required_prompt_changes: []\n"
+      "        required_prompt_changes_applied: true\n"
+      "      criteria_draft:\n"
+      "        path: reviews/api-review-criteria.md\n"
+      "        user_review_requirements_mapped: true\n"
+      "        required_checks_mapped: true\n"
+      "        target_criteria_separated: true\n"
+      "        output_contract_present: true\n"
+      "        prohibited_actions_reflected: true\n"
+      "        source_materials_path_only: false\n"
+      "      prompt_quality_review:\n"
+      "        adversarial: reviews/prompt-quality-adversarial.yaml\n"
+      "        main_revision: reviews/api-review-criteria-v2.md\n"
+      "        judgment: reviews/prompt-quality-judgment.yaml\n"
+      "        approved: true\n"
+      "        judgment_findings: []\n"
+      "      review_run:\n"
+      "        raw: reviews/raw\n"
+      "        parsed: reviews/parsed\n"
+      "        rounds: reviews/rounds.yaml\n"
+      "        model_result_summary: reviews/model-result-summary.yaml\n"
+      "        prompt_manifest: reviews/prompt-manifest.yaml\n"
+      "        triage: reviews/triage.md\n"
+      "        target_manifest_has_target: true\n"
+      "        rounds_criteria_approved: true\n"
+      "      user_visible_triage:\n"
+      "        presented: true\n"
+      "        variant: standard\n"
+      "        review_execution_spec: reviews/review-execution-spec.yaml\n"
+      "        raw_result_summary: reviews/raw-summary.md\n"
+      "        severity: must-fix\n"
+      "        same_root_clusters: reviews/clusters.yaml\n"
+      "        three_level_triage: reviews/triage.md\n"
+      "        must_fix_candidates: reviews/must-fix.yaml\n"
+      "        stopped_before_proxy_spec_or_gate: true\n"
+    )
+
+    result = run_script(["next", "--json"], cwd=self.tmpdir)
+
+    _assert_script_invoked(self, result)
+    self.assertEqual(result.returncode, 0, result.stderr)
+    protocol = json.loads(result.stdout)["next_action"]["triad_review_protocol"]
+    self.assertEqual(protocol["state"], "reopen_advance_gate_allowed")
+
 
 class ReopenReviewPromptQualityGuardTests(unittest.TestCase):
   """reopen triad-review の prompt quality / review-run guard"""
