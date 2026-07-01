@@ -1,0 +1,61 @@
+process_id: maintenance
+started_at: '2026-07-01T00:00:00+09:00'
+completed_at: '2026-07-01T00:00:00+09:00'
+trigger: >
+  利用者が、先に `.reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml`
+  をメンテナンスレーンで対応し、復帰後に再度 reopen する方針を指定したため。
+mainline_blocked_by: none
+work_class: maintenance
+control_relation: side-track
+allowed_scope: >
+  reopen プロトコル再検討 plan の経路、メンテナンスで扱う範囲、復帰後の reopen 方針を
+  backlog plan に明記する。reopen プロトコル本体、workflow guidance、機械ガード、
+  正本仕様、実装コードは変更しない。
+allowed_files:
+  - stages/in-progress/maintenance-2026-07-01-reopen-protocol-plan-routing.yaml
+  - stages/completed/maintenance-2026-07-01-reopen-protocol-plan-routing.yaml
+  - .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
+completion_conditions:
+  - メンテナンスで扱う範囲が plan に明記されている
+  - 復帰後に再度 reopen する方針が plan に明記されている
+  - この作業では reopen プロトコル本体、workflow guidance、機械ガード、正本仕様、実装コードを変更しない
+  - YAML parse と next --json の再確認を行う
+workflow_steps:
+  - id: classify_scope
+    title: メンテナンス範囲を局所記録に限定する
+    status: completed
+  - id: update_plan_route
+    title: plan に経路と復帰方針を明記する
+    status: completed
+completed_changes:
+  - >
+    `.reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml`
+    に `routing_decision` を追加し、このメンテナンスで扱う範囲を plan の経路整理に限定した。
+  - >
+    復帰後、この plan を根拠に改めて reopen を開始する方針を記録した。
+  - >
+    この作業では reopen プロトコル本体、workflow guidance、機械ガード、正本仕様、
+    実装コードを変更しなかった。
+pre_existing_untracked:
+  - .reviewcompass/evidence/sessions/2026-06-30-codex-019f1733-013d-7590-abea-e97ee71576fb.md
+  - docs/sessions/auto-2026-06-30-codex-019f1733-013d-7590-abea-e97ee71576fb.md
+post_write_verification:
+  status: completed
+  checks:
+    - command: >
+        .venv/bin/python3 -c "import yaml, pathlib; files=['stages/in-progress/maintenance-2026-07-01-reopen-protocol-plan-routing.yaml','.reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml']; [yaml.safe_load(pathlib.Path(f).read_text()) for f in files]; print('yaml ok')"
+      result: yaml ok
+    - command: .venv/bin/python3 tools/check-workflow-action.py next --json
+      result: maintenance_post_write_required before completion move
+    - command: >
+        .venv/bin/python3 -c "import yaml, pathlib; files=['stages/completed/maintenance-2026-07-01-reopen-protocol-plan-routing.yaml','.reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml']; [yaml.safe_load(pathlib.Path(f).read_text()) for f in files]; print('yaml ok')"
+      result: yaml ok after completion move
+    - command: .venv/bin/python3 tools/check-workflow-action.py next --json
+      result: completed after maintenance completion move
+return_to:
+  required_action: reopen_start
+  source_plan: .reviewcompass/backlog/plans/plan-2026-07-01-reopen-protocol-mechanization-review.yaml
+  rationale: >
+    メンテナンスでは経路整理のみを行ったため、reopen プロトコル本体の再検討は通常状態へ復帰後に
+    改めて reopen として開始する。
+status: completed

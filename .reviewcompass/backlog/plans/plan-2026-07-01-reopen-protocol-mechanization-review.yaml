@@ -21,6 +21,16 @@ summary: >
   reopen 手順、機械ガード、運用規律を再検討する。対象には requirements 変更、
   design/tasks/implementation への下流波及、完了済み reopen の修復方針、
   commit/finalize 前の fail-closed 検査を含める。
+routing_decision:
+  current_handling: maintenance_preparation
+  maintenance_scope: >
+    この plan 自体について、メンテナンスで扱う範囲、戻り先、再 reopen 方針を明記する。
+    reopen プロトコル本体の意味、workflow guidance、機械ガード、正本仕様、実装コードは
+    このメンテナンスでは変更しない。
+  return_after_maintenance: >
+    メンテナンス完了後、通常状態へ復帰し、この plan を根拠に改めて reopen を開始する。
+  reopen_after_return_required: true
+  direct_protocol_change_allowed_in_maintenance: false
 current_problem:
   - >
     直近の backlog routing reopen では `requirements.md` を変更したが、
