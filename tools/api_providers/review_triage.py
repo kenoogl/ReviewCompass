@@ -41,6 +41,12 @@ POST_WRITE_VERIFICATION_FILE_PREFIXES = (
   "runtime/prompts/",
   "tools/api_providers/prompt_templates/",
 )
+POST_WRITE_VERIFICATION_SPEC_FILENAMES = (
+  "requirements.md",
+  "design.md",
+  "tasks.md",
+  "implementation.md",
+)
 LIGHTWEIGHT_SELF_CHECK_DIR_PREFIXES = (
   "docs/notes/",
 )
@@ -100,6 +106,8 @@ def _is_post_write_target(path: str) -> bool:
     return False
   if any(path.startswith(prefix) for prefix in POST_WRITE_VERIFICATION_FILE_PREFIXES):
     return True
+  if path.startswith(".reviewcompass/specs/"):
+    return Path(path).name in POST_WRITE_VERIFICATION_SPEC_FILENAMES
   if any(path.startswith(prefix) for prefix in POST_WRITE_VERIFICATION_MD_DIR_PREFIXES):
     return True
   return False
