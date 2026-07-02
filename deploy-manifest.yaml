@@ -179,12 +179,18 @@ include:
     reason: Target app feature order and dependency definition template.
   - path: templates/review/manual_dogfooding_review_template.md
     reason: Manual review-run record template for initial tests.
+  - path: templates/review/api_review_prompt_quality_criteria_template.md
+    reason: API review prompt quality criteria template used by prompt review flows.
+  - path: templates/review/main_preanalysis_sufficiency_audit_criteria_template.md
+    reason: Main-session preanalysis sufficiency audit criteria template.
   - path: templates/todo/TODO_NEXT_SESSION.template.md
     reason: Session handoff template for initial tests.
   - path: templates/entry/AGENT_ENTRY.template.md
     reason: Target app multi-LLM agent entry discipline template.
   - path: templates/hooks/pre-bash-precheck.sh.template
     reason: Target app commit/push precheck hook template (placeholder substitution at setup).
+  - path: templates/hooks/review-prompt-guide-inject.sh.template
+    reason: Target app prompt guidance injection hook template.
   - path: templates/hooks/session-record-capture-previous-codex.sh.template
     reason: Target app Codex previous-session capture hook template (placeholder substitution at setup).
   - path: templates/hooks/claude-settings.json.template

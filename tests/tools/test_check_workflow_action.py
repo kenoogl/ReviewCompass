@@ -11584,6 +11584,26 @@ class FeatureOrderGeneralizationTests(unittest.TestCase):
     self.assertEqual(data["verdict"], "OK")
     self.assertEqual(data["next_action"]["kind"], "completed")
 
+  def test_commit_preflight_uses_target_app_feature_order(self):
+    """commit-preflight も対象アプリ側 .reviewcompass/feature-dependency.yaml を読む"""
+    cwd = Path(self.tmpdir)
+    _init_git_repo(cwd)
+    _write_feature_dependency(
+      cwd,
+      ".reviewcompass/feature-dependency.yaml",
+      feature_order=["appfeat-a", "appfeat-b"],
+    )
+    _write_app_spec(cwd, "appfeat-a")
+    _write_app_spec(cwd, "appfeat-b")
+
+    result = run_script(["commit-preflight", "--json"], cwd=cwd)
+    _assert_script_invoked(self, result)
+    data = json.loads(result.stdout)
+
+    self.assertEqual(data["verdict"], "OK", data)
+    self.assertEqual(data["next_action"]["kind"], "commit_candidate")
+    self.assertNotIn("missing_features", data["next_action"])
+
 
 class ActiveSessionsCommitGuardTests(unittest.TestCase):
   """active-sessions.json によるセッション記録コミット制御（仕様§6.2）"""

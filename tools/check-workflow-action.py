@@ -4560,7 +4560,25 @@ def _commit_preflight_next_action(cwd, in_progress_files):
       "reason": "commit unit が現在の staged 内容と一致しません",
     }
 
-  specs, missing = load_all_feature_specs(cwd)
+  feature_resolution = resolve_feature_order(cwd)
+  feature_definition_state = feature_definition_next_state(feature_resolution)
+  if feature_definition_state is not None:
+    next_action, _current_state, reasons, verdict, _exit_code = feature_definition_state
+    if verdict == "DEVIATION":
+      next_action = dict(next_action)
+      next_action["required_action"] = "repair_workflow_state"
+      next_action["reasons"] = reasons
+      return next_action
+    return {
+      "kind": "commit_candidate",
+      "required_action": "prepare_commit",
+      "reason": "feature 一覧の立ち上げ状態ですが、commit 指示入口で遮断すべき active workflow unit はありません",
+    }
+
+  specs, missing = load_all_feature_specs(
+    cwd,
+    feature_order=feature_resolution["feature_order"],
+  )
   if missing:
     return {
       "kind": "unknown",
@@ -6689,11 +6707,11 @@ def validate_post_write_completion_for_targets(cwd, target_files, actual_hashes=
   ]
 
 
-def load_all_feature_specs(cwd):
+def load_all_feature_specs(cwd, feature_order=None):
   """ReviewCompass の全 feature spec.json を読み込む"""
   specs = {}
   missing = []
-  for feature in FEATURE_ORDER:
+  for feature in (feature_order or FEATURE_ORDER):
     spec_data = load_spec_json(cwd, feature)
     if spec_data is None:
       missing.append(feature)

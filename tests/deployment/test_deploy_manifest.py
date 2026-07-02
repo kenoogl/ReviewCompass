@@ -40,7 +40,10 @@ REQUIRED_ALLOWLIST = {
   "learning/workflow/schemas/*.schema.json",
   "analysis/**",
   "evaluation/**",
+  "templates/review/api_review_prompt_quality_criteria_template.md",
+  "templates/review/main_preanalysis_sufficiency_audit_criteria_template.md",
   "templates/specs/spec.json.template",
+  "templates/hooks/review-prompt-guide-inject.sh.template",
   "templates/hooks/session-record-capture-previous-codex.sh.template",
 }
 
